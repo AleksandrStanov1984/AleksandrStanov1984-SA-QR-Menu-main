@@ -1,0 +1,74 @@
+/* ===== UI / DRAWER ===== */
+.std-backdrop{
+    position: fixed;
+    inset: 0;
+    background: var(--backdrop);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--std-t);
+    z-index: 80;
+}
+
+.std-drawer{
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(340px, 86vw);
+    background: var(--panel-bg);
+    border-left: 1px solid var(--panel-stroke);
+    box-shadow: -20px 0 60px rgba(0,0,0,.25);
+    transform: translateX(110%);
+    transition: transform .25s ease;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(14px);
+}
+
+.std-drawer__head{
+    padding: 14px 14px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--panel-stroke);
+}
+
+.std-drawer__title{ font-weight: 900; }
+
+.std-drawer__close{
+    border: 1px solid var(--panel-stroke);
+    background: var(--btn-bg);
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: inherit;
+}
+
+.std-drawer__list{
+    padding: 10px 10px 18px;
+    overflow: auto;
+}
+
+.std-drawer__list a{
+    display: block;
+    padding: 12px 12px;
+    border-radius: 14px;
+    margin: 6px 0;
+    background: var(--btn-bg);
+    border: 1px solid var(--panel-stroke);
+    font-weight: 700;
+    color: inherit;
+}
+
+/* Drawer open state */
+body.is-drawer-open .std-backdrop{
+    opacity: 1;
+    pointer-events: auto;
+}
+body.is-drawer-open .std-drawer{
+    transform: translateX(0);
+}

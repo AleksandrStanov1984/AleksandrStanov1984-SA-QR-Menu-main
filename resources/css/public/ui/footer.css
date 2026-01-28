@@ -1,0 +1,38 @@
+/* ===== UI / FOOTER ===== */
+.std-footer{
+    margin-top: auto;
+    padding: 18px 0 26px;
+    text-align: center;
+}
+
+.std-footer__icons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 10px;
+}
+
+.std-footer__icon{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    opacity: .9;
+    transition: opacity var(--std-t), transform var(--std-t);
+    color: inherit;
+}
+
+.std-footer__icon:hover{ opacity: 1; }
+.std-footer__icon:active{ transform: scale(.98); }
+
+.std-footer__icon img{
+    width: 26px;
+    height: 26px;
+    display: block;
+}
+
+.std-footer__copy{
+    font-size: 12px;
+    color: rgba(255,255,255,.70);
+}

@@ -1,0 +1,54 @@
+/* ===== RESET ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.sa-page {
+    min-height: 100vh;
+}
+
+.sa-page__main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ===== LAYOUT ===== */
+.std-body {
+    min-height: 100vh;
+    background: #f4f4f6;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.std-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.std-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 24px;
+}
+
+/* ===== LINKS ===== */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ===== IMAGES ===== */
+img {
+    max-width: 100%;
+    display: block;
+}

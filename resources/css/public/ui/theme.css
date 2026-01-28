@@ -1,0 +1,22 @@
+/* ===== UI / THEME (dark) ===== */
+html[data-theme="dark"]{
+    --bg-overlay: rgba(6,8,12,.62);
+    --panel-bg: rgba(22,26,35,.84);
+    --panel-stroke: rgba(255,255,255,.10);
+
+    --text: rgba(255,255,255,.92);
+    --muted: rgba(255,255,255,.62);
+    --muted2: rgba(255,255,255,.50);
+
+    --chip-bg: rgba(22,26,35,.84);
+    --chip-stroke: rgba(255,255,255,.10);
+    --chip-active-bg: rgba(255,255,255,.10);
+
+    --card-bg: rgba(22,26,35,.84);
+    --thumb-bg: rgba(255,255,255,.08);
+
+    --btn-bg: rgba(255,255,255,.10);
+    --btn-bg-hover: rgba(255,255,255,.16);
+
+    --backdrop: rgba(0,0,0,.55);
+}

@@ -1,0 +1,85 @@
+/* ===== UI / MODAL ===== */
+.std-modal{
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--std-t);
+}
+
+.std-modal.is-open{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.std-modal__bg{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+}
+
+.std-modal__card{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(.98);
+    width: min(520px, 92vw);
+    max-height: 88vh;
+    overflow: hidden;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-stroke);
+    border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.35);
+    backdrop-filter: blur(16px);
+}
+
+.std-modal.is-open .std-modal__card{
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform .18s ease;
+}
+
+.std-modal__close{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--panel-stroke);
+    background: var(--btn-bg);
+    cursor: pointer;
+    z-index: 2;
+    font-size: 18px;
+    line-height: 1;
+    color: inherit;
+}
+
+.std-modal__img{
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background: var(--thumb-bg);
+}
+
+.std-modal__body{
+    padding: 14px 14px 18px;
+}
+
+.std-modal__price{
+    font-weight: 900;
+    opacity: .92;
+    margin-bottom: 6px;
+}
+
+.std-modal__title{
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.std-modal__desc{
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.4;
+}

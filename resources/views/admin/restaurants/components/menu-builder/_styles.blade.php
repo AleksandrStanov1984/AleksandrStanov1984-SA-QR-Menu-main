@@ -13,4 +13,44 @@
   .mb-mini{font-size:12px; color: var(--mut);}
   .mb-handle{cursor:grab; user-select:none; padding:2px 8px; border:1px solid var(--line); border-radius: 10px;}
   .mb-actions form{display:inline;}
+
+  /* Modal base */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+  }
+
+  .modal[aria-hidden="false"] {
+    display: block;
+  }
+
+  /* Backdrop */
+  .modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Panel centered */
+  .modal__panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: min(920px, calc(100vw - 48px));
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+
+    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    padding: 16px;
+  }
+
+
 </style>

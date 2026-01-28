@@ -12,14 +12,19 @@ use App\Models\Restaurant;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class ItemController extends Controller
 {
-    private function assertRestaurantAccess(Request $request, Restaurant $restaurant): void
+    private function assertRestaurantAccess(Request $request, Restaurant $restaurant, ?string $perm = null): void
     {
         $user = $request->user();
+
         if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
+            abort(403);
+        }
+
+        if ($perm && !$user->is_super_admin && !$user->hasPerm($perm)) {
             abort(403);
         }
     }
@@ -27,14 +32,13 @@ class ItemController extends Controller
     private function sanitizeText(?string $value): ?string
     {
         if ($value === null) return null;
-        // двойная защита: даже если кто-то обошёл фронт
         $value = strip_tags($value);
         return trim($value);
     }
 
     public function store(StoreItemRequest $request, Restaurant $restaurant, Section $section)
     {
-        $this->assertRestaurantAccess($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
         if ((int)$section->restaurant_id !== (int)$restaurant->id) abort(404);
 
@@ -46,11 +50,11 @@ class ItemController extends Controller
         return DB::transaction(function () use ($request, $restaurant, $section, $data, $next) {
 
             $meta = [
-                'is_new' => (bool)($data['is_new'] ?? false),
-                'dish_of_day' => (bool)($data['dish_of_day'] ?? false),
-                'show_image' => (bool)($data['show_image'] ?? true),
-                'spicy' => (int)($data['spicy'] ?? 0),
-                'style' => $data['style'] ?? null,
+                'is_new'       => (bool)($data['is_new'] ?? false),
+                'dish_of_day'  => (bool)($data['dish_of_day'] ?? false),
+                'show_image'   => (bool)($data['show_image'] ?? true),
+                'spicy'        => (int)($data['spicy'] ?? 0),
+                'style'        => $data['style'] ?? null,
             ];
 
             // Если делаем dish_of_day=true — снимаем у остальных в этой секции (железно)
@@ -63,24 +67,24 @@ class ItemController extends Controller
             $item = Item::create([
                 'section_id' => $section->id,
                 'sort_order' => $next,
-                'price' => $data['price'] ?? null,
-                'currency' => $data['currency'] ?? 'EUR',
-                'meta' => $meta,
-                'is_active' => (bool)($data['is_active'] ?? true),
+                'price'      => $data['price'] ?? null,
+                'currency'   => $data['currency'] ?? 'EUR',
+                'meta'       => $meta,
+                'is_active'  => (bool)($data['is_active'] ?? true),
             ]);
 
             // translations: ожидаем формат translations[locale][...]
             foreach (($data['translations'] ?? []) as $locale => $t) {
                 ItemTranslation::create([
-                    'item_id' => $item->id,
-                    'locale' => (string)$locale,
-                    'title' => $this->sanitizeText($t['title'] ?? ''),
+                    'item_id'     => $item->id,
+                    'locale'      => (string)$locale,
+                    'title'       => $this->sanitizeText($t['title'] ?? ''),
                     'description' => $this->sanitizeText($t['description'] ?? null),
-                    'details' => $this->sanitizeText($t['details'] ?? null),
+                    'details'     => $this->sanitizeText($t['details'] ?? null),
                 ]);
             }
 
-            // image upload (без svg, только image mime; ре-энкод добавим на шаге с UI)
+            // image upload (без svg, только image mime)
             if ($request->hasFile('image')) {
                 $path = $request->file('image')->store("restaurants/{$restaurant->id}/items", 'public');
                 $item->update(['image_path' => $path]);
@@ -92,7 +96,7 @@ class ItemController extends Controller
 
     public function update(UpdateItemRequest $request, Restaurant $restaurant, Item $item)
     {
-        $this->assertRestaurantAccess($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
         $section = $item->section;
         if (!$section || (int)$section->restaurant_id !== (int)$restaurant->id) abort(404);
@@ -103,11 +107,11 @@ class ItemController extends Controller
 
             $meta = $item->meta ?? [];
 
-            $meta['is_new'] = (bool)($data['is_new'] ?? ($meta['is_new'] ?? false));
+            $meta['is_new']      = (bool)($data['is_new'] ?? ($meta['is_new'] ?? false));
             $meta['dish_of_day'] = (bool)($data['dish_of_day'] ?? ($meta['dish_of_day'] ?? false));
-            $meta['show_image'] = (bool)($data['show_image'] ?? ($meta['show_image'] ?? true));
-            $meta['spicy'] = (int)($data['spicy'] ?? ($meta['spicy'] ?? 0));
-            $meta['style'] = $data['style'] ?? ($meta['style'] ?? null);
+            $meta['show_image']  = (bool)($data['show_image'] ?? ($meta['show_image'] ?? true));
+            $meta['spicy']       = (int)($data['spicy'] ?? ($meta['spicy'] ?? 0));
+            $meta['style']       = $data['style'] ?? ($meta['style'] ?? null);
 
             if (!empty($meta['dish_of_day'])) {
                 // снять у остальных
@@ -119,9 +123,9 @@ class ItemController extends Controller
             }
 
             $item->update([
-                'price' => $data['price'] ?? $item->price,
-                'currency' => $data['currency'] ?? $item->currency,
-                'meta' => $meta,
+                'price'     => $data['price'] ?? $item->price,
+                'currency'  => $data['currency'] ?? $item->currency,
+                'meta'      => $meta,
                 'is_active' => (bool)($data['is_active'] ?? $item->is_active),
             ]);
 
@@ -130,15 +134,15 @@ class ItemController extends Controller
                 if (!$tr) {
                     $tr = ItemTranslation::create([
                         'item_id' => $item->id,
-                        'locale' => (string)$locale,
-                        'title' => '',
+                        'locale'  => (string)$locale,
+                        'title'   => '',
                     ]);
                 }
 
                 $tr->update([
-                    'title' => $this->sanitizeText($t['title'] ?? ''),
+                    'title'       => $this->sanitizeText($t['title'] ?? ''),
                     'description' => $this->sanitizeText($t['description'] ?? null),
-                    'details' => $this->sanitizeText($t['details'] ?? null),
+                    'details'     => $this->sanitizeText($t['details'] ?? null),
                 ]);
             }
 
@@ -153,7 +157,7 @@ class ItemController extends Controller
 
     public function reorder(ReorderItemsRequest $request, Restaurant $restaurant, Section $section)
     {
-        $this->assertRestaurantAccess($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
         if ((int)$section->restaurant_id !== (int)$restaurant->id) abort(404);
 
         $ids = $request->validated()['item_ids'];
@@ -173,7 +177,7 @@ class ItemController extends Controller
 
     public function toggleActive(Request $request, Restaurant $restaurant, Item $item)
     {
-        $this->assertRestaurantAccess($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
         $section = $item->section;
         if (!$section || (int)$section->restaurant_id !== (int)$restaurant->id) abort(404);
@@ -186,7 +190,7 @@ class ItemController extends Controller
 
     public function destroy(Request $request, Restaurant $restaurant, Item $item)
     {
-        $this->assertRestaurantAccess($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
         $section = $item->section;
         if (!$section || (int)$section->restaurant_id !== (int)$restaurant->id) abort(404);
@@ -196,7 +200,4 @@ class ItemController extends Controller
 
         return back()->with('success', __('admin.items.deleted'));
     }
-
-
-
 }

@@ -149,6 +149,8 @@ return [
         'theme' => 'Theme',
         'import' => 'Import',
         'save' => 'Save permissions',
+        'branding' => 'Branding (background, design)',
+
     ],
 
     'uploads' => [
@@ -247,6 +249,9 @@ return [
         'restaurants_select' => 'Choose restaurant',
         'logo' => 'LOGO'
     ],
+
+    'branding' => 'Branding (backgrounds)',
+
 
 
 

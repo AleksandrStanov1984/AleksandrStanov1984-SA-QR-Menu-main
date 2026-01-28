@@ -15,6 +15,7 @@ class Restaurant extends Model
         'logo_path',
         'background_path',
         'custom_css',
+        'meta',                 // ✅ NEW
         'is_active',
         'trial_ends_at',
         'plan_key',
@@ -26,12 +27,12 @@ class Restaurant extends Model
         'street',
         'house_number',
         'postal_code',
-        'logo_path',
     ];
 
     protected $casts = [
         'enabled_locales' => 'array',
         'theme_tokens' => 'array',
+        'meta' => 'array',      // ✅ NEW
         'is_active' => 'boolean',
         'trial_ends_at' => 'date',
         'monthly_price' => 'decimal:2',
@@ -44,6 +45,6 @@ class Restaurant extends Model
 
     public function sections()
     {
-       return $this->hasMany(Section::class);
+        return $this->hasMany(Section::class);
     }
 }

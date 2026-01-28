@@ -280,7 +280,8 @@ class RestaurantController extends Controller
             'banners_manage',
             'socials_manage',
             'theme_manage',
-            'import_manage',
+            'branding_manage',
+            'import_manage'
         ];
 
         $perms = $restaurantUser->permissions ?? [];

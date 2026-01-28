@@ -16,47 +16,48 @@
             @php($p = $restaurantUser->permissions ?? [])
 
             <div class="perm-grid">
-                <div class="perm-col">
-                    <label class="perm-item">
-                        <input type="checkbox" name="perm[languages_manage]" @checked($p['languages_manage'] ?? false)>
-                        {{ __('admin.permissions.languages') }}
-                    </label>
+                <label class="perm-item">
+                    <span>Языки</span>
+                    <input type="checkbox" name="perm[languages_manage]" @checked($p['languages_manage'] ?? false)>
+                </label>
 
-                    <label class="perm-item">
-                        <input type="checkbox" name="perm[sections_manage]" @checked($p['sections_manage'] ?? false)>
-                        {{ __('admin.permissions.sections') }}
-                    </label>
+                <label class="perm-item">
+                    <span>Категории / Разделы</span>
+                    <input type="checkbox" name="perm[sections_manage]" @checked($p['sections_manage'] ?? false)>
+                </label>
 
-                    <label class="perm-item">
-                        <input type="checkbox" name="perm[items_manage]" @checked($p['items_manage'] ?? false)>
-                        {{ __('admin.permissions.items') }}
-                    </label>
-                </div>
+                <label class="perm-item">
+                    <span>Блюда / Позиции</span>
+                    <input type="checkbox" name="perm[items_manage]" @checked($p['items_manage'] ?? false)>
+                </label>
 
-                <div class="perm-col">
-                    <label class="perm-item">
-                        <input type="checkbox" name="perm[banners_manage]" @checked($p['banners_manage'] ?? false)>
-                        {{ __('admin.permissions.banners') }}
-                    </label>
+                <label class="perm-item">
+                    <span>Баннеры</span>
+                    <input type="checkbox" name="perm[banners_manage]" @checked($p['banners_manage'] ?? false)>
+                </label>
 
-                    <label class="perm-item">
-                        <input type="checkbox" name="perm[socials_manage]" @checked($p['socials_manage'] ?? false)>
-                        {{ __('admin.permissions.socials') }}
-                    </label>
-                </div>
+                <label class="perm-item">
+                    <span>Соцсети</span>
+                    <input type="checkbox" name="perm[socials_manage]" @checked($p['socials_manage'] ?? false)>
+                </label>
 
-                <div class="perm-col">
-                    <label class="perm-item">
-                        <input type="checkbox" name="perm[theme_manage]" @checked($p['theme_manage'] ?? false)>
-                        {{ __('admin.permissions.theme') }}
-                    </label>
+                <label class="perm-item">
+                    <span>Тема</span>
+                    <input type="checkbox" name="perm[theme_manage]" @checked($p['theme_manage'] ?? false)>
+                </label>
 
-                    <label class="perm-item">
-                        <input type="checkbox" name="perm[import_manage]" @checked($p['import_manage'] ?? false)>
-                        {{ __('admin.permissions.import') }}
-                    </label>
-                </div>
+                <label class="perm-item">
+                    <span>Брендинг (фон, оформление)</span>
+                    <input type="checkbox" name="perm[branding_manage]" @checked($p['branding_manage'] ?? false)>
+                </label>
+
+                <label class="perm-item">
+                    <span>Импорт</span>
+                    <input type="checkbox" name="perm[import_manage]" @checked($p['import_manage'] ?? false)>
+                </label>
             </div>
+
+
 
             <div style="margin-top:14px;">
                 <button class="btn ok" type="submit">{{ __('admin.permissions.save') }}</button>

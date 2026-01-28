@@ -1,10 +1,14 @@
 @php
     $u = auth()->user();
-    $brandUrl = route('admin.home');
-    if ($u && $u->is_super_admin) {
+
+    if (!$u) {
+        $brandUrl = route('admin.login');
+    } elseif ($u->is_super_admin) {
+        // super admin всегда может зайти на список ресторанов
         $brandUrl = route('admin.restaurants.index');
-    } elseif ($u && $u->restaurant_id) {
-        $brandUrl = route('admin.restaurants.edit', $u->restaurant_id);
+    } else {
+        // обычный пользователь всегда заходит через "умный вход" в меню
+        $brandUrl = route('admin.menu.profile');
     }
 @endphp
 
@@ -26,9 +30,12 @@
 
         @auth
             <a class="mut" href="{{ route('admin.profile') }}">{{ $u->name }}</a>
+
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
-                <button class="btn secondary">{{ __('admin.actions.logout') }}</button>
+                <button type="submit" class="btn secondary">
+                    {{ __('admin.actions.logout') }}
+                </button>
             </form>
         @endauth
     </div>

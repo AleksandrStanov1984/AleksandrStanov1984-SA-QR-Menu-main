@@ -17,10 +17,13 @@ use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\RestaurantBrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
+use App\Http\Controllers\Admin\MenuProfileController;
+use App\Http\Controllers\Admin\MenuBuilderController;
 
 
 
 Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
+
 Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])->name('restaurant.show');
 
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
@@ -42,21 +45,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // ✅ locale setter (admin)
     Route::post('/locale', function (Request $request) {
+
         $loc = strtolower(trim((string) $request->input('locale')));
-        if (!in_array($loc, ['de', 'en', 'ru'], true)) $loc = 'de';
+
+        if (!in_array($loc, ['de', 'en', 'ru'], true))
+         $loc = 'de';
 
         session(['admin_locale' => $loc]);
+
         app()->setLocale($loc);
 
         return redirect()->back();
+
     })->middleware('auth')->name('locale.set');
 
     Route::middleware(['auth', 'admin.locale', 'admin.ensure', 'admin.restaurant'])->group(function () {
 
         Route::get('/', [DashboardController::class, 'index'])->name('home');
+
         Route::post('/select-restaurant', [DashboardController::class, 'selectRestaurant'])->name('select_restaurant');
 
         Route::resource('restaurants', RestaurantController::class)->except(['show']);
+
         Route::post('restaurants/{restaurant}/toggle', [RestaurantController::class, 'toggleActive'])->name('restaurants.toggle');
 
         Route::post('restaurants/{restaurant}/user-permissions', [RestaurantController::class, 'updateUserPermissions'])
@@ -84,6 +94,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.sections.toggle');
 
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
         // restaurant contact/address (edited from Profile screen)
@@ -122,6 +133,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('restaurants/{restaurant}/items/{item}/toggle', [ItemController::class, 'toggleActive'])
             ->name('restaurants.items.toggle');
+
+        Route::get('/menu/profile', [MenuProfileController::class, 'edit'])
+            ->name('menu.profile');
+
+        Route::get('/security/password', function (\Illuminate\Http\Request $request) {
+            return view('admin.security.password', [
+                'user' => $request->user(),
+            ]);
+        })->name('security.password');
+
+        Route::post('restaurants/{restaurant}/branding/backgrounds', [RestaurantBrandController::class, 'updateBackgrounds'])
+            ->name('restaurants.branding.backgrounds.update');
+
+
+
+
 
 
 

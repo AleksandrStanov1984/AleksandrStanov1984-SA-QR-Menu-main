@@ -136,20 +136,22 @@ class SectionController extends Controller
             ->with('success', 'Section updated');
     }
 
-    public function toggleActive(Restaurant $restaurant, Section $section)
+    public function toggleActive(Request $request, Restaurant $restaurant, Section $section)
     {
-        abort_unless($section->restaurant_id === $restaurant->id, 404);
+        $this->assertRestaurantAccess($request, $restaurant, 'sections_manage');
+        abort_unless((int)$section->restaurant_id === (int)$restaurant->id, 404);
 
-        // is_active у тебя может называться active/status — подправишь под свою схему.
         $section->is_active = !$section->is_active;
         $section->save();
 
         return back()->with('success', __('admin.sections.toggled'));
     }
 
+
     public function destroy(Restaurant $restaurant, Section $section)
     {
-        abort_unless($section->restaurant_id === $restaurant->id, 404);
+        $this->assertRestaurantAccess($request, $restaurant, 'sections_manage');
+        abort_unless((int)$section->restaurant_id === (int)$restaurant->id, 404);
 
         // delete children and items (safe MVP)
         $childIds = Section::query()
@@ -168,6 +170,20 @@ class SectionController extends Controller
 
         return back()->with('success', __('admin.sections.deleted'));
     }
+
+    private function assertRestaurantAccess(Request $request, Restaurant $restaurant, ?string $perm = null): void
+    {
+        $user = $request->user();
+
+        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
+            abort(403);
+        }
+
+        if ($perm && !$user->is_super_admin && !$user->hasPerm($perm)) {
+            abort(403);
+        }
+    }
+
 
 
 }

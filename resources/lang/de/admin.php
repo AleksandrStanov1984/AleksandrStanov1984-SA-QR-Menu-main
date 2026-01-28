@@ -26,12 +26,13 @@ return [
         'phone' => 'Telefon',
         'city' => 'Stadt',
         'street' => 'Straße',
-        'house_number' => 'Hausnr.',
+        'house_number' => 'Hausn.',
         'postal_code' => 'PLZ',
         'user_name' => 'Benutzername',
         'user_email' => 'Benutzer-E-Mail',
         'email' => 'E-Mail',
         'password' => 'Passwort',
+        'close' => 'Close',
     ],
 
     'templates' => [
@@ -150,6 +151,8 @@ return [
         'theme' => 'Theme',
         'import' => 'Import',
         'save' => 'Rechte speichern',
+        'branding' => 'Branding (Hintergrund, Design)',
+
     ],
 
     'uploads' => [
@@ -247,6 +250,37 @@ return [
         'restaurants_select' => 'Restaurant auswählen',
         'logo' => 'LOGO'
     ],
+
+    'branding' => 'Branding (Hintergrund)',
+
+     'common' => [
+        'active' => 'active',
+        'dash' => '—',
+     ],
+
+     'menu_builder' => [
+             'show_image_modal' => 'show image + modal',
+             'flag_new' => 'NEW',
+             'flag_dish_of_day' => 'Dish of day',
+
+             'image_hint' => 'jpg/png/webp only',
+
+             'field_title' => 'Title',
+             'field_desc' => 'Description',
+             'field_details' => 'Details',
+
+             'style_font' => ':field font',
+             'style_color' => ':field color',
+             'style_size' => ':field size',
+
+             'title_locale' => 'Title (:locale)',
+             'description_locale' => 'Description (:locale)',
+             'details_locale' => 'Details (:locale)',
+     ],
+
+
+
+
 
 
 

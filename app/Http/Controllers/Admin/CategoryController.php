@@ -13,9 +13,15 @@ class CategoryController extends Controller
 {
     public function store(Request $request, Restaurant $restaurant)
     {
-        // безопасность: user может работать только со своим рестораном
         $user = $request->user();
-        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
+
+        // безопасность: user может работать только со своим рестораном
+                $user = $request->user();
+                if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
+                    abort(403);
+                }
+
+        if (!$user->is_super_admin && !$user->hasPerm('sections_manage')) {
             abort(403);
         }
 

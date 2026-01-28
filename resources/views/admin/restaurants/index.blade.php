@@ -9,7 +9,6 @@
     <span>{{ __('admin.restaurants.index.h1') }}</span>
 @endsection
 
-
 @section('content')
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
         <h1 style="margin:0; font-size:18px;">
@@ -55,31 +54,38 @@
                         </span>
                     </td>
 
+                    {{-- 🔥 СТАТУС: кружок + текст --}}
                     <td>
-                        <span class="pill {{ $r->is_active ? 'green' : 'red' }}">
-                            {{ $r->is_active ? __('admin.status.active') : __('admin.status.inactive') }}
+                        <span class="status">
+                            <span class="status-dot {{ $r->is_active ? 'on' : 'off' }}"></span>
+                            {{ $r->is_active
+                                ? __('admin.status.active')
+                                : __('admin.status.inactive')
+                            }}
                         </span>
                     </td>
 
+                    {{-- 🔥 КНОПКИ В ОДИН РЯД --}}
                     <td class="right">
-                        <a class="btn small" href="{{ route('admin.restaurants.edit', $r) }}">
-                            {{ __('admin.actions.edit') }}
-                        </a>
+                        <div class="actions-inline">
+                            <a class="btn small"
+                               href="{{ route('admin.restaurants.edit', $r) }}">
+                                {{ __('admin.actions.edit') }}
+                            </a>
 
-                        <form method="POST"
-                              action="{{ route('admin.restaurants.toggle', $r) }}"
-                              style="display:inline;">
-                            @csrf
-                            <button
-                                class="btn small {{ $r->is_active ? 'danger' : 'ok' }}"
-                                type="submit"
-                            >
-                                {{ $r->is_active
-                                    ? __('admin.actions.deactivate')
-                                    : __('admin.actions.activate')
-                                }}
-                            </button>
-                        </form>
+                            <form method="POST"
+                                  action="{{ route('admin.restaurants.toggle', $r) }}">
+                                @csrf
+                                <button
+                                    class="btn small {{ $r->is_active ? 'danger' : 'ok' }}"
+                                    type="submit">
+                                    {{ $r->is_active
+                                        ? __('admin.actions.deactivate')
+                                        : __('admin.actions.activate')
+                                    }}
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach

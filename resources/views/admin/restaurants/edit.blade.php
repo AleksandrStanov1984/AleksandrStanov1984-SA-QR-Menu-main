@@ -13,19 +13,21 @@
 
 @section('content')
 
-@include('admin.restaurants.components.edit._restaurant-form', ['restaurant' => $restaurant])
+@include('admin.restaurants.components.logo', ['restaurant' => $restaurant])
 
-@include('admin.restaurants.components.edit._languages', ['restaurant' => $restaurant])
-
-@include('admin.restaurants.components.edit._permissions', [
-    'restaurant' => $restaurant,
-    'restaurantUser' => $restaurantUser ?? null,
-])
+@include('admin.restaurants.components.branding-backgrounds.index', ['restaurant' => $restaurant])
 
 @include('admin.restaurants.components.edit._menu', [
     'restaurant' => $restaurant,
     'menuTree' => $menuTree,
     'locales' => $locales,
 ])
+
+@include('admin.restaurants.components.edit._permissions', [
+    'restaurant' => $restaurant,
+    'restaurantUser' => $restaurantUser ?? null,
+])
+
+@include('admin.restaurants.components.edit._languages', ['restaurant' => $restaurant])
 
 @endsection

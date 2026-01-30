@@ -139,6 +139,8 @@ class RestaurantController extends Controller
             abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
         }
 
+        $isSuper = (bool)($user->is_super_admin ?? false);
+
         $restaurantUser = \App\Models\User::query()
             ->where('restaurant_id', $restaurant->id)
             ->where('is_super_admin', false)
@@ -148,49 +150,75 @@ class RestaurantController extends Controller
         $adminLocale = session('admin_locale', app()->getLocale());
         $locales = $restaurant->enabled_locales ?: ['de'];
 
-        $categories = Section::query()
+        // --- categories query (withTrashed for super admin) ---
+        $catQuery = Section::query()
             ->where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
-            ->orderBy('sort_order')
+            ->orderBy('sort_order');
+
+        if ($isSuper) {
+            $catQuery->withTrashed();
+        }
+
+        $categories = $catQuery
             ->with([
                 'translations',
-                'children' => function ($q) {
+
+                // children (subcategories)
+                'children' => function ($q) use ($isSuper) {
+                    if ($isSuper) $q->withTrashed();
+
                     $q->orderBy('sort_order')
-                      ->with(['translations', 'items.translations']);
+                      ->with([
+                          'translations',
+
+                          // items of subcategory
+                          'items' => function ($qi) use ($isSuper) {
+                              if ($isSuper) $qi->withTrashed();
+                              $qi->orderBy('sort_order')->with('translations');
+                          },
+                      ]);
                 },
-                'items.translations',
+
+                // items of category
+                'items' => function ($qi) use ($isSuper) {
+                    if ($isSuper) $qi->withTrashed();
+                    $qi->orderBy('sort_order')->with('translations');
+                },
             ])
             ->get();
 
-        $menuTree = $categories->map(function ($cat) use ($locales) {
-
-            $cat->items = $cat->items->sort(function ($a, $b) {
+        // --- sort items внутри category/subcategory, учитывая meta flags ---
+        $menuTree = $categories->map(function ($cat) {
+            $cat->items = ($cat->items ?? collect())->sort(function ($a, $b) {
                 $am = $a->meta ?? [];
                 $bm = $b->meta ?? [];
-                $an = (int) !empty($am['is_new']);
-                $bn = (int) !empty($bm['is_new']);
+
+                $an = (int)!empty($am['is_new']);
+                $bn = (int)!empty($bm['is_new']);
                 if ($an !== $bn) return $bn <=> $an;
 
-                $ad = (int) !empty($am['dish_of_day']);
-                $bd = (int) !empty($bm['dish_of_day']);
+                $ad = (int)!empty($am['dish_of_day']);
+                $bd = (int)!empty($bm['dish_of_day']);
                 if ($ad !== $bd) return $bd <=> $ad;
 
-                return ((int)$a->sort_order) <=> ((int)$b->sort_order);
+                return ((int)($a->sort_order ?? 0)) <=> ((int)($b->sort_order ?? 0));
             })->values();
 
-            $cat->children = $cat->children->map(function ($sub) {
-                $sub->items = $sub->items->sort(function ($a, $b) {
+            $cat->children = ($cat->children ?? collect())->map(function ($sub) {
+                $sub->items = ($sub->items ?? collect())->sort(function ($a, $b) {
                     $am = $a->meta ?? [];
                     $bm = $b->meta ?? [];
-                    $an = (int) !empty($am['is_new']);
-                    $bn = (int) !empty($bm['is_new']);
+
+                    $an = (int)!empty($am['is_new']);
+                    $bn = (int)!empty($bm['is_new']);
                     if ($an !== $bn) return $bn <=> $an;
 
-                    $ad = (int) !empty($am['dish_of_day']);
-                    $bd = (int) !empty($bm['dish_of_day']);
+                    $ad = (int)!empty($am['dish_of_day']);
+                    $bd = (int)!empty($bm['dish_of_day']);
                     if ($ad !== $bd) return $bd <=> $ad;
 
-                    return ((int)$a->sort_order) <=> ((int)$b->sort_order);
+                    return ((int)($a->sort_order ?? 0)) <=> ((int)($b->sort_order ?? 0));
                 })->values();
 
                 return $sub;
@@ -208,6 +236,7 @@ class RestaurantController extends Controller
             'adminLocale' => $adminLocale,
         ]);
     }
+
 
     public function update(Request $request, Restaurant $restaurant): RedirectResponse
     {

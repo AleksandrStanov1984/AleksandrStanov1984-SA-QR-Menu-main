@@ -91,7 +91,6 @@ a { color: inherit; }
 
 /* forms */
 input, select{
-    width:100%;
     padding:10px 12px;
     border-radius:10px;
     border:1px solid var(--line);
@@ -376,6 +375,116 @@ label{
 .perm-item span{
     white-space: nowrap;
 }
+
+.mb-deleted{
+    border: 1px solid rgba(255,90,95,.8) !important;
+    box-shadow: 0 0 0 1px rgba(255,90,95,.25) inset;
+    opacity: .92;
+}
+
+.mb-deleted .mb-item-title,
+.mb-deleted .mb-mini{
+    color: rgba(255,90,95,.95);
+}
+
+.mb-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.mb-actions-col { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+
+.btn.small {
+    padding: 6px 10px;
+    border-radius: 10px;
+    line-height: 1;
+}
+
+.btn.secondary {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+}
+
+.btn.danger {
+    background: rgba(255,90,95,.10);
+    border: 1px solid rgba(255,90,95,.35);
+}
+
+.mb-item-head { display:flex; justify-content:space-between; gap:12px; }
+.mb-item-right { margin-left:auto; flex:0 0 auto; }
+
+.mb-item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.modal textarea,
+.modal input[type="text"],
+.modal input[type="number"] {
+    color: var(--text);
+    background: rgba(255,255,255,.06);
+}
+
+.mb-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mb-item-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mb-item-title {
+    font-weight: 600;
+    max-width: 420px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mb-item-flags {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-left: 26px; /* визуально под названием */
+}
+
+.mb-item-price {
+    margin-top: 6px;
+}
+
+/* MODAL base */
+.modal { position: fixed; inset: 0; display: none; z-index: 9999; }
+.modal[aria-hidden="false"] { display: block; }
+
+.modal__backdrop{
+    position:absolute; inset:0;
+    background: rgba(0,0,0,.55);
+}
+
+.modal__panel{
+    position:relative;
+    margin: 6vh auto 0;
+    width: min(920px, calc(100% - 24px));
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+}
+
+/* ACCORDION */
+.mb-acc { margin-top:10px; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.mb-acc summary{
+    list-style:none;
+    cursor:pointer;
+    padding:10px 12px;
+    background: rgba(255,255,255,.04);
+    display:flex; align-items:center; gap:10px;
+}
+.mb-acc summary::-webkit-details-marker { display:none; }
+.mb-acc__body{ padding:12px; background: rgba(255,255,255,.02); }
+
 
 
 /* адаптив */

@@ -146,6 +146,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/branding/backgrounds', [RestaurantBrandController::class, 'updateBackgrounds'])
             ->name('restaurants.branding.backgrounds.update');
 
+        Route::patch('restaurants/{restaurant}/items/{item}/meta', [ItemController::class, 'updateMeta'])
+            ->name('restaurants.items.meta');
+
+
 
 
 

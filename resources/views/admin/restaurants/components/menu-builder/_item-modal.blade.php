@@ -1,3 +1,7 @@
+@php
+  use App\Support\Permissions;
+@endphp
+
 <div class="modal" id="mbModalItem" aria-hidden="true">
   <div class="modal__backdrop" data-mb-close></div>
   <div class="modal__panel">
@@ -5,6 +9,12 @@
       <strong>{{ __('admin.menu_builder.add_item') }}</strong>
       <button class="btn small" type="button" data-mb-close aria-label="{{ __('admin.actions.close') }}">✕</button>
     </div>
+
+    @php
+      $user = auth()->user();
+      $canUploadImage = Permissions::can($user, 'items.image.upload');
+      $canDetails = $canUploadImage; // правило: image upload => details
+    @endphp
 
     <form method="POST" enctype="multipart/form-data"
           action="#"
@@ -15,53 +25,22 @@
 
       <div class="grid" style="margin-top:10px;">
         <div class="col6">
-          <label>{{ __('admin.menu_builder.flags') }}</label>
-
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            {{-- is_active --}}
-            <input type="hidden" name="is_active" value="0">
-            <label class="perm-item">
-              <input type="checkbox" name="is_active" value="1" checked>
-              {{ __('admin.common.active') }}
-            </label>
-
-            {{-- show_image --}}
-            <input type="hidden" name="show_image" value="0">
-            <label class="perm-item">
-              <input type="checkbox" name="show_image" value="1" checked>
-              {{ __('admin.menu_builder.show_image_modal') }}
-            </label>
-
-            {{-- is_new --}}
-            <input type="hidden" name="is_new" value="0">
-            <label class="perm-item">
-              <input type="checkbox" name="is_new" value="1">
-              {{ __('admin.menu_builder.flag_new') }}
-            </label>
-
-            {{-- dish_of_day --}}
-            <input type="hidden" name="dish_of_day" value="0">
-            <label class="perm-item">
-              <input type="checkbox" name="dish_of_day" value="1">
-              {{ __('admin.menu_builder.flag_dish_of_day') }}
-            </label>
-          </div>
-        </div>
-
-        <div class="col6">
-          <label>{{ __('admin.menu_builder.spicy') }}</label>
-          <select name="spicy" aria-label="{{ __('admin.menu_builder.spicy') }}">
-            @for($i=0;$i<=5;$i++)
-              <option value="{{ $i }}">{{ $i }}</option>
-            @endfor
-          </select>
-
-          <label style="margin-top:10px;">{{ __('admin.menu_builder.image') }}</label>
-          <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+          <label>{{ __('admin.menu_builder.price') ?? 'Price' }}</label>
+          <input
+            name="price"
+            maxlength="20"
+            inputmode="decimal"
+            pattern="^\d+(?:[.,]\d{1,2})?$"
+            placeholder="0.00"
+            aria-label="{{ __('admin.menu_builder.price') ?? 'Price' }}"
+            required
+          >
           <div class="mb-muted" style="margin-top:6px;">
-            {{ __('admin.menu_builder.image_hint') }}
+            {{ __('admin.menu_builder.price_hint') ?? 'Only numbers and one dot/comma.' }}
           </div>
         </div>
+
+        <div class="col6"></div>
       </div>
 
       <hr style="border:0;border-top:1px solid var(--line); margin:12px 0;">
@@ -105,27 +84,41 @@
               required
               data-text-field="title"
               data-text-locale="{{ $loc }}"
+              autocomplete="off"
             >
 
             <label>{{ __('admin.menu_builder.description_locale', ['locale' => strtoupper($loc)]) }}</label>
             <input
               name="translations[{{ $loc }}][description]"
-              maxlength="250"
+              maxlength="100"
               data-text-field="desc"
               data-text-locale="{{ $loc }}"
+              autocomplete="off"
             >
 
-            <label>{{ __('admin.menu_builder.details_locale', ['locale' => strtoupper($loc)]) }}</label>
-            <textarea
-              name="translations[{{ $loc }}][details]"
-              maxlength="500"
-              style="width:100%; min-height:90px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--text);"
-              data-text-field="details"
-              data-text-locale="{{ $loc }}"
-            ></textarea>
+            @if($canDetails)
+              <label>{{ __('admin.menu_builder.details_locale', ['locale' => strtoupper($loc)]) }}</label>
+              <textarea
+                name="translations[{{ $loc }}][details]"
+                maxlength="255"
+                style="width:100%; min-height:90px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--text);"
+                data-text-field="details"
+                data-text-locale="{{ $loc }}"
+              ></textarea>
+            @endif
           </div>
         @endforeach
       </div>
+
+      @if($canUploadImage)
+        <hr style="border:0;border-top:1px solid var(--line); margin:12px 0;">
+
+        <label style="margin-top:10px;">{{ __('admin.menu_builder.image') }}</label>
+        <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+        <div class="mb-muted" style="margin-top:6px;">
+          {{ __('admin.menu_builder.image_hint') }}
+        </div>
+      @endif
 
       <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:10px;">
         <button class="btn ok" type="submit">{{ __('admin.actions.create') }}</button>

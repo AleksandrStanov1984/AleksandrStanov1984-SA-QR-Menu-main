@@ -6,20 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\StoreCategoryRequest;
 use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function store(Request $request, Restaurant $restaurant)
+    public function store(StoreCategoryRequest $request, Restaurant $restaurant)
     {
         $user = $request->user();
 
         // безопасность: user может работать только со своим рестораном
-                $user = $request->user();
-                if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
-                    abort(403);
-                }
+        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
+            abort(403);
+        }
+
+        // permissions (пока can=true, но проверка обязательна)
+        Permissions::abortUnless($user, 'categories.create');
 
         if (!$user->is_super_admin && !$user->hasPerm('sections_manage')) {
             abort(403);
@@ -32,18 +35,7 @@ class CategoryController extends Controller
             $defaultLocale = $locales[0] ?? 'de';
         }
 
-        // валидация: title max 50
-        $rules = [
-            'title_font'  => ['nullable', 'string', 'max:50'],
-            'title_color' => ['nullable', 'regex:/^#([A-Fa-f0-9]{6})$/'],
-            'is_active'   => ['nullable', 'boolean'],
-        ];
-
-        foreach ($locales as $loc) {
-            $rules["title.$loc"] = ['required', 'string', 'max:50'];
-        }
-
-        $data = $request->validate($rules);
+        $data = $request->validated();
 
         // sort_order следующий
         $nextSort = (int) Section::where('restaurant_id', $restaurant->id)
@@ -63,10 +55,17 @@ class CategoryController extends Controller
         ]);
 
         foreach ($locales as $loc) {
+            $title = trim((string) Arr::get($data, "title.$loc", ''));
+
+            // fallback: если где-то пусто — берём дефолтный
+            if ($title === '') {
+                $title = trim((string) Arr::get($data, "title.$defaultLocale", ''));
+            }
+
             SectionTranslation::create([
                 'section_id' => $section->id,
                 'locale'     => $loc,
-                'title'      => Arr::get($data, "title.$loc"),
+                'title'      => $title,
             ]);
         }
 

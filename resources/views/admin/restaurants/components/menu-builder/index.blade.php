@@ -33,5 +33,8 @@
 @include('admin.restaurants.components.menu-builder._category-modal', ['restaurant' => $restaurant, 'locales' => $locales])
 @include('admin.restaurants.components.menu-builder._subcategory-modal', ['restaurant' => $restaurant, 'locales' => $locales])
 @include('admin.restaurants.components.menu-builder._item-modal', ['restaurant' => $restaurant, 'locales' => $locales])
+@include('admin.restaurants.components.menu-builder._item-modal-desc')
+@include('admin.restaurants.components.menu-builder._confirm-delete-modal')
+
 
 @include('admin.restaurants.components.menu-builder._scripts', ['restaurant' => $restaurant])

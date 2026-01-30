@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\StoreSubcategoryRequest;
 use Illuminate\Support\Arr;
 
 class SubcategoryController extends Controller
 {
-    public function store(Request $request, Restaurant $restaurant)
+    public function store(StoreSubcategoryRequest $request, Restaurant $restaurant)
     {
         $user = $request->user();
 
@@ -19,6 +19,9 @@ class SubcategoryController extends Controller
         if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
             abort(403);
         }
+
+        // permissions (пока can=true, но проверка обязательна)
+        PPermissions::abortUnless($user, 'subcategories.create');
 
         // permissions
         if (!$user->is_super_admin && !$user->hasPerm('sections_manage')) {
@@ -31,21 +34,7 @@ class SubcategoryController extends Controller
             $defaultLocale = $locales[0] ?? 'de';
         }
 
-        $rules = [
-            'parent_id' => ['required', 'integer'],
-            'title_font'  => ['nullable', 'string', 'max:50'],
-            'title_color' => ['nullable', 'regex:/^#([A-Fa-f0-9]{6})$/'],
-            'is_active'   => ['nullable', 'boolean'],
-        ];
-
-        // required только defaultLocale, остальные nullable
-        $rules["title.$defaultLocale"] = ['required', 'string', 'max:50'];
-        foreach ($locales as $loc) {
-            if ($loc === $defaultLocale) continue;
-            $rules["title.$loc"] = ['nullable', 'string', 'max:50'];
-        }
-
-        $data = $request->validate($rules);
+        $data = $request->validated();
 
         // parent должен быть категорией этого ресторана (top-level)
         $parent = Section::query()
@@ -70,10 +59,10 @@ class SubcategoryController extends Controller
             'title_color'   => $data['title_color'] ?? null,
         ]);
 
-        $fallbackTitle = trim((string)\Illuminate\Support\Arr::get($data, "title.$defaultLocale", ''));
+        $fallbackTitle = trim((string)Arr::get($data, "title.$defaultLocale", ''));
 
         foreach ($locales as $loc) {
-            $title = trim((string)\Illuminate\Support\Arr::get($data, "title.$loc", ''));
+            $title = trim((string)Arr::get($data, "title.$loc", ''));
             if ($title === '') $title = $fallbackTitle;
 
             SectionTranslation::create([
@@ -85,5 +74,4 @@ class SubcategoryController extends Controller
 
         return back()->with('success', __('admin.sections.subcategories.created'));
     }
-
 }

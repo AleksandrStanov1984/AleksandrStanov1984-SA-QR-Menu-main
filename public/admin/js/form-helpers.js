@@ -55,4 +55,18 @@
         });
     });
 
+    document.addEventListener('click', function (e) {
+        const interactive = e.target.closest(
+            'input, button, select, textarea, .mb-handle, [data-no-accordion]'
+        );
+
+        if (interactive) {
+            const summary = e.target.closest('summary');
+            if (summary) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        }
+    });
+
 })();

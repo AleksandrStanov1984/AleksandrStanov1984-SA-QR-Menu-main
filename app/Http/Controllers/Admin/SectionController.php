@@ -3,28 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+
 use App\Models\Restaurant;
 use App\Models\Section;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
+use App\Support\Permissions;
 
 class SectionController extends Controller
 {
     public function index(Restaurant $restaurant)
     {
-        // Верхний уровень (категории)
         $sections = Section::query()
             ->where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
             ->orderBy('sort_order')
             ->with(['children' => function ($q) use ($restaurant) {
                 $q->where('restaurant_id', $restaurant->id)
-                  ->orderBy('sort_order')
-                  ->with('children'); // достаточно для 2 уровней; ниже отрисуем рекурсивно
+                  ->orderBy('sort_order');
             }])
             ->get();
 
-        // Для селекта parent при создании подкатегории
         $allParents = Section::query()
             ->where('restaurant_id', $restaurant->id)
             ->orderBy('sort_order')
@@ -33,107 +34,65 @@ class SectionController extends Controller
         return view('admin.sections.index', compact('restaurant', 'sections', 'allParents'));
     }
 
-    public function store(Request $request, Restaurant $restaurant)
-    {
-        $data = $request->validate([
-            'parent_id'   => ['nullable', 'integer', 'exists:sections,id'],
-            'key'         => ['nullable', 'string', 'max:128'],
-            'type'        => ['nullable', 'string', 'max:50'],
-            'sort_order'  => ['nullable', 'integer', 'min:0'],
-            'title'       => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:5000'],
-        ]);
-
-        // parent должен принадлежать этому же ресторану
-        if (!empty($data['parent_id'])) {
-            $parent = Section::query()->where('id', $data['parent_id'])
-                ->where('restaurant_id', $restaurant->id)
-                ->firstOrFail();
-        }
-
-        // Если key не передали — делаем из title
-        $key = $data['key'] ?? Str::slug($data['title']);
-        $key = $key ?: Str::random(8);
-
-        $section = new Section();
-        $section->restaurant_id = $restaurant->id;
-        $section->parent_id = $data['parent_id'] ?? null;
-        $section->key = $key;
-        $section->type = $data['type'] ?? 'default';
-        $section->sort_order = $data['sort_order'] ?? 0;
-        $section->is_active = true; // у тебя может называться иначе
-        $section->save();
-
-        // Переводы/тексты — если у тебя уже есть таблица translations:
-        // Здесь я намеренно не лезу глубже, чтобы не сломать текущую модель.
-        // Сохраним title/description в полях Section, если они есть.
-        if (property_exists($section, 'title')) {
-            $section->title = $data['title'];
-        }
-        if (property_exists($section, 'description')) {
-            $section->description = $data['description'] ?? null;
-        }
-        $section->save();
-
-        return redirect()
-            ->route('admin.restaurants.sections.index', $restaurant)
-            ->with('success', 'Section created');
-    }
-
-    public function edit(Restaurant $restaurant, Section $section)
-    {
-        abort_unless($section->restaurant_id === $restaurant->id, 404);
-
-        $parents = Section::query()
-            ->where('restaurant_id', $restaurant->id)
-            ->where('id', '!=', $section->id)
-            ->orderBy('sort_order')
-            ->get();
-
-        return view('admin.sections.edit', compact('restaurant', 'section', 'parents'));
-    }
-
     public function update(Request $request, Restaurant $restaurant, Section $section)
     {
-        abort_unless($section->restaurant_id === $restaurant->id, 404);
+        // Permissions::abortUnless(auth()->user(), 'categories.edit');
 
+        $this->assertRestaurantAccess($request, $restaurant, 'sections_manage');
+
+        // category or subcategory edit permission (определяем по parent_id)
+        if (is_null($section->parent_id)) {
+            Permissions::abortUnless($request->user(), 'categories.edit');
+        } else {
+            Permissions::abortUnless($request->user(), 'subcategories.edit');
+        }
+
+        // legacy guard (на время перехода)
+        if (!$request->user()->is_super_admin && !$request->user()->hasPerm('sections_manage')) {
+            abort(403);
+        }
+
+        abort_unless((int)$section->restaurant_id === (int)$restaurant->id, 404);
+
+        // ВАЖНО: здесь мы оставляем твою текущую логику update по sections,
+        // но дальше (на этапе edit modal) мы будем обновлять translations так же, как в create.
+        // Сейчас — минимум чтобы не падало.
         $data = $request->validate([
-            'parent_id'   => ['nullable', 'integer', 'exists:sections,id'],
-            'key'         => ['nullable', 'string', 'max:128'],
-            'type'        => ['nullable', 'string', 'max:50'],
-            'sort_order'  => ['nullable', 'integer', 'min:0'],
-            'title'       => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:5000'],
+            'is_active'   => ['nullable', 'boolean'],
+            'title_font'  => ['nullable', 'string', 'max:50'],
+            'title_color' => ['nullable', 'regex:/^#([A-Fa-f0-9]{6})$/'],
+            'title'       => ['nullable', 'array'], // title[locale]
         ]);
 
-        if (!empty($data['parent_id'])) {
-            // parent должен быть в этом ресторане и не быть самим собой
-            abort_if((int)$data['parent_id'] === (int)$section->id, 422);
-            Section::query()
-                ->where('id', $data['parent_id'])
-                ->where('restaurant_id', $restaurant->id)
-                ->firstOrFail();
+        // Обновляем только поля section
+        if (array_key_exists('is_active', $data)) {
+            $section->is_active = (bool)$data['is_active'];
         }
-
-        $section->parent_id = $data['parent_id'] ?? null;
-        if (!empty($data['key'])) {
-            $section->key = $data['key'];
-        }
-        $section->type = $data['type'] ?? $section->type;
-        $section->sort_order = $data['sort_order'] ?? $section->sort_order;
-
-        if (property_exists($section, 'title')) {
-            $section->title = $data['title'];
-        }
-        if (property_exists($section, 'description')) {
-            $section->description = $data['description'] ?? null;
-        }
-
+        $section->title_font  = $data['title_font'] ?? $section->title_font;
+        $section->title_color = $data['title_color'] ?? $section->title_color;
         $section->save();
 
-        return redirect()
-            ->route('admin.restaurants.sections.index', $restaurant)
-            ->with('success', 'Section updated');
+        // Обновляем translations, если пришли
+        if (!empty($data['title']) && is_array($data['title'])) {
+            $locales = $restaurant->enabled_locales ?: ['de'];
+            $defaultLocale = $restaurant->default_locale ?: 'de';
+            if (!in_array($defaultLocale, $locales, true)) {
+                $defaultLocale = $locales[0] ?? 'de';
+            }
+
+            $fallback = trim((string)($data['title'][$defaultLocale] ?? ''));
+
+            foreach ($locales as $loc) {
+                $title = trim((string)($data['title'][$loc] ?? ''));
+                if ($title === '') $title = $fallback;
+
+                $tr = $section->translations()->firstOrNew(['locale' => $loc]);
+                $tr->title = $title;
+                $tr->save();
+            }
+        }
+
+        return back()->with('success', __('admin.common.saved') ?? 'Saved');
     }
 
     public function toggleActive(Request $request, Restaurant $restaurant, Section $section)
@@ -147,28 +106,79 @@ class SectionController extends Controller
         return back()->with('success', __('admin.sections.toggled'));
     }
 
-
-    public function destroy(Restaurant $restaurant, Section $section)
+    public function destroy(Request $request, Restaurant $restaurant, Section $section)
     {
         $this->assertRestaurantAccess($request, $restaurant, 'sections_manage');
         abort_unless((int)$section->restaurant_id === (int)$restaurant->id, 404);
 
-        // delete children and items (safe MVP)
-        $childIds = Section::query()
-            ->where('restaurant_id', $restaurant->id)
-            ->where('parent_id', $section->id)
-            ->pluck('id')
-            ->all();
+        $user = $request->user();
+        Permissions::abortUnless($user, 'sections.delete'); // ключ права на удаление секций
 
-        if (!empty($childIds)) {
-            \App\Models\Item::query()->whereIn('section_id', $childIds)->delete();
-            Section::query()->whereIn('id', $childIds)->delete();
-        }
+        DB::transaction(function () use ($section, $restaurant, $user) {
 
-        \App\Models\Item::query()->where('section_id', $section->id)->delete();
-        $section->delete();
+            // Если это категория (top-level) — удалить подкатегории и их items + items категории
+            if (is_null($section->parent_id)) {
 
-        return back()->with('success', __('admin.sections.deleted'));
+                // items категории
+                $items = \App\Models\Item::query()
+                    ->where('section_id', $section->id)
+                    ->get();
+
+                foreach ($items as $it) {
+                    $it->deleted_by_user_id = $user->id ?? null;
+                    $it->save();
+                    $it->delete();
+                }
+
+                // подкатегории (children)
+                $children = Section::query()
+                    ->where('restaurant_id', $restaurant->id)
+                    ->where('parent_id', $section->id)
+                    ->get();
+
+                foreach ($children as $child) {
+
+                    // items подкатегории
+                    $childItems = \App\Models\Item::query()
+                        ->where('section_id', $child->id)
+                        ->get();
+
+                    foreach ($childItems as $it) {
+                        $it->deleted_by_user_id = $user->id ?? null;
+                        $it->save();
+                        $it->delete();
+                    }
+
+                    // soft delete подкатегории
+                    $child->deleted_by_user_id = $user->id ?? null;
+                    $child->save();
+                    $child->delete();
+                }
+
+                // soft delete категории
+                $section->deleted_by_user_id = $user->id ?? null;
+                $section->save();
+                $section->delete();
+                return;
+            }
+
+            // Иначе это подкатегория — удалить её items и её саму
+            $items = \App\Models\Item::query()
+                ->where('section_id', $section->id)
+                ->get();
+
+            foreach ($items as $it) {
+                $it->deleted_by_user_id = $user->id ?? null;
+                $it->save();
+                $it->delete();
+            }
+
+            $section->deleted_by_user_id = $user->id ?? null;
+            $section->save();
+            $section->delete();
+        });
+
+        return back()->with('success', __('admin.sections.deleted') ?? 'Deleted');
     }
 
     private function assertRestaurantAccess(Request $request, Restaurant $restaurant, ?string $perm = null): void
@@ -183,7 +193,4 @@ class SectionController extends Controller
             abort(403);
         }
     }
-
-
-
 }

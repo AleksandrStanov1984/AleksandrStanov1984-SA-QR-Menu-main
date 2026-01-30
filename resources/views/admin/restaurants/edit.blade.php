@@ -28,6 +28,7 @@
     'restaurantUser' => $restaurantUser ?? null,
 ])
 
-@include('admin.restaurants.components.edit._languages', ['restaurant' => $restaurant])
+
+
 
 @endsection

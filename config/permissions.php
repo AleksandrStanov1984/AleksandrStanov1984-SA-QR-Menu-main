@@ -25,4 +25,10 @@ return [
     'items.flag.new'            => ['group' => 'menu', 'label' => 'Флаг NEW'],
     'items.flag.spicy'          => ['group' => 'menu', 'label' => 'Острота'],
     'items.flag.dish_of_day'    => ['group' => 'menu', 'label' => 'Блюдо дня'],
+
+    // branding
+    'branding.logo.upload'         => ['group' => 'branding', 'label' => 'Загрузка/смена логотипа'],
+    'branding.backgrounds.upload'  => ['group' => 'branding', 'label' => 'Загрузка фонов (светлый/тёмный)'],
+    'branding.theme_mode.edit'     => ['group' => 'branding', 'label' => 'Режим темы (auto/light/dark)'],
+
 ];

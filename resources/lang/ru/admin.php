@@ -18,6 +18,7 @@ return [
         'inactive' => 'Отключено',
         'disabled' => 'Отключено',
         'dash'     => '—',
+        'fix_these' => 'Ошибка загрузки',
     ],
 
     'fields' => [
@@ -291,7 +292,16 @@ return [
         'password_hint' => 'Оставьте пароль пустым, если не хотите менять',
     ],
 
-    'branding' => 'Брендирование',
+    'branding' => [
+      'title' => 'Брендинг',
+      'mode_title' => 'Режим темы',
+      'mode_auto' => 'Авто',
+      'mode_light' => 'Светлая',
+      'mode_dark' => 'Тёмная',
+      'bg_light' => 'Фон (светлая тема)',
+      'bg_dark' => 'Фон (тёмная тема)',
+      'save_bg' => 'Сохранить фон',
+    ],
 
     'validation' => [
         'first_letter_uppercase' => 'Первая буква должна быть заглавной.',

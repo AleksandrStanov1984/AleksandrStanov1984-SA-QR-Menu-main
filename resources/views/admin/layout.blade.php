@@ -12,9 +12,7 @@
 
     {{-- LEFT SIDEBAR --}}
     @auth
-        <aside class="admin-sidebar">
-            @include('admin.restaurants.components.sidebar.index')
-        </aside>
+        @include('admin.restaurants.components.sidebar.index')
     @endauth
 
     {{-- MAIN CONTENT --}}
@@ -94,6 +92,48 @@ document.addEventListener('click', function(e){
   if(!input) return;
   input.type = (input.type === 'password') ? 'text' : 'password';
 });
+
+// ===== Mobile sidebar drawer =====
+(function () {
+  const sidebar = document.getElementById('adminSidebar');
+  const backdrop = document.querySelector('[data-sidebar-backdrop]');
+  const openBtn = document.querySelector('[data-sidebar-open]');
+  const closeBtn = document.querySelector('[data-sidebar-close]');
+
+  if (!sidebar || !openBtn) return;
+
+  function openSidebar() {
+    sidebar.classList.add('is-open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    if (backdrop) backdrop.classList.add('is-open');
+    document.body.classList.add('sb-lock');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('is-open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    if (backdrop) backdrop.classList.remove('is-open');
+    document.body.classList.remove('sb-lock');
+  }
+
+  openBtn.addEventListener('click', openSidebar);
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+  if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSidebar();
+  });
+
+  // optional: на мобилке закрывать меню при клике на ссылку
+  sidebar.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      closeSidebar();
+    }
+  });
+})();
+
 </script>
 
 

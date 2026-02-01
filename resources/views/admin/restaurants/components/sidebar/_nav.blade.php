@@ -6,19 +6,22 @@
 <nav class="sb-nav">
     <ul>
         <li>
-            <a href="#">
+            <a href="{{ route('admin.about') }}"
+            class="{{ request()->routeIs('admin.about') ? 'is-active' : '' }}">
                 🧾 {{ __('admin.sidebar.about') }}
             </a>
         </li>
 
         <li>
-            <a href="{{ route('admin.profile') }}">
+            <a href="{{ route('admin.profile') }}"
+            class="{{ request()->routeIs('admin.profile') ? 'is-active' : '' }}">
                 👤 {{ __('admin.sidebar.profile') }}
             </a>
         </li>
 
         <li>
-            <a href="{{ route('admin.menu.profile') }}">
+            <a href="{{ route('admin.menu.profile') }}"
+            class="{{ request()->routeIs('admin.menu.profile') ? 'is-active' : '' }}">
                 🍽 {{ __('admin.sidebar.my_menu') }}
             </a>
         </li>
@@ -39,7 +42,8 @@
 
             <ul class="sb-sub">
                 <li>
-                    <a href="{{ route('admin.security.password') }}">
+                    <a href="{{ route('admin.security.password') }}"
+                    class="{{ request()->routeIs('admin.sidebar.password') ? 'is-active' : '' }}">
                         🔑 {{ __('admin.sidebar.password') }}
                     </a>
 

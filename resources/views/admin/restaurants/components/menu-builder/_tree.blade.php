@@ -134,7 +134,7 @@
             $subItemsLocked = $catLocked || $subInactive;
           @endphp
 
-          <div class="card {{ ($subInactive || $catLocked) ? 'mb-inactive' : '' }} {{ $subDeleted ? 'mb-deleted' : '' }}"
+          <div class="card-no-border {{ ($subInactive || $catLocked) ? 'mb-inactive' : '' }} {{ $subDeleted ? 'mb-deleted' : '' }}"
                data-deleted="{{ $subDeleted ? '1' : '0' }}"
                style="padding:12px; margin-top:10px;">
             <div class="mb-row">

@@ -13,14 +13,12 @@ use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProfileCredentialsController;
 use App\Http\Controllers\Admin\SubcategoryController;
-
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\RestaurantBrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\MenuProfileController;
 use App\Http\Controllers\Admin\MenuBuilderController;
-
-// ✅ NEW
 use App\Http\Controllers\Admin\SocialLinkController;
 
 
@@ -164,6 +162,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::patch('restaurants/{restaurant}/social-links/{link}/toggle-active', [SocialLinkController::class, 'toggleActive'])
             ->name('restaurants.social_links.toggle_active');
+
+        Route::get('/about', [AboutController::class, 'index'])
+            ->name('about');
 
     });
 

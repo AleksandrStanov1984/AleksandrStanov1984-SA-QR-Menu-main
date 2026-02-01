@@ -14,8 +14,20 @@
 
 <div class="topbar">
     <div class="topbar__left">
-        <div class="brand"><a href="{{ $brandUrl }}">{{ __('admin.brand') }}</a></div>
-        <div class="mut">@yield('subtitle')</div>
+        {{-- burger (виден только на мобилке) --}}
+        @auth
+            <button type="button"
+                    class="sb-burger"
+                    data-sidebar-open
+                    aria-label="Open menu">
+                ☰
+            </button>
+        @endauth
+
+        <div>
+            <div class="brand"><a href="{{ $brandUrl }}">{{ __('admin.brand') }}</a></div>
+            <div class="mut">@yield('subtitle')</div>
+        </div>
     </div>
 
     <div class="topbar__right">

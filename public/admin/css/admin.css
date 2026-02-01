@@ -62,10 +62,32 @@ a { color: inherit; }
     position: sticky;
     top: var(--sticky-top);
 
-    /* 🔥 ВАЖНОЕ */
     height: calc(100vh - var(--sticky-top) - 14px);
     overflow: hidden;
 }
+
+
+.sb-burger{
+    display:none;
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--card);
+    cursor:pointer;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+}
+
+.sb-backdrop{
+    display:none;
+}
+
+.sb-mobile-close{
+    display:none;
+}
+
 
 
 /* topbar */
@@ -125,6 +147,12 @@ label{
 .card{
     background:var(--card);
     border:1px solid var(--line);
+    border-radius:14px;
+    padding:3px;
+}
+
+.card-no-border{
+    background:var(--card);
     border-radius:14px;
     padding:3px;
 }
@@ -198,16 +226,69 @@ label{
     .col4{ grid-column:span 4; }
     .topbar{ flex-direction:row; justify-content:space-between; }
 }
+
 @media (max-width:900px){
-    .layout-with-sidebar{ flex-direction:column; }
+    /* layout: контент остаётся, sidebar становится drawer */
+    .layout-with-sidebar{ display:block; }
+
+    .sb-burger{ display:inline-flex; }
+
+    /* drawer */
     .admin-sidebar{
-        width:100%;
-        position:relative;
-        top:auto;
-        height:auto;
-        overflow:visible;
+        position:fixed;
+        top:0;
+        left:-320px;
+        width:312px;
+        height:100vh;
+        z-index:1001;
+
+        border-radius:0;
+        overflow:auto;
+
+        transition:left .25s ease;
+    }
+
+    .admin-sidebar.is-open{
+        left:0;
+    }
+
+    .sb-mobile-close{
+        display:inline-flex;
+        position:absolute;
+        top:10px;
+        right:10px;
+        width:34px;
+        height:34px;
+        align-items:center;
+        justify-content:center;
+        border-radius:10px;
+        border:1px solid var(--line);
+        background:var(--card);
+        cursor:pointer;
+        z-index:2;
+    }
+
+    .sb-backdrop{
+        display:block;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        z-index:1000;
+
+        opacity:0;
+        pointer-events:none;
+        transition:opacity .2s ease;
+    }
+    .sb-backdrop.is-open{
+        opacity:1;
+        pointer-events:auto;
+    }
+
+    body.sb-lock{
+        overflow:hidden;
     }
 }
+
 
 /* ===== Restaurants table fixes ===== */
 

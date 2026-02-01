@@ -44,8 +44,9 @@ class LanguageImportController extends Controller
 
         if (!$user?->is_super_admin) {
             abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-            // ✅ permission gate (user must have this right)
-            abort_unless($user->hasPerm('import_manage'), 403);
+
+            \App\Support\Permissions::abortUnless($user, 'import_manage');
+
         }
 
         $data = $request->validate([

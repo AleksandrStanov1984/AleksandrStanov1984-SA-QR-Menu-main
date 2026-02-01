@@ -1,3 +1,9 @@
+@php
+    use App\Support\Permissions;
+    $user = auth()->user();
+@endphp
+
+@if($user && Permissions::can($user, 'restaurants.edit'))
 <div class="card">
     <h2>{{ __('admin.restaurants.edit.h2') }}</h2>
 
@@ -87,4 +93,4 @@
         </div>
     </form>
 </div>
-
+@endif

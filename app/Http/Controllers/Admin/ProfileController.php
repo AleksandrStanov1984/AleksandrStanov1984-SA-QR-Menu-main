@@ -7,6 +7,7 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use App\Support\Permissions;
 
 class ProfileController extends Controller
 {
@@ -17,37 +18,24 @@ class ProfileController extends Controller
         /** @var Restaurant|null $restaurant */
         $restaurant = $request->attributes->get('admin_restaurant');
 
-        // Permissions (human-readable) for profile screen (read-only)
-        $permMap = [
-            'languages_manage' => 'admin.permissions.languages',
-            'sections_manage'  => 'admin.permissions.sections',
-            'items_manage'     => 'admin.permissions.items',
-            'banners_manage'   => 'admin.permissions.banners',
-            'socials_manage'   => 'admin.permissions.socials',
-            'theme_manage'     => 'admin.permissions.theme',
-            'import_manage'    => 'admin.permissions.import',
-        ];
+        $grouped = \App\Support\Permissions::groupedRegistry();
 
-        $enabledKeys = [];
-        if ($user?->is_super_admin) {
-            $enabledKeys = array_keys($permMap);
-        } else {
-            $perms = $user?->permissions ?? [];
-            foreach ($permMap as $key => $_labelKey) {
-                if (!empty($perms[$key])) {
-                    $enabledKeys[] = $key;
-                }
-            }
+        ksort($grouped);
+        foreach ($grouped as $g => $items) {
+            sort($items);
+            $grouped[$g] = $items;
         }
 
-        $permissions = array_map(function (string $k) use ($permMap) {
-            return __($permMap[$k]);
-        }, $enabledKeys);
+        $flat = [];
+        foreach ($grouped as $items) {
+            foreach ($items as $label) $flat[] = $label;
+        }
 
         return view('admin.profile', [
             'user' => $user,
             'restaurant' => $restaurant,
-            'permissions' => $permissions,
+            'permissions_grouped' => $grouped,
+            'permissions' => $flat,
         ]);
     }
 
@@ -70,6 +58,8 @@ class ProfileController extends Controller
         /** @var Restaurant|null $restaurant */
         $restaurant = $request->attributes->get('admin_restaurant');
         abort_unless($restaurant, 404);
+
+        Permissions::abortUnless($request->user(), 'restaurant.profile.edit');
 
         $data = $request->validate([
             'restaurant_name' => ['required', 'string', 'max:255'],

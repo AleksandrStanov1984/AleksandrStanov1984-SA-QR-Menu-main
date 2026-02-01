@@ -41,6 +41,8 @@
 
 @include('admin.layout.footer')
 
+@include('admin.layout._modals')
+
 <script>
 window.openModal = function(id){
     const m = document.getElementById(id);

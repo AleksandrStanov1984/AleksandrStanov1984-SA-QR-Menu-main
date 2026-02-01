@@ -19,6 +19,9 @@ return [
         'disabled' => 'Отключено',
         'dash'     => '—',
         'fix_these' => 'Ошибка загрузки',
+        'remove' => 'Удалить',
+        'disable' => 'Отключить',
+        'enable' => 'Включить',
     ],
 
     'fields' => [
@@ -160,6 +163,17 @@ return [
         'import' => 'Импорт',
         'save' => 'Сохранить',
         'branding' => 'Брендинг',
+        'enabled' => 'Включено',
+        'groups' => [
+                'menu' => 'Меню',
+                'branding' => 'Брендинг',
+                'import' => 'Импорт',
+                'restaurant' => 'Ресторан',
+                'admin' => 'Админка',
+                'content' => 'Контент',
+                'other' => 'Другое',
+                'socials' => 'Соц. сети',
+            ],
 
     ],
 
@@ -314,7 +328,77 @@ return [
       'delete_category' => 'Вы уверены, что хотите удалить категорию?',
       'delete_subcategory' => 'Вы уверены, что хотите удалить подкатегорию?',
       'delete_item' => 'Вы уверены, что хотите удалить элемент?',
-    ]
+    ],
+
+    'security' => [
+        'validation' => [
+            'current_email' => [
+                'required' => 'Укажите текущий e-mail.',
+                'email' => 'Неверный формат e-mail.',
+            ],
+            'new_email' => [
+                'required' => 'Укажите новый e-mail.',
+                'email' => 'Неверный формат нового e-mail.',
+                'unique' => 'Этот e-mail уже используется.',
+            ],
+            'current_password' => [
+                'required' => 'Введите текущий пароль.',
+            ],
+            'new_password' => [
+                'required' => 'Введите новый пароль.',
+                'min' => 'Пароль должен быть минимум 8 символов.',
+                'regex' => 'Пароль должен содержать: 1 заглавную, 1 маленькую, 1 цифру и 1 спецсимвол.',
+            ],
+            'new_password_confirm' => [
+                'required' => 'Повторите новый пароль.',
+                'same' => 'Подтверждение пароля не совпадает.',
+            ],
+        ],
+
+        'errors' => [
+            'current_email_wrong' => 'Текущий e-mail указан неверно.',
+            'current_password_wrong' => 'Текущий пароль указан неверно.',
+        ],
+
+        'status' => [
+            'email_changed' => 'E-mail изменён.',
+            'password_changed' => 'Пароль изменён.',
+        ],
+    ],
+
+    'socials' => [
+      'title' => 'Ссылки в футере',
+      'hint' => 'Максимум 5 ссылок. Первые две доступны всем, дополнительные — по правам (3/4/5).',
+      'add' => 'Добавить ссылку',
+      'edit' => 'Изменить',
+      'delete' => 'Удалить',
+      'save' => 'Сохранить',
+      'cancel' => 'Отмена',
+      'url_example' => 'Пример: https://instagram.com/yourpage',
+
+      'fields' => [
+        'title' => 'Название',
+        'url' => 'Ссылка',
+        'icon' => 'SVG иконка',
+      ],
+
+      'placeholders' => [
+        'title' => 'Например: Instagram',
+        'url' => 'https://instagram.com/yourpage',
+      ],
+
+      'active' => 'Активно',
+      'inactive' => 'Неактивно',
+      'deleted' => 'Удалено',
+
+      'confirm_delete' => 'Удалить ссылку?',
+      'saved' => 'Ссылка сохранена.',
+      'updated_ok' => 'Ссылка обновлена.',
+      'deleted_ok' => 'Ссылка удалена.',
+    ],
+
+
+
 
 
 

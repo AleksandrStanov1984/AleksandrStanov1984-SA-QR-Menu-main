@@ -26,26 +26,30 @@ class ProfileCredentialsController extends Controller
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
         ], [
-            'current_email.required' => 'Укажите текущий e-mail.',
-            'current_email.email' => 'Неверный формат e-mail.',
-            'new_email.required' => 'Укажите новый e-mail.',
-            'new_email.email' => 'Неверный формат нового e-mail.',
-            'new_email.unique' => 'Этот e-mail уже используется.',
-            'current_password.required' => 'Введите текущий пароль.',
+            'current_email.required' => __('admin.security.validation.current_email.required'),
+            'current_email.email' => __('admin.security.validation.current_email.email'),
+            'new_email.required' => __('admin.security.validation.new_email.required'),
+            'new_email.email' => __('admin.security.validation.new_email.email'),
+            'new_email.unique' => __('admin.security.validation.new_email.unique'),
+            'current_password.required' => __('admin.security.validation.current_password.required'),
         ]);
 
         if (mb_strtolower(trim($data['current_email'])) !== mb_strtolower((string) $user->email)) {
-            return back()->withErrors(['current_email' => 'Текущий e-mail указан неверно.']);
+            return back()->withErrors([
+                'current_email' => __('admin.security.errors.current_email_wrong'),
+            ]);
         }
 
         if (!Hash::check($data['current_password'], (string) $user->password)) {
-            return back()->withErrors(['current_password' => 'Текущий пароль указан неверно.']);
+            return back()->withErrors([
+                'current_password' => __('admin.security.errors.current_password_wrong'),
+            ]);
         }
 
         $user->email = mb_strtolower(trim($data['new_email']));
         $user->save();
 
-        return back()->with('status', 'E-mail изменён.');
+        return back()->with('status', __('admin.security.status.email_changed'));
     }
 
     public function changePassword(Request $request): RedirectResponse
@@ -61,37 +65,41 @@ class ProfileCredentialsController extends Controller
                 'string',
                 'min:8',
                 'max:255',
-                'regex:/[A-Z]/',          // минимум 1 заглавная
-                'regex:/[a-z]/',          // минимум 1 маленькая
-                'regex:/\d/',             // минимум 1 цифра
-                'regex:/[^A-Za-z0-9]/',   // минимум 1 спецсимвол
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/\d/',
+                'regex:/[^A-Za-z0-9]/',
             ],
 
             'new_password_confirm' => ['required', 'same:new_password'],
         ], [
-            'current_email.required' => 'Укажите текущий e-mail.',
-            'current_email.email' => 'Неверный формат e-mail.',
-            'current_password.required' => 'Введите текущий пароль.',
+            'current_email.required' => __('admin.security.validation.current_email.required'),
+            'current_email.email' => __('admin.security.validation.current_email.email'),
+            'current_password.required' => __('admin.security.validation.current_password.required'),
 
-            'new_password.required' => 'Введите новый пароль.',
-            'new_password.min' => 'Пароль должен быть минимум 8 символов.',
-            'new_password.regex' => 'Пароль должен содержать: 1 заглавную, 1 маленькую, 1 цифру и 1 спецсимвол.',
-            'new_password_confirm.required' => 'Повторите новый пароль.',
-            'new_password_confirm.same' => 'Подтверждение пароля не совпадает.',
+            'new_password.required' => __('admin.security.validation.new_password.required'),
+            'new_password.min' => __('admin.security.validation.new_password.min'),
+            'new_password.regex' => __('admin.security.validation.new_password.regex'),
+            'new_password_confirm.required' => __('admin.security.validation.new_password_confirm.required'),
+            'new_password_confirm.same' => __('admin.security.validation.new_password_confirm.same'),
         ]);
 
         if (mb_strtolower(trim($data['current_email'])) !== mb_strtolower((string) $user->email)) {
-            return back()->withErrors(['current_email' => 'Текущий e-mail указан неверно.']);
+            return back()->withErrors([
+                'current_email' => __('admin.security.errors.current_email_wrong'),
+            ]);
         }
 
         if (!Hash::check($data['current_password'], (string) $user->password)) {
-            return back()->withErrors(['current_password' => 'Текущий пароль указан неверно.']);
+            return back()->withErrors([
+                'current_password' => __('admin.security.errors.current_password_wrong'),
+            ]);
         }
 
         $user->password = Hash::make($data['new_password']);
         $user->save();
 
-        return back()->with('status', 'Пароль изменён.');
+        return back()->with('status', __('admin.security.status.password_changed'));
     }
 
     public function showSecurity(Request $request): View
@@ -99,5 +107,4 @@ class ProfileCredentialsController extends Controller
         $user = $request->user();
         return view('admin.security.index', compact('user'));
     }
-
 }

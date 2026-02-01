@@ -266,7 +266,7 @@
             {{-- Острота --}}
             @if($canSpicy)
               <div style="margin-top:12px;">
-                <div style="margin-bottom:6px;">{{ __('admin.menu_builder.spicy') }} (0–5)</div>
+                <div style="margin-bottom:6px;">{{ __('admin.menu_builder.spicy') }}</div>
                 <select data-item-meta="spicy"
                         data-item-id="{{ $it->id }}"
                         data-disable-when-inactive

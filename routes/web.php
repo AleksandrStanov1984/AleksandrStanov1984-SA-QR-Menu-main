@@ -20,6 +20,8 @@ use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\MenuProfileController;
 use App\Http\Controllers\Admin\MenuBuilderController;
 
+// ✅ NEW
+use App\Http\Controllers\Admin\SocialLinkController;
 
 
 Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
@@ -48,8 +50,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         $loc = strtolower(trim((string) $request->input('locale')));
 
-        if (!in_array($loc, ['de', 'en', 'ru'], true))
-         $loc = 'de';
+        if (!in_array($loc, ['de', 'en', 'ru'], true)) {
+            $loc = 'de';
+        }
 
         session(['admin_locale' => $loc]);
 
@@ -149,15 +152,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('restaurants/{restaurant}/items/{item}/meta', [ItemController::class, 'updateMeta'])
             ->name('restaurants.items.meta');
 
+        // ✅ NEW: Social Links (footer)
+        Route::post('restaurants/{restaurant}/social-links', [SocialLinkController::class, 'store'])
+            ->name('restaurants.social_links.store');
 
+        Route::put('restaurants/{restaurant}/social-links/{link}', [SocialLinkController::class, 'update'])
+            ->name('restaurants.social_links.update');
 
+        Route::delete('restaurants/{restaurant}/social-links/{link}', [SocialLinkController::class, 'destroy'])
+            ->name('restaurants.social_links.destroy');
 
-
-
-
-
+        Route::patch('restaurants/{restaurant}/social-links/{link}/toggle-active', [SocialLinkController::class, 'toggleActive'])
+            ->name('restaurants.social_links.toggle_active');
 
     });
-
 
 });

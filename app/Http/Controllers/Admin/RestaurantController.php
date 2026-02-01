@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+
 use App\Models\Restaurant;
+use App\Models\User;
+use App\Models\Section;
+use App\Models\RestaurantSocialLink;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
-use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Section;
 
 class RestaurantController extends Controller
 {
@@ -141,6 +144,19 @@ class RestaurantController extends Controller
 
         $isSuper = (bool)($user->is_super_admin ?? false);
 
+        $socialLinksQuery = RestaurantSocialLink::query()
+            ->where('restaurant_id', $restaurant->id)
+            ->orderBy('sort_order');
+
+        if ($isSuper) {
+            $socialLinksQuery->withTrashed();
+        } else {
+            // обычному пользователю удалённые не видны
+            $socialLinksQuery->whereNull('deleted_at');
+        }
+
+        $socialLinks = $socialLinksQuery->get();
+
         $restaurantUser = \App\Models\User::query()
             ->where('restaurant_id', $restaurant->id)
             ->where('is_super_admin', false)
@@ -234,6 +250,8 @@ class RestaurantController extends Controller
             'menuTree' => $menuTree,
             'locales'  => $locales,
             'adminLocale' => $adminLocale,
+
+            'socialLinks' => $socialLinks,
         ]);
     }
 
@@ -241,6 +259,10 @@ class RestaurantController extends Controller
     public function update(Request $request, Restaurant $restaurant): RedirectResponse
     {
         $user = $request->user();
+
+        \App\Support\Permissions::abortUnless($request->user(), 'restaurants.edit');
+
+
         if (!$user?->is_super_admin) {
             abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
         }
@@ -291,37 +313,39 @@ class RestaurantController extends Controller
         return back()->with('status', $restaurant->is_active ? 'Restaurant activated.' : 'Restaurant deactivated.');
     }
 
-    public function updateUserPermissions(Request $request, Restaurant $restaurant): RedirectResponse
+    public function updateUserPermissions(Request $request, Restaurant $restaurant)
     {
         $user = $request->user();
-        abort_unless($user?->is_super_admin, 403);
 
-        $restaurantUser = \App\Models\User::query()
-            ->where('restaurant_id', $restaurant->id)
-            ->where('is_super_admin', false)
-            ->orderBy('id')
-            ->firstOrFail();
+        // только super admin
+        abort_unless($user && $user->is_super_admin, 403);
 
-        $keys = [
-            'languages_manage',
-            'sections_manage',
-            'items_manage',
-            'banners_manage',
-            'socials_manage',
-            'theme_manage',
-            'branding_manage',
-            'import_manage'
-        ];
+        // найди пользователя ресторана как у тебя было
+        $restaurantUser = \App\Models\User::where('restaurant_id', $restaurant->id)->first();
+        abort_unless($restaurantUser, 404);
 
-        $perms = $restaurantUser->permissions ?? [];
+        // ВСЕ разрешенные ключи из конфига
+        $allPerms = config('permissions', []);
+        $allowedKeys = array_keys($allPerms);
 
-        foreach ($keys as $k) {
-            $perms[$k] = (bool) $request->input("perm.$k", false);
-        }
+        // вход: perm[...]
+        $incoming = $request->input('perm', []);
+        if (!is_array($incoming)) $incoming = [];
 
-        $restaurantUser->permissions = $perms;
+        $restaurantUser->permissions = \App\Support\Permissions::normalize($incoming);
         $restaurantUser->save();
 
-        return back()->with('status', 'User permissions saved.');
+
+        // Нормализуем: ключи только из конфига, значения строго boolean
+        $normalized = [];
+        foreach ($allowedKeys as $k) {
+            $normalized[$k] = !empty($incoming[$k]) && (string)$incoming[$k] !== '0';
+        }
+
+        $restaurantUser->permissions = $normalized;
+        $restaurantUser->save();
+
+        return back()->with('status', __('admin.permissions.saved') ?? 'Saved');
     }
+
 }

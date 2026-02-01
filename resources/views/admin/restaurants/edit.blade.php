@@ -23,6 +23,12 @@
     'locales' => $locales,
 ])
 
+@include('admin.restaurants.components.social-links.index', [
+  'restaurant' => $restaurant,
+  'socialLinks' => $socialLinks,
+])
+
+
 @include('admin.restaurants.components.edit._permissions', [
     'restaurant' => $restaurant,
     'restaurantUser' => $restaurantUser ?? null,

@@ -1,17 +1,27 @@
-<footer class="std-footer">
-    <div class="std-footer__icons">
-        <a class="std-footer__icon" href="#" aria-label="Facebook">
-            <img src="{{ $img('icons/facebook.svg') }}" alt="">
-        </a>
+<footer class="united-footer">
 
-        <a class="std-footer__icon" href="#" aria-label="Instagram">
-            <img src="{{ $img('icons/instagram.svg') }}" alt="">
-        </a>
+    @if(!empty($vm->footer['links'] ?? []))
+        <div class="united-footer__socials">
+            @foreach($vm->footer['links'] as $link)
+                <a href="{{ $link['url'] ?? '#' }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="{{ $link['title'] ?? '' }}">
+                    @if(!empty($link['icon']))
+                        <img src="{{ $link['icon'] }}"
+                             alt="{{ $link['title'] ?? '' }}">
+                    @else
+                        {{ $link['title'] ?? '' }}
+                    @endif
+                </a>
+            @endforeach
+        </div>
+    @endif
 
-        <a class="std-footer__icon" href="#" aria-label="WhatsApp">
-            <img src="{{ $img('icons/whatsapp.svg') }}" alt="">
-        </a>
+    <div class="united-footer__credits">
+        © {{ date('Y') }} {{ $vm->merchant->name ?? '' }}
+        <br>
+        Created with SA Digital Menus
     </div>
 
-    <div class="std-footer__copy">© Создано с помощью SA Digital Menus</div>
 </footer>

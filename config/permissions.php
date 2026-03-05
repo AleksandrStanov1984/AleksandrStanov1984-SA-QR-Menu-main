@@ -55,5 +55,9 @@ return [
     'socials.add.4'             => ['group' => 'socials', 'label' => 'Соц. ссылки: можно 4 ссылки'],
     'socials.add.5'             => ['group' => 'socials', 'label' => 'Соц. ссылки: можно 5 ссылок'],
 
+    'import.menu_json' => ['group' => 'import', 'label' => 'Import menu (JSON)'],
+    'import.images_zip' => ['group' => 'import', 'label' => 'Import images/assets (ZIP)'],
+
+
 
 ];

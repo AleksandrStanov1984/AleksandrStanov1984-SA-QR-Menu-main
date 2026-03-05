@@ -51,6 +51,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
+    }
+
 public function hasPerm(string $key): bool
 {
     if ($this->is_super_admin) return true; // супер-админ может всё

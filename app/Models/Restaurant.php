@@ -15,7 +15,7 @@ class Restaurant extends Model
         'logo_path',
         'background_path',
         'custom_css',
-        'meta',                 // ✅ NEW
+        'meta',
         'is_active',
         'trial_ends_at',
         'plan_key',
@@ -32,7 +32,7 @@ class Restaurant extends Model
     protected $casts = [
         'enabled_locales' => 'array',
         'theme_tokens' => 'array',
-        'meta' => 'array',      // ✅ NEW
+        'meta' => 'array',
         'is_active' => 'boolean',
         'trial_ends_at' => 'date',
         'monthly_price' => 'decimal:2',
@@ -46,5 +46,22 @@ class Restaurant extends Model
     public function sections()
     {
         return $this->hasMany(Section::class);
+    }
+
+    public function socialLinks()
+    {
+        return $this->hasMany(RestaurantSocialLink::class)
+            ->where('is_active', true)
+            ->orderBy('sort_order');
+    }
+
+    public function hours()
+    {
+        return $this->hasMany(RestaurantHour::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
     }
 }

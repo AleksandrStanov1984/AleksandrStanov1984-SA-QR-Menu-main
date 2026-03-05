@@ -1,0 +1,19 @@
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100%;
+    background: white;
+    transition: left .25s ease;
+    z-index: 200;
+}
+
+.mobile-drawer.drawer-open {
+    left: 0;
+}
+
+.drawer-close {
+    padding: 10px;
+    cursor: pointer;
+}

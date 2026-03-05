@@ -1,0 +1,24 @@
+.site-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    border-bottom: 1px solid #eee;
+    z-index: 100;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+}
+
+.header-logo {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.drawer-btn {
+    font-size: 22px;
+    cursor: pointer;
+}

@@ -62,6 +62,13 @@ class ItemController extends Controller
                 'style'        => $data['style'] ?? null,
             ];
 
+            if (!empty($data['unit_value']) && !empty($data['unit_type'])) {
+                $meta['unit'] = [
+                    'value' => (float)$data['unit_value'],
+                    'type'  => $data['unit_type'],
+                ];
+            }
+
             // Если делаем dish_of_day=true — снимаем у остальных в этой секции (железно)
             if (!empty($meta['dish_of_day'])) {
                 Item::where('section_id', $section->id)->update([
@@ -117,6 +124,13 @@ class ItemController extends Controller
             $meta['show_image']  = (bool)($data['show_image'] ?? ($meta['show_image'] ?? true));
             $meta['spicy']       = (int)($data['spicy'] ?? ($meta['spicy'] ?? 0));
             $meta['style']       = $data['style'] ?? ($meta['style'] ?? null);
+
+            if (!empty($data['unit_value']) && !empty($data['unit_type'])) {
+                $meta['unit'] = [
+                    'value' => (float)$data['unit_value'],
+                    'type'  => $data['unit_type'],
+                ];
+            }
 
             if (!empty($meta['dish_of_day'])) {
                 // снять у остальных

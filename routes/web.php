@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\MenuProfileController;
 use App\Http\Controllers\Admin\MenuBuilderController;
 use App\Http\Controllers\Admin\SocialLinkController;
+use App\Http\Controllers\Admin\MenuImportController;
 
 
 Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
@@ -150,7 +151,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('restaurants/{restaurant}/items/{item}/meta', [ItemController::class, 'updateMeta'])
             ->name('restaurants.items.meta');
 
-        // ✅ NEW: Social Links (footer)
+        // Social Links (footer)
         Route::post('restaurants/{restaurant}/social-links', [SocialLinkController::class, 'store'])
             ->name('restaurants.social_links.store');
 
@@ -165,6 +166,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/about', [AboutController::class, 'index'])
             ->name('about');
+
+        // MENU IMPORT / EXPORT
+        Route::post('restaurants/{restaurant}/menu/import-json', [MenuImportController::class, 'importJson'])
+            ->name('restaurants.menu.import_json');
+
+        Route::post('restaurants/{restaurant}/menu/import-zip', [MenuImportController::class, 'importZip'])
+            ->name('restaurants.menu.import_zip');
+
+        Route::get('restaurants/{restaurant}/menu/import-log/{token}', [MenuImportController::class, 'downloadLog'])
+            ->name('restaurants.menu.import_log');
+
+        Route::get('restaurants/{restaurant}/menu/export.json', [MenuImportController::class, 'downloadMenuJson'])
+            ->name('restaurants.menu.export_json');
+
+
 
     });
 

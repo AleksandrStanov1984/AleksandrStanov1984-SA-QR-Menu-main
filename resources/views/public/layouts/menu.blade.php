@@ -1,47 +1,43 @@
-<!doctype html>
-<html lang="{{ $locale }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $restaurant->name }}</title>
+@extends('public.layouts.base')
 
-    {{-- BASE (reset + globals) --}}
-    @vite(['resources/css/public/base.css'])
+@section('styles')
+    @yield('template-styles')
+@endsection
 
-    {{-- UI KIT (shared components: tokens/theme/layout/header/footer/drawer/modal) --}}
-    @vite([
-        'resources/css/public/ui/tokens.css',
-        'resources/css/public/ui/theme.css',
-        'resources/css/public/ui/layout.css',
-        'resources/css/public/ui/header.css',
-        'resources/css/public/ui/footer.css',
-        'resources/css/public/ui/drawer.css',
-        'resources/css/public/ui/modal.css',
-    ])
+@section('scripts')
+    @yield('template-scripts')
+@endsection
 
-    {{-- TEMPLATE (classic/bar/fastfood/...) --}}
-    @vite(["resources/css/templates/{$template}.css"])
+@section('body-attrs')
+    @yield('template-body-attrs')
+@endsection
 
-    {{-- RESTAURANT OVERRIDES (storage) --}}
-    @if($theme_css_url)
-        <link rel="stylesheet" href="{{ $theme_css_url }}">
-    @endif
-    @if($custom_css_url)
-        <link rel="stylesheet" href="{{ $custom_css_url }}">
-    @endif
-</head>
-<body data-template="{{ $template }}" class="sa-page">
-  <div class="sa-page__main">
-    @yield('content')
-  </div>
+@section('content')
+    <div class="min-h-dvh bg-background text-foreground flex flex-col">
 
-  {{-- BASE + TEMPLATE JS --}}
-  @vite(['resources/js/public/base.js'])
-  @vite(["resources/js/templates/{$template}.js"])
+        {{-- HEADER --}}
+        @yield('menu-header')
 
-  {{-- RESTAURANT OVERRIDE JS --}}
-  @if($custom_js_url)
-    <script src="{{ $custom_js_url }}" defer></script>
-  @endif
-</body>
-</html>
+        {{-- MAIN --}}
+        <div class="flex-1 mx-auto max-w-7xl w-full px-4">
+            <div class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6">
+
+                {{-- важно: backdrop должен быть ВНЕ sidebar, но в DOM --}}
+                <div id="menu-backdrop" class="menu-backdrop"></div>
+
+                @yield('menu-sidebar')
+
+                <main id="menu-content" class="pb-20">
+                    @yield('menu-content')
+                </main>
+
+            </div>
+        </div>
+
+        {{-- FOOTER --}}
+        @yield('menu-footer')
+
+    </div>
+
+    <div id="portal"></div>
+@endsection

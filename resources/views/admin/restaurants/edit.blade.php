@@ -14,6 +14,8 @@
 @section('content')
 
 @include('admin.restaurants.components.logo', ['restaurant' => $restaurant])
+<br>
+@include('admin.restaurants.components.import.index', ['restaurant' => $restaurant])
 
 @include('admin.restaurants.components.branding-backgrounds.index', ['restaurant' => $restaurant])
 

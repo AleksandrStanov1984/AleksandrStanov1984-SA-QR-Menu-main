@@ -1,0 +1,25 @@
+<div id="itemModal" class="modal" aria-hidden="true">
+
+    <div class="modal-box" role="dialog" aria-modal="true">
+
+        <div class="modal-head"></div>
+
+        <div class="modal-body">
+
+            <img class="modal-image" src="" alt="" style="display:none">
+
+            <div class="modal-badges" style="display:none"></div>
+
+            <h2 class="modal-title"></h2>
+
+            <p class="modal-description" style="display:none"></p>
+
+            <div class="modal-spicy" style="display:none"></div>
+
+            <div class="modal-price" style="display:none"></div>
+
+        </div>
+
+    </div>
+
+</div>

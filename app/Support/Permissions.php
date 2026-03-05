@@ -7,18 +7,27 @@ use App\Models\User;
 class Permissions
 {
     /**
-     * DEV режим: пока всем всё разрешено.
-     * Потом просто переключим на false (или уберём) — и включится реальный контроль.
+     * DEV режим: по умолчанию true (как сейчас),
+     * но управляется через env, чтобы можно было тестировать реальные права.
+     *
+     * .env:
+     * DEV_ALLOW_ALL_PERMISSIONS=true|false
      */
     public const DEV_ALLOW_ALL = true;
+
+    /**
+     * Проверяем, разрешён ли DEV режим через env.
+     */
+    protected static function devAllowAll(): bool
+    {
+        // если env не задан — ведём себя как сейчас
+        return (bool) env('DEV_ALLOW_ALL_PERMISSIONS', self::DEV_ALLOW_ALL);
+    }
 
     /**
      * ЕДИНЫЙ реестр прав.
      * Сейчас: config/permissions.php
      * Потом: заменишь реализацию на чтение из БД — и ВСЁ приложение подхватит.
-     *
-     * Формат:
-     *  'perm.key' => ['group' => 'menu', 'label' => '...']
      */
     public static function registry(): array
     {
@@ -33,12 +42,13 @@ class Permissions
     }
 
     /**
-     * Группировка для UI (кнопки групп, модалки и т.д.)
-     * Возвращает: group => [permKey => label]
+     * Группировка для UI (модалки прав и т.д.)
+     * group => [permKey => label]
      */
     public static function groupedRegistry(): array
     {
         $grouped = [];
+
         foreach (self::registry() as $key => $def) {
             if (!is_string($key) || trim($key) === '') continue;
             if (!is_array($def)) continue;
@@ -46,8 +56,13 @@ class Permissions
             $group = $def['group'] ?? 'other';
             $label = $def['label'] ?? null;
 
-            if (!is_string($group) || trim($group) === '') $group = 'other';
-            if (!is_string($label) || trim($label) === '') continue;
+            if (!is_string($group) || trim($group) === '') {
+                $group = 'other';
+            }
+
+            if (!is_string($label) || trim($label) === '') {
+                continue;
+            }
 
             $grouped[$group][$key] = $label;
         }
@@ -63,11 +78,9 @@ class Permissions
     public static function normalize(array $incoming): array
     {
         $out = [];
-        $keys = self::keys();
 
-        foreach ($keys as $k) {
+        foreach (self::keys() as $k) {
             $v = $incoming[$k] ?? null;
-
             // чекбокс может прийти как '1' / 1 / true, или отсутствовать, или '0'
             $out[$k] = !empty($v) && (string)$v !== '0';
         }
@@ -76,7 +89,7 @@ class Permissions
     }
 
     /**
-     * Проверка права (ТОЛЬКО через этот метод везде).
+     * Проверка одного права (Единая точка).
      */
     public static function can(?User $user, string $key): bool
     {
@@ -85,16 +98,57 @@ class Permissions
         // super admin всегда ок
         if (!empty($user->is_super_admin)) return true;
 
-        // dev: всем всё
-        if (self::DEV_ALLOW_ALL) return true;
+        // dev-режим
+        if (self::devAllowAll()) return true;
 
-        // реальный контроль (когда выключим DEV_ALLOW_ALL)
+        // реальный контроль
         $p = $user->permissions ?? [];
         return is_array($p) && !empty($p[$key]);
     }
 
+    /**
+     * Проверка: есть ХОТЯ БЫ ОДНО из прав.
+     * Полезно для UI и импорта.
+     */
+    public static function canAny(?User $user, array $keys): bool
+    {
+        foreach ($keys as $k) {
+            if (self::can($user, $k)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Abort 403, если нет права.
+     */
     public static function abortUnless(?User $user, string $key): void
     {
         abort_unless(self::can($user, $key), 403);
+    }
+
+    /**
+     * Строгая проверка для импорта:
+     * если нет права — добавляем ошибку (не abort).
+     */
+    public static function requireOrFail(
+        ?User $user,
+        string $key,
+        string $path,
+        array &$errors,
+        ?string $label = null
+    ): void {
+        if (self::can($user, $key)) {
+            return;
+        }
+
+        $errors[] = [
+            'path'       => $path,
+            'permission' => $key,
+            'message'    => $label
+                ? "Нет прав: {$label}"
+                : "Нет прав для действия ({$key})",
+        ];
     }
 }

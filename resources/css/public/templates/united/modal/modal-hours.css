@@ -1,0 +1,62 @@
+.hours-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+}
+
+.hours-header h3{
+    font-size:18px;
+    font-weight:600;
+    padding-left: 30%;
+}
+
+.hours-close{
+    background:none;
+    border:none;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.hours-list{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.hours-row{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:12px 14px;
+    border-radius:12px;
+
+    transition:background .2s;
+}
+
+.hours-row:not(.hours-today){
+    border-bottom:1px solid rgba(0,0,0,.05);
+}
+
+.hours-today{
+    background: #d3d1d1;
+    border:1px solid rgb(36, 38, 42);
+}
+
+.hours-day{
+    font-size:15px;
+    color:#111;
+}
+
+.hours-time{
+    font-size:15px;
+    color: #363434;
+}
+
+.hours-today-label{
+    font-size:13px;
+    color:#777;
+    margin-left:6px;
+}

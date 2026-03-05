@@ -1,26 +1,34 @@
-<header class="std-header">
+<header id="menu-header" class="std-header">
     <div class="std-header__panel">
+
+        {{-- Brand --}}
         <div class="std-header__brand">
             <div class="std-header__logo" aria-hidden="true">
-                {{-- поставь сюда свой logo.png --}}
-                <img src="{{ $logoUrl ?? '' }}" alt="">
+                @if(!empty($vm->branding['logo']))
+                    <img src="{{ asset('storage/'.$vm->branding['logo']) }}"
+                         alt="{{ $vm->merchant->name }}">
+                @endif
             </div>
 
             <div class="std-header__titles">
-                <div class="std-header__title">{{ $restaurant->name }}</div>
+                <div class="std-header__title">
+                    {{ $vm->merchant->name }}
+                </div>
             </div>
         </div>
 
+        {{-- Controls --}}
         <div class="std-header__controls">
-            {{-- TOP: Language switch --}}
+
+            {{-- Language Switch --}}
             <div class="std-header__controlsTop">
                 <div class="std-lang" role="tablist" aria-label="Language">
-                    @foreach($enabled as $lng)
+                    @foreach(['de','en','ru'] as $lng)
                         <a
-                            class="std-lang__btn {{ $lng===$locale ? 'is-active' : '' }}"
-                            href="{{ route('restaurant.show', $restaurant->slug) }}?lang={{ $lng }}"
+                            class="std-lang__btn {{ $vm->locale === $lng ? 'is-active' : '' }}"
+                            href="?lang={{ $lng }}"
                             role="tab"
-                            aria-selected="{{ $lng===$locale ? 'true' : 'false' }}"
+                            aria-selected="{{ $vm->locale === $lng ? 'true' : 'false' }}"
                         >
                             {{ strtoupper($lng) }}
                         </a>
@@ -28,16 +36,28 @@
                 </div>
             </div>
 
-            {{-- BOTTOM: theme + burger --}}
+            {{-- Theme + Burger --}}
             <div class="std-header__controlsBottom">
-                <button class="std-iconbtn" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+
+                <button
+                    class="std-iconbtn"
+                    type="button"
+                    data-action="toggle-theme"
+                >
                     <span class="std-icon" data-theme-icon>☀️</span>
                 </button>
 
-                <button class="std-iconbtn" type="button" data-action="open-menu" aria-label="Open menu">
+                <button
+                    class="std-iconbtn"
+                    type="button"
+                    data-action="toggle-sidebar"
+                >
                     <span class="std-icon">≡</span>
                 </button>
+
             </div>
+
         </div>
+
     </div>
 </header>

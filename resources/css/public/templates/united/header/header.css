@@ -22,3 +22,89 @@
     font-size: 22px;
     cursor: pointer;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| HEADER ACTIONS
+|--------------------------------------------------------------------------
+*/
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LANGUAGE DROPDOWN
+|--------------------------------------------------------------------------
+*/
+
+.lang-dropdown {
+    position: relative;
+}
+
+.lang-toggle {
+    background: none;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    color: #444;
+}
+
+.lang-toggle:hover {
+    color: #000;
+}
+
+.lang-arrow {
+    font-size: 10px;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| DROPDOWN MENU
+|--------------------------------------------------------------------------
+*/
+
+.lang-menu {
+    position: absolute;
+
+    top: 30px;
+    right: 0;
+
+    background: white;
+
+    border: 1px solid #eee;
+    border-radius: 6px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+
+    display: none;
+    flex-direction: column;
+
+    min-width: 70px;
+}
+
+.lang-menu.open {
+    display: flex;
+}
+
+.lang-menu a {
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #222;
+    font-size: 13px;
+}
+
+.lang-menu a:hover {
+    background: #f5f5f5;
+}

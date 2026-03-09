@@ -15,6 +15,8 @@
 
 @include('public.templates.united.blocks.header.header')
 
+@include('public.templates.united.blocks.drawer.mobile-drawer')
+
 @include('public.templates.united.blocks.header.restaurant-info')
 
 @include('public.templates.united.blocks.categories.category-nav')

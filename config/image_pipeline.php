@@ -30,13 +30,13 @@ return [
         'move_strategy' => 'copy_then_delete',
         'allow_ext' => ['jpg', 'jpeg', 'png', 'webp'],
         'ignore_hidden' => true,
-        'fingerprint' => 'size_mtime',
+        'fingerprint' => null,
         'max_source_mb' => 40,
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Profiles (CRITICAL: matcher читает отсюда)
+    | Profiles
     |--------------------------------------------------------------------------
     */
 
@@ -62,6 +62,7 @@ return [
             'keep_source' => false,
         ],
 
+        // 🔥 ВАЖНО: БЕЗ image-inbox
         'menu_item' => [
             'name' => 'menu_item',
             'match' => 'restaurants/*/menu/items/*',

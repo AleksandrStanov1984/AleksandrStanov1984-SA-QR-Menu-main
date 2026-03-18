@@ -114,7 +114,7 @@
         <hr style="border:0;border-top:1px solid var(--line); margin:12px 0;">
 
         <label style="margin-top:10px;">{{ __('admin.menu_builder.image') }}</label>
-        <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+        <input type="file" name="image" id="mbItemImageInput" accept=".jpg,.jpeg,.png,.webp">
         <div class="mb-muted" style="margin-top:6px;">
           {{ __('admin.menu_builder.image_hint') }}
         </div>

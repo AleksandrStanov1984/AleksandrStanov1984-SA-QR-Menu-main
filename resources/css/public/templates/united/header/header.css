@@ -1,26 +1,54 @@
+/*
+|--------------------------------------------------------------------------
+| HEADER
+|--------------------------------------------------------------------------
+*/
+
 .site-header {
+
     position: sticky;
     top: 0;
-    background: white;
-    border-bottom: 1px solid #eee;
+
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid rgba(0,0,0,.06);
+
     z-index: 100;
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| INNER
+|--------------------------------------------------------------------------
+*/
+
 .header-inner {
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 12px 20px;
+
+    max-width: 1200px;
+    margin: 0 auto;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| LOGO
+|--------------------------------------------------------------------------
+*/
 
 .header-logo {
+
     font-weight: 600;
     font-size: 18px;
-}
 
-.drawer-btn {
-    font-size: 22px;
-    cursor: pointer;
+    letter-spacing: .2px;
 }
 
 
@@ -31,9 +59,42 @@
 */
 
 .header-actions {
+
     display: flex;
     align-items: center;
+
     gap: 14px;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| DRAWER BUTTON
+|--------------------------------------------------------------------------
+*/
+
+.drawer-btn {
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    background: none;
+    border: none;
+
+    padding: 4px;
+
+    transition:
+        transform .12s ease,
+        opacity .12s ease;
+}
+
+.drawer-btn:hover {
+    opacity: .8;
+}
+
+.drawer-btn:active {
+    transform: scale(.9);
 }
 
 
@@ -47,22 +108,45 @@
     position: relative;
 }
 
+
+/* toggle button */
+
 .lang-toggle {
-    background: none;
+
+    background: rgba(0,0,0,.04);
+
     border: none;
+
     font-size: 13px;
+    font-weight: 500;
+
     cursor: pointer;
 
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 
-    color: #444;
+    color: #333;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    transition:
+        background .15s ease,
+        transform .08s ease;
 }
 
 .lang-toggle:hover {
-    color: #000;
+    background: rgba(0,0,0,.08);
 }
+
+.lang-toggle:active {
+    transform: scale(.95);
+}
+
+
+/* arrow */
 
 .lang-arrow {
     font-size: 10px;
@@ -76,35 +160,59 @@
 */
 
 .lang-menu {
+
     position: absolute;
 
-    top: 30px;
+    top: 36px;
     right: 0;
 
-    background: white;
+    background: rgba(255,255,255,.98);
 
-    border: 1px solid #eee;
-    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,.06);
 
-    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.08);
 
     display: none;
     flex-direction: column;
 
-    min-width: 70px;
+    min-width: 80px;
+
+    overflow: hidden;
 }
 
 .lang-menu.open {
     display: flex;
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| MENU LINKS
+|--------------------------------------------------------------------------
+*/
+
 .lang-menu a {
-    padding: 8px 12px;
+
+    padding: 10px 14px;
+
     text-decoration: none;
+
     color: #222;
+
     font-size: 13px;
+
+    transition:
+        background .15s ease,
+        transform .08s ease;
 }
 
 .lang-menu a:hover {
-    background: #f5f5f5;
+    background: rgba(0,0,0,.05);
+}
+
+.lang-menu a:active {
+    transform: scale(.96);
 }

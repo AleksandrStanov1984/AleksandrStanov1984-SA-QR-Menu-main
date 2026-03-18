@@ -6,35 +6,33 @@
 
 *,
 *::before,
-*::after {
-    box-sizing: border-box;
+*::after{
+    box-sizing:border-box;
 }
+
 
 /*
 |--------------------------------------------------------------------------
-| ROOT VARIABLES (THEME SYSTEM)
+| ROOT VARIABLES
 |--------------------------------------------------------------------------
 */
 
-:root {
+:root{
 
-    /* Page background */
-    --page-bg: #ffffff;
+    --page-bg:#ffffff;
 
-    /* Card / blocks background */
-    --card-bg: #e6e6ec;
+    --card-bg:#f3f4f6;
 
-    /* Text colors */
-    --text-primary: #111827;
-    --text-muted: #6b7280;
+    --text-primary:#111827;
 
-    /* Borders */
-    --border-color: #24262a;
+    --text-muted:#6b7280;
 
-    /* Accent color (future buttons, highlights) */
-    --accent-color: #ff6600;
+    --border-color:rgba(0,0,0,.08);
+
+    --accent-color:#ff6600;
 
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +40,9 @@
 |--------------------------------------------------------------------------
 */
 
-body {
+body{
 
-    margin: 0;
+    margin:0;
 
     font-family:
         system-ui,
@@ -55,13 +53,14 @@ body {
         Arial,
         sans-serif;
 
-    background: var(--page-bg);
+    background:var(--page-bg);
 
-    color: var(--text-primary);
+    color:var(--text-primary);
 
-    line-height: 1.4;
+    line-height:1.45;
 
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -69,10 +68,14 @@ body {
 |--------------------------------------------------------------------------
 */
 
-img {
-    max-width: 100%;
-    display: block;
+img{
+
+    max-width:100%;
+
+    display:block;
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -80,10 +83,14 @@ img {
 |--------------------------------------------------------------------------
 */
 
-a {
-    text-decoration: none;
-    color: inherit;
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -91,123 +98,137 @@ a {
 |--------------------------------------------------------------------------
 */
 
-.container {
+.container{
 
-    width: 100%;
-    max-width: 1100px;
+    width:100%;
 
-    margin: 0 auto;
+    max-width:1100px;
 
-    padding: 0 16px;
+    margin:0 auto;
+
+    padding:0 16px;
 
 }
 
-/* =========================================
-   UI: BUTTONS (GLOBAL)
-   ========================================= */
+
+/*
+|--------------------------------------------------------------------------
+| BUTTONS
+|--------------------------------------------------------------------------
+*/
 
 .btn{
 
-    display: inline-flex;
+    display:inline-flex;
 
-    align-items: center;
+    align-items:center;
 
-    justify-content: center;
+    justify-content:center;
 
-    gap: 8px;
+    gap:8px;
 
-    padding: 10px 14px;
+    padding:10px 14px;
 
-    border-radius: 12px;
+    border-radius:12px;
 
-    border: 1px solid var(--border-color);
+    border:1px solid var(--border-color);
 
-    background: #fff;
+    background:#fff;
 
-    color: var(--text-primary);
+    color:var(--text-primary);
 
-    font-weight: 600;
+    font-weight:600;
 
-    font-size: 14px;
+    font-size:14px;
 
-    line-height: 1;
+    line-height:1;
 
-    cursor: pointer;
+    cursor:pointer;
 
-    transition: opacity .15s ease, transform .15s ease, background .15s ease, border-color .15s ease;
+    transition:
+        opacity .15s ease,
+        transform .1s ease,
+        background .15s ease,
+        border-color .15s ease;
 
 }
 
 .btn:hover{
-
-    opacity: .92;
-
+    opacity:.92;
 }
 
 .btn:active{
-
-    transform: translateY(1px);
-
+    transform:translateY(1px);
 }
 
 .btn:disabled{
 
-    opacity: .55;
+    opacity:.55;
 
-    cursor: not-allowed;
+    cursor:not-allowed;
 
 }
 
-/* Variants */
+
+/*
+|--------------------------------------------------------------------------
+| BUTTON VARIANTS
+|--------------------------------------------------------------------------
+*/
 
 .btn--ghost{
 
-    background: transparent;
+    background:transparent;
 
-    border-color: transparent;
+    border-color:transparent;
 
 }
 
 .btn--primary{
 
-    background: var(--accent-color);
+    background:var(--accent-color);
 
-    border-color: var(--accent-color);
+    border-color:var(--accent-color);
 
-    color: #fff;
+    color:#fff;
 
 }
 
 .btn--success{
 
-    background: #e8f8ef;
+    background:#e8f8ef;
 
-    border-color: #d1fae5;
+    border-color:#d1fae5;
 
-    color: #16a34a;
+    color:#16a34a;
 
 }
 
 .btn--warning{
 
-    background: #fff4e5;
+    background:#fff4e5;
 
-    border-color: #fde68a;
+    border-color:#fde68a;
 
-    color: #d97706;
+    color:#d97706;
 
 }
 
-/* Icon-only button (close, etc.) */
+
+/*
+|--------------------------------------------------------------------------
+| ICON BUTTON
+|--------------------------------------------------------------------------
+*/
 
 .btn--icon{
 
-    width: 38px;
+    width:38px;
 
-    height: 38px;
+    height:38px;
 
-    padding: 0;
+    padding:0;
 
-    border-radius: 10px;
+    border-radius:10px;
 
 }

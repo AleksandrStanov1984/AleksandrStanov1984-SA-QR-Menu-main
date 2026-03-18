@@ -3,6 +3,7 @@
 namespace App\ViewModels\PublicMenu;
 
 use App\Models\Restaurant;
+use App\Support\ImagePipeline\ImageService;
 
 class MenuViewModel
 {
@@ -31,6 +32,10 @@ class MenuViewModel
         app()->setLocale($this->locale);
 
         $this->templateKey = $restaurant->template_key ?: 'united';
+
+        $this->restaurant = $restaurant;
+        $this->locale = $locale;
+        $this->images = app(ImageService::class);
 
         $this->merchant = (object)[
             'name' => $restaurant->name,
@@ -67,6 +72,15 @@ class MenuViewModel
         $this->hours = $this->buildHours($restaurant->hours);
 
         $this->status = $this->detectStatus();
+    }
+
+    private function resolveImage(?string $path): ?string
+    {
+        if (!$path) {
+            return config('images.urls.fallback');
+        }
+
+        return config('images.urls.assets') . '/' . ltrim($path, '/');
     }
 
     private function buildTheme(): array
@@ -371,26 +385,6 @@ class MenuViewModel
         }
 
         return 'open';
-    }
-
-    private function resolveImage(?string $path): ?string
-    {
-        // если путь пустой → картинки нет
-        if (!$path) {
-            return null;
-        }
-
-        $fallback = $this->vite_asset('resources/resources/assets/images/image-fallback.png');
-
-        $fullPath = public_path($path);
-
-        // файл существует
-        if (file_exists($fullPath)) {
-            return $this->vite_asset($path);
-        }
-
-        // файла нет → fallback
-        return $fallback;
     }
 
     function vite_asset($path): string

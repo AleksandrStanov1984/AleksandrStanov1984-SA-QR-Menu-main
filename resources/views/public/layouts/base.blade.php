@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ $vm->locale }}">
+<html lang="{{ $vm->locale ?? app()->getLocale() }}">
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $vm->merchant->name }}</title>
+    <title>{{ $vm->merchant->name ?? 'Stanov Oleksandr' }}</title>
 
     @yield('styles')
+
 </head>
 
 <body @yield('body-attrs')>

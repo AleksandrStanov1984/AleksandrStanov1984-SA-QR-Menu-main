@@ -1,76 +1,235 @@
+/*
+|--------------------------------------------------------------------------
+| MODAL WRAPPER
+|--------------------------------------------------------------------------
+*/
+
 .modal{
-    position: fixed;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 18px;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(6px);
-    z-index: 999;
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:18px;
+
+    background:rgba(0,0,0,.45);
+
+    backdrop-filter:blur(6px);
+
+    z-index:999;
+
+    opacity:0;
+
+    transition:opacity .18s ease;
 }
 
 .modal.modal-visible{
-    display: flex;
+
+    display:flex;
+
+    opacity:1;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| MODAL BOX
+|--------------------------------------------------------------------------
+*/
 
 .modal-box{
-    width: 100%;
-    max-width: 520px;
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    overflow: hidden;
+
+    width:100%;
+
+    max-width:520px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+
+    overflow:hidden;
+
+    transform:translateY(10px);
+
+    transition:transform .18s ease;
 }
+
+.modal.modal-visible .modal-box{
+
+    transform:translateY(0);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| HEADER
+|--------------------------------------------------------------------------
+*/
 
 .modal-head{
-    display: flex;
-    justify-content: flex-end;
-    padding: 12px 12px 0;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    padding:12px 12px 0;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| BODY
+|--------------------------------------------------------------------------
+*/
 
 .modal-body{
-    padding: 10px 18px 18px;
+
+    padding:10px 18px 18px;
+
 }
 
-.modal-title{
-    margin: 8px 0 6px;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
 
-.modal-description{
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.modal-price{
-    margin-top: 12px;
-    font-weight: 700;
-    font-size: 16px;
-}
+/*
+|--------------------------------------------------------------------------
+| IMAGE
+|--------------------------------------------------------------------------
+*/
 
 .modal-image{
-    width: 100%;
-    border-radius: 14px;
-    margin-bottom: 10px;
+
+    width:100%;
+
+    border-radius:14px;
+
+    margin-bottom:10px;
+
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| TITLE
+|--------------------------------------------------------------------------
+*/
+
+.modal-title{
+
+    margin:8px 0 6px;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:var(--text-primary);
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| DESCRIPTION
+|--------------------------------------------------------------------------
+*/
+
+.modal-description{
+
+    margin:0;
+
+    color:var(--text-muted);
+
+    font-size:14px;
+
+    line-height:1.4;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| PRICE
+|--------------------------------------------------------------------------
+*/
+
+.modal-price{
+
+    margin-top:12px;
+
+    font-weight:700;
+
+    font-size:16px;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| BADGES (inside modal)
+|--------------------------------------------------------------------------
+*/
+
 .menu-modal .menu-item-badge--new{
+
     background:#16a34a;
+
 }
 
 .menu-modal .menu-item-badge--dish{
+
     background:#ea580c;
+
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| SPICY LEVEL
+|--------------------------------------------------------------------------
+*/
+
 .menu-modal .menu-item-spicy i{
+
     opacity:.3;
+
 }
 
 .menu-modal .menu-item-spicy i.is-on{
+
     opacity:1;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MOBILE
+|--------------------------------------------------------------------------
+*/
+
+@media (max-width:480px){
+
+    .modal{
+
+        align-items:flex-end;
+
+        padding:0;
+
+    }
+
+    .modal-box{
+
+        border-radius:18px 18px 0 0;
+
+        max-width:none;
+
+        width:100%;
+
+    }
+
 }

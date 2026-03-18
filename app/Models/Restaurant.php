@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Support\ImagePipeline\RestaurantAssetsService;
 
 class Restaurant extends Model
 {
@@ -63,5 +64,22 @@ class Restaurant extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($restaurant) {
+
+            app(RestaurantAssetsService::class)
+                ->create($restaurant->id);
+
+        });
+
+        static::deleting(function ($restaurant) {
+
+            app(RestaurantAssetsService::class)
+                ->delete($restaurant->id);
+
+        });
     }
 }

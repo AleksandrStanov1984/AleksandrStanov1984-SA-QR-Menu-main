@@ -119,7 +119,7 @@
 
                 <span>{{ __('footer.crafted_by') }}</span>
 
-                <a href="#" class="footer-author-badge">
+                <a href="{{ route('author') }}" class="footer-author-badge">
                     {{ __('footer.author') }}
                 </a>
 

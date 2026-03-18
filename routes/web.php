@@ -22,10 +22,15 @@ use App\Http\Controllers\Admin\MenuBuilderController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\MenuImportController;
 
+use App\Http\Controllers\Public\AuthorController;
+
 
 Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
 
 Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])->name('restaurant.show');
+
+Route::get('/author', [AuthorController::class, 'index'])
+    ->name('author');
 
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
 

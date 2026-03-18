@@ -2,6 +2,8 @@
     $short = $item['description'] ?? '';
     $long  = $item['details'] ?? '';
 
+    $hasImage = !empty($item['image_path']);
+
     $isNew  = !empty($item['display']['is_new']);
     $isDish = !empty($item['display']['dish_of_day']);
 
@@ -15,25 +17,26 @@
 
     if ($isNew)  $classes[] = 'is-new';
     if ($isDish) $classes[] = 'is-dish';
+    if (!$hasImage) $classes[] = 'is-no-image';
 @endphp
 
 
 <div
     class="{{ implode(' ', $classes) }}"
-    data-open-modal="item"
+
+    @if($hasImage)
+        data-open-modal="item"
     data-title="{{ $item['title'] ?? '' }}"
     data-description="{{ $short }}"
     data-details="{{ $long }}"
     data-price="@if(!empty($item['price'])){{ number_format((float)$item['price'],2) }} {{ $item['currency'] ?? '€' }}@endif"
-
-    @if(!empty($item['image_path']))
-        data-image="{{ $item['image_path'] }}"
-    @endif
-
+    data-image="{{ $item['image_path'] }}"
     data-is-new="{{ $isNew ? 1 : 0 }}"
     data-is-dish="{{ $isDish ? 1 : 0 }}"
     data-spicy="{{ $spicyLevel }}"
+    @endif
 >
+
 
     {{-- BADGES --}}
     @if($isNew || $isDish)
@@ -46,8 +49,8 @@
 
             @if($isDish)
                 <span class="menu-item-badge menu-item-badge--dish">
-{{ __('menu.dish_of_day') }}
-</span>
+                    {{ __('menu.dish_of_day') }}
+                </span>
             @endif
 
         </div>
@@ -56,7 +59,7 @@
 
 
     {{-- IMAGE --}}
-    @if(!empty($item['image_path']))
+    @if($hasImage)
 
         <div class="menu-item-media">
 
@@ -94,9 +97,9 @@
 
 
         {{-- SPICY --}}
-        @if($spicyLevel > 0)
+        <div class="menu-item-meta">
 
-            <div class="menu-item-meta">
+            @if($spicyLevel > 0)
 
                 <div class="menu-item-spicy" aria-label="{{ __('menu.spicy') }}: {{ $spicyLevel }}/5">
 
@@ -106,9 +109,9 @@
 
                 </div>
 
-            </div>
+            @endif
 
-        @endif
+        </div>
 
 
         @if(!empty($item['price']))

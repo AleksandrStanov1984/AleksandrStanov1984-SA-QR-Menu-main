@@ -1,21 +1,74 @@
 .category-nav {
+
     display: flex;
     overflow-x: auto;
-    gap: 10px;
-    padding: 10px 16px;
-    border-bottom: 1px solid #eee;
-    background: white;
+
+    gap: 8px;
+
+    padding: 12px 16px;
+
+    background: rgba(255,255,255,.9);
+    backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid rgba(0,0,0,.05);
+
+    scroll-behavior: smooth;
+
 }
+
+
+/* hide scrollbar */
+
+.category-nav::-webkit-scrollbar {
+    display: none;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| CATEGORY PILLS
+|--------------------------------------------------------------------------
+*/
 
 .category-link {
-    padding: 6px 12px;
-    border-radius: 20px;
-    background: #f3f3f3;
+
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    background: rgba(0,0,0,.05);
+
     font-size: 14px;
+    font-weight: 500;
+
+    color: #333;
+
+    text-decoration: none;
+
     white-space: nowrap;
+
+    transition:
+        background .15s ease,
+        transform .08s ease;
+
 }
 
+
+/* tap effect */
+
+.category-link:active {
+    transform: scale(.96);
+}
+
+
+/* active */
+
 .category-link.active {
+
     background: #111;
     color: white;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.15);
+
 }

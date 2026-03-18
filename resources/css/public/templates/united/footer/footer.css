@@ -1,13 +1,31 @@
+/*
+|--------------------------------------------------------------------------
+| FOOTER
+|--------------------------------------------------------------------------
+*/
+
 .site-footer{
     width:100%;
-    background:#f6f5f3;
+
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(10px);
+
     color:#817a73;
+
     position:relative;
-    border-top:1px solid rgba(0,0,0,.25);
+
+    border-top:1px solid rgba(0,0,0,.06);
+
     padding-bottom:0!important;
 }
 
-/* inner контейнеры */
+
+/*
+|--------------------------------------------------------------------------
+| INNER CONTAINERS
+|--------------------------------------------------------------------------
+*/
+
 .footer-social-row__inner,
 .footer-gallery-wrap,
 .footer-bottom__inner{
@@ -16,9 +34,15 @@
     padding:0 24px;
 }
 
-/* SOCIAL row */
+
+/*
+|--------------------------------------------------------------------------
+| SOCIAL ROW
+|--------------------------------------------------------------------------
+*/
+
 .footer-social-row{
-    padding:12px 0;
+    padding:14px 0;
 }
 
 .footer-socials{
@@ -26,6 +50,7 @@
     justify-content:center;
     align-items:center;
     gap:22px;
+
     margin:0;
     padding:0;
 }
@@ -33,14 +58,23 @@
 .footer-socials a{
     display:inline-flex;
     height:28px;
+
     opacity:.75;
-    transition:opacity .2s ease, transform .2s ease;
+
+    transition:
+        opacity .2s ease,
+        transform .15s ease;
+
     line-height:0;
 }
 
 .footer-socials a:hover{
     opacity:1;
-    transform:translateY(-1px);
+    transform:translateY(-2px);
+}
+
+.footer-socials a:active{
+    transform:scale(.95);
 }
 
 .footer-socials img{
@@ -49,18 +83,41 @@
     display:block;
 }
 
-/* GALLERY */
-.footer-gallery{}
+
+/*
+|--------------------------------------------------------------------------
+| GALLERY
+|--------------------------------------------------------------------------
+*/
+
+.footer-gallery{
+    width:100%;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| TRACK
+|--------------------------------------------------------------------------
+*/
 
 .footer-gallery__track{
+
     display:flex;
-    gap:10px;
+    gap:12px;
     align-items:stretch;
-    background:#f7f4ef;
+
+    background:rgba(0,0,0,.02);
+
     padding:14px;
+
+    border-radius:12px;
+
     box-sizing:border-box;
+
     cursor:grab;
     user-select:none;
+
     overflow:hidden;
 }
 
@@ -68,30 +125,36 @@
     cursor:grabbing;
 }
 
-.footer-gallery__item{
-    flex:0 0 auto;
-    width:154px;
-    height:154px;
-    background:#e9e3dc;
-    overflow:hidden;
-    border-radius:10px;
-}
 
-.footer-gallery__item img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-}
+/*
+|--------------------------------------------------------------------------
+| STATIC MODE (≤4 ITEMS)
+|--------------------------------------------------------------------------
+*/
 
 .footer-gallery.is-static .footer-gallery__track{
+
     justify-content:center;
+
+    width:fit-content;
+    margin:0 auto;
+
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| CAROUSEL MODE (>4 ITEMS)
+|--------------------------------------------------------------------------
+*/
+
 .footer-gallery.is-carousel .footer-gallery__track{
+
     overflow-x:auto;
     overflow-y:hidden;
+
     scroll-snap-type:x mandatory;
+
     scrollbar-width:none;
 }
 
@@ -103,9 +166,79 @@
     scroll-snap-align:start;
 }
 
-/* BOTTOM */
+
+/*
+|--------------------------------------------------------------------------
+| ITEM
+|--------------------------------------------------------------------------
+*/
+
+.footer-gallery__item{
+
+    flex:0 0 auto;
+
+    width:154px;
+    height:154px;
+
+    background:#e9e3dc;
+
+    overflow:hidden;
+
+    border-radius:12px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.08);
+
+    transition:
+        transform .25s cubic-bezier(.2,.8,.2,1),
+        box-shadow .25s cubic-bezier(.2,.8,.2,1);
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| APPLE STYLE HOVER EFFECT
+|--------------------------------------------------------------------------
+*/
+
+.footer-gallery__item:hover{
+
+    transform:translateY(-6px) scale(1.05);
+
+    box-shadow:
+        0 16px 32px rgba(0,0,0,.18),
+        0 4px 12px rgba(0,0,0,.10);
+
+}
+
+.footer-gallery__item:active{
+    transform:scale(.96);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| IMAGE
+|--------------------------------------------------------------------------
+*/
+
+.footer-gallery__item img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| FOOTER BOTTOM
+|--------------------------------------------------------------------------
+*/
+
 .footer-bottom{
-    padding:12px 0 18px;
+    padding:14px 0 20px;
 }
 
 .footer-bottom__inner{
@@ -114,7 +247,9 @@
     align-items:center;
     gap:10px;
     flex-wrap:wrap;
+
     color:#6f675f;
+
     font-size:clamp(10px,.8vw,13px);
 }
 
@@ -122,15 +257,32 @@
     opacity:.6;
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| AUTHOR BADGE
+|--------------------------------------------------------------------------
+*/
+
 .footer-author-badge{
+
     display:inline-block;
-    padding:3px 10px;
+
+    padding:4px 12px;
+
     border-radius:999px;
-    border:1px solid rgba(0,0,0,.25);
+
+    border:1px solid rgba(0,0,0,.15);
+
     text-decoration:none;
+
     color:inherit;
+
     font-size:inherit;
-    transition:all .2s ease;
+
+    transition:
+        background .2s ease,
+        transform .1s ease;
 }
 
 .footer-author-badge:hover{
@@ -138,23 +290,40 @@
     color:#fff;
 }
 
-/* MOBILE */
+.footer-author-badge:active{
+    transform:scale(.96);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MOBILE
+|--------------------------------------------------------------------------
+*/
 
 @media (max-width:900px){
 
     .footer-gallery__track{
+
         --pad:12px;
         --gap:10px;
+
         padding:var(--pad);
         gap:var(--gap);
+
         overflow-x:auto;
+
         scroll-snap-type:x mandatory;
     }
 
     .footer-gallery__item{
+
         flex:0 0 calc((100% - (var(--pad) * 2) - (var(--gap) * 3)) / 4);
+
         aspect-ratio:1/1;
+
         scroll-snap-align:start;
+
         border-radius:10px;
     }
 

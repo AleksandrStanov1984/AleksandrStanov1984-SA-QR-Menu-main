@@ -1,3 +1,5 @@
+@inject('img', 'App\Services\ImageService')
+
 <footer class="section section--full site-footer">
 
     {{-- ========================================
@@ -21,28 +23,25 @@
 
                         @continue(empty($it['image_path']))
 
+                        @php
+                            $image = $img->url($it['image_path']);
+                        @endphp
+
                         <div
                             class="footer-gallery__item"
-
                             data-open-modal="item"
-
                             data-title="{{ $it['title'] ?? '' }}"
                             data-description="{{ $it['description'] ?? '' }}"
                             data-details="{{ $it['details'] ?? '' }}"
-
                             data-price="@if(!empty($it['price'])){{ number_format((float)$it['price'],2) }} {{ $it['currency'] ?? '€' }}@endif"
-
-                            @if(!empty($it['image_path']))
-                                data-image="{{ $it['image_path'] }}"
-                            @endif
-
+                            data-image="{{ $image }}"
                             data-is-new="{{ !empty($it['meta']['is_new']) ? 1 : 0 }}"
                             data-is-dish="{{ !empty($it['meta']['dish_of_day']) ? 1 : 0 }}"
                             data-spicy="{{ $it['meta']['spicy_level'] ?? 0 }}"
                         >
 
                             <img
-                                src="{{ $it['image_path'] }}"
+                                src="{{ $image }}"
                                 alt="{{ $it['title'] ?? '' }}"
                                 loading="lazy"
                                 decoding="async"
@@ -75,15 +74,21 @@
 
                     @continue(empty($social['url']))
 
+                    @php
+                        // 🔥 если из БД приходит UUID.svg
+                        if (!empty($social['icon'])) {
+                            $icon = $img->url($social['icon']);
+                        } else {
+                            // fallback по названию
+                            $fallbackIcon = 'assets/system/icons/' . strtolower($social['title']) . '.svg';
+                            $icon = asset($fallbackIcon);
+                        }
+                    @endphp
+
                     <a href="{{ $social['url'] }}"
                        target="_blank"
                        rel="noopener noreferrer"
                        aria-label="{{ $social['title'] ?? '' }}">
-
-                        @php
-                            $icon = $social['icon']
-                            ?? asset('assets/icons/' . strtolower($social['title']) . '.svg');
-                        @endphp
 
                         <img
                             src="{{ $icon }}"

@@ -102,7 +102,16 @@
       // active для UI: активна только если item активен И родитель включен
       $rowActiveForUi = (!$inactive && !$ancestorLocked) ? '1' : '0';
 
-      $imgUrl = app(\App\Services\ImageService::class)->url($it->image_path);
+      $getImage = function ($it) {
+    foreach (['image_path', 'image', 'image_url'] as $field) {
+        if (!empty($it->{$field})) {
+            return $it->{$field};
+        }
+    }
+    return null;
+};
+
+      $imgUrl = app(\App\Services\ImageService::class)->url($getImage($it));
 
       // id аккордеона (для будущего сохранения можно)
       $accId = 'mbItemAcc_'.$it->id;
@@ -190,7 +199,6 @@
             <div style="margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;">
               <div style="width:140px; height:90px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:rgba(255,255,255,.04); flex:0 0 auto;">
                 <img src="{{ $imgUrl }}"
-                     srcset="{{ str_replace('.webp', '@2x.webp', $imgUrl) }} 2x"
                      alt="item image"
                      style="width:100%; height:100%; object-fit:cover; display:block;">
               </div>

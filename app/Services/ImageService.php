@@ -10,21 +10,32 @@ class ImageService
     {
         $fallback = config('image.urls.fallback', '/assets/system/fallback/food.webp');
 
-        // если вообще нет пути
         if (!$path) {
             return $fallback;
         }
 
         $path = ltrim($path, '/');
 
-        $fullPublicPath = public_path('assets/' . $path);
-
-        // если файла нет — fallback
-        if (!File::exists($fullPublicPath)) {
-            return $fallback;
+        // ✅ 1. сначала пробуем как есть (на случай assets/... или полного пути)
+        if (File::exists(public_path($path))) {
+            return '/' . $path;
         }
 
-        return '/assets/' . $path;
+        // ✅ 2. основной кейс: добавляем assets/
+        $assetPath = 'assets/' . $path;
+
+        if (File::exists(public_path($assetPath))) {
+            return '/' . $assetPath;
+        }
+
+        // ✅ 3. system icons (uuid.svg)
+        $iconPath = 'assets/system/icons/' . $path;
+
+        if (File::exists(public_path($iconPath))) {
+            return '/' . $iconPath;
+        }
+
+        return $fallback;
     }
 
     public function delete(string $path): void

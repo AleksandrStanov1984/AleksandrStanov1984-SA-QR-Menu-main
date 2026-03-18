@@ -7,7 +7,6 @@ use App\Models\Restaurant;
 use App\Models\RestaurantSocialLink;
 use App\Support\Permissions;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SocialLinkController extends Controller
@@ -17,7 +16,6 @@ class SocialLinkController extends Controller
         $user = $request->user();
         if (!$user) abort(403);
 
-        // обычный пользователь только свой ресторан
         if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
             abort(403);
         }
@@ -39,12 +37,10 @@ class SocialLinkController extends Controller
     {
         $url = trim($url);
 
-        // быстрое отсечение XSS мусора
         if (Str::contains($url, ['<', '>', '"', "'", 'javascript:', 'data:', 'vbscript:', 'file:'], true)) {
             abort(422, 'Invalid URL');
         }
 
-        // Laravel validator "url" уже должен быть применён, но дополнительно:
         $parts = parse_url($url);
         if (!$parts || empty($parts['scheme']) || empty($parts['host'])) {
             abort(422, 'Invalid URL');
@@ -60,7 +56,6 @@ class SocialLinkController extends Controller
 
     private function sanitizeSvgUpload(Request $request, string $field): void
     {
-        // простая проверка содержимого svg на явный скрипт/handler
         $file = $request->file($field);
         if (!$file) return;
 
@@ -71,7 +66,6 @@ class SocialLinkController extends Controller
 
         $lc = strtolower($content);
 
-        // запрет script, onload/onerror и javascript:
         if (Str::contains($lc, ['<script', 'onload=', 'onerror=', 'javascript:'], true)) {
             abort(422, 'Unsafe SVG');
         }
@@ -81,13 +75,10 @@ class SocialLinkController extends Controller
     {
         $user = $request->user();
 
-        // max 5
         if ($currentCount >= 5) return false;
 
-        // первые две доступны всем (без прав)
         if ($currentCount < 2) return true;
 
-        // 3-я, 4-я, 5-я — по правам
         if ($currentCount === 2) return Permissions::can($user, 'socials.add.3');
         if ($currentCount === 3) return Permissions::can($user, 'socials.add.4');
         if ($currentCount === 4) return Permissions::can($user, 'socials.add.5');
@@ -99,7 +90,6 @@ class SocialLinkController extends Controller
     {
         $this->assertRestaurantScope($request, $restaurant);
 
-        // сколько живых (не удалённых)
         $currentCount = RestaurantSocialLink::query()
             ->where('restaurant_id', $restaurant->id)
             ->whereNull('deleted_at')
@@ -107,7 +97,6 @@ class SocialLinkController extends Controller
 
         abort_unless($this->canAddCount($request, $restaurant, $currentCount), 403);
 
-        // права на загрузку svg (если файл есть)
         if ($request->hasFile('icon')) {
             Permissions::abortUnless($request->user(), 'socials.icon.upload');
         }
@@ -115,7 +104,7 @@ class SocialLinkController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:120'],
             'url'   => ['required', 'string', 'url', 'max:2048'],
-            'icon'  => ['nullable', 'file', 'mimetypes:image/svg+xml', 'max:256'], // 256 KB
+            'icon'  => ['nullable', 'file', 'mimetypes:image/svg+xml', 'max:256'],
         ]);
 
         $title = $this->sanitizeTitle((string)$data['title']);
@@ -129,8 +118,13 @@ class SocialLinkController extends Controller
         $nextSort = $nextSort ? $nextSort + 1 : 1;
 
         $iconPath = null;
+
         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store("restaurants/{$restaurant->id}/socials", 'public');
+            $iconPath = app(\App\Services\ImagePipelineService::class)
+                ->uploadSvg(
+                    $request->file('icon'),
+                    'system/icons'
+                );
         }
 
         RestaurantSocialLink::create([
@@ -150,7 +144,6 @@ class SocialLinkController extends Controller
         $this->assertRestaurantScope($request, $restaurant);
         $this->assertLinkBelongs($restaurant, $link);
 
-        // если неактивный — запрещаем всё, кроме toggleActive
         if (!$link->is_active) {
             abort(403);
         }
@@ -177,16 +170,21 @@ class SocialLinkController extends Controller
 
         // remove icon
         if (!empty($data['remove_icon']) && !empty($link->icon_path)) {
-            Storage::disk('public')->delete($link->icon_path);
+            app(\App\Services\ImageService::class)->delete($link->icon_path);
             $link->icon_path = null;
         }
 
         // upload new icon
         if ($request->hasFile('icon')) {
             if (!empty($link->icon_path)) {
-                Storage::disk('public')->delete($link->icon_path);
+                app(\App\Services\ImageService::class)->delete($link->icon_path);
             }
-            $link->icon_path = $request->file('icon')->store("restaurants/{$restaurant->id}/socials", 'public');
+
+            $link->icon_path = app(\App\Services\ImagePipelineService::class)
+                ->uploadSvg(
+                    $request->file('icon'),
+                    'system/icons'
+                );
         }
 
         $link->title = $title;
@@ -201,12 +199,15 @@ class SocialLinkController extends Controller
         $this->assertRestaurantScope($request, $restaurant);
         $this->assertLinkBelongs($restaurant, $link);
 
-        // если неактивный — запрещаем всё, кроме toggleActive
         if (!$link->is_active) {
             abort(403);
         }
 
         Permissions::abortUnless($request->user(), 'socials.delete');
+
+        if (!empty($link->icon_path)) {
+            app(\App\Services\ImageService::class)->delete($link->icon_path);
+        }
 
         $link->deleted_by_user_id = $request->user()?->id;
         $link->save();

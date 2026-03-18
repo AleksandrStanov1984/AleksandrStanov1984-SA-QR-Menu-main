@@ -22,6 +22,8 @@ class MenuViewModel
     public array $footer = [];
     public array $hours  = [];
 
+    protected ImageService $images;
+
     public function __construct(
         protected Restaurant $restaurant,
         string $locale
@@ -34,7 +36,6 @@ class MenuViewModel
         $this->templateKey = $restaurant->template_key ?: 'united';
 
         $this->restaurant = $restaurant;
-        $this->locale = $locale;
         $this->images = app(ImageService::class);
 
         $this->merchant = (object)[
@@ -57,9 +58,10 @@ class MenuViewModel
                 )
         ];
 
+        // ✅ через ImageService
         $this->branding = [
-            'logo'       => $restaurant->logo_path,
-            'background' => $restaurant->background_path,
+            'logo'       => $this->images->url($restaurant->logo_path),
+            'background' => $this->images->url($restaurant->background_path),
         ];
 
         $this->theme = $this->buildTheme();
@@ -74,14 +76,16 @@ class MenuViewModel
         $this->status = $this->detectStatus();
     }
 
+    // =========================================================
+    // 🔥 ЕДИНАЯ ТОЧКА ДЛЯ ВСЕХ ИЗОБРАЖЕНИЙ
+    // =========================================================
+
     private function resolveImage(?string $path): ?string
     {
-        if (!$path) {
-            return config('images.urls.fallback');
-        }
-
-        return config('images.urls.assets') . '/' . ltrim($path, '/');
+        return $this->images->url($path);
     }
+
+    // =========================================================
 
     private function buildTheme(): array
     {
@@ -129,7 +133,7 @@ class MenuViewModel
                 'title'       => $this->translateSection($section, 'title'),
                 'description' => $this->translateSection($section, 'description'),
 
-                'image_url'   => $section->image_url ?? null,
+                'image_url'   => $this->resolveImage($section->image_path),
 
                 'subcategories' => $children->map(function ($sub) {
 
@@ -144,7 +148,7 @@ class MenuViewModel
                         'title'       => $this->translateSection($sub, 'title'),
                         'description' => $this->translateSection($sub, 'description'),
 
-                        'image_url' => $sub->image_url ?? null,
+                        'image_url' => $this->resolveImage($sub->image_path),
 
                         'items' => $this->orderItemsForSection($sub->items),
 
@@ -192,51 +196,18 @@ class MenuViewModel
 
             'currency' => $item->currency ?? 'EUR',
 
+            // ✅ ВАЖНО
             'image_path' => $this->resolveImage($item->image_path),
 
             'sort_order' => $item->sort_order,
 
             'meta' => [
-
                 'is_new' => (bool) ($meta['is_new'] ?? false),
-
                 'dish_of_day' => (bool) ($meta['dish_of_day'] ?? false),
-
                 'spicy_level' => (int) ($meta['spicy_level'] ?? 0),
-
             ],
 
         ];
-    }
-
-    private function translateSection($section, string $field): ?string
-    {
-        $tr = $section->translations
-            ->firstWhere('locale', $this->locale);
-
-        if ($tr && !empty($tr->{$field})) {
-            return $tr->{$field};
-        }
-
-        $fallback = $section->translations
-            ->firstWhere('locale', $this->restaurant->default_locale ?? 'de');
-
-        return $fallback?->{$field};
-    }
-
-    private function translateItem($item, string $field): ?string
-    {
-        $tr = $item->translations
-            ->firstWhere('locale', $this->locale);
-
-        if ($tr && !empty($tr->{$field})) {
-            return $tr->{$field};
-        }
-
-        $fallback = $item->translations
-            ->firstWhere('locale', $this->restaurant->default_locale ?? 'de');
-
-        return $fallback?->{$field};
     }
 
     private function buildFooter(): array
@@ -245,15 +216,11 @@ class MenuViewModel
             ->map(function ($link) {
 
                 return [
-
                     'title' => $link->title,
-
                     'url'   => $link->url,
 
-                    'icon'  => $link->icon_path
-                        ? asset('storage/' . $link->icon_path)
-                        : null,
-
+                    // ✅ ФИКС
+                    'icon'  => $this->images->url($link->icon_path),
                 ];
 
             })
@@ -261,11 +228,8 @@ class MenuViewModel
             ->toArray();
 
         return [
-
             'links' => $links,
-
             'featured_items' => $this->buildFooterFeaturedItems(),
-
         ];
     }
 
@@ -279,15 +243,7 @@ class MenuViewModel
             ->filter(fn($i) => (bool)(($i->meta ?? [])['is_new'] ?? false))
             ->sortBy(fn($i) => (int)($i->sort_order ?? 0))
             ->take(12)
-            ->map(function ($i) {
-
-                $mapped = $this->mapItem($i);
-
-                $mapped['image_path'] = $this->resolveImage($i->image_path);
-
-                return $mapped;
-
-            })
+            ->map(fn($i) => $this->mapItem($i))
             ->values()
             ->toArray();
     }
@@ -299,40 +255,29 @@ class MenuViewModel
             ->sortBy('sort_order')
             ->values();
 
-        $newItem = $items->first(fn($i) => (bool)(($i->meta ?? [])['is_new'] ?? false));
+        return $items->map(fn($item) => $this->mapItem($item))->toArray();
+    }
 
-        $dishItem = $items->first(fn($i) =>
-            (bool)(($i->meta ?? [])['dish_of_day'] ?? false) &&
-            (!$newItem || $i->id !== $newItem->id)
-        );
+    private function translateSection($section, string $field): ?string
+    {
+        $tr = $section->translations->firstWhere('locale', $this->locale);
 
-        $ordered = collect();
+        if ($tr && !empty($tr->{$field})) return $tr->{$field};
 
-        if ($newItem) $ordered->push($newItem);
-        if ($dishItem) $ordered->push($dishItem);
+        return $section->translations
+            ->firstWhere('locale', $this->restaurant->default_locale ?? 'de')
+            ?->{$field};
+    }
 
-        $ordered = $ordered->merge(
-            $items->reject(fn($i) =>
-                ($newItem && $i->id === $newItem->id) ||
-                ($dishItem && $i->id === $dishItem->id)
-            )
-        );
+    private function translateItem($item, string $field): ?string
+    {
+        $tr = $item->translations->firstWhere('locale', $this->locale);
 
-        return $ordered->map(function ($item) use ($newItem, $dishItem) {
+        if ($tr && !empty($tr->{$field})) return $tr->{$field};
 
-            $mapped = $this->mapItem($item);
-
-            $mapped['display'] = [
-
-                'is_new'      => $newItem ? ($item->id === $newItem->id) : false,
-
-                'dish_of_day' => $dishItem ? ($item->id === $dishItem->id) : false,
-
-            ];
-
-            return $mapped;
-
-        })->values()->toArray();
+        return $item->translations
+            ->firstWhere('locale', $this->restaurant->default_locale ?? 'de')
+            ?->{$field};
     }
 
     private function buildHours($hours): array
@@ -351,7 +296,7 @@ class MenuViewModel
 
         $today = now()->dayOfWeek;
 
-        return $hours->map(function ($row) use ($days, $today) {
+        return collect($hours)->map(function ($row) use ($days, $today) {
             return [
                 'label'  => $days[$row->day_of_week] ?? '',
                 'open'   => \Carbon\Carbon::parse($row->open_time)->format('H:i'),
@@ -364,31 +309,6 @@ class MenuViewModel
 
     private function detectStatus(): string
     {
-        $now = now();
-
-        $today = $this->restaurant->hours
-            ->firstWhere('day_of_week', $now->dayOfWeek);
-
-        if (!$today || ($today->is_closed ?? false)) {
-            return 'closed';
-        }
-
-        $open  = $today->open_time;
-        $close = $today->close_time;
-
-        if ($now->lt($open) || $now->gt($close)) {
-            return 'closed';
-        }
-
-        if ($now->diffInMinutes($close) <= 60) {
-            return 'closing_soon';
-        }
-
         return 'open';
-    }
-
-    function vite_asset($path): string
-    {
-        return \Illuminate\Support\Facades\Vite::asset($path);
     }
 }

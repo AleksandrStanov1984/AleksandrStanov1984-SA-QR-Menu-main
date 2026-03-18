@@ -58,4 +58,41 @@ class ImagePipelineService
 
         return $this->uploadAndProcess($file, $restaurantId);
     }
+
+    public function uploadSvg(UploadedFile $file, string $targetPath): string
+    {
+        $filename = (string) \Illuminate\Support\Str::uuid() . '.svg';
+
+        // inbox
+        $inboxDir = storage_path("app/image-inbox/assets/{$targetPath}");
+        if (!file_exists($inboxDir)) {
+            mkdir($inboxDir, 0777, true);
+        }
+
+        $inboxFile = $inboxDir . '/' . $filename;
+
+        $realPath = $file->getRealPath();
+
+        if (!$realPath || !file_exists($realPath)) {
+            throw new \Exception('Temp SVG missing');
+        }
+
+        if (!copy($realPath, $inboxFile)) {
+            throw new \Exception('Failed to copy SVG to inbox');
+        }
+
+        // public
+        $publicDir = public_path("assets/{$targetPath}");
+        if (!file_exists($publicDir)) {
+            mkdir($publicDir, 0777, true);
+        }
+
+        $publicFile = $publicDir . '/' . $filename;
+
+        if (!copy($inboxFile, $publicFile)) {
+            throw new \Exception('Failed to move SVG to public');
+        }
+
+        return "{$targetPath}/{$filename}";
+    }
 }

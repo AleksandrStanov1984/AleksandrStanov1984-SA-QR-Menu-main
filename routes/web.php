@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RestaurantHoursController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -49,7 +50,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->middleware('auth')
         ->name('logout');
 
-    // ✅ locale setter (admin)
     Route::post('/locale', function (Request $request) {
 
         $loc = strtolower(trim((string) $request->input('locale')));
@@ -186,6 +186,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.menu.export_json');
 
 
+        Route::post('/restaurants/{restaurant}/hours',
+            [RestaurantHoursController::class, 'update']
+        )->name('restaurants.hours.update');
 
 
     });

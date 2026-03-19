@@ -73,7 +73,7 @@ window.openModal = function(id){
     const m = document.getElementById(id);
     if(!m) return;
 
-    // ✅ жёстко чистим все input в модалке (и пароли, и email)
+    // жёстко чистим все input в модалке (и пароли, и email)
     m.querySelectorAll('input').forEach(inp => {
         inp.value = '';
         // сбросить также автозаполненные "ghost" значения

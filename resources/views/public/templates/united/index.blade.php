@@ -11,7 +11,10 @@
 
 </head>
 
-<body class="theme-light">
+<body
+    data-theme-mode="{{ $vm->branding['theme_mode'] ?? 'light' }}"
+    class="theme-light"
+>
 
 @include('public.templates.united.blocks.header.header')
 

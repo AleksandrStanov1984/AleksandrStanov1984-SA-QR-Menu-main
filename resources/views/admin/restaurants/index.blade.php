@@ -65,7 +65,7 @@
                         </span>
                     </td>
 
-                    {{-- 🔥 КНОПКИ В ОДИН РЯД --}}
+                    {{-- КНОПКИ В ОДИН РЯД --}}
                     <td class="right">
                         <div class="actions-inline">
                             <a class="btn small"

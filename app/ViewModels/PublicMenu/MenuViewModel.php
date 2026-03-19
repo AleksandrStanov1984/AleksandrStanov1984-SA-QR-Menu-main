@@ -156,23 +156,29 @@ class MenuViewModel
     {
         $metaDTO = ItemMetaDTO::fromModel($item);
 
+        // 🔥 show_image логика
+        $showImage = $metaDTO->showImage ?? true;
+
+        $imagePath = $showImage
+            ? $this->resolveImage($item->image_path)
+            : null;
+
         return [
             'id' => $item->id,
+
             'title'       => $this->translateItem($item, 'title'),
             'description' => $this->translateItem($item, 'description'),
             'details'     => $this->translateItem($item, 'details'),
-            'price' => (float) $item->price,
+            'price'    => (float) $item->price,
             'currency' => $item->currency ?? 'EUR',
-            'image_path' => $this->resolveImage($item->image_path),
+            'image' => $imagePath,
+            'has_image' => $showImage && !empty($item->image_path),
             'sort_order' => $item->sort_order,
-
-            // 🔥 теперь meta всегда консистентный
             'meta' => $metaDTO->toArray(),
-
-            // 🔥 display слой (удобство для blade)
             'display' => [
-                'is_new' => $metaDTO->isNew,
-                'dish_of_day' => $metaDTO->dishOfDay,
+                'is_new'       => $metaDTO->isNew,
+                'dish_of_day'  => $metaDTO->dishOfDay,
+                'show_image'   => $showImage,
             ],
         ];
     }

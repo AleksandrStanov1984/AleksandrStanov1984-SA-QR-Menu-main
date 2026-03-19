@@ -138,8 +138,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('restaurants/{restaurant}/items/{item}', [ItemController::class, 'destroy'])
             ->name('restaurants.items.destroy');
 
-        Route::post('restaurants/{restaurant}/items/{item}/toggle', [ItemController::class, 'toggleActive'])
-            ->name('restaurants.items.toggle');
+        Route::patch('restaurants/{restaurant}/items/{item}/active', [ItemController::class, 'updateActive'])
+            ->name('restaurants.items.active');
 
         Route::get('/menu/profile', [MenuProfileController::class, 'edit'])
             ->name('menu.profile');
@@ -184,6 +184,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('restaurants/{restaurant}/menu/export.json', [MenuImportController::class, 'downloadMenuJson'])
             ->name('restaurants.menu.export_json');
+
 
 
 

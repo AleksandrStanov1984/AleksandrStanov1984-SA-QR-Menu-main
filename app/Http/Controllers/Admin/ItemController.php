@@ -210,4 +210,49 @@ class ItemController extends Controller
             'meta' => $meta->toArray(),
         ]);
     }
+
+    public function updateActive(Request $request, Restaurant $restaurant, Item $item)
+    {
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
+
+        $section = $item->section;
+        if (!$section || (int)$section->restaurant_id !== (int)$restaurant->id) {
+            abort(404);
+        }
+
+        $value = (bool)$request->input('is_active', true);
+
+        $item->update([
+            'is_active' => $value
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'is_active' => $item->is_active,
+        ]);
+    }
+
+    public function destroy(Request $request, Restaurant $restaurant, Item $item)
+    {
+        $this->assertRestaurantAccess($request, $restaurant, 'items.delete');
+
+        // проверка принадлежности
+        $section = $item->section;
+        if (!$section || (int)$section->restaurant_id !== (int)$restaurant->id) {
+            abort(404);
+        }
+
+        // 🔥 удалить изображение (если есть)
+        if ($item->image_path) {
+            app(\App\Services\ImageService::class)->delete($item->image_path);
+        }
+
+        // 🔥 удаление
+        $item->delete();
+
+        return response()->json([
+            'success' => true,
+            'deleted_id' => $item->id,
+        ]);
+    }
 }

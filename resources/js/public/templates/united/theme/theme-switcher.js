@@ -1,27 +1,62 @@
 /*
 |--------------------------------------------------------------------------
-| THEME SWITCHER
+| THEME SWITCHER (FINAL)
 |--------------------------------------------------------------------------
 */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const btn = document.getElementById("themeToggle");
+    const body = document.body;
+    const btn  = document.getElementById("themeToggle");
 
-    if (!btn) return;
+    // 🔥 берём из backend (пробрасывается из Blade)
+    const mode = body.dataset.themeMode || "light";
 
-    btn.addEventListener("click", () => {
+    const applyTheme = (theme) => {
+        body.classList.remove("theme-light", "theme-dark");
+        body.classList.add(`theme-${theme}`);
+    };
 
-        const body = document.body;
+    const getSystemTheme = () => {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+    };
 
-        if (body.classList.contains("theme-dark")) {
-            body.classList.remove("theme-dark");
-            body.classList.add("theme-light");
-        } else {
-            body.classList.remove("theme-light");
-            body.classList.add("theme-dark");
-        }
+    // ----------------------------
+    // INIT
+    // ----------------------------
 
-    });
+    if (mode === "auto") {
+        applyTheme(getSystemTheme());
+    } else {
+        applyTheme(mode);
+    }
+
+    // ----------------------------
+    // AUTO REACT (если система поменялась)
+    // ----------------------------
+
+    if (mode === "auto") {
+        window.matchMedia("(prefers-color-scheme: dark)")
+            .addEventListener("change", (e) => {
+                applyTheme(e.matches ? "dark" : "light");
+            });
+    }
+
+    // ----------------------------
+    // MANUAL TOGGLE (кнопка)
+    // ----------------------------
+
+    if (btn) {
+        btn.addEventListener("click", () => {
+
+            // manual override
+            const isDark = body.classList.contains("theme-dark");
+
+            applyTheme(isDark ? "light" : "dark");
+
+        });
+    }
 
 });

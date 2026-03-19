@@ -1,13 +1,12 @@
 @php
-    use Illuminate\Support\Facades\Storage;
 
     $user = auth()->user();
 
     // текущий ресторан (его обычно кладёт ResolveAdminRestaurant)
     $restaurant = $currentRestaurant ?? $restaurant ?? null;
 
-    $logoUrl = (!empty($restaurant?->logo_path))
-        ? Storage::url($restaurant->logo_path)
+    $logoUrl = !empty($restaurant?->logo_path)
+        ? app(\App\Services\ImageService::class)->url($restaurant->logo_path)
         : null;
 @endphp
 

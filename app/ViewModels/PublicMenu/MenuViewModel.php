@@ -37,6 +37,8 @@ class MenuViewModel
         $this->restaurant = $restaurant;
         $this->images = app(ImageService::class);
 
+        $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
+
         $this->merchant = (object)[
             'name' => $restaurant->name,
             'address' => trim(
@@ -55,9 +57,12 @@ class MenuViewModel
                 )
         ];
 
+        // 🔥 BRANDING FIX
         $this->branding = [
             'logo'       => $this->images->url($restaurant->logo_path),
-            'background' => $this->images->url($restaurant->background_path),
+            'bg_light'   => $this->images->url($meta['bg_light'] ?? null),
+            'bg_dark'    => $this->images->url($meta['bg_dark'] ?? null),
+            'theme_mode' => $meta['theme_mode'] ?? 'light',
         ];
 
         $this->theme = $this->buildTheme();
@@ -156,7 +161,6 @@ class MenuViewModel
     {
         $metaDTO = ItemMetaDTO::fromModel($item);
 
-        // 🔥 show_image логика
         $showImage = $metaDTO->showImage ?? true;
 
         $imagePath = $showImage
@@ -165,7 +169,6 @@ class MenuViewModel
 
         return [
             'id' => $item->id,
-
             'title'       => $this->translateItem($item, 'title'),
             'description' => $this->translateItem($item, 'description'),
             'details'     => $this->translateItem($item, 'details'),

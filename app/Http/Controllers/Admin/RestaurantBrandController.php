@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Support\Permissions;
+use App\Services\ImagePipelineService;
 
 class RestaurantBrandController extends Controller
 {
@@ -14,7 +14,6 @@ class RestaurantBrandController extends Controller
     {
         $user = $request->user();
 
-        // user -> только свой ресторан
         if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
             abort(403);
         }
@@ -25,26 +24,45 @@ class RestaurantBrandController extends Controller
         $this->assertRestaurantScope($request, $restaurant);
 
         $user = $request->user();
-
-        // permission: upload logo
         Permissions::abortUnless($user, 'branding.logo.upload');
 
         $request->validate([
-            'logo' => ['required', 'image', 'mimes:png,jpg,jpeg,webp', 'max:3000'],
+            'logo' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:3000'],
         ]);
 
-        if (!empty($restaurant->logo_path)) {
-            Storage::disk('public')->delete($restaurant->logo_path);
+        try {
+            $pipeline = app(ImagePipelineService::class);
+
+            $segment = 'branding/logo';
+
+            $path = $restaurant->logo_path
+                ? $pipeline->replace(
+                    $request->file('logo'),
+                    $restaurant->id,
+                    $restaurant->logo_path,
+                    $segment
+                )
+                : $pipeline->uploadAndProcess(
+                    $request->file('logo'),
+                    $restaurant->id,
+                    $segment
+                );
+
+            $restaurant->update([
+                'logo_path' => $path,
+            ]);
+
+            return back()->with('success', __('admin.restaurants.brand.logo_saved'));
+
+        } catch (\Throwable $e) {
+
+            \Log::error('Restaurant logo upload failed', [
+                'restaurant_id' => $restaurant->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Logo upload failed');
         }
-
-        $path = $request->file('logo')->store(
-            "restaurants/{$restaurant->id}/brand",
-            'public'
-        );
-
-        $restaurant->update(['logo_path' => $path]);
-
-        return back()->with('success', __('admin.restaurants.brand.logo_saved'));
     }
 
     public function updateBackgrounds(Request $request, Restaurant $restaurant)
@@ -53,57 +71,72 @@ class RestaurantBrandController extends Controller
 
         $user = $request->user();
 
-        // Разрешаем вызов метода, если есть ХОТЯ БЫ одно право:
         $canBg   = Permissions::can($user, 'branding.backgrounds.upload');
         $canMode = Permissions::can($user, 'branding.theme_mode.edit');
 
         abort_unless($canBg || $canMode, 403);
 
-        // validate: theme_mode + images
-        $data = $request->validate([
+        $request->validate([
             'theme_mode' => ['nullable', 'in:auto,light,dark'],
             'bg_light'   => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
             'bg_dark'    => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
         ]);
 
         $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
-
-        // дефолт при отсутствии
         $meta['theme_mode'] = $meta['theme_mode'] ?? 'light';
 
-        // theme_mode сохраняем только при праве
         if ($canMode && $request->filled('theme_mode')) {
-            $meta['theme_mode'] = $request->input('theme_mode'); // auto|light|dark
+            $meta['theme_mode'] = $request->input('theme_mode');
         }
 
-        // backgrounds сохраняем только при праве
-        if ($canBg) {
-            if ($request->hasFile('bg_light')) {
-                if (!empty($meta['bg_light'])) {
-                    Storage::disk('public')->delete($meta['bg_light']);
-                }
+        try {
+            $pipeline = app(ImagePipelineService::class);
 
-                $meta['bg_light'] = $request->file('bg_light')->store(
-                    "restaurants/{$restaurant->id}/brand",
-                    'public'
-                );
+            $segment = 'branding/backgrounds';
+
+            if ($canBg && $request->hasFile('bg_light') && $request->file('bg_light')->isValid()) {
+                $meta['bg_light'] = !empty($meta['bg_light'])
+                    ? $pipeline->replace(
+                        $request->file('bg_light'),
+                        $restaurant->id,
+                        $meta['bg_light'],
+                        $segment
+                    )
+                    : $pipeline->uploadAndProcess(
+                        $request->file('bg_light'),
+                        $restaurant->id,
+                        $segment
+                    );
             }
 
-            if ($request->hasFile('bg_dark')) {
-                if (!empty($meta['bg_dark'])) {
-                    Storage::disk('public')->delete($meta['bg_dark']);
-                }
-
-                $meta['bg_dark'] = $request->file('bg_dark')->store(
-                    "restaurants/{$restaurant->id}/brand",
-                    'public'
-                );
+            if ($canBg && $request->hasFile('bg_dark') && $request->file('bg_dark')->isValid()) {
+                $meta['bg_dark'] = !empty($meta['bg_dark'])
+                    ? $pipeline->replace(
+                        $request->file('bg_dark'),
+                        $restaurant->id,
+                        $meta['bg_dark'],
+                        $segment
+                    )
+                    : $pipeline->uploadAndProcess(
+                        $request->file('bg_dark'),
+                        $restaurant->id,
+                        $segment
+                    );
             }
+
+            $restaurant->meta = $meta;
+            $restaurant->save();
+
+            return back()->with('status', 'Фон и тема обновлены');
+
+        } catch (\Throwable $e) {
+
+            \Log::error('Restaurant branding background upload failed', [
+                'restaurant_id' => $restaurant->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Background upload failed');
         }
-
-        $restaurant->meta = $meta;
-        $restaurant->save();
-
-        return back()->with('status', 'Фон обновлён');
     }
 }

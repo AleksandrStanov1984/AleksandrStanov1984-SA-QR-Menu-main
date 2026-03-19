@@ -4,6 +4,7 @@ namespace App\ViewModels\PublicMenu;
 
 use App\Models\Restaurant;
 use App\Support\ImagePipeline\ImageService;
+use App\DTO\ItemMetaDTO;
 
 class MenuViewModel
 {
@@ -11,7 +12,6 @@ class MenuViewModel
     public string $locale = 'de';
 
     public string $status = 'open';
-
     public object $merchant;
     public array $branding = [];
     public array $theme = [];
@@ -28,7 +28,6 @@ class MenuViewModel
         protected Restaurant $restaurant,
         string $locale
     ) {
-
         $this->locale = $locale ?: ($restaurant->default_locale ?? 'de');
 
         app()->setLocale($this->locale);
@@ -40,14 +39,12 @@ class MenuViewModel
 
         $this->merchant = (object)[
             'name' => $restaurant->name,
-
             'address' => trim(
                 $restaurant->street . ' ' .
                 $restaurant->house_number . ', ' .
                 $restaurant->postal_code . ' ' .
                 $restaurant->city
             ),
-
             'map_url' =>
                 'https://maps.google.com/?q=' .
                 urlencode(
@@ -58,34 +55,25 @@ class MenuViewModel
                 )
         ];
 
-        // ✅ через ImageService
         $this->branding = [
             'logo'       => $this->images->url($restaurant->logo_path),
             'background' => $this->images->url($restaurant->background_path),
         ];
 
         $this->theme = $this->buildTheme();
-
         $this->footer = $this->buildFooter();
 
         $this->categories  = $this->buildCategoriesTree();
         $this->bestsellers = $this->buildBestsellers();
 
         $this->hours = $this->buildHours($restaurant->hours);
-
         $this->status = $this->detectStatus();
     }
-
-    // =========================================================
-    // 🔥 ЕДИНАЯ ТОЧКА ДЛЯ ВСЕХ ИЗОБРАЖЕНИЙ
-    // =========================================================
 
     private function resolveImage(?string $path): ?string
     {
         return $this->images->url($path);
     }
-
-    // =========================================================
 
     private function buildTheme(): array
     {
@@ -123,41 +111,28 @@ class MenuViewModel
                 ->values();
 
             return [
-
                 'id' => $section->id,
                 'slug' => $section->slug ?? null,
                 'type' => $section->type,
-
                 'layout' => $section->layout ?? null,
-
                 'title'       => $this->translateSection($section, 'title'),
                 'description' => $this->translateSection($section, 'description'),
-
                 'image_url'   => $this->resolveImage($section->image_path),
 
                 'subcategories' => $children->map(function ($sub) {
-
                     return [
-
                         'id' => $sub->id,
                         'slug' => $sub->slug ?? null,
-
                         'type' => $sub->type,
                         'layout' => $sub->layout ?? null,
-
                         'title'       => $this->translateSection($sub, 'title'),
                         'description' => $this->translateSection($sub, 'description'),
-
                         'image_url' => $this->resolveImage($sub->image_path),
-
                         'items' => $this->orderItemsForSection($sub->items),
-
                     ];
-
                 })->toArray(),
 
                 'items' => $this->orderItemsForSection($section->items),
-
             ];
 
         })->toArray();
@@ -170,8 +145,8 @@ class MenuViewModel
             ->where('is_active', true);
 
         return $items
-            ->filter(fn ($i) => !empty(($i->meta ?? [])['bestseller_rank']))
-            ->sortBy(fn ($i) => (int) (($i->meta ?? [])['bestseller_rank'] ?? 9999))
+            ->filter(fn ($i) => !empty((ItemMetaDTO::fromModel($i)->toArray()['bestseller_rank'] ?? null)))
+            ->sortBy(fn ($i) => (int) ((ItemMetaDTO::fromModel($i)->toArray()['bestseller_rank'] ?? 9999)))
             ->map(fn ($i) => $this->mapItem($i))
             ->values()
             ->toArray();
@@ -179,34 +154,26 @@ class MenuViewModel
 
     private function mapItem($item): array
     {
-        $meta = is_array($item->meta) ? $item->meta : [];
-
-        $title = $this->translateItem($item, 'title');
-        $price = (float) $item->price;
+        $metaDTO = ItemMetaDTO::fromModel($item);
 
         return [
-
             'id' => $item->id,
-
-            'title'       => $title,
+            'title'       => $this->translateItem($item, 'title'),
             'description' => $this->translateItem($item, 'description'),
             'details'     => $this->translateItem($item, 'details'),
-
-            'price' => $price,
-
+            'price' => (float) $item->price,
             'currency' => $item->currency ?? 'EUR',
-
-            // ✅ ВАЖНО
             'image_path' => $this->resolveImage($item->image_path),
-
             'sort_order' => $item->sort_order,
 
-            'meta' => [
-                'is_new' => (bool) ($meta['is_new'] ?? false),
-                'dish_of_day' => (bool) ($meta['dish_of_day'] ?? false),
-                'spicy_level' => (int) ($meta['spicy_level'] ?? 0),
-            ],
+            // 🔥 теперь meta всегда консистентный
+            'meta' => $metaDTO->toArray(),
 
+            // 🔥 display слой (удобство для blade)
+            'display' => [
+                'is_new' => $metaDTO->isNew,
+                'dish_of_day' => $metaDTO->dishOfDay,
+            ],
         ];
     }
 
@@ -214,15 +181,11 @@ class MenuViewModel
     {
         $links = $this->restaurant->socialLinks
             ->map(function ($link) {
-
                 return [
                     'title' => $link->title,
                     'url'   => $link->url,
-
-                    // ✅ ФИКС
                     'icon'  => $this->images->url($link->icon_path),
                 ];
-
             })
             ->values()
             ->toArray();
@@ -240,7 +203,7 @@ class MenuViewModel
             ->where('is_active', true);
 
         return $items
-            ->filter(fn($i) => (bool)(($i->meta ?? [])['is_new'] ?? false))
+            ->filter(fn($i) => ItemMetaDTO::fromModel($i)->isNew)
             ->sortBy(fn($i) => (int)($i->sort_order ?? 0))
             ->take(12)
             ->map(fn($i) => $this->mapItem($i))
@@ -250,12 +213,12 @@ class MenuViewModel
 
     private function orderItemsForSection($sectionItems): array
     {
-        $items = collect($sectionItems)
+        return collect($sectionItems)
             ->where('is_active', true)
             ->sortBy('sort_order')
-            ->values();
-
-        return $items->map(fn($item) => $this->mapItem($item))->toArray();
+            ->values()
+            ->map(fn($item) => $this->mapItem($item))
+            ->toArray();
     }
 
     private function translateSection($section, string $field): ?string

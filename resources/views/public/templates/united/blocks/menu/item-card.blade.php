@@ -7,11 +7,7 @@
     $isNew  = !empty($item['display']['is_new']);
     $isDish = !empty($item['display']['dish_of_day']);
 
-    $spicyLevel = (int)($item['meta']['spicy_level'] ?? 0);
-
-    if ($spicyLevel === 0 && !empty($item['meta']['spicy'])) {
-        $spicyLevel = 1;
-    }
+    $spicyLevel = (int)($item['meta']['spicy'] ?? 0);
 
     $classes = ['menu-item'];
 

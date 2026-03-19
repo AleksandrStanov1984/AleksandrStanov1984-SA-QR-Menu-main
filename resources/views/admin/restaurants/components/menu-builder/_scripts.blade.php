@@ -253,6 +253,19 @@
         });
       }
 
+        if(key === 'is_new' && payload.is_new){
+            const list = el.closest('[data-sortable-items]') || document;
+
+            list.querySelectorAll(`[data-item-meta="is_new"][data-item-id]`).forEach(cb => {
+                if(cb.getAttribute('data-item-id') !== String(itemId)){
+                    cb.checked = false;
+
+                    const r2 = cb.closest('[data-item-row]');
+                    setPill(r2, 'new', false);
+                }
+            });
+        }
+
     }catch(err){
       console.error(err);
 

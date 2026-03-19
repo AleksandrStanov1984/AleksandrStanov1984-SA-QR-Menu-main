@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DTO\ItemMetaDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ReorderItemsRequest;
 use App\Http\Requests\Admin\StoreItemRequest;
@@ -92,24 +93,19 @@ class ItemController extends Controller
                 ]);
             }
 
-            // ✅ IMAGE
             if ($request->file('image') && $request->file('image')->isValid()) {
-
                 try {
                     $path = app(ImagePipelineService::class)
                         ->uploadAndProcess($request->file('image'), $restaurant->id);
 
-                    $item->update([
-                        'image_path' => $path
-                    ]);
+                    $item->update(['image_path' => $path]);
 
                 } catch (\Throwable $e) {
                     \Log::error('Image upload failed', [
                         'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
                     ]);
 
-                    return back()->with('error', 'Image upload failed: ' . $e->getMessage());
+                    return back()->with('error', 'Image upload failed');
                 }
             }
 
@@ -119,7 +115,6 @@ class ItemController extends Controller
 
     public function update(UpdateItemRequest $request, Restaurant $restaurant, Item $item)
     {
-
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
         $section = $item->section;
@@ -127,35 +122,11 @@ class ItemController extends Controller
 
         $data = $request->validated();
 
-        return DB::transaction(function () use ($request, $restaurant, $item, $section, $data) {
-
-            $meta = $item->meta ?? [];
-
-            $meta['is_new']      = (bool)($data['is_new'] ?? ($meta['is_new'] ?? false));
-            $meta['dish_of_day'] = (bool)($data['dish_of_day'] ?? ($meta['dish_of_day'] ?? false));
-            $meta['show_image']  = (bool)($data['show_image'] ?? ($meta['show_image'] ?? true));
-            $meta['spicy']       = (int)($data['spicy'] ?? ($meta['spicy'] ?? 0));
-            $meta['style']       = $data['style'] ?? ($meta['style'] ?? null);
-
-            if (!empty($data['unit_value']) && !empty($data['unit_type'])) {
-                $meta['unit'] = [
-                    'value' => (float)$data['unit_value'],
-                    'type'  => $data['unit_type'],
-                ];
-            }
-
-            if (!empty($meta['dish_of_day'])) {
-                Item::where('section_id', $section->id)
-                    ->where('id', '!=', $item->id)
-                    ->update([
-                        'meta' => DB::raw("JSON_SET(COALESCE(meta, JSON_OBJECT()), '$.dish_of_day', false)")
-                    ]);
-            }
+        return DB::transaction(function () use ($request, $restaurant, $item, $data) {
 
             $item->update([
                 'price'     => $data['price'] ?? $item->price,
                 'currency'  => $data['currency'] ?? $item->currency,
-                'meta'      => $meta,
                 'is_active' => (bool)($data['is_active'] ?? $item->is_active),
             ]);
 
@@ -178,18 +149,13 @@ class ItemController extends Controller
             }
 
             if ($request->file('image') && $request->file('image')->isValid()) {
-
                 try {
-
                     $path = app(ImagePipelineService::class)
                         ->replace($request->file('image'), $restaurant->id, $item->image_path);
 
-                    $item->update([
-                        'image_path' => $path
-                    ]);
+                    $item->update(['image_path' => $path]);
 
                 } catch (\Throwable $e) {
-
                     \Log::error('Image replace failed', [
                         'error' => $e->getMessage()
                     ]);
@@ -202,59 +168,46 @@ class ItemController extends Controller
         });
     }
 
-    public function reorder(ReorderItemsRequest $request, Restaurant $restaurant, Section $section)
-    {
-        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
-
-        if ((int)$section->restaurant_id !== (int)$restaurant->id) abort(404);
-
-        $ids = $request->validated()['item_ids'];
-
-        $count = Item::where('section_id', $section->id)->whereIn('id', $ids)->count();
-        if ($count !== count($ids)) abort(422);
-
-        DB::transaction(function () use ($section, $ids) {
-            foreach ($ids as $i => $id) {
-                Item::where('id', $id)
-                    ->where('section_id', $section->id)
-                    ->update(['sort_order' => $i + 1]);
-            }
-        });
-
-        return response()->json(['ok' => true]);
-    }
-
-    public function toggleActive(Request $request, Restaurant $restaurant, Item $item)
+    public function updateMeta(Request $request, Restaurant $restaurant, Item $item)
     {
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
         $section = $item->section;
-        if (!$section || (int)$section->restaurant_id !== (int)$restaurant->id) abort(404);
-
-        $item->is_active = !$item->is_active;
-        $item->save();
-
-        return back();
-    }
-
-    public function destroy(Request $request, Restaurant $restaurant, Item $item)
-    {
-        $user = $request->user();
-
-        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
-            abort(403);
+        if (!$section || (int)$section->restaurant_id !== (int)$restaurant->id) {
+            abort(404);
         }
 
-        Permissions::abortUnless($user, 'items.delete');
+        $data = $request->all();
 
-        $item->loadMissing('section');
-        abort_unless((int)$item->section->restaurant_id === (int)$restaurant->id, 404);
+        // 🔥 DTO вместо массива
+        $meta = ItemMetaDTO::fromModel($item);
 
-        $item->deleted_by_user_id = $user->id ?? null;
+        $meta->apply($data);
+
+        // --- бизнес логика ---
+
+        if ($meta->isNew) {
+            Item::where('section_id', $section->id)
+                ->where('id', '!=', $item->id)
+                ->update([
+                    'meta' => DB::raw("JSON_SET(COALESCE(meta, JSON_OBJECT()), '$.is_new', false)")
+                ]);
+        }
+
+        if ($meta->dishOfDay) {
+            Item::where('section_id', $section->id)
+                ->where('id', '!=', $item->id)
+                ->update([
+                    'meta' => DB::raw("JSON_SET(COALESCE(meta, JSON_OBJECT()), '$.dish_of_day', false)")
+                ]);
+        }
+
+        $item->meta = $meta->toArray();
         $item->save();
 
-        $item->delete();
-
-        return back()->with('success', __('admin.items.deleted') ?? 'Deleted');
+        return response()->json([
+            'success' => true,
+            'meta' => $meta->toArray(),
+        ]);
     }
 }

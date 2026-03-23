@@ -16,19 +16,16 @@ class ImageService
 
         $path = ltrim($path, '/');
 
-        // ✅ 1. сначала пробуем как есть (на случай assets/... или полного пути)
         if (File::exists(public_path($path))) {
             return '/' . $path;
         }
 
-        // ✅ 2. основной кейс: добавляем assets/
         $assetPath = 'assets/' . $path;
 
         if (File::exists(public_path($assetPath))) {
             return '/' . $assetPath;
         }
 
-        // ✅ 3. system icons (uuid.svg)
         $iconPath = 'assets/system/icons/' . $path;
 
         if (File::exists(public_path($iconPath))) {
@@ -52,5 +49,40 @@ class ImageService
         if (File::exists($retina)) {
             File::delete($retina);
         }
+    }
+
+    public function restaurantQrPath(int $restaurantId, string $file): string
+    {
+        return "restaurants/{$restaurantId}/qr/{$file}";
+    }
+
+    public function qr(?string $path): string
+    {
+
+        $fallback = config('image.system.qr', '/assets/system/qr/fallback.webp');
+
+        if (!$path) {
+            return $fallback;
+        }
+
+        $path = ltrim($path, '/');
+
+        if (File::exists(public_path($path))) {
+            return '/' . $path;
+        }
+
+        $assetPath = 'assets/' . $path;
+
+        if (File::exists(public_path($assetPath))) {
+            return '/' . $assetPath;
+        }
+
+        $iconPath = 'assets/system/icons/' . $path;
+
+        if (File::exists(public_path($iconPath))) {
+            return '/' . $iconPath;
+        }
+
+        return $fallback;
     }
 }

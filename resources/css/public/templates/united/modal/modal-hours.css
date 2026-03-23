@@ -18,7 +18,7 @@
     text-align:center;
     font-size:18px;
     font-weight:700;
-    color:#111;
+    color:var(--text-primary);
 }
 
 
@@ -43,13 +43,15 @@
 
     border-radius:999px;
 
+    color:var(--text-primary);
+
     transition:
         background .15s ease,
         transform .08s ease;
 }
 
 .hours-close:hover{
-    background:rgba(0,0,0,.05);
+    background: color-mix(in srgb, var(--card-bg) 85%, black);
 }
 
 .hours-close:active{
@@ -86,18 +88,21 @@
 
     border-radius:12px;
 
+    background: var(--card-bg);
+
+    border:1px solid var(--border-color);
+
     transition:
         background .15s ease,
         border-color .15s ease;
 }
 
-.hours-row:not(.hours-today){
-    border:1px solid rgba(0,0,0,.04);
-}
+
+/* today */
 
 .hours-today{
-    background:rgba(0,0,0,.04);
-    border:1px solid rgba(0,0,0,.10);
+    background: color-mix(in srgb, var(--text-primary) 8%, var(--card-bg));
+    border:1px solid color-mix(in srgb, var(--text-primary) 25%, transparent);
 }
 
 
@@ -110,12 +115,12 @@
 .hours-day{
     font-size:15px;
     font-weight:500;
-    color:#111;
+    color:var(--text-primary);
 }
 
 .hours-time{
     font-size:15px;
-    color:#363434;
+    color:var(--text-muted);
 }
 
 
@@ -127,6 +132,6 @@
 
 .hours-today-label{
     font-size:13px;
-    color:#777;
+    color:var(--text-muted);
     margin-left:6px;
 }

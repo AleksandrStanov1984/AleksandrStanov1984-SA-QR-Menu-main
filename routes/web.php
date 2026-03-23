@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\MenuProfileController;
 use App\Http\Controllers\Admin\MenuBuilderController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\MenuImportController;
+use App\Http\Controllers\Admin\RestaurantQrController;
 
 use App\Http\Controllers\Public\AuthorController;
 
@@ -189,6 +190,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/restaurants/{restaurant}/hours',
             [RestaurantHoursController::class, 'update']
         )->name('restaurants.hours.update');
+
+        // QR
+        Route::post(
+            'restaurants/{restaurant}/qr/generate',
+            [RestaurantQrController::class, 'generate']
+        )->name('admin.restaurants.qr.generate');
+
+        Route::get(
+            'restaurants/{restaurant}/qr/download/{format}',
+            [RestaurantQrController::class, 'download']
+        )->name('restaurants.qr.download');
 
 
     });

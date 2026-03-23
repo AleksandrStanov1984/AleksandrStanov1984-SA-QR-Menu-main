@@ -118,6 +118,21 @@ class RestaurantController extends Controller
             'postal_code' => $data['postal_code'] ?? null,
         ]);
 
+        $restaurant->token()->firstOrCreate(
+            ['restaurant_id' => $restaurant->id],
+            ['token' => Str::random(10)]
+        );
+
+        $restaurant->qr()->firstOrCreate(
+            ['restaurant_id' => $restaurant->id],
+            [
+                'qr_path' => null,
+                'logo_path' => null,
+                'background_path' => null,
+                'settings' => [],
+            ]
+        );
+
         // create restaurant user
         User::create([
             'name' => $this->cleanText($data['user_name']),

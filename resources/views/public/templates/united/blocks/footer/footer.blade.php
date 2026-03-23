@@ -59,6 +59,7 @@
 
     @endif
 
+    @include('public.templates.united.blocks.header.restaurant-info')
 
     {{-- ========================================
        SOCIAL ICONS
@@ -75,11 +76,11 @@
                     @continue(empty($social['url']))
 
                     @php
-                        // 🔥 если из БД приходит UUID.svg
+
                         if (!empty($social['icon'])) {
                             $icon = $img->url($social['icon']);
                         } else {
-                            // fallback по названию
+
                             $fallbackIcon = 'assets/system/icons/' . strtolower($social['title']) . '.svg';
                             $icon = asset($fallbackIcon);
                         }

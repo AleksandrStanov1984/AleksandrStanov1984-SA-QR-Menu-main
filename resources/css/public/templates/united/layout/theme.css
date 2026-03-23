@@ -1,5 +1,30 @@
 /*
 |--------------------------------------------------------------------------
+| THEME BASE (fallback)
+|--------------------------------------------------------------------------
+*/
+
+:root{
+    --page-bg:#fafafa;
+
+    --card-bg:#ffffff;
+
+    --header-bg:rgba(255,255,255,.9);
+    --footer-bg:#ffffff;
+
+    --modal-bg:#ffffff;
+
+    --text-primary:#111827;
+    --text-muted:#6b7280;
+
+    --border-color:rgba(0,0,0,.08);
+
+    --icon-color:#111827;
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | THEME: LIGHT
 |--------------------------------------------------------------------------
 */
@@ -10,12 +35,17 @@ body.theme-light{
 
     --card-bg:#ffffff;
 
-    --text-primary:#111827;
+    --header-bg:rgba(255,255,255,.9);
+    --footer-bg:#ffffff;
 
+    --modal-bg:#ffffff;
+
+    --text-primary:#111827;
     --text-muted:#6b7280;
 
     --border-color:rgba(0,0,0,.08);
 
+    --icon-color:#111827;
 }
 
 
@@ -31,10 +61,15 @@ body.theme-dark{
 
     --card-bg:#1c1c1e;
 
-    --text-primary:#f3f4f6;
+    --header-bg:rgba(17,17,17,.9);
+    --footer-bg:#1c1c1e;
 
+    --modal-bg:#1c1c1e;
+
+    --text-primary:#f3f4f6;
     --text-muted:#9ca3af;
 
     --border-color:rgba(255,255,255,.08);
 
+    --icon-color:#f3f4f6;
 }

@@ -13,7 +13,7 @@
     width: 260px;
     height: 100vh;
 
-    background: rgba(255,255,255,.96);
+    background: color-mix(in srgb, var(--card-bg) 96%, transparent);
 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -23,10 +23,12 @@
     z-index: 200;
 
     box-shadow:
-        0 10px 30px rgba(0,0,0,.12);
+        0 10px 30px rgba(0,0,0,.18);
 
     display: flex;
     flex-direction: column;
+
+    border-right: 1px solid var(--border-color);
 }
 
 .mobile-drawer.drawer-open {
@@ -48,13 +50,15 @@
 
     cursor: pointer;
 
-    border-bottom: 1px solid rgba(0,0,0,.06);
+    color: var(--text-primary);
+
+    border-bottom: 1px solid var(--border-color);
 
     transition: background .15s ease;
 }
 
 .drawer-close:hover {
-    background: rgba(0,0,0,.04);
+    background: color-mix(in srgb, var(--card-bg) 85%, black);
 }
 
 
@@ -78,26 +82,74 @@
 
     text-decoration: none;
 
-    color: #222;
+    color: var(--text-primary);
 
     font-size: 15px;
     font-weight: 500;
 
-    border-bottom: 1px solid rgba(0,0,0,.04);
+    border-bottom: 1px solid var(--border-color);
 
     transition:
         background .15s ease,
-        transform .05s ease;
+        transform .05s ease,
+        color .15s ease;
 }
 
 .drawer-link:hover {
-    background: rgba(0,0,0,.04);
+    background: color-mix(in srgb, var(--card-bg) 80%, black);
 }
+
 
 /* tap effect */
 
 .drawer-link:active {
     transform: scale(.98);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ACTIVE LINK
+|--------------------------------------------------------------------------
+*/
+
+.drawer-link.active {
+
+    background: var(--text-primary);
+
+    color: var(--card-bg);
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| OVERLAY (ВАЖНО!)
+|--------------------------------------------------------------------------
+*/
+
+.drawer-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.4);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity .2s ease;
+
+    z-index: 150;
+}
+
+.drawer-overlay.active {
+
+    opacity: 1;
+
+    pointer-events: all;
 }
 
 

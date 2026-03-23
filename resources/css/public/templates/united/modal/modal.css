@@ -48,9 +48,11 @@
 
     max-width:520px;
 
-    background:#fff;
+    background:var(--card-bg);
 
     border-radius:18px;
+
+    border:1px solid var(--border-color);
 
     box-shadow:0 20px 60px rgba(0,0,0,.25);
 
@@ -85,6 +87,34 @@
 
 /*
 |--------------------------------------------------------------------------
+| CLOSE BUTTON
+|--------------------------------------------------------------------------
+*/
+
+.modal-close{
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    color:var(--text-primary);
+
+    opacity:.7;
+
+    transition:opacity .15s ease, transform .1s ease;
+}
+
+.modal-close:hover{
+    opacity:1;
+}
+
+.modal-close:active{
+    transform:scale(.9);
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | BODY
 |--------------------------------------------------------------------------
 */
@@ -92,6 +122,8 @@
 .modal-body{
 
     padding:10px 18px 18px;
+
+    color:var(--text-primary);
 
 }
 
@@ -165,6 +197,8 @@
 
     font-size:16px;
 
+    color:var(--text-primary);
+
 }
 
 
@@ -177,12 +211,14 @@
 .menu-modal .menu-item-badge--new{
 
     background:#16a34a;
+    color:#fff;
 
 }
 
 .menu-modal .menu-item-badge--dish{
 
     background:#ea580c;
+    color:#fff;
 
 }
 

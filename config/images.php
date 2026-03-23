@@ -47,21 +47,15 @@ return [
     */
 
     'system' => [
-
         'author' => 'system/author/author.webp',
-
         'social_icons' => 'system/social',
-
         'icons' => 'system/icons',
 
         'fallbacks' => [
-
             'food' => 'system/fallback/food.webp',
-
             'logo' => 'system/fallback/logo.webp',
-
         ],
-
+        'qr'   => 'system/qr/fallback.webp',
     ],
 
     /*
@@ -81,6 +75,11 @@ return [
             'menu_items' => 'menu/items',
             'categories' => 'categories',
             'gallery'    => 'gallery',
+
+            'qr'         => 'qr',
+            'qr_logo'    => 'qr/logo',
+            'qr_bg'      => 'qr/background',
+            'qr_final'   => 'qr/final',
 
         ],
 

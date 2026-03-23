@@ -11,7 +11,7 @@ class ImagePipelineService
     public function uploadAndProcess(
         UploadedFile $file,
         int $restaurantId,
-        string $segment = 'menu/items' // 🔥 дефолт
+        string $segment = 'menu/items'
     ): string
     {
         $filename = (string) Str::uuid();
@@ -57,7 +57,7 @@ class ImagePipelineService
     ): string
     {
         if ($oldPath) {
-            app(\App\Services\ImageService::class)->delete($oldPath);
+            app(ImageService::class)->delete($oldPath);
         }
 
         return $this->uploadAndProcess($file, $restaurantId, $segment);

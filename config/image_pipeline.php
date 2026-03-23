@@ -105,4 +105,24 @@ return [
 
     ],
 
+    'qr' => [
+        'name' => 'qr',
+        'match' => 'restaurants/*/qr/*',
+        'format' => 'webp',
+        'quality' => 90,
+        'sizes' => [800],
+        'hash_names' => false,
+        'keep_source' => false,
+    ],
+
+    'system_qr' => [
+        'name' => 'system_qr',
+        'match' => 'system/qr/*', // 👈 ВАЖНО
+        'format' => 'webp',
+        'quality' => 90,
+        'sizes' => [800],
+        'hash_names' => false,
+        'keep_source' => false,
+    ],
+
 ];

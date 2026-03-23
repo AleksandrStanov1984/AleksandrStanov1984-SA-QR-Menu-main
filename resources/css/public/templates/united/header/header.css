@@ -9,10 +9,10 @@
     position: sticky;
     top: 0;
 
-    background: rgba(255,255,255,.92);
+    background: color-mix(in srgb, var(--card-bg) 92%, transparent);
     backdrop-filter: blur(10px);
 
-    border-bottom: 1px solid rgba(0,0,0,.06);
+    border-bottom: 1px solid var(--border-color);
 
     z-index: 100;
 }
@@ -49,6 +49,8 @@
     font-size: 18px;
 
     letter-spacing: .2px;
+
+    color: var(--text-primary);
 }
 
 
@@ -84,6 +86,8 @@
 
     padding: 4px;
 
+    color: var(--text-primary);
+
     transition:
         transform .12s ease,
         opacity .12s ease;
@@ -113,9 +117,9 @@
 
 .lang-toggle {
 
-    background: rgba(0,0,0,.04);
+    background: var(--card-bg);
 
-    border: none;
+    border: 1px solid var(--border-color);
 
     font-size: 13px;
     font-weight: 500;
@@ -126,7 +130,7 @@
     align-items: center;
     gap: 6px;
 
-    color: #333;
+    color: var(--text-primary);
 
     padding: 6px 10px;
 
@@ -138,7 +142,7 @@
 }
 
 .lang-toggle:hover {
-    background: rgba(0,0,0,.08);
+    background: color-mix(in srgb, var(--card-bg) 85%, black);
 }
 
 .lang-toggle:active {
@@ -150,6 +154,7 @@
 
 .lang-arrow {
     font-size: 10px;
+    opacity: .7;
 }
 
 
@@ -166,14 +171,14 @@
     top: 36px;
     right: 0;
 
-    background: rgba(255,255,255,.98);
+    background: var(--card-bg);
 
-    border: 1px solid rgba(0,0,0,.06);
+    border: 1px solid var(--border-color);
 
     border-radius: 10px;
 
     box-shadow:
-        0 10px 25px rgba(0,0,0,.08);
+        0 10px 25px rgba(0,0,0,.12);
 
     display: none;
     flex-direction: column;
@@ -200,7 +205,7 @@
 
     text-decoration: none;
 
-    color: #222;
+    color: var(--text-primary);
 
     font-size: 13px;
 
@@ -210,7 +215,7 @@
 }
 
 .lang-menu a:hover {
-    background: rgba(0,0,0,.05);
+    background: color-mix(in srgb, var(--card-bg) 85%, black);
 }
 
 .lang-menu a:active {

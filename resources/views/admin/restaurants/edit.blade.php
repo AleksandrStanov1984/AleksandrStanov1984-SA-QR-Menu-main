@@ -19,6 +19,8 @@
 
 @include('admin.restaurants.components.branding-backgrounds.index', ['restaurant' => $restaurant])
 
+@include('admin.restaurants.components.qr._qr')
+
 @include('admin.restaurants.components.hours._hours')
 
 @include('admin.restaurants.components.edit._menu', [

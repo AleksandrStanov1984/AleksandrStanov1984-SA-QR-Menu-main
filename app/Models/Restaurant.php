@@ -39,9 +39,9 @@ class Restaurant extends Model
         'monthly_price' => 'decimal:2',
     ];
 
-    public function tokens()
+    public function token()
     {
-        return $this->hasMany(RestaurantToken::class);
+        return $this->hasOne(RestaurantToken::class);
     }
 
     public function sections()
@@ -81,5 +81,10 @@ class Restaurant extends Model
                 ->delete($restaurant->id);
 
         });
+    }
+
+    public function qr()
+    {
+        return $this->hasOne(RestaurantQr::class);
     }
 }

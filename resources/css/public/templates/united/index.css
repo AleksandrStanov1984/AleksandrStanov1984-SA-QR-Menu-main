@@ -1,3 +1,17 @@
+
+/*
+|--------------------------------------------------------------------------
+| SA QR MENU — CSS ENTRY
+|--------------------------------------------------------------------------
+| Архитектура:
+| 1. Base (reset, variables)
+| 2. Theme (light/dark)
+| 3. Layout (page, container)
+| 4. Components (header, footer, etc.)
+| 5. Templates (united)
+|
+*/
+
 /*
 |--------------------------------------------------------------------------
 | UNITED TEMPLATE
@@ -5,34 +19,27 @@
 */
 
 /* layout */
-
 @import "./layout/base.css";
 @import "./layout/layout.css";
 @import "./layout/theme.css";
 
 /* header */
-
 @import "./header/header.css";
 @import "./header/restaurant-info.css";
 
 /* footer */
-
 @import "./footer/footer.css";
 
 /* categories */
-
 @import "./categories/category-nav.css";
 
 /* menu */
-
 @import "./menu/menu-grid.css";
 @import "./menu/item-card.css";
 
 /* modal */
-
 @import "./modal/modal.css";
 @import "./modal/modal-hours.css";
 
 /* drawer */
-
 @import "./drawer/drawer.css";

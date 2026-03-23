@@ -13,7 +13,7 @@
 
 <body
     data-theme-mode="{{ $vm->branding['theme_mode'] ?? 'light' }}"
-    class="theme-light"
+    class="theme-{{ $vm->branding['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
 >
 
 @include('public.templates.united.blocks.header.header')
@@ -29,6 +29,8 @@
 @include('public.templates.united.blocks.menu.menu-section')
 
 </main>
+
+@include('public.templates.united.blocks.categories.category-nav')
 
 @include('public.templates.united.blocks.footer.footer')
 

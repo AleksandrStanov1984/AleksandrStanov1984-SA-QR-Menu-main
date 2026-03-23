@@ -5,7 +5,7 @@
     function showQrLoader() {
         const loader = document.getElementById('qrLoader');
         if (loader) {
-            loader.style.display = 'block';
+            loader.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
     }
@@ -18,9 +18,16 @@
         }
     }
 
+    // =========================
+    // FORCE RENDER FRAME
+    // =========================
+    function nextFrame() {
+        return new Promise(resolve => requestAnimationFrame(resolve));
+    }
+
 
     // =========================
-    // GENERATE QR (WITH FILES)
+    // GENERATE QR (FETCH)
     // =========================
     document.addEventListener('click', async (e) => {
 
@@ -36,11 +43,11 @@
 
         const formData = new FormData();
 
-        if (logoInput && logoInput.files[0]) {
+        if (logoInput?.files[0]) {
             formData.append('logo', logoInput.files[0]);
         }
 
-        if (bgInput && bgInput.files[0]) {
+        if (bgInput?.files[0]) {
             formData.append('background', bgInput.files[0]);
         }
 
@@ -49,9 +56,12 @@
         btn.disabled = true;
         btn.innerText = '...';
 
-        showQrLoader(); // 🔥
-
         try {
+            showQrLoader();
+
+            await nextFrame();
+            await nextFrame();
+
             const res = await fetch(`/admin/restaurants/${restaurantId}/qr/generate`, {
                 method: 'POST',
                 headers: {
@@ -65,10 +75,11 @@
 
             if (data.success) {
                 location.reload();
-            } else {
-                console.error('QR generate failed', data);
-                hideQrLoader();
+                return;
             }
+
+            console.error('QR generate failed', data);
+            hideQrLoader();
 
         } catch (err) {
             console.error(err);
@@ -81,23 +92,37 @@
 
 
     // =========================
-    // DOWNLOAD WITH LOADER
+    // DOWNLOAD WITH LOADER (FINAL WORKING)
     // =========================
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', async (e) => {
 
-        const link = e.target.closest('.qr-dropdown a');
+        const link = e.target.closest('[data-qr-download]');
         if (!link) return;
 
         e.preventDefault();
 
         const url = link.getAttribute('href');
 
-        showQrLoader(); // 🔥 показываем loader
+        showQrLoader();
 
-        // даём браузеру отрисовать loader
+        // 🔥 создаём скрытый iframe
+        let iframe = document.getElementById('qrDownloadFrame');
+
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'qrDownloadFrame';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+
+        // 🔥 запускаем download через iframe
+        iframe.src = url;
+
+        // 🔥 авто-hide loader (fallback)
         setTimeout(() => {
-            window.location.href = url;
-        }, 100);
+            hideQrLoader();
+        }, 2000);
+
     });
 
 

@@ -58,11 +58,17 @@
 
                         <div id="qrDropdown" class="qr-dropdown">
 
-                            <a href="{{ route('admin.restaurants.qr.download', [$restaurant, 'svg']) }}">
+                            <a
+                                href="{{ route('admin.restaurants.qr.download', [$restaurant, 'svg']) }}"
+                                data-qr-download="svg"
+                            >
                                 SVG
                             </a>
 
-                            <a href="{{ route('admin.restaurants.qr.download', [$restaurant, 'pdf']) }}">
+                            <a
+                                href="{{ route('admin.restaurants.qr.download', [$restaurant, 'pdf']) }}"
+                                data-qr-download="pdf"
+                            >
                                 PDF
                             </a>
 

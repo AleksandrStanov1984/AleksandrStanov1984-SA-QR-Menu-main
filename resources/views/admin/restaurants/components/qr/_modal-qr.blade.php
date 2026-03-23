@@ -33,7 +33,6 @@
                 data-generate-qr
                 data-restaurant-id="{{ $restaurant->id }}"
                 id="qrGenerateBtn"
-                disabled
             >
                 {{ __('qr.modal.generate') }}
             </button>

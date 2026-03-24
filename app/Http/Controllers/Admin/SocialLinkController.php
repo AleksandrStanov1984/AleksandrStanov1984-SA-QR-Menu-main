@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\RestaurantSocialLink;
+use App\Services\ImageService;
 use App\Support\Permissions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -123,7 +124,7 @@ class SocialLinkController extends Controller
             $iconPath = app(\App\Services\ImagePipelineService::class)
                 ->uploadSvg(
                     $request->file('icon'),
-                    'system/icons'
+                    "restaurants/{$restaurant->id}/social"
                 );
         }
 
@@ -177,13 +178,13 @@ class SocialLinkController extends Controller
         // upload new icon
         if ($request->hasFile('icon')) {
             if (!empty($link->icon_path)) {
-                app(\App\Services\ImageService::class)->delete($link->icon_path);
+                app(ImageService::class)->delete($link->icon_path);
             }
 
             $link->icon_path = app(\App\Services\ImagePipelineService::class)
                 ->uploadSvg(
                     $request->file('icon'),
-                    'system/icons'
+                    "restaurants/{$restaurant->id}/social"
                 );
         }
 

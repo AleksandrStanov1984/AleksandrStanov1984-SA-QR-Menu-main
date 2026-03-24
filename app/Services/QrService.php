@@ -42,7 +42,7 @@ class QrService
         );
 
         // =========================
-        // RAW (НЕ ТРОГАЕМ если есть)
+        // RAW
         // =========================
         $rawPath = $qrRecord->settings['raw_path'] ?? null;
 
@@ -67,8 +67,8 @@ class QrService
         $rawFullPath = public_path('assets/'.$rawPath);
 
         // =========================
-// LOGO
-// =========================
+        // LOGO
+        // =========================
         if ($logo) {
 
             // удаляем старый QR logo
@@ -117,7 +117,7 @@ class QrService
         }
 
         // =========================
-        // FINAL (ВСЕГДА 1)
+        // FINAL
         // =========================
         $this->deleteQrFile($qrRecord->qr_path, $restaurant->id);
 

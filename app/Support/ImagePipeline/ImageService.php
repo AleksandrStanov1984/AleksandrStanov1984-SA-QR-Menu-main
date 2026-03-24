@@ -505,14 +505,63 @@ final class ImageService
         return $this->manager->canvas($w, $h);
     }
 
-    public function url(?string $path): ?string
+    public function url(?string $path, ?string $title = null): string
     {
+        $fallback = config('image.urls.fallback', '/assets/system/fallback/food.webp');
+
+        // 1. если нет пути — решаем: это иконка или нет
         if (!$path) {
-            return null;
+
+            // если есть title → считаем что это social icon
+            if ($title) {
+                return $this->socialIcon(null, $title);
+            }
+
+            return $fallback;
         }
 
-        return rtrim((string) config('image_pipeline.urls.assets', '/assets'), '/')
-            . '/'
-            . ltrim($path, '/');
+        $path = ltrim($path, '/');
+
+        // 2. прямой путь
+        if (File::exists(public_path($path))) {
+            return '/' . $path;
+        }
+
+        // 3. assets/...
+        $assetPath = 'assets/' . $path;
+
+        if (File::exists(public_path($assetPath))) {
+            return '/' . $assetPath;
+        }
+
+        // 4. если путь есть, но файл не найден → fallback
+        if ($title) {
+            return $this->socialIcon(null, $title);
+        }
+
+        return $fallback;
+    }
+
+    public function socialIcon(?string $path, ?string $title = null): string
+    {
+        if ($path) {
+            return $this->url($path);
+        }
+
+        $map = [
+            'facebook'  => 'facebook.svg',
+            'instagram' => 'instagram.svg',
+            'whatsapp'  => 'whatsapp.svg',
+            'telegram'  => 'telegram.svg',
+            'tiktok'    => 'tiktok.svg',
+        ];
+
+        $key = strtolower(trim($title ?? ''));
+
+        //  нормализация
+        $key = str_replace(['.com', 'www.', 'https://', 'http://'], '', $key);
+        $key = explode('/', $key)[0];
+
+        return '/assets/system/icons/' . ($map[$key] ?? 'link.svg');
     }
 }

@@ -48,7 +48,6 @@ return [
 
     'system' => [
         'author' => 'system/author/author.webp',
-        'social_icons' => 'system/social',
         'icons' => 'system/icons',
 
         'fallbacks' => [
@@ -80,6 +79,8 @@ return [
             'qr_logo'    => 'qr/logo',
             'qr_bg'      => 'qr/background',
             'qr_final'   => 'qr/final',
+
+            'social'     => 'social',
 
         ],
 

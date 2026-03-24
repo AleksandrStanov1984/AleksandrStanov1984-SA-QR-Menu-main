@@ -71,7 +71,7 @@ class RestaurantQrController extends Controller
 
             $pngPath = $tmpDir . '/qr_' . uniqid() . '.png';
 
-            // 🔥 WINDOWS PATH (ВАЖНО!)
+            // WINDOWS PATH (ВАЖНО!)
             $inkscape = '"C:\\Program Files\\Inkscape\\bin\\inkscape.exe"';
 
             $command = $inkscape

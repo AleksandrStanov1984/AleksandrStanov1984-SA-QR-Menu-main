@@ -21,10 +21,10 @@
 
                     @foreach($footerItems as $it)
 
-                        @continue(empty($it['image_path']))
+                        @continue(empty($it['image']))
 
                         @php
-                            $image = $img->url($it['image_path']);
+                            $image = $img->url($it['image']);
                         @endphp
 
                         <div
@@ -75,24 +75,13 @@
 
                     @continue(empty($social['url']))
 
-                    @php
-
-                        if (!empty($social['icon'])) {
-                            $icon = $img->url($social['icon']);
-                        } else {
-
-                            $fallbackIcon = 'assets/system/icons/' . strtolower($social['title']) . '.svg';
-                            $icon = asset($fallbackIcon);
-                        }
-                    @endphp
-
                     <a href="{{ $social['url'] }}"
                        target="_blank"
                        rel="noopener noreferrer"
                        aria-label="{{ $social['title'] ?? '' }}">
 
                         <img
-                            src="{{ $icon }}"
+                            src="{{ $social['icon'] }}"
                             alt="{{ $social['title'] ?? '' }}"
                             loading="lazy"
                             decoding="async"

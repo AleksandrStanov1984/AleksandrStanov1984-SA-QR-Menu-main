@@ -65,14 +65,13 @@ class ImagePipelineService
 
     public function uploadSvg(UploadedFile $file, string $targetPath): string
     {
-        $filename = (string) \Illuminate\Support\Str::uuid() . '.svg';
+        $filename = (string) Str::uuid() . '.svg';
 
-        $inboxDir = storage_path("app/image-inbox/assets/{$targetPath}");
-        if (!file_exists($inboxDir)) {
-            mkdir($inboxDir, 0777, true);
+        $publicDir = public_path("assets/{$targetPath}");
+
+        if (!file_exists($publicDir)) {
+            mkdir($publicDir, 0777, true);
         }
-
-        $inboxFile = $inboxDir . '/' . $filename;
 
         $realPath = $file->getRealPath();
 
@@ -80,19 +79,28 @@ class ImagePipelineService
             throw new \Exception('Temp SVG missing');
         }
 
-        if (!copy($realPath, $inboxFile)) {
-            throw new \Exception('Failed to copy SVG to inbox');
+        $content = file_get_contents($realPath);
+
+        if (!$content) {
+            throw new \Exception('Invalid SVG');
         }
 
-        $publicDir = public_path("assets/{$targetPath}");
-        if (!file_exists($publicDir)) {
-            mkdir($publicDir, 0777, true);
+        // sanitize
+        $lc = strtolower($content);
+
+        if (
+            str_contains($lc, '<script') ||
+            str_contains($lc, 'onload=') ||
+            str_contains($lc, 'onerror=') ||
+            str_contains($lc, 'javascript:')
+        ) {
+            throw new \Exception('Unsafe SVG');
         }
 
         $publicFile = $publicDir . '/' . $filename;
 
-        if (!copy($inboxFile, $publicFile)) {
-            throw new \Exception('Failed to move SVG to public');
+        if (!file_put_contents($publicFile, $content)) {
+            throw new \Exception('Failed to save SVG');
         }
 
         return "{$targetPath}/{$filename}";

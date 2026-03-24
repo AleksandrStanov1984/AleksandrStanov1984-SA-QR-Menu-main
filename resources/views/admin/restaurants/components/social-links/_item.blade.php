@@ -8,13 +8,11 @@
     $deleted = !empty($link->deleted_at);
     $inactive = !$link->is_active;
 
-    // обычному пользователю удалённый не показываем
     if (!$isSuper && $deleted) {
       return;
     }
 
-    // ✅ ВАЖНО: только через ImageService
-    $iconUrl = $link->icon_path ? $img->url($link->icon_path) : null;
+    $iconUrl = $img->socialIcon($link->icon_path, $link->title);
 
     $payload = [
       'id' => $link->id,
@@ -55,16 +53,10 @@
             <div style="display:flex; gap:12px; align-items:center; min-width:260px; flex:1 1 auto;">
 
                 <div class="sl-icon-box">
-                    @if($iconUrl)
-                        <img
-                            src="{{ $iconUrl }}"
-                            alt="icon"
-                            style="width:100%; height:100%; object-fit:contain; display:block;">
-                    @else
-                        <div class="mut" style="font-size:12px; text-align:center; padding:6px;">
-                            SVG
-                        </div>
-                    @endif
+                    <img
+                        src="{{ $iconUrl }}"
+                        alt="icon"
+                        style="width:100%; height:100%; object-fit:contain; display:block;">
                 </div>
 
                 <div style="min-width:0; flex:1 1 auto;">

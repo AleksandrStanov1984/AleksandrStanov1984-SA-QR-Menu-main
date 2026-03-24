@@ -57,7 +57,6 @@ class MenuViewModel
                 )
         ];
 
-        // 🔥 BRANDING FIX
         $this->branding = [
             'logo'       => $this->images->url($restaurant->logo_path),
             'bg_light'   => $this->images->url($meta['bg_light'] ?? null),
@@ -193,7 +192,7 @@ class MenuViewModel
                 return [
                     'title' => $link->title,
                     'url'   => $link->url,
-                    'icon'  => $this->images->url($link->icon_path),
+                    'icon' => $this->images->socialIcon($link->icon_path, $link->title),
                 ];
             })
             ->values()
@@ -212,7 +211,7 @@ class MenuViewModel
             ->where('is_active', true);
 
         return $items
-            ->filter(fn($i) => ItemMetaDTO::fromModel($i)->isNew)
+            ->filter(fn($i) => ItemMetaDTO::fromModel($i)->dishOfDay)
             ->sortBy(fn($i) => (int)($i->sort_order ?? 0))
             ->take(12)
             ->map(fn($i) => $this->mapItem($i))

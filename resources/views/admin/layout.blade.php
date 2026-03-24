@@ -6,6 +6,7 @@
 <body>
 
 @include('admin.layout.topbar')
+
 @include('admin.layout.breadcrumbs')
 
 <div class="wrap layout-with-sidebar">

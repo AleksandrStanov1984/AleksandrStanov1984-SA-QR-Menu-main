@@ -13,7 +13,7 @@
             {{ __('admin.profile.restaurant.no_restaurant_context') }}
         </div>
     @else
-        <form method="POST" action="{{ route('admin.profile.restaurant.update') }}">
+        <form method="POST" action="{{ route('admin.restaurants.profile.update', $restaurant) }}">
             @csrf
 
             <div class="grid">

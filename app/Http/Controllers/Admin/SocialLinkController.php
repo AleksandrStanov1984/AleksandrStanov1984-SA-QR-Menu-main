@@ -12,6 +12,18 @@ use Illuminate\Support\Str;
 
 class SocialLinkController extends Controller
 {
+    public function index(Restaurant $restaurant)
+    {
+        $linksArr = $restaurant->socialLinks()
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('admin.restaurants.socials', [
+            'restaurant' => $restaurant,
+            'linksArr' => $linksArr,
+        ]);
+    }
+
     private function assertRestaurantScope(Request $request, Restaurant $restaurant): void
     {
         $user = $request->user();

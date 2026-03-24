@@ -139,4 +139,11 @@ class RestaurantBrandController extends Controller
             return back()->with('error', 'Background upload failed');
         }
     }
+
+    public function edit(Restaurant $restaurant)
+    {
+        return view('admin.restaurants.branding', [
+            'restaurant' => $restaurant,
+        ]);
+    }
 }

@@ -43,4 +43,14 @@ class RestaurantHoursController extends Controller
 
         return back()->with('success', 'Hours updated');
     }
+
+    public function edit(Restaurant $restaurant)
+    {
+        $restaurant->load('hours');
+
+        return view('admin.restaurants.hours', [
+            'restaurant' => $restaurant,
+            'hours' => $restaurant->hours,
+        ]);
+    }
 }

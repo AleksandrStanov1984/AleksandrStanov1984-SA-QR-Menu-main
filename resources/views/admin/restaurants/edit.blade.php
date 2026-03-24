@@ -3,25 +3,7 @@
 @section('title', __('admin.restaurants.edit.title'))
 @section('subtitle', $restaurant->name)
 
-@section('breadcrumbs')
-    <a href="{{ route('admin.home') }}">{{ __('admin.dashboard.home') }}</a>
-    <span class="sep">›</span>
-    <a href="{{ route('admin.restaurants.index') }}">{{ __('admin.restaurants.index.h1') }}</a>
-    <span class="sep">›</span>
-    <span>{{ $restaurant->name }}</span>
-@endsection
-
 @section('content')
-
-@include('admin.restaurants.components.logo', ['restaurant' => $restaurant])
-<br>
-@include('admin.restaurants.components.import.index', ['restaurant' => $restaurant])
-
-@include('admin.restaurants.components.branding-backgrounds.index', ['restaurant' => $restaurant])
-
-@include('admin.restaurants.components.qr._qr')
-
-@include('admin.restaurants.components.hours._hours')
 
 @include('admin.restaurants.components.edit._menu', [
     'restaurant' => $restaurant,

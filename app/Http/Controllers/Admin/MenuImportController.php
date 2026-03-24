@@ -22,6 +22,20 @@ use ZipArchive;
 
 class MenuImportController extends Controller
 {
+    public function index(Restaurant $restaurant)
+    {
+        return view('admin.restaurants.import', [
+            'restaurant' => $restaurant,
+        ]);
+    }
+
+    public function images(Restaurant $restaurant)
+    {
+        return view('admin.restaurants.import-images', [
+            'restaurant' => $restaurant,
+        ]);
+    }
+
     public function importJson(Request $request, Restaurant $restaurant)
         {
             // доступ к импорту (UI может быть скрыт, но backend обязателен)

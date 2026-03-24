@@ -80,6 +80,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/user-permissions', [RestaurantController::class, 'updateUserPermissions'])
             ->name('restaurants.user_permissions');
 
+        Route::get('restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])
+            ->name('restaurants.menu');
+
+        Route::get('restaurants/{restaurant}/profile', [RestaurantController::class, 'profile'])
+            ->name('restaurants.profile');
+
+        Route::post('restaurants/{restaurant}/profile', [ProfileController::class, 'updateRestaurant'])
+            ->name('restaurants.profile.update');
+
         Route::post('restaurants/{restaurant}/languages/import', [LanguageImportController::class, 'import'])
             ->name('restaurants.languages.import');
 
@@ -117,6 +126,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('restaurants/{restaurant}/logo', [RestaurantBrandController::class, 'update'])
             ->name('restaurants.logo.update');
+
+        Route::get('restaurants/{restaurant}/branding', [RestaurantBrandController::class, 'edit'])
+            ->name('restaurants.branding');
 
         Route::post('restaurants/{restaurant}/categories', [CategoryController::class, 'store'])
             ->name('restaurants.categories.store');
@@ -170,6 +182,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('restaurants/{restaurant}/social-links/{link}/toggle-active', [SocialLinkController::class, 'toggleActive'])
             ->name('restaurants.social_links.toggle_active');
 
+        Route::get('restaurants/{restaurant}/socials', [SocialLinkController::class, 'index'])
+            ->name('restaurants.socials');
+
         Route::get('/about', [AboutController::class, 'index'])
             ->name('about');
 
@@ -186,10 +201,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/menu/export.json', [MenuImportController::class, 'downloadMenuJson'])
             ->name('restaurants.menu.export_json');
 
+        Route::get('restaurants/{restaurant}/import', [MenuImportController::class, 'index'])
+            ->name('restaurants.import');
+
+        Route::get('restaurants/{restaurant}/import/images', [MenuImportController::class, 'images'])
+            ->name('restaurants.import.images');
+
 
         Route::post('/restaurants/{restaurant}/hours',
             [RestaurantHoursController::class, 'update']
         )->name('restaurants.hours.update');
+
+        Route::get('restaurants/{restaurant}/hours', [RestaurantHoursController::class, 'edit'])
+            ->name('restaurants.hours');
 
         // QR
         Route::post(
@@ -201,6 +225,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             'restaurants/{restaurant}/qr/download/{format}',
             [RestaurantQrController::class, 'download']
         )->name('restaurants.qr.download');
+
+        Route::get('restaurants/{restaurant}/qr', [RestaurantQrController::class, 'index'])
+            ->name('restaurants.qr');
 
 
     });

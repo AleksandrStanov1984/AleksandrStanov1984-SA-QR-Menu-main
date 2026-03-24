@@ -1,3 +1,6 @@
+
+@include('admin.restaurants.components.sidebar._styles')
+
 <aside class="admin-sidebar" id="adminSidebar" aria-hidden="false">
     {{-- mobile close button (показываем только на мобилке CSS-ом) --}}
     <button type="button" class="sb-mobile-close" data-sidebar-close aria-label="Close menu">✕</button>

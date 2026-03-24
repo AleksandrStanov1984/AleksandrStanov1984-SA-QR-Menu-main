@@ -363,4 +363,157 @@ class RestaurantController extends Controller
         return back()->with('status', __('admin.permissions.saved') ?? 'Saved');
     }
 
+    public function menu(Request $request, Restaurant $restaurant): View
+    {
+        $user = $request->user();
+
+        if (!$user?->is_super_admin) {
+            abort_unless((int)$user->restaurant_id === (int)$restaurant->id, 403);
+        }
+
+        $isSuper = (bool)($user->is_super_admin ?? false);
+
+        $adminLocale = session('admin_locale', app()->getLocale());
+        $locales = $restaurant->enabled_locales ?: ['de'];
+
+        // ===== ТОЛЬКО МЕНЮ =====
+        $catQuery = Section::query()
+            ->where('restaurant_id', $restaurant->id)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order');
+
+        if ($isSuper) {
+            $catQuery->withTrashed();
+        }
+
+        $categories = $catQuery
+            ->with([
+                'translations',
+                'children' => function ($q) use ($isSuper) {
+                    if ($isSuper) $q->withTrashed();
+
+                    $q->orderBy('sort_order')
+                        ->with([
+                            'translations',
+                            'items' => function ($qi) use ($isSuper) {
+                                if ($isSuper) $qi->withTrashed();
+                                $qi->orderBy('sort_order')->with('translations');
+                            },
+                        ]);
+                },
+                'items' => function ($qi) use ($isSuper) {
+                    if ($isSuper) $qi->withTrashed();
+                    $qi->orderBy('sort_order')->with('translations');
+                },
+            ])
+            ->get();
+
+        $menuTree = $this->buildMenuTree($categories);
+
+        return view('admin.restaurants.menu', [
+            'restaurant' => $restaurant,
+            'menuTree' => $menuTree,
+            'locales' => $locales,
+            'adminLocale' => $adminLocale,
+        ]);
+    }
+    private function buildMenuTree($categories)
+    {
+        return $categories->map(function ($cat) {
+
+            $cat->items = ($cat->items ?? collect())->sort(function ($a, $b) {
+                $am = $a->meta ?? [];
+                $bm = $b->meta ?? [];
+
+                $an = (int)!empty($am['is_new']);
+                $bn = (int)!empty($bm['is_new']);
+                if ($an !== $bn) return $bn <=> $an;
+
+                $ad = (int)!empty($am['dish_of_day']);
+                $bd = (int)!empty($bm['dish_of_day']);
+                if ($ad !== $bd) return $bd <=> $ad;
+
+                return ((int)$a->sort_order) <=> ((int)$b->sort_order);
+            })->values();
+
+            $cat->children = ($cat->children ?? collect())->map(function ($sub) {
+
+                $sub->items = ($sub->items ?? collect())->sort(function ($a, $b) {
+                    $am = $a->meta ?? [];
+                    $bm = $b->meta ?? [];
+
+                    $an = (int)!empty($am['is_new']);
+                    $bn = (int)!empty($bm['is_new']);
+                    if ($an !== $bn) return $bn <=> $an;
+
+                    $ad = (int)!empty($am['dish_of_day']);
+                    $bd = (int)!empty($bm['dish_of_day']);
+                    if ($ad !== $bd) return $bd <=> $ad;
+
+                    return ((int)$a->sort_order) <=> ((int)$b->sort_order);
+                })->values();
+
+                return $sub;
+            });
+
+            return $cat;
+        });
+    }
+
+    public function profile(Request $request, Restaurant $restaurant): View
+    {
+        $user = $request->user();
+
+        if (!$user?->is_super_admin) {
+            abort_unless((int)$user->restaurant_id === (int)$restaurant->id, 403);
+        }
+
+        return view('admin.restaurants.profile', [
+            'restaurant' => $restaurant,
+        ]);
+    }
+
+    public function updateRestaurant(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        \App\Support\Permissions::abortUnless($user, 'restaurant.profile.edit');
+
+        // 🔥 получаем ресторан
+        if ($user->is_super_admin) {
+            $restaurantId = session('admin.restaurant_id');
+            abort_unless($restaurantId, 403);
+
+            $restaurant = Restaurant::findOrFail($restaurantId);
+        } else {
+            $restaurant = $user->restaurant;
+        }
+
+        $data = $request->validate([
+            'restaurant_name' => ['required', 'string', 'max:255'],
+            'contact_name' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string'],
+            'contact_email' => ['nullable', 'email'],
+            'city' => ['nullable', 'string'],
+            'street' => ['nullable', 'string'],
+            'house_number' => ['nullable', 'string'],
+            'postal_code' => ['nullable', 'string'],
+        ]);
+
+        // normalize
+        $restaurant->name = $this->capFirst($this->cleanText($data['restaurant_name']));
+        $restaurant->contact_name = $this->cleanText($data['contact_name'] ?? null);
+        $restaurant->phone = $this->cleanPhone($data['phone'] ?? null);
+        $restaurant->contact_email = $this->cleanText($data['contact_email'] ?? null);
+        $restaurant->city = $this->capFirst($this->cleanText($data['city'] ?? null));
+        $restaurant->street = $this->capFirst($this->cleanText($data['street'] ?? null));
+        $restaurant->house_number = $this->cleanText($data['house_number'] ?? null);
+        $restaurant->postal_code = $this->cleanText($data['postal_code'] ?? null);
+
+        $restaurant->save();
+
+        return back()->with('status', 'Saved.');
+    }
+
+
 }

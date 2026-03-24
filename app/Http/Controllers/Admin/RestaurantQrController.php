@@ -13,6 +13,16 @@ use App\Services\ImageService;
 
 class RestaurantQrController extends Controller
 {
+    public function index(Restaurant $restaurant)
+    {
+        $restaurant->load('qr');
+
+        return view('admin.restaurants.qr', [
+            'restaurant' => $restaurant,
+            'qr' => $restaurant->qr,
+        ]);
+    }
+
     public function generate(Request $request, Restaurant $restaurant)
     {
         Permissions::abortUnless(auth()->user(), 'restaurants.edit');

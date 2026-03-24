@@ -264,7 +264,7 @@ return [
             'styles_hint' => 'Выберите шрифт/цвет/размер.',
             'empty' => 'Категорий пока нет.',
 
-            'show_image_modal' => 'Aktiv img и modal',
+            'show_image_modal' => 'Активная img и modal',
             'flag_new' => 'Новинка',
             'flag_dish_of_day' => 'Элемент дня',
             'image_hint' => 'Только JPG / PNG / WEBP (SVG запрещён)',
@@ -294,14 +294,43 @@ return [
     ],
 
     'sidebar' => [
+
+        // ===== PROFILE =====
+        'profile_group' => 'Профиль',
         'about' => 'Обо мне',
         'profile' => 'Мой профиль',
+
+        // ===== RESTAURANT =====
+        'restaurant_group' => 'Ресторан',
+        'settings' => 'Настройки',
+        'hours' => 'Часы работы',
+
+        // ===== MENU =====
+        'menu_group' => 'Меню',
         'my_menu' => 'Моё меню',
-        'restaurants_select' => 'Выбор объект',
-        'logo' => 'LOGO',
-        'menu_profile' => 'Профиль',
-            'security' => 'Безопасность',
-            'password' => 'Пароль',
+        'menu_builder' => 'Конструктор меню',
+
+        // ===== CONTENT =====
+        'content_group' => 'Контент',
+        'branding' => 'Брендинг',
+        'socials' => 'Социальные сети',
+
+        // ===== IMPORT =====
+        'import_group' => 'Импорт',
+        'import_menu' => 'Импорт меню',
+        'import_images' => 'Импорт изображений',
+
+        // ===== SECURITY =====
+        'security_group' => 'Безопасность',
+        'security' => 'Безопасность',
+        'password' => 'Пароль',
+        'permissions' => 'Права доступа',
+
+        // ===== SYSTEM =====
+        'restaurants_select' => 'Выбор объекта',
+
+        'menu' => 'Меню',
+
     ],
 
     'security' => [

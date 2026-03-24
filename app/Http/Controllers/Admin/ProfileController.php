@@ -53,12 +53,8 @@ class ProfileController extends Controller
         return back()->with('status', __('admin.profile.saved'));
     }
 
-    public function updateRestaurant(Request $request): RedirectResponse
+    public function updateRestaurant(Request $request, Restaurant $restaurant): RedirectResponse
     {
-        /** @var Restaurant|null $restaurant */
-        $restaurant = $request->attributes->get('admin_restaurant');
-        abort_unless($restaurant, 404);
-
         Permissions::abortUnless($request->user(), 'restaurant.profile.edit');
 
         $data = $request->validate([

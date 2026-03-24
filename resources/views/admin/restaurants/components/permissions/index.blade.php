@@ -1,18 +1,7 @@
 @php
-    $user = auth()->user();
-    $isSuper = (bool)($user?->is_super_admin);
-
-    // user whose permissions we view/edit
-    $targetUser = $restaurantUser ?? null;
-
-    // если не super admin — показываем только свой список прав (read-only)
-    if (!$isSuper) {
-        $targetUser = $user;
-    }
 
     $allPerms = \App\Support\Permissions::registry();
 
-    // grouped: group => [permKey => label]
     $grouped = [];
     foreach ($allPerms as $key => $def) {
         if (!is_string($key) || !is_array($def)) continue;
@@ -27,15 +16,12 @@
     }
     ksort($grouped);
 
-    // permissions array of target user
-    $p = $targetUser?->permissions ?? [];
+    $p = $targetUser->meta['permissions'] ?? [];
 
-    // режим экрана
     $mode = $isSuper ? 'edit' : 'view';
 @endphp
 
-<div class="card" style="margin-top:16px;">
-    <h2>{{ __('admin.permissions.h2') }}</h2>
+@include('admin.restaurants.components.permissions._styles')
 
     @if($mode === 'edit')
         @if(!$targetUser)
@@ -46,7 +32,11 @@
                 <strong>{{ $targetUser->name }}</strong> ({{ $targetUser->email }})
             </div>
 
-            <form method="POST" action="{{ route('admin.restaurants.user_permissions', $restaurant) }}" data-perm-form="1">
+            <form method="POST"
+                  id="permForm"
+                  action="{{ route('admin.restaurants.user_permissions', $restaurant) }}"
+                  data-perm-form="1">
+
                 @csrf
 
                 @include('admin.restaurants.components.permissions._groups-bar', [
@@ -69,8 +59,9 @@
                 ])
             </form>
         @endif
+
     @else
-        {{-- VIEW ONLY: показываем только те права, которые есть --}}
+        {{-- VIEW ONLY: показываем только активные права --}}
         @php
             $enabled = [];
             foreach ($grouped as $g => $items) {
@@ -108,4 +99,4 @@
             ])
         @endif
     @endif
-</div>
+

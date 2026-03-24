@@ -18,13 +18,21 @@
 
     {{-- MAIN CONTENT --}}
     <div class="main-content">
+
         @if(session('status'))
-            <div class="flash">{{ session('status') }}</div>
+            <div class="flash flash-success">
+                {{ __(session('status')) }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="flash flash-error">
+                {{ __(session('error')) }}
+            </div>
         @endif
 
         @if($errors->any())
-            <div class="errors">
-                <strong>{{ __('admin.common.fix_these') }}</strong>
+            <div class="flash flash-error">
                 <ul>
                     @foreach($errors->all() as $e)
                         <li>{{ $e }}</li>
@@ -34,6 +42,7 @@
         @endif
 
         @yield('content')
+
     </div>
 
 </div>
@@ -74,6 +83,28 @@
         border-top-color: #fff;
         border-radius: 50%;
         animation: qr-spin 0.9s linear infinite;
+    }
+
+    .flash-success {
+        background: #1f8f6a;
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .flash-error {
+        background: #e74c3c;
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .flash-success,
+    .flash-error {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        font-weight: 500;
     }
 
     @keyframes qr-spin {
@@ -176,6 +207,21 @@ document.addEventListener('click', function(e){
     }
   });
 })();
+
+document.addEventListener('DOMContentLoaded', function () {
+    const flashes = document.querySelectorAll('.flash-success');
+
+    flashes.forEach(el => {
+        setTimeout(() => {
+            el.style.transition = 'opacity 0.3s ease';
+            el.style.opacity = '0';
+
+            setTimeout(() => {
+                el.remove();
+            }, 300);
+        }, 5000);
+    });
+});
 
 </script>
 

@@ -1,22 +1,22 @@
 @php
-    // В этом месте у тебя уже есть:
-    // $restaurant
-    // $restaurantUser (может быть null)
-    // auth()->user()
+    $authUser = auth()->user();
+    $isSuper = $authUser?->is_super_admin;
 
-    $user = auth()->user();
+    $targetUser = $isSuper
+        ? ($restaurantUser ?? null)
+        : $authUser;
 @endphp
 
-{{-- Super Admin: редактирование прав пользователя ресторана --}}
-@if($user?->is_super_admin)
-    @include('admin.restaurants.components.permissions.index', [
-        'restaurant' => $restaurant,
-        'restaurantUser' => $restaurantUser,
-    ])
+@if(!$targetUser)
+    <div class="errors">
+        {{ __('admin.permissions.no_user') ?? 'User not found' }}
+    </div>
 @else
-    {{-- Обычный пользователь: только просмотр своих прав (без чекбоксов) --}}
+
     @include('admin.restaurants.components.permissions.index', [
         'restaurant' => $restaurant,
-        'restaurantUser' => null, // внутри index сам переключит на auth()->user()
+        'targetUser' => $targetUser,
+        'isSuper' => $isSuper,
     ])
+
 @endif

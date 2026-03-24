@@ -96,13 +96,13 @@
             </a>
         </li>
 
-        @if($user->can('users.permissions'))
-            <li>
-                <a href="{{ route('admin.permissions') }}">
-                    🛡 Права доступа
-                </a>
-            </li>
-        @endif
+        <li>
+            <a href="{{ route('admin.restaurants.permissions', $ctxRestaurant) }}">
+                🛡 Права доступа
+            </a>
+        </li>
+
+
 
 
         {{-- ================= SYSTEM ================= --}}

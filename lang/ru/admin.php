@@ -140,10 +140,7 @@ return [
         'h2' => 'Языки',
         'add_h3' => 'Добавить',
         'default_h3' => 'По умолчанию',
-
-        // ✅ alias used in some blades: admin.languages.default
         'default' => 'По умолчанию',
-
         'locale_label' => 'Код языка (например en, ru)',
         'file_label' => 'JSON-файл меню',
         'set_default_checkbox' => 'Сделать языком по умолчанию',
@@ -155,6 +152,7 @@ return [
 
     'permissions' => [
         'h2' => 'Права пользователя',
+        'saved' => 'Права доступа сохранены',
         'user' => 'Пользователь: ',
         'languages' => 'Языки',
         'sections' => 'Категории / Разделы',
@@ -176,7 +174,6 @@ return [
                 'other' => 'Другое',
                 'socials' => 'Соц. сети',
             ],
-
     ],
 
     'uploads' => [
@@ -221,7 +218,6 @@ return [
             'address_h3' => 'Адрес',
             'saved' => 'Данные заведения сохранены.',
             'no_restaurant_context' => 'В текущем админ-контексте объект не выбран.',
-
         ],
 
         'permissions' => [
@@ -581,6 +577,7 @@ return [
         'keys_required'   => 'Поле keys обязательно и должно быть массивом.',
         'keys_duplicate'  => 'Список keys содержит дубликаты.',
         'keys_mismatch'   => 'Список keys не совпадает с текущим набором элементов.',
+
 
 
 

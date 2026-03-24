@@ -515,5 +515,26 @@ class RestaurantController extends Controller
         return back()->with('status', 'Saved.');
     }
 
+    public function permissions(Request $request, Restaurant $restaurant)
+    {
+        $authUser = $request->user();
+
+        $restaurantUser = User::query()
+            ->where('restaurant_id', $restaurant->id)
+            ->first();
+
+        $allPermissions = config('permissions');
+        $userPermissions = $restaurantUser->meta['permissions'] ?? [];
+
+        return view('admin.restaurants.permissions', [
+            'restaurant' => $restaurant,
+            'authUser' => $authUser,
+            'restaurantUser' => $restaurantUser,
+            'allPermissions' => $allPermissions,
+            'userPermissions' => $userPermissions,
+            'isSuper' => $authUser->is_super_admin,
+        ]);
+    }
+
 
 }

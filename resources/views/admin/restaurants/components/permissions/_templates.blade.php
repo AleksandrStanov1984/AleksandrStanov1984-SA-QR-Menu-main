@@ -1,86 +1,42 @@
 @php
-  $mode = $mode ?? 'view';
+    $mode = $mode ?? 'view';
 @endphp
 
 @foreach($grouped as $g => $items)
-  <template id="tplPermGroup_{{ $g }}">
-    <div class="perm-grid"
-         style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px;">
-      @foreach($items as $permKey => $label)
-        @if($mode === 'edit')
-          <label class="perm-item" style="
-              display:flex;
-              align-items:flex-start;
-              justify-content:space-between;
-              gap:12px;
-              padding:12px 14px;
-              border:1px solid var(--line);
-              border-radius:12px;
-          ">
-              <span style="
-                  flex:1 1 auto;
-                  min-width:0;
-                  white-space:normal;
-                  overflow:visible;
-                  word-break:break-word;
-                  line-height:1.25;
-              ">{{ $label }}</span>
+    <template id="tplPermGroup_{{ $g }}">
 
-              <input type="checkbox"
-                     name="perm[{{ $permKey }}]"
-                     value="1"
-                     @checked(!empty($p[$permKey]))
-                     style="margin-top:2px; flex:0 0 auto;">
-          </label>
+        <div class="perm-grid perm-grid--modal">
 
-        @else
-          <div class="perm-item" style="
-              display:flex;
-              align-items:flex-start;
-              justify-content:space-between;
-              gap:12px;
-              padding:12px 14px;
-              border:1px solid var(--line);
-              border-radius:12px;
-          ">
-              <span style="
-                  flex:1 1 auto;
-                  min-width:0;
-                  white-space:normal;
-                  overflow:visible;
-                  word-break:break-word;
-                  line-height:1.25;
-              ">{{ $label }}</span>
+            @foreach($items as $permKey => $label)
 
-              <span class="pill green" style="font-size:12px; margin-top:1px;">
-                  {{ __('admin.permissions.enabled') ?? 'Включено' }}
-              </span>
-          </div>
+                @if($mode === 'edit')
 
-        @endif
-      @endforeach
-    </div>
+                    <label class="perm-item">
+                        <span class="perm-label">{{ $label }}</span>
 
-<style>
-  .perm-grid--modal{
-    display:grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap:10px;
-  }
+                        <input type="checkbox"
+                               name="perm[{{ $permKey }}]"
+                               value="1"
+                            @checked(!empty($p[$permKey]))>
+                    </label>
 
-.perm-item span{
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  word-break: break-word;
-}
+                @else
 
-  @media (max-width: 720px){
-    .perm-grid--modal{
-      grid-template-columns: 1fr;
-    }
-  }
+                    @if(!empty($p[$permKey]))
+                        <div class="perm-item">
+                            <span class="perm-label">{{ $label }}</span>
 
-</style>
-  </template>
+                            <span class="pill green">
+                                {{ __('admin.permissions.enabled') ?? 'Включено' }}
+                            </span>
+                        </div>
+                    @endif
+
+                @endif
+
+            @endforeach
+
+        </div>
+
+    </template>
 @endforeach

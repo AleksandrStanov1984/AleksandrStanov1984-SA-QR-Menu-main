@@ -109,7 +109,7 @@ class ItemController extends Controller
                 }
             }
 
-            return back()->with('success', __('admin.items.created'));
+            return back()->with('status', __('admin.items.created'));
         });
     }
 
@@ -164,7 +164,7 @@ class ItemController extends Controller
                 }
             }
 
-            return back()->with('success', __('admin.items.updated'));
+            return back()->with('status', __('admin.items.updated'));
         });
     }
 

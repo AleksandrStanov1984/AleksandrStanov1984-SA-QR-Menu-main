@@ -41,7 +41,7 @@ class RestaurantHoursController extends Controller
             }
         });
 
-        return back()->with('success', 'Hours updated');
+        return back()->with('status', 'hours.saved');
     }
 
     public function edit(Restaurant $restaurant)

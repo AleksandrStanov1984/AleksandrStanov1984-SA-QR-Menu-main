@@ -80,6 +80,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/user-permissions', [RestaurantController::class, 'updateUserPermissions'])
             ->name('restaurants.user_permissions');
 
+        Route::get(
+            'restaurants/{restaurant}/permissions', [RestaurantController::class, 'permissions'])
+            ->name('restaurants.permissions');
+
         Route::get('restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])
             ->name('restaurants.menu');
 

@@ -27,14 +27,14 @@ use App\Http\Controllers\Admin\RestaurantQrController;
 use App\Http\Controllers\Public\AuthorController;
 
 
-Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
-
 Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])->name('restaurant.show');
 
 Route::get('/author', [AuthorController::class, 'index'])
     ->name('author');
 
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
+
+Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -71,12 +71,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-        Route::post('/select-restaurant', [DashboardController::class, 'selectRestaurant'])->name('select_restaurant');
 
+        // Restaurant
         Route::resource('restaurants', RestaurantController::class)->except(['show']);
+
+        Route::post('/select-restaurant', [DashboardController::class, 'selectRestaurant'])->name('select_restaurant');
 
         Route::post('restaurants/{restaurant}/toggle', [RestaurantController::class, 'toggleActive'])->name('restaurants.toggle');
 
+
+        // Permissions
         Route::post('restaurants/{restaurant}/user-permissions', [RestaurantController::class, 'updateUserPermissions'])
             ->name('restaurants.user_permissions');
 
@@ -84,21 +88,68 @@ Route::prefix('admin')->name('admin.')->group(function () {
             'restaurants/{restaurant}/permissions', [RestaurantController::class, 'permissions'])
             ->name('restaurants.permissions');
 
-        Route::get('restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])
-            ->name('restaurants.menu');
 
-        Route::get('restaurants/{restaurant}/profile', [RestaurantController::class, 'profile'])
-            ->name('restaurants.profile');
-
-        Route::post('restaurants/{restaurant}/profile', [ProfileController::class, 'updateRestaurant'])
-            ->name('restaurants.profile.update');
-
+        // Language
         Route::post('restaurants/{restaurant}/languages/import', [LanguageImportController::class, 'import'])
             ->name('restaurants.languages.import');
 
         Route::post('restaurants/{restaurant}/languages/default', [LanguageImportController::class, 'setDefault'])
             ->name('restaurants.languages.default');
 
+
+        // Profile
+        Route::get('restaurants/{restaurant}/profile', [RestaurantController::class, 'profile'])
+            ->name('restaurants.profile');
+
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+        Route::post('restaurants/{restaurant}/profile', [ProfileController::class, 'updateRestaurant'])
+            ->name('restaurants.profile.update');
+
+        // restaurant contact/address
+        Route::post('/profile/restaurant', [ProfileController::class, 'updateRestaurant'])
+            ->name('profile.restaurant.update');
+
+
+        // Security Admin
+        Route::post('/profile/change-email', [ProfileCredentialsController::class, 'changeEmail'])
+            ->name('profile.change_email');
+
+        Route::post('/profile/change-password', [ProfileCredentialsController::class, 'changePassword'])
+            ->name('profile.change_password');
+
+        Route::get('/security/password', function (\Illuminate\Http\Request $request) {
+            return view('admin.security.password', [
+                'user' => $request->user(),
+            ]);
+        })->name('security.password');
+
+
+        // Security User
+        Route::get('restaurants/{restaurant}/credentials', [ProfileCredentialsController::class, 'showRestaurantCredentials'])
+            ->name('restaurants.credentials');
+
+        Route::post('restaurants/{restaurant}/credentials/email', [ProfileCredentialsController::class, 'changeRestaurantEmail'])
+            ->name('restaurants.credentials.email');
+
+        Route::post('restaurants/{restaurant}/credentials/password', [ProfileCredentialsController::class, 'changeRestaurantPassword'])
+            ->name('restaurants.credentials.password');
+
+
+        // Brand
+        Route::post('restaurants/{restaurant}/logo', [RestaurantBrandController::class, 'update'])
+            ->name('restaurants.logo.update');
+
+        Route::get('restaurants/{restaurant}/branding', [RestaurantBrandController::class, 'edit'])
+            ->name('restaurants.branding');
+
+        Route::post('restaurants/{restaurant}/branding/backgrounds', [RestaurantBrandController::class, 'updateBackgrounds'])
+            ->name('restaurants.branding.backgrounds.update');
+
+
+        // Section
         Route::get('restaurants/{restaurant}/sections', [SectionController::class, 'index'])
             ->name('restaurants.sections.index');
 
@@ -114,29 +165,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/sections/{section}/toggle', [SectionController::class, 'toggleActive'])
             ->name('restaurants.sections.toggle');
 
-        Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+        Route::delete('restaurants/{restaurant}/sections/{section}', [SectionController::class, 'destroy'])
+            ->name('restaurants.sections.destroy');
 
-        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-        // restaurant contact/address (edited from Profile screen)
-        Route::post('/profile/restaurant', [ProfileController::class, 'updateRestaurant'])
-            ->name('profile.restaurant.update');
-
-        Route::post('/profile/change-email', [ProfileCredentialsController::class, 'changeEmail'])
-            ->name('profile.change_email');
-
-        Route::post('/profile/change-password', [ProfileCredentialsController::class, 'changePassword'])
-            ->name('profile.change_password');
-
-        Route::post('restaurants/{restaurant}/logo', [RestaurantBrandController::class, 'update'])
-            ->name('restaurants.logo.update');
-
-        Route::get('restaurants/{restaurant}/branding', [RestaurantBrandController::class, 'edit'])
-            ->name('restaurants.branding');
+        // Menu Category
+        Route::get('restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])
+            ->name('restaurants.menu');
 
         Route::post('restaurants/{restaurant}/categories', [CategoryController::class, 'store'])
             ->name('restaurants.categories.store');
 
+
+        // Menu Subcategory
+        Route::post('restaurants/{restaurant}/subcategories', [SubcategoryController::class, 'store'])
+            ->name('restaurants.subcategories.store');
+
+
+        // Menu Item
         Route::post('restaurants/{restaurant}/sections/{section}/items', [ItemController::class, 'store'])
             ->name('restaurants.items.store');
 
@@ -146,34 +192,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/sections/{section}/items/reorder', [ItemController::class, 'reorder'])
             ->name('restaurants.items.reorder');
 
-        Route::post('restaurants/{restaurant}/subcategories', [SubcategoryController::class, 'store'])
-            ->name('restaurants.subcategories.store');
-
-        Route::delete('restaurants/{restaurant}/sections/{section}', [SectionController::class, 'destroy'])
-            ->name('restaurants.sections.destroy');
-
         Route::delete('restaurants/{restaurant}/items/{item}', [ItemController::class, 'destroy'])
             ->name('restaurants.items.destroy');
 
         Route::patch('restaurants/{restaurant}/items/{item}/active', [ItemController::class, 'updateActive'])
             ->name('restaurants.items.active');
 
-        Route::get('/menu/profile', [MenuProfileController::class, 'edit'])
-            ->name('menu.profile');
-
-        Route::get('/security/password', function (\Illuminate\Http\Request $request) {
-            return view('admin.security.password', [
-                'user' => $request->user(),
-            ]);
-        })->name('security.password');
-
-        Route::post('restaurants/{restaurant}/branding/backgrounds', [RestaurantBrandController::class, 'updateBackgrounds'])
-            ->name('restaurants.branding.backgrounds.update');
-
         Route::patch('restaurants/{restaurant}/items/{item}/meta', [ItemController::class, 'updateMeta'])
             ->name('restaurants.items.meta');
 
-        // Social Links (footer)
+
+        // Menu Profile
+        Route::get('/menu/profile', [MenuProfileController::class, 'edit'])
+            ->name('menu.profile');
+
+
+        // Social Links
         Route::post('restaurants/{restaurant}/social-links', [SocialLinkController::class, 'store'])
             ->name('restaurants.social_links.store');
 
@@ -189,8 +223,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/socials', [SocialLinkController::class, 'index'])
             ->name('restaurants.socials');
 
+
+        // Author
         Route::get('/about', [AboutController::class, 'index'])
             ->name('about');
+
 
         // MENU IMPORT / EXPORT
         Route::post('restaurants/{restaurant}/menu/import-json', [MenuImportController::class, 'importJson'])
@@ -212,6 +249,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.import.images');
 
 
+        //Hours
         Route::post('/restaurants/{restaurant}/hours',
             [RestaurantHoursController::class, 'update']
         )->name('restaurants.hours.update');

@@ -23,6 +23,7 @@ return [
         'disable' => 'Отключить',
         'enable' => 'Включить',
         'close' => 'Закрыть',
+        'saving' => 'Сохранино!',
     ],
 
     'fields' => [
@@ -40,7 +41,7 @@ return [
         'postal_code' => 'Индекс',
         'user_name' => 'Имя',
         'user_email' => 'E-mail',
-        'email' => 'E-mail',
+        'email' => 'Логин',
         'password' => 'Пароль',
     ],
 
@@ -227,15 +228,15 @@ return [
         ],
 
         'change_email' => [
-            'h2' => 'Смена e-mail',
-            'current_email' => 'Текущий e-mail',
+            'h2' => 'Смена Логина',
+            'current_email' => 'Текущий Логин',
             'current_password' => 'Текущий пароль',
-            'new_email' => 'Новый e-mail',
+            'new_email' => 'Новый Логин',
         ],
 
         'change_password' => [
             'h2' => 'Смена пароля',
-            'current_email' => 'Текущий e-mail',
+            'current_email' => 'Текущий Логин',
             'current_password' => 'Текущий пароль',
             'new_password' => 'Новый пароль',
             'confirm_new_password' => 'Повторите новый пароль',
@@ -293,7 +294,6 @@ return [
 
         // ===== PROFILE =====
         'profile_group' => 'Профиль',
-        'about' => 'Обо мне',
         'profile' => 'Мой профиль',
 
         // ===== RESTAURANT =====
@@ -324,13 +324,7 @@ return [
 
         // ===== SYSTEM =====
         'restaurants_select' => 'Выбор объекта',
-
         'menu' => 'Меню',
-
-    ],
-
-    'security' => [
-        'password_hint' => 'Оставьте пароль пустым, если не хотите менять',
     ],
 
     'branding' => [
@@ -360,13 +354,13 @@ return [
     'security' => [
         'validation' => [
             'current_email' => [
-                'required' => 'Укажите текущий e-mail.',
-                'email' => 'Неверный формат e-mail.',
+                'required' => 'Укажите текущий логин.',
+                'email' => 'Неверный формат логина.',
             ],
             'new_email' => [
-                'required' => 'Укажите новый e-mail.',
-                'email' => 'Неверный формат нового e-mail.',
-                'unique' => 'Этот e-mail уже используется.',
+                'required' => 'Укажите новый логин.',
+                'email' => 'Неверный формат нового догин.',
+                'unique' => 'Этот логин уже используется.',
             ],
             'current_password' => [
                 'required' => 'Введите текущий пароль.',
@@ -382,15 +376,20 @@ return [
             ],
         ],
 
+        'password_hint' => 'Оставьте пароль пустым, если не хотите менять',
+        'h2' => 'Логин, Пароль',
+
         'errors' => [
-            'current_email_wrong' => 'Текущий e-mail указан неверно.',
+            'current_email_wrong' => 'Текущий логин указан неверно.',
             'current_password_wrong' => 'Текущий пароль указан неверно.',
         ],
 
         'status' => [
-            'email_changed' => 'E-mail изменён.',
+            'email_changed' => 'Логин изменён.',
             'password_changed' => 'Пароль изменён.',
         ],
+
+        'user_object' => 'Пользователь / Обьект'
     ],
 
     'socials' => [
@@ -442,7 +441,7 @@ return [
             'phone_value' => '+49 173 5141827',
     ],
 
-    'import' => [
+  /*  'import' => [
         'title' => 'Импорт меню',
         'json_label' => 'Загрузить JSON меню',
         'zip_label' => 'Загрузить ZIP ассетов (картинки/фоны/иконки)',
@@ -464,7 +463,7 @@ return [
             'zip_type_not_allowed' => 'Запрещённый тип файла в ZIP',
             'zip_extract_failed' => 'Ошибка извлечения файла из ZIP',
         ],
-    ],
+    ],*/
 
     // ===== IMPORT =====
         'import' => [
@@ -486,6 +485,7 @@ return [
                   'title' => 'Лог импорта',
                   'download' => 'Скачать лог',
                   'ok' => 'Ошибок нет.',
+                  'has_errors' => 'Обнаружены ошибки',
               ],
 
             'success' => [
@@ -541,15 +541,6 @@ return [
                 'import_failed_open_log' => 'Импорт не выполнен. Откройте “Лог” для деталей.',
             ],
 
-            // ===== LOG / UI =====
-            'log' => [
-                'title' => 'Лог импорта',
-                'btn' => 'Лог',
-                'has_errors' => 'Обнаружены ошибки',
-                'ok' => 'Ошибок нет.',
-                'download' => 'Скачать лог',
-            ],
-
             'rules_modal' => [
                 'title' => 'Правила импорта',
                 'intro' => 'Загрузите JSON (patch) для изменений и ZIP для ассетов. Все изменения применяются только при отсутствии ошибок.',
@@ -577,8 +568,6 @@ return [
         'keys_required'   => 'Поле keys обязательно и должно быть массивом.',
         'keys_duplicate'  => 'Список keys содержит дубликаты.',
         'keys_mismatch'   => 'Список keys не совпадает с текущим набором элементов.',
-
-
 
 
 

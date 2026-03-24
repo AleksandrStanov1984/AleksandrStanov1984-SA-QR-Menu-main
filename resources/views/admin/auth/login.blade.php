@@ -6,9 +6,10 @@
 @section('subtitle', __('admin.auth.login.subtitle'))
 
 @section('content')
-    <div class="row" style="justify-content:center;">
-        <div class="card" style="width: 420px; max-width: 100%;">
-            <h2>{{ __('admin.auth.login.h2') }}</h2>
+    <div class="auth-layout">
+
+        <div class="card auth-card">
+            <h2 class="auth-title">{{ __('admin.auth.login.h2') }}</h2>
 
             <form method="POST" action="{{ route('admin.login.submit') }}" class="form-center">
                 @csrf
@@ -40,5 +41,6 @@
                 </div>
             </form>
         </div>
+
     </div>
 @endsection

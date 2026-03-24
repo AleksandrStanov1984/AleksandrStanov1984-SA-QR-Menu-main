@@ -31,4 +31,24 @@
         justify-content: flex-end;
     }
 
+    /* ===== AUTH CENTER ===== */
+
+    .auth-layout{
+        min-height: calc(100vh - 120px); /* учитывает header */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .auth-card{
+        width: 420px;
+        max-width: 100%;
+    }
+
+    .auth-title{
+        margin: 0 0 24px;
+        text-align: center;
+    }
+
 </style>

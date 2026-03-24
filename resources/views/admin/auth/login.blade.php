@@ -1,5 +1,7 @@
 @extends('admin.layout')
 
+@include('admin.auth._styles')
+
 @section('title', __('admin.auth.login.title'))
 @section('subtitle', __('admin.auth.login.subtitle'))
 
@@ -8,26 +10,30 @@
         <div class="card" style="width: 420px; max-width: 100%;">
             <h2>{{ __('admin.auth.login.h2') }}</h2>
 
-            <form method="POST" action="{{ route('admin.login.submit') }}">
+            <form method="POST" action="{{ route('admin.login.submit') }}" class="form-center">
                 @csrf
 
-                <label>{{ __('admin.fields.email') }}</label>
-                <input
-                    type="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    required
-                    autofocus
-                >
+                <div class="form-group">
+                    <label>{{ __('admin.fields.email') }}</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        required
+                        autofocus
+                    >
+                </div>
 
-                <label>{{ __('admin.fields.password') }}</label>
-                <input
-                    type="password"
-                    name="password"
-                    required
-                >
+                <div class="form-group">
+                    <label>{{ __('admin.fields.password') }}</label>
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                    >
+                </div>
 
-                <div style="margin-top: 14px; display:flex; justify-content:flex-end;">
+                <div class="form-actions">
                     <button class="btn" type="submit">
                         {{ __('admin.auth.login.submit') }}
                     </button>

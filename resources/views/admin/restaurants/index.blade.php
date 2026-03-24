@@ -1,5 +1,7 @@
 @extends('admin.layout')
 
+@include('admin.restaurants._styles')
+
 @section('title', __('admin.restaurants.index.title'))
 @section('subtitle', __('admin.restaurants.index.subtitle'))
 
@@ -24,37 +26,44 @@
         <table class="table">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>{{ __('admin.fields.name') }}</th>
-                <th>{{ __('admin.fields.slug') }}</th>
                 <th>{{ __('admin.fields.template') }}</th>
                 <th>{{ __('admin.fields.languages') }}</th>
                 <th>{{ __('admin.fields.status') }}</th>
                 <th class="right">{{ __('admin.fields.actions') }}</th>
             </tr>
             </thead>
+
             <tbody>
             @foreach($restaurants as $r)
                 <tr>
-                    <td>{{ $r->id }}</td>
 
-                    <td>{{ $r->name }}</td>
-
-                    <td class="mut">{{ $r->slug }}</td>
-
-                    <td class="mut">
-                        {{ __('admin.templates.'.$r->template_key) }}
+                    {{-- 🔥 NAME + ID + SLUG (объединено) --}}
+                    <td>
+                        <div class="restaurant-name">
+                            {{ $r->name }}
+                            <div class="restaurant-sub">
+                                #{{ $r->id }} · {{ $r->slug }}
+                            </div>
+                        </div>
                     </td>
 
+                    {{-- TEMPLATE --}}
+                    <td>
+                        <span class="pill">
+                            {{ __('admin.templates.'.$r->template_key) }}
+                        </span>
+                    </td>
+
+                    {{-- LANGUAGES --}}
                     <td class="mut">
                         {{ implode(', ', $r->enabled_locales ?: ['de']) }}
-                        <span class="pill" style="margin-left:6px;">
-                            {{ __('admin.languages.default') }}:
+                        <span class="pill small">
                             {{ $r->default_locale ?: 'de' }}
                         </span>
                     </td>
 
-                    {{-- 🔥 СТАТУС: кружок + текст --}}
+                    {{-- STATUS --}}
                     <td>
                         <span class="status">
                             <span class="status-dot {{ $r->is_active ? 'on' : 'off' }}"></span>
@@ -65,7 +74,7 @@
                         </span>
                     </td>
 
-                    {{-- КНОПКИ В ОДИН РЯД --}}
+                    {{-- ACTIONS --}}
                     <td class="right">
                         <div class="actions-inline">
                             <a class="btn small"
@@ -87,6 +96,7 @@
                             </form>
                         </div>
                     </td>
+
                 </tr>
             @endforeach
             </tbody>

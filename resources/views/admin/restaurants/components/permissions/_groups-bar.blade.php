@@ -2,7 +2,9 @@
     $viewOnly = (bool)($viewOnly ?? false);
 @endphp
 
-<div class="perm-groups-bar" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;">
+<div class="perm-groups-bar"
+     style="display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;">
+
     @foreach($grouped as $g => $items)
         <button type="button"
                 class="btn secondary"
@@ -11,8 +13,11 @@
                 data-group-title="{{ __('permissions.groups.'.$g) }}">
 
             {{ __('permissions.groups.'.$g) }}
-            <span style="opacity:.65; font-weight:600;">({{ count($items) }})</span>
+            <span style="opacity:.65; font-weight:600;">
+                ({{ count($items) }})
+            </span>
 
         </button>
     @endforeach
+
 </div>

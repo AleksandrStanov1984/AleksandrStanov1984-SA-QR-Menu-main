@@ -1,80 +1,101 @@
 <script>
-(function () {
-  const modal = document.getElementById('permModal');
-  const titleEl = document.getElementById('permModalTitle');
-  const bodyEl  = document.getElementById('permModalBody');
+    (function () {
 
-  const isEdit = @json(($mode ?? 'view') === 'edit');
+        const modal = document.getElementById('permModal');
+        const titleEl = document.getElementById('permModalTitle');
+        const bodyEl  = document.getElementById('permModalBody');
 
-  function openPermModal(groupKey, groupTitle) {
-    const tpl = document.getElementById('tplPermGroup_' + groupKey);
-    if (!tpl) return;
+        const isEdit = @json(($mode ?? 'view') === 'edit');
 
-    titleEl.textContent = groupTitle || groupKey;
-    bodyEl.innerHTML = '';
-    bodyEl.appendChild(tpl.content.cloneNode(true));
+        let currentGroup = null;
 
-    modal.style.display = 'block';
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
+        function openPermModal(groupKey, groupTitle) {
+            const tpl = document.getElementById('tplPermGroup_' + groupKey);
+            if (!tpl) return;
 
-  function closePermModal() {
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
-    bodyEl.innerHTML = '';
-    document.body.style.overflow = '';
-  }
+            currentGroup = groupKey;
 
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-open-perm-group]');
-    if (btn) {
-      openPermModal(btn.getAttribute('data-group-key'), btn.getAttribute('data-group-title'));
-      return;
-    }
+            titleEl.textContent = groupTitle || groupKey;
+            bodyEl.innerHTML = '';
+            bodyEl.appendChild(tpl.content.cloneNode(true));
 
-    if (e.target.closest('[data-close-perm-modal]')) {
-      closePermModal();
-      return;
-    }
-  });
+            modal.style.display = 'block';
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.style.display === 'block') closePermModal();
-  });
+        function closePermModal() {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            bodyEl.innerHTML = '';
+            document.body.style.overflow = '';
+        }
 
-  if (!isEdit) return;
+        document.addEventListener('click', (e) => {
 
-  // Нормализация: снятые чекбоксы должны сохранить 0
-  const form = document.querySelector('form[data-perm-form="1"]');
-  if (!form) return;
+            const btn = e.target.closest('[data-open-perm-group]');
+            if (btn) {
+                openPermModal(
+                    btn.getAttribute('data-group-key'),
+                    btn.getAttribute('data-group-title')
+                );
+                return;
+            }
 
-  // список всех perm keys берём из templates (они всегда в DOM)
-  const allKeys = Array.from(document.querySelectorAll('template[id^="tplPermGroup_"]'))
-    .flatMap(tpl => Array.from(tpl.content.querySelectorAll('input[type="checkbox"][name^="perm["]')))
-    .map(i => i.name);
+            if (e.target.closest('[data-close-perm-modal]')) {
+                closePermModal();
+                return;
+            }
 
-  form.addEventListener('submit', () => {
-    // убираем старые hidden-заглушки
-    form.querySelectorAll('input[data-perm-zero="1"]').forEach(x => x.remove());
+        });
 
-    // отмеченные чекбоксы (в текущей модалке)
-    const checked = new Set(
-      Array.from(form.querySelectorAll('#permModalBody input[type="checkbox"]:checked'))
-        .map(i => i.name)
-    );
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                closePermModal();
+            }
+        });
 
-    // на каждый ключ, который НЕ отмечен, добавим hidden = 0
-    allKeys.forEach(name => {
-      if (!checked.has(name)) {
-        const h = document.createElement('input');
-        h.type = 'hidden';
-        h.name = name;
-        h.value = '0';
-        h.setAttribute('data-perm-zero', '1');
-        form.appendChild(h);
-      }
-    });
-  });
-})();
+        if (!isEdit) return;
+
+        // 🔥 SAVE BUTTON (НОВАЯ ЛОГИКА)
+        document.getElementById('permSaveBtn')?.addEventListener('click', async () => {
+
+            const inputs = Array.from(
+                document.querySelectorAll('#permModalBody input[type="checkbox"]')
+            );
+
+            const formData = new FormData();
+
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+            // собираем только текущую модалку
+            inputs.forEach(input => {
+                const key = input.dataset.permKey;
+                const value = input.checked ? 1 : 0;
+
+                formData.append(`perm[${key}]`, value);
+            });
+
+            // (опционально) передаём группу
+            if (currentGroup) {
+                formData.append('group', currentGroup);
+            }
+
+            try {
+                await fetch("{{ route('admin.restaurants.user_permissions', $restaurant) }}", {
+                    method: 'POST',
+                    body: formData
+                });
+
+                closePermModal();
+                location.reload();
+
+            } catch (e) {
+                console.error(e);
+                alert('Ошибка сохранения');
+            }
+
+        });
+
+    })();
 </script>

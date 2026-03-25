@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Support\ImagePipeline\RestaurantAssetsService;
 
 class Restaurant extends Model
 {
-
-    public const PLAN_STARTER = 'starter';
-    public const PLAN_BASIC = 'basic';
-    public const PLAN_PRO = 'pro';
+    use HasFactory;
 
     protected $fillable = [
         'name','slug',

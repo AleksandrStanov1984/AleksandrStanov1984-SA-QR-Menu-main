@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\RestaurantQrController;
 
 use App\Http\Controllers\Public\AuthorController;
 
-
+Route::get('/', fn () => redirect()->route('admin.home'));
 Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])->name('restaurant.show');
 
 Route::get('/author', [AuthorController::class, 'index'])
@@ -274,4 +274,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     });
 
+});
+
+Route::get('/debug/perf/menu/{slug}', function ($slug) {
+    $start = microtime(true);
+
+    $restaurant = \App\Models\Restaurant::where('slug', $slug)
+        ->with([
+            'sections.items.translations',
+            'sections.translations',
+            'hours',
+            'socialLinks'
+        ])
+        ->firstOrFail();
+
+    $vm = new \App\ViewModels\PublicMenu\MenuViewModel($restaurant, 'de');
+
+    return response()->json([
+        'time_ms' => round((microtime(true) - $start) * 1000, 2),
+        'sections' => count($vm->categories),
+    ]);
 });

@@ -32,8 +32,8 @@
 
             @if(($mode ?? 'view') === 'edit')
                 <button class="btn ok"
-                        type="submit"
-                        form="permForm">
+                        type="button"
+                        id="permSaveBtn">
                     {{ __('admin.permissions.save') }}
                 </button>
             @endif

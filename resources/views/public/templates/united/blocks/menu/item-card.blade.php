@@ -10,23 +10,22 @@
     $spicyLevel = (int)($item['ui']['spicy'] ?? 0);
 
     $priceFormatted = !empty($item['price'])
-        ? number_format((float)$item['price'],2).' '.($item['currency'] ?? '€')
+        ? number_format((float)$item['price'], 2) . ' ' . ($item['currency'] ?? '€')
         : '';
 
     $dataImage = $item['image'] ?? '';
 
     $classes = ['menu-item'];
 
-    if ($isNew)  $classes[] = 'is-new';
+    if ($isNew) $classes[] = 'is-new';
     if ($isDish) $classes[] = 'is-dish';
     if (!$hasImage) $classes[] = 'is-no-image';
 @endphp
 
-
 <div
     class="{{ implode(' ', $classes) }}"
 
-    @if($vm->showItemModal && $hasImage)
+    @if($vm->showItemModal)
         data-open-modal="item"
     data-title="{{ $item['title'] ?? '' }}"
     data-description="{{ $short }}"
@@ -39,10 +38,8 @@
     @endif
 >
 
-    {{-- BADGES --}}
     @if($isNew || $isDish)
         <div class="menu-item-badges" aria-hidden="true">
-
             @if($isNew)
                 <span class="menu-item-badge menu-item-badge--new">NEW</span>
             @endif
@@ -52,12 +49,9 @@
                     {{ __('menu.dish_of_day') }}
                 </span>
             @endif
-
         </div>
     @endif
 
-
-    {{-- IMAGE --}}
     @if($hasImage)
         <div class="menu-item-media">
             <img
@@ -70,9 +64,7 @@
         </div>
     @endif
 
-
     <div class="menu-item-content">
-
         <div class="menu-item-top">
             <h3 class="menu-item-title">
                 {{ $item['title'] ?? '' }}
@@ -85,8 +77,6 @@
             </p>
         @endif
 
-
-        {{-- SPICY --}}
         <div class="menu-item-meta">
             @if($spicyLevel > 0)
                 <div class="menu-item-spicy" aria-label="{{ __('menu.spicy') }}: {{ $spicyLevel }}/5">
@@ -97,14 +87,12 @@
             @endif
         </div>
 
-
         @if(!empty($item['price']))
             <div class="menu-item-price">
-                {{ number_format((float)$item['price'],2) }}
+                {{ number_format((float)$item['price'], 2) }}
                 {{ $item['currency'] ?? '€' }}
             </div>
         @endif
-
     </div>
 
 </div>

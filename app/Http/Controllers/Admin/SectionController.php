@@ -14,6 +14,31 @@ use App\Support\Permissions;
 
 class SectionController extends Controller
 {
+
+    public function store(Request $request, Restaurant $restaurant)
+    {
+        Permissions::abortUnless($request->user(), 'sections_manage');
+
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'parent_id' => ['nullable', 'exists:sections,id'],
+        ]);
+
+        $section = Section::create([
+            'restaurant_id' => $restaurant->id,
+            'parent_id' => $data['parent_id'] ?? null,
+            'sort_order' => 0,
+            'is_active' => true,
+        ]);
+
+        $section->translations()->create([
+            'locale' => $restaurant->default_locale ?? 'de',
+            'title' => $data['title'],
+        ]);
+
+        return back()->with('status', 'Section created');
+    }
+
     public function index(Restaurant $restaurant)
     {
         $sections = Section::query()

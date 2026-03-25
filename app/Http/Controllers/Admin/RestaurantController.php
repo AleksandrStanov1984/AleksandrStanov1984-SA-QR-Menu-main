@@ -361,21 +361,30 @@ class RestaurantController extends Controller
     public function updateUserPermissions(Request $request, Restaurant $restaurant)
     {
         $user = $request->user();
-
         abort_unless($user && $user->is_super_admin, 403);
 
         $restaurantUser = User::where('restaurant_id', $restaurant->id)->first();
         abort_unless($restaurantUser, 404);
 
+        // берём входящие данные
         $incoming = $request->input('perm', []);
         if (!is_array($incoming)) {
             $incoming = [];
         }
 
-        $normalized = Permissions::normalize($incoming);
+        // нормализуем ТОЛЬКО пришедшие ключи
+        $incoming = Permissions::normalize($incoming);
 
+        // текущие permissions
         $meta = $restaurantUser->meta ?? [];
-        $meta['permissions'] = $normalized;
+        $existing = $meta['permissions'] ?? [];
+
+        // merge (точечное обновление)
+        foreach ($incoming as $key => $value) {
+            $existing[$key] = $value;
+        }
+
+        $meta['permissions'] = $existing;
 
         $restaurantUser->meta = $meta;
         $restaurantUser->save();

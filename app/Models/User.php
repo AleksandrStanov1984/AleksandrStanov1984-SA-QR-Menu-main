@@ -47,7 +47,6 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_super_admin' => 'boolean',
             'meta' => 'array',
-
         ];
     }
 
@@ -56,26 +55,26 @@ class User extends Authenticatable
         return $this->belongsTo(Restaurant::class);
     }
 
-public function hasPerm(string $key): bool
-{
-    if ($this->is_super_admin)
-        return true;
+    public function hasPerm(string $key): bool
+    {
+        if ($this->is_super_admin)
+            return true;
 
-    $perms = $this->meta['permissions'] ?? [];
+        $perms = $this->meta['permissions'] ?? [];
 
-    return (bool)($perms[$key] ?? false);
-}
+        return (bool)($perms[$key] ?? false);
+    }
 
-public function setPerm(string $key, bool $value): void
-{
-    $meta = $this->meta ?? [];
+    public function setPerm(string $key, bool $value): void
+    {
+        $meta = $this->meta ?? [];
 
-    $perms = $meta['permissions'] ?? [];
-    $perms[$key] = $value;
+        $perms = $meta['permissions'] ?? [];
+        $perms[$key] = $value;
 
-    $meta['permissions'] = $perms;
+        $meta['permissions'] = $perms;
 
-    $this->meta = $meta;
-}
+        $this->meta = $meta;
+    }
 
 }

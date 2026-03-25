@@ -79,17 +79,20 @@ class Permissions
     }
 
     /**
-     * Нормализация входа perm[...] строго по реестру.
-     * На выходе всегда полный массив key => bool.
+     * Нормализация входа perm[...] только по реально пришедшим ключам.
+     * Возвращает частичный массив key => bool, без заполнения отсутствующих ключей.
      */
     public static function normalize(array $incoming): array
     {
         $out = [];
+        $registry = self::registry();
 
-        foreach (self::keys() as $k) {
-            $v = $incoming[$k] ?? null;
+        foreach ($incoming as $k => $v) {
+            if (!is_string($k) || !array_key_exists($k, $registry)) {
+                continue;
+            }
 
-            $out[$k] = !empty($v) && (string)$v !== '0';
+            $out[$k] = !empty($v) && (string) $v !== '0';
         }
 
         return $out;

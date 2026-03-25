@@ -5,7 +5,7 @@
 @foreach($grouped as $g => $items)
     <template id="tplPermGroup_{{ $g }}">
 
-        <div class="perm-grid perm-grid--modal">
+        <div class="perm-grid perm-grid--modal" data-perm-group="{{ $g }}">
 
             @foreach($items as $permKey => $label)
 
@@ -15,7 +15,7 @@
                         <span class="perm-label">{{ $label }}</span>
 
                         <input type="checkbox"
-                               name="perm[{{ $permKey }}]"
+                               data-perm-key="{{ $permKey }}"
                                value="1"
                             @checked(!empty($p[$permKey]))>
                     </label>

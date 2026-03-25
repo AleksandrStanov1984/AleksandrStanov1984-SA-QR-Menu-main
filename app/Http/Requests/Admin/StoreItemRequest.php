@@ -8,7 +8,23 @@ class StoreItemRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $user = $this->user();
+        $restaurant = $this->route('restaurant');
+
+        if (!$user || !$restaurant) {
+            return false;
+        }
+
+        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
+            return false;
+        }
+
+        return $user->is_super_admin || $user->hasPerm('items_manage');
+    }
+
+    protected function failedAuthorization(): void
+    {
+        abort(403);
     }
 
     public function rules(): array
@@ -53,4 +69,5 @@ class StoreItemRequest extends FormRequest
             'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
+
 }

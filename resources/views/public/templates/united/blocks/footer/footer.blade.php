@@ -11,7 +11,7 @@
         $footerHasCarousel = count($footerItems) > 4;
     @endphp
 
-    @if(!empty($footerItems))
+    @if($vm->showDishOfDay && !empty($footerItems))
 
         <div class="footer-gallery {{ $footerHasCarousel ? 'is-carousel' : 'is-static' }}" data-footer-gallery>
 

@@ -27,6 +27,26 @@
 </div>
 
 <div class="col6">
+    <label>{{ __('admin.fields.plan') }}</label>
+
+    @php($plan = old('plan_key', 'starter'))
+
+    <select name="plan_key" required>
+        <option value="starter" @selected($plan === 'starter')>
+            {{ __('admin.plans.starter') }}
+        </option>
+
+        <option value="basic" @selected($plan === 'basic')>
+            {{ __('admin.plans.basic') }}
+        </option>
+
+        <option value="pro" @selected($plan === 'pro')>
+            {{ __('admin.plans.pro') }}
+        </option>
+    </select>
+</div>
+
+<div class="col6">
     <label>{{ __('admin.fields.phone') }}</label>
     <input name="phone"
            value="{{ old('phone') }}"

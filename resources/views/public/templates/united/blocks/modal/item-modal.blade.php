@@ -14,6 +14,8 @@
 
             <p class="modal-description" style="display:none"></p>
 
+            <div class="modal-details" style="display:none"></div>
+
             <div class="modal-spicy" style="display:none"></div>
 
             <div class="modal-price" style="display:none"></div>

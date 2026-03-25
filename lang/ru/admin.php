@@ -8,6 +8,12 @@ return [
         'language' => 'Язык',
     ],
 
+    'plans' => [
+        'starter' => 'Starter',
+        'basic' => 'Basic',
+        'pro' => 'Pro',
+    ],
+
     'common' => [
         'save' => 'Сохранить',
         'cancel' => 'Отмена',
@@ -43,6 +49,9 @@ return [
         'user_email' => 'E-mail',
         'email' => 'Логин',
         'password' => 'Пароль',
+        'plan' => 'Тарифный план',
+        'password_confirm' => 'Повторите новый пароль.',
+
     ],
 
     'templates' => [
@@ -76,12 +85,10 @@ return [
     ],
 
     'auth' => [
-        // legacy keys
         'login_title' => 'Вход',
         'subtitle' => 'Войти, чтобы управлять объектами',
         'signin' => 'Войти',
 
-        // ✅ alias keys used in some blades: admin.auth.login.*
         'login' => [
             'h2' => 'Вход',
             'subtitle' => 'Войти, чтобы управлять объектами',
@@ -116,7 +123,6 @@ return [
             'add' => '+ Добавить объект',
         ],
         'create' => [
-            // ✅ alias for breadcrumbs: admin.restaurants.create.title
             'title' => 'Создать объект',
 
             'h2' => 'Создать объект',
@@ -278,7 +284,6 @@ return [
             'description_locale' => 'Описание (:locale)',
             'details_locale' => 'Детали (:locale)',
 
-            // (опционально, если хочешь перевести pill'ы и confirm)
             'pill_new' => 'Новинка',
             'pill_day' => 'Элемент дня',
             'confirm_delete_item' => 'Удалить Элемент?',
@@ -325,6 +330,8 @@ return [
         // ===== SYSTEM =====
         'restaurants_select' => 'Выбор объекта',
         'menu' => 'Меню',
+
+        'qr' => "QR Code",
     ],
 
     'branding' => [

@@ -8,6 +8,7 @@ use App\Models\ItemTranslation;
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
+use App\Support\Permissions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -45,7 +46,7 @@ class LanguageImportController extends Controller
         if (!$user?->is_super_admin) {
             abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
 
-            \App\Support\Permissions::abortUnless($user, 'import_manage');
+            Permissions::abortUnless($user, 'import_manage');
 
         }
 
@@ -65,7 +66,7 @@ class LanguageImportController extends Controller
             $filename
         );
 
-        // Update enabled locales (always include DE)
+        // Update enabled locales
         $enabled = $restaurant->enabled_locales ?: [];
         $enabled[] = 'de';
         $enabled[] = $locale;
@@ -75,7 +76,6 @@ class LanguageImportController extends Controller
         if (($data['is_default'] ?? false) === true) {
             $restaurant->default_locale = $locale;
         } else {
-            // If nothing selected anywhere, default remains DE.
             $restaurant->default_locale = $restaurant->default_locale ?: 'de';
         }
 
@@ -86,7 +86,6 @@ class LanguageImportController extends Controller
 
         $restaurant->save();
 
-        // Try to parse and upsert translations.
         try {
             $json = json_decode(
                 file_get_contents(Storage::disk('public')->path($path)),
@@ -98,7 +97,6 @@ class LanguageImportController extends Controller
                 $this->applyMenuJson($restaurant, $locale, $json);
             }
         } catch (\Throwable $e) {
-            // Keep silent - upload is still useful even if JSON isn't in expected format.
             return back()->with('status', "Language added (file stored). JSON import skipped: {$e->getMessage()}");
         }
 
@@ -111,7 +109,7 @@ class LanguageImportController extends Controller
 
         if (!$user?->is_super_admin) {
             abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-            // ✅ permission gate (user must have this right)
+
             abort_unless($user->hasPerm('import_manage'), 403);
         }
 
@@ -152,7 +150,6 @@ class LanguageImportController extends Controller
 
             $sectionKey = isset($s['key']) ? Str::slug((string) $s['key'], '_') : null;
             if (!$sectionKey) {
-                // fallback to slug of title
                 $sectionKey = isset($s['title']) ? Str::slug((string) $s['title'], '_') : null;
             }
             if (!$sectionKey) {
@@ -198,7 +195,6 @@ class LanguageImportController extends Controller
                     ]
                 );
 
-                // update basic props if present
                 $item->price = array_key_exists('price', $it) ? $it['price'] : $item->price;
                 $item->currency = $it['currency'] ?? $item->currency;
 

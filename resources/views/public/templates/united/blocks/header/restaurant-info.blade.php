@@ -30,38 +30,43 @@
         </div>
     @endif
 
-    <button
-        type="button"
-        class="restaurant-status status-{{ $vm->status }}"
-        data-open-modal="hours"
-    >
+    @php
+        $today = $vm->todayHours ?? ($vm->hours[0] ?? null);
+    @endphp
 
-        @if($vm->status === 'open')
-            <i class="ri-checkbox-circle-line"></i>
-        @elseif($vm->status === 'closing_soon')
-            <i class="ri-alarm-warning-line"></i>
-        @else
-            <i class="ri-close-circle-line"></i>
-        @endif
-
-        <span id="statusLabel">
-
-            @if($vm->status === 'open')
-
-                {{ __('public.open') }}
-
-            @elseif($vm->status === 'closing_soon')
-
-                {{ __('public.closing_soon') }}
-
-            @else
-
-                {{ __('public.closed') }}
-
+    @if($today)
+        <button
+            type="button"
+            class="restaurant-status {{ $vm->showStatus ? 'status-' . $vm->status : '' }}"
+            @if($vm->showHoursModal)
+                data-open-modal="hours"
+            @endif
+        >
+            @if($vm->showStatus)
+                @if($vm->status === 'open')
+                    <i class="ri-checkbox-circle-line"></i>
+                @elseif($vm->status === 'closing_soon')
+                    <i class="ri-alarm-warning-line"></i>
+                @else
+                    <i class="ri-close-circle-line"></i>
+                @endif
             @endif
 
-        </span>
+            <span id="statusLabel">
+        {{ $today['label'] }} {{ $today['open'] }} – {{ $today['close'] }}
 
-    </button>
+                @if($vm->showStatus)
+                    •
+                    @if($vm->status === 'open')
+                        {{ __('public.open') }}
+                    @elseif($vm->status === 'closing_soon')
+                        {{ __('public.closing_soon') }}
+                    @else
+                        {{ __('public.closed') }}
+                    @endif
+                @endif
+    </span>
+        </button>
+    @endif
 
 </div>

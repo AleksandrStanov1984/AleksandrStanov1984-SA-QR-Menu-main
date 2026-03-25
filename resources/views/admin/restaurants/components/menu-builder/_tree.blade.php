@@ -13,10 +13,10 @@
   <div class="card" style="padding:10px; margin-top:10px;">
     <label style="display:flex; align-items:center; gap:10px; margin:0;">
       <input type="checkbox" id="mbShowDeleted" checked>
-      <span>{{ __('admin.menu_builder.show_deleted') ?? 'Показывать удалённые' }}</span>
+      <span>{{ __('admin.menu_builder.show_deleted') }}</span>
     </label>
     <div class="mb-muted" style="margin-top:6px;">
-      {{ __('admin.menu_builder.show_deleted_hint') ?? 'Если выключить — будут показаны только не удалённые элементы.' }}
+      {{ __('admin.menu_builder.show_deleted_hint')  }}
     </div>
   </div>
 @endif
@@ -27,7 +27,6 @@
       $catInactive = !$cat->is_active;
       $catDeleted  = $isTrashed($cat);
 
-      // ✅ главное правило: категория off => всё внутри заблокировано
       $catLocked = $catInactive;
     @endphp
 
@@ -59,9 +58,9 @@
           <span class="mb-mini">ID: {{ $cat->id }}</span>
 
           @if($catDeleted)
-            <span class="pill red">{{ __('admin.common.deleted') ?? 'deleted' }}</span>
+            <span class="pill red">{{ __('admin.common.deleted') }}</span>
           @elseif($catInactive)
-            <span class="pill red">{{ __('admin.common.disabled') ?? 'disabled' }}</span>
+            <span class="pill red">{{ __('admin.common.disabled') }}</span>
           @endif
         </div>
 
@@ -105,7 +104,7 @@
                     {{ $catLocked ? 'disabled' : '' }}
                     data-confirm-delete="1"
                     data-delete-url="{{ route('admin.restaurants.sections.destroy', [$restaurant, $cat]) }}"
-                    data-delete-text="{{ __('admin.confirm.delete_category') ?? 'Вы уверены, что хотите удалить категорию?' }}"
+                    data-delete-text="{{ __('admin.confirm.delete_category') }}"
                     data-delete-hint="{{ $tTitle($cat, $defaultLocale) ?: ('Category #'.$cat->id) }}">
               {{ __('admin.actions.delete') ?? 'Delete' }}
             </button>
@@ -118,7 +117,7 @@
         'restaurant' => $restaurant,
         'section' => $cat,
         'defaultLocale' => $defaultLocale,
-        'ancestorLocked' => $catLocked, // ✅ категория выключена => блокируем ВСЁ
+        'ancestorLocked' => $catLocked,
       ])
 
       {{-- Subcategories --}}
@@ -128,9 +127,8 @@
             $subInactive = !$sub->is_active;
             $subDeleted  = $isTrashed($sub);
 
-            // ✅ подкатегория блокируется, если категория выключена
             $subLocked = $catLocked;
-            // ✅ блюда под sub блокируются, если cat выключена ИЛИ sub выключена
+
             $subItemsLocked = $catLocked || $subInactive;
           @endphp
 
@@ -202,7 +200,7 @@
                           {{ $subLocked ? 'disabled' : '' }}
                           data-confirm-delete="1"
                           data-delete-url="{{ route('admin.restaurants.sections.destroy', [$restaurant, $sub]) }}"
-                          data-delete-text="{{ __('admin.confirm.delete_subcategory') ?? 'Вы уверены, что хотите удалить подкатегорию?' }}"
+                          data-delete-text="{{ __('admin.confirm.delete_subcategory') }}"
                           data-delete-hint="{{ $tTitle($sub, $defaultLocale) ?: ('Subcategory #'.$sub->id) }}">
                     {{ __('admin.actions.delete') ?? 'Delete' }}
                   </button>
@@ -214,7 +212,7 @@
               'restaurant' => $restaurant,
               'section' => $sub,
               'defaultLocale' => $defaultLocale,
-              'ancestorLocked' => $subItemsLocked, // ✅ cat off OR sub off => блокируем блюда
+              'ancestorLocked' => $subItemsLocked,
             ])
           </div>
         @endforeach

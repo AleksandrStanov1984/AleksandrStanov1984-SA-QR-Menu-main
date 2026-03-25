@@ -22,6 +22,22 @@ class MenuViewModel
     public array $footer = [];
     public array $hours  = [];
 
+    public array $features = [];
+    public bool $showHoursModal = false;
+    public bool $showSearch = false;
+    public bool $showSchedule = false;
+    public bool $showStatus = false;
+    public ?array $todayHours = null;
+
+    public bool $showImages = false;
+    public bool $showItemModal = false;
+
+    public bool $showSpicy = false;
+    public bool $showIsNew = false;
+    public bool $showDishOfDay = false;
+
+    public bool $showLongDescription = false;
+
     protected ImageService $images;
 
     public function __construct(
@@ -33,10 +49,21 @@ class MenuViewModel
         app()->setLocale($this->locale);
 
         $this->templateKey = $restaurant->template_key ?: 'united';
-
         $this->restaurant = $restaurant;
         $this->images = app(ImageService::class);
+        $plan = $this->restaurant->plan;
+        $features = $plan?->features ?? [];
+        $this->features = $features;
 
+        $this->showImages = $this->hasFeature($features, 'images');
+        $this->showItemModal = $this->hasFeature($features, 'item_modal');
+        $this->showSpicy = $this->hasFeature($features, 'spicy');
+        $this->showIsNew = $this->hasFeature($features, 'is_new');
+        $this->showDishOfDay = $this->hasFeature($features, 'dish_of_day');
+        $this->showLongDescription = $this->hasFeature($features, 'long_description');
+        $this->showSchedule   = true;
+        $this->showStatus     = $this->hasFeature($features, 'status');
+        $this->showSearch     = $this->hasFeature($features, 'search');
         $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
 
         $this->merchant = (object)[
@@ -72,6 +99,9 @@ class MenuViewModel
 
         $this->hours = $this->buildHours($restaurant->hours);
         $this->status = $this->detectStatus();
+
+        $this->todayHours = $this->getTodayHours();
+        $this->showHoursModal = $this->hasFeature($features, 'hours_modal');
     }
 
     private function resolveImage(?string $path): ?string
@@ -160,27 +190,27 @@ class MenuViewModel
     {
         $metaDTO = ItemMetaDTO::fromModel($item);
 
-        $showImage = $metaDTO->showImage ?? true;
-
-        $imagePath = $showImage
-            ? $this->resolveImage($item->image_path)
-            : null;
+        $showImage = $this->showImages && ($metaDTO->showImage ?? true);
 
         return [
             'id' => $item->id,
-            'title'       => $this->translateItem($item, 'title'),
+            'title' => $this->translateItem($item, 'title'),
             'description' => $this->translateItem($item, 'description'),
-            'details'     => $this->translateItem($item, 'details'),
-            'price'    => (float) $item->price,
+            'details' => $this->showLongDescription
+                ? $this->translateItem($item, 'details')
+                : null,
+            'price' => (float) $item->price,
             'currency' => $item->currency ?? 'EUR',
-            'image' => $imagePath,
+            'image' => $showImage
+                ? $this->resolveImage($item->image_path)
+                : null,
             'has_image' => $showImage && !empty($item->image_path),
             'sort_order' => $item->sort_order,
             'meta' => $metaDTO->toArray(),
-            'display' => [
-                'is_new'       => $metaDTO->isNew,
-                'dish_of_day'  => $metaDTO->dishOfDay,
-                'show_image'   => $showImage,
+            'ui' => [
+                'spicy' => $this->showSpicy ? $metaDTO->spicy : null,
+                'is_new' => $this->showIsNew ? $metaDTO->isNew : null,
+                'dish_of_day' => $this->showDishOfDay ? $metaDTO->dishOfDay : null,
             ],
         ];
     }
@@ -282,4 +312,14 @@ class MenuViewModel
     {
         return 'open';
     }
+
+    private function hasFeature(array $features, string $key): bool
+    {
+        return !empty($features[$key]);
+    }
+    private function getTodayHours(): ?array
+    {
+        return collect($this->hours)->firstWhere('today', true);
+    }
+
 }

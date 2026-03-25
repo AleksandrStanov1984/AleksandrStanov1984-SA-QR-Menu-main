@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
             Restaurant10Seeder::class,
             RestaurantHoursSeeder::class,
             RestaurantUsersSeeder::class,
+            MenuPlanSeeder::class,
+            MenuTemplateSeeder::class,
         ]);
     }
 }

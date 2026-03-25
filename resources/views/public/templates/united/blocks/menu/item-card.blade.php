@@ -2,13 +2,18 @@
     $short = $item['description'] ?? '';
     $long  = $item['details'] ?? '';
 
-    // 🔥 теперь берем из ViewModel
     $hasImage = !empty($item['has_image']);
 
-    $isNew  = !empty($item['display']['is_new']);
-    $isDish = !empty($item['display']['dish_of_day']);
+    $isNew  = !empty($item['ui']['is_new']);
+    $isDish = !empty($item['ui']['dish_of_day']);
 
-    $spicyLevel = (int)($item['meta']['spicy'] ?? 0);
+    $spicyLevel = (int)($item['ui']['spicy'] ?? 0);
+
+    $priceFormatted = !empty($item['price'])
+        ? number_format((float)$item['price'],2).' '.($item['currency'] ?? '€')
+        : '';
+
+    $dataImage = $item['image'] ?? '';
 
     $classes = ['menu-item'];
 
@@ -21,14 +26,13 @@
 <div
     class="{{ implode(' ', $classes) }}"
 
-    {{-- 🔥 модалка только если есть изображение --}}
-    @if($hasImage)
+    @if($vm->showItemModal && $hasImage)
         data-open-modal="item"
     data-title="{{ $item['title'] ?? '' }}"
     data-description="{{ $short }}"
-    data-details="{{ $long }}"
-    data-price="@if(!empty($item['price'])){{ number_format((float)$item['price'],2) }} {{ $item['currency'] ?? '€' }}@endif"
-    data-image="{{ $item['image'] }}"
+    data-details="{{ $vm->showLongDescription ? $long : '' }}"
+    data-price="{{ $priceFormatted }}"
+    data-image="{{ $dataImage }}"
     data-is-new="{{ $isNew ? 1 : 0 }}"
     data-is-dish="{{ $isDish ? 1 : 0 }}"
     data-spicy="{{ $spicyLevel }}"

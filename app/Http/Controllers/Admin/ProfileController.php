@@ -28,7 +28,9 @@ class ProfileController extends Controller
 
         $flat = [];
         foreach ($grouped as $items) {
-            foreach ($items as $label) $flat[] = $label;
+            foreach ($items as $label) {
+                $flat[] = $label;
+            }
         }
 
         return view('admin.profile', [
@@ -55,7 +57,11 @@ class ProfileController extends Controller
 
     public function updateRestaurant(Request $request, Restaurant $restaurant): RedirectResponse
     {
-        Permissions::abortUnless($request->user(), 'restaurant.profile.edit');
+        $user = $request->user();
+
+        Permissions::abortUnless($user, 'restaurant.profile.edit');
+
+        $isSuper = (bool) ($user?->is_super_admin ?? false);
 
         $data = $request->validate([
             'restaurant_name' => ['required', 'string', 'max:255'],
@@ -67,6 +73,10 @@ class ProfileController extends Controller
             'postal_code' => ['nullable', 'string', 'max:50'],
             'street' => ['nullable', 'string', 'max:255'],
             'house_number' => ['nullable', 'string', 'max:50'],
+
+
+            'template_key' => [$isSuper ? 'required' : 'nullable', 'exists:menu_templates,key'],
+            'plan_key' => [$isSuper ? 'required' : 'nullable', 'exists:menu_plans,key'],
         ]);
 
         $restaurant->name = $data['restaurant_name'];
@@ -78,6 +88,16 @@ class ProfileController extends Controller
         $restaurant->postal_code = $data['postal_code'] ?? null;
         $restaurant->street = $data['street'] ?? null;
         $restaurant->house_number = $data['house_number'] ?? null;
+
+        if ($isSuper) {
+            if (isset($data['template_key'])) {
+                $restaurant->template_key = $data['template_key'];
+            }
+
+            if (isset($data['plan_key'])) {
+                $restaurant->plan_key = $data['plan_key'];
+            }
+        }
 
         $restaurant->save();
 

@@ -7,6 +7,11 @@ use App\Support\ImagePipeline\RestaurantAssetsService;
 
 class Restaurant extends Model
 {
+
+    public const PLAN_STARTER = 'starter';
+    public const PLAN_BASIC = 'basic';
+    public const PLAN_PRO = 'pro';
+
     protected $fillable = [
         'name','slug',
         'template_key',
@@ -86,5 +91,28 @@ class Restaurant extends Model
     public function qr()
     {
         return $this->hasOne(RestaurantQr::class);
+    }
+
+    public function hasFeature(string $feature): bool
+    {
+        return match ($feature) {
+
+            'images' => in_array($this->plan_key, ['basic','pro']),
+            'badges' => $this->plan_key === 'pro',
+            'hours.modal' => $this->plan_key === 'pro',
+            'hours.status' => in_array($this->plan_key, ['basic','pro']),
+
+            default => false,
+        };
+    }
+
+    public function plan()
+    {
+        return $this->belongsTo(MenuPlan::class, 'plan_key', 'key');
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(MenuTemplate::class, 'template_key', 'key');
     }
 }

@@ -61,12 +61,10 @@ return [
     ],
 
     'auth' => [
-        // legacy keys
         'login_title' => 'Login',
         'subtitle' => 'Sign in to manage restaurants',
         'signin' => 'Sign in',
 
-        // ✅ alias keys used in some blades: admin.auth.login.*
         'login' => [
             'h2' => 'Login',
             'subtitle' => 'Sign in to manage restaurants',
@@ -100,7 +98,6 @@ return [
             'add' => '+ Add restaurant',
         ],
         'create' => [
-            // ✅ alias for breadcrumbs: admin.restaurants.create.title
             'title' => 'Create restaurant',
 
             'h2' => 'Create restaurant',
@@ -126,7 +123,6 @@ return [
         'add_h3' => 'Add language',
         'default_h3' => 'Default language',
 
-        // ✅ alias used in some blades: admin.languages.default
         'default' => 'Default language',
 
         'locale_label' => 'Language code (e.g. en, ru)',

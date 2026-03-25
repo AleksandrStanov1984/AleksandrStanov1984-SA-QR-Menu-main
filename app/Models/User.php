@@ -46,7 +46,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_super_admin' => 'boolean',
-            'permissions' => 'array',
+            'meta' => 'array',
 
         ];
     }
@@ -58,16 +58,24 @@ class User extends Authenticatable
 
 public function hasPerm(string $key): bool
 {
-    if ($this->is_super_admin) return true; // супер-админ может всё
-    $perms = $this->permissions ?? [];
+    if ($this->is_super_admin)
+        return true;
+
+    $perms = $this->meta['permissions'] ?? [];
+
     return (bool)($perms[$key] ?? false);
 }
 
 public function setPerm(string $key, bool $value): void
 {
-    $perms = $this->permissions ?? [];
+    $meta = $this->meta ?? [];
+
+    $perms = $meta['permissions'] ?? [];
     $perms[$key] = $value;
-    $this->permissions = $perms;
+
+    $meta['permissions'] = $perms;
+
+    $this->meta = $meta;
 }
 
 }

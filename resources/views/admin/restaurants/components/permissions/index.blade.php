@@ -7,7 +7,7 @@
         if (!is_string($key) || !is_array($def)) continue;
 
         $group = $def['group'] ?? 'other';
-        $label = $def['label'] ?? null;
+        $label = __( $def['label']);
 
         if (!is_string($group) || trim($group) === '') $group = 'other';
         if (!is_string($label) || trim($label) === '') continue;

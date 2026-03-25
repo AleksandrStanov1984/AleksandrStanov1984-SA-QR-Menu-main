@@ -1,63 +1,61 @@
 <?php
 
 return [
+
     // categories
-    'categories.create' => ['group' => 'menu', 'label' => 'Создать категорию'],
-    'categories.edit'   => ['group' => 'menu', 'label' => 'Редактировать категорию'],
-    'categories.delete' => ['group' => 'menu', 'label' => 'Удалить категорию'],
-    'categories.toggle' => ['group' => 'menu', 'label' => 'Включать/выключать категорию'],
+    'categories.create' => ['group' => 'menu', 'label' => 'permissions.categories.create'],
+    'categories.edit'   => ['group' => 'menu', 'label' => 'permissions.categories.edit'],
+    'categories.delete' => ['group' => 'menu', 'label' => 'permissions.categories.delete'],
+    'categories.toggle' => ['group' => 'menu', 'label' => 'permissions.categories.toggle'],
 
     // subcategories
-    'subcategories.create' => ['group' => 'menu', 'label' => 'Создать подкатегорию'],
-    'subcategories.edit'   => ['group' => 'menu', 'label' => 'Редактировать подкатегорию'],
-    'subcategories.delete' => ['group' => 'menu', 'label' => 'Удалить подкатегорию'],
-    'subcategories.toggle' => ['group' => 'menu', 'label' => 'Включать/выключать подкатегорию'],
+    'subcategories.create' => ['group' => 'menu', 'label' => 'permissions.subcategories.create'],
+    'subcategories.edit'   => ['group' => 'menu', 'label' => 'permissions.subcategories.edit'],
+    'subcategories.delete' => ['group' => 'menu', 'label' => 'permissions.subcategories.delete'],
+    'subcategories.toggle' => ['group' => 'menu', 'label' => 'permissions.subcategories.toggle'],
 
-    // items (минимум, дальше расширим)
-    'items.create' => ['group' => 'menu', 'label' => 'Создать блюдо'],
-    'items.edit'   => ['group' => 'menu', 'label' => 'Редактировать блюдо'],
-    'items.delete' => ['group' => 'menu', 'label' => 'Удалить блюдо'],
+    // items
+    'items.create' => ['group' => 'menu', 'label' => 'permissions.items.create'],
+    'items.edit'   => ['group' => 'menu', 'label' => 'permissions.items.edit'],
+    'items.delete' => ['group' => 'menu', 'label' => 'permissions.items.delete'],
 
-    // item advanced fields / flags (на будущее, уже фиксируем ключи)
-    'items.image.upload'      => ['group' => 'menu', 'label' => 'Загрузка изображения блюда'],
-    'items.toggle.active'     => ['group' => 'menu', 'label' => 'Вкл/выкл блюдо'],
-    'items.toggle.show_image' => ['group' => 'menu', 'label' => 'Показывать изображение блюда'],
-    'items.flag.new'          => ['group' => 'menu', 'label' => 'Флаг NEW'],
-    'items.flag.spicy'        => ['group' => 'menu', 'label' => 'Острота'],
-    'items.flag.dish_of_day'  => ['group' => 'menu', 'label' => 'Блюдо дня'],
+    // item flags
+    'items.image.upload'      => ['group' => 'menu', 'label' => 'permissions.items.image.upload'],
+    'items.toggle.active'     => ['group' => 'menu', 'label' => 'permissions.items.toggle.active'],
+    'items.toggle.show_image' => ['group' => 'menu', 'label' => 'permissions.items.toggle.show_image'],
+    'items.flag.new'          => ['group' => 'menu', 'label' => 'permissions.items.flag.new'],
+    'items.flag.spicy'        => ['group' => 'menu', 'label' => 'permissions.items.flag.spicy'],
+    'items.flag.dish_of_day'  => ['group' => 'menu', 'label' => 'permissions.items.flag.dish_of_day'],
 
     // branding
-    'branding.logo.upload'        => ['group' => 'branding', 'label' => 'Загрузка/смена логотипа'],
-    'branding.backgrounds.upload' => ['group' => 'branding', 'label' => 'Загрузка фонов (светлый/тёмный)'],
-    'branding.theme_mode.edit'    => ['group' => 'branding', 'label' => 'Режим темы (auto/light/dark)'],
+    'branding.logo.upload'        => ['group' => 'branding', 'label' => 'permissions.branding.logo.upload'],
+    'branding.backgrounds.upload' => ['group' => 'branding', 'label' => 'permissions.branding.backgrounds.upload'],
+    'branding.theme_mode.edit'    => ['group' => 'branding', 'label' => 'permissions.branding.theme_mode.edit'],
 
     // profile
-    'languages_manage' => ['group' => 'admin', 'label' => 'Управление языками'],
-    'sections_manage'  => ['group' => 'menu',  'label' => 'Управление разделами/категориями'],
-    'items_manage'     => ['group' => 'menu',  'label' => 'Управление блюдами'],
-    'banners_manage'   => ['group' => 'content', 'label' => 'Управление баннерами'],
-    'socials_manage'   => ['group' => 'content', 'label' => 'Управление соц. ссылками'],
-    'theme_manage'     => ['group' => 'branding', 'label' => 'Управление темой'],
-    'import_manage'    => ['group' => 'import', 'label' => 'Импорт'],
+    'languages_manage' => ['group' => 'admin', 'label' => 'permissions.languages_manage'],
+    'sections_manage'  => ['group' => 'menu',  'label' => 'permissions.sections_manage'],
+    'items_manage'     => ['group' => 'menu',  'label' => 'permissions.items_manage'],
+    'banners_manage'   => ['group' => 'content', 'label' => 'permissions.banners_manage'],
+    'socials_manage'   => ['group' => 'content', 'label' => 'permissions.socials_manage'],
+    'theme_manage'     => ['group' => 'branding', 'label' => 'permissions.theme_manage'],
+    'import_manage'    => ['group' => 'import', 'label' => 'permissions.import_manage'],
 
-    'restaurant.profile.edit' => ['group' => 'restaurant', 'label' => 'Редактировать профиль ресторана'],
-    'restaurants.edit' => ['group' => 'restaurant', 'label' => 'Редактировать ресторан (настройки)'],
+    'restaurant.profile.edit' => ['group' => 'restaurant', 'label' => 'permissions.restaurant.profile.edit'],
+    'restaurants.edit' => ['group' => 'restaurant', 'label' => 'permissions.restaurants.edit'],
 
-    // socials (footer links)
-    // socials (footer links)
-    'socials.edit'              => ['group' => 'socials', 'label' => 'Соц. ссылки: изменить'],
-    'socials.delete'            => ['group' => 'socials', 'label' => 'Соц. ссылки: удалить'],
-    'socials.icon.upload'       => ['group' => 'socials', 'label' => 'Соц. ссылки: загрузка SVG иконки'],
-    'socials.toggle.active'     => ['group' => 'socials', 'label' => 'Соц. ссылки: активировать/деактивировать'],
+    // socials
+    'socials.edit'          => ['group' => 'socials', 'label' => 'permissions.socials.edit'],
+    'socials.delete'        => ['group' => 'socials', 'label' => 'permissions.socials.delete'],
+    'socials.icon.upload'   => ['group' => 'socials', 'label' => 'permissions.socials.icon.upload'],
+    'socials.toggle.active' => ['group' => 'socials', 'label' => 'permissions.socials.toggle.active'],
 
-    // лимиты добавления (3,4,5)
-    'socials.add.3'             => ['group' => 'socials', 'label' => 'Соц. ссылки: можно 3 ссылки'],
-    'socials.add.4'             => ['group' => 'socials', 'label' => 'Соц. ссылки: можно 4 ссылки'],
-    'socials.add.5'             => ['group' => 'socials', 'label' => 'Соц. ссылки: можно 5 ссылок'],
+    'socials.add.3' => ['group' => 'socials', 'label' => 'permissions.socials.add.3'],
+    'socials.add.4' => ['group' => 'socials', 'label' => 'permissions.socials.add.4'],
+    'socials.add.5' => ['group' => 'socials', 'label' => 'permissions.socials.add.5'],
 
-    'import.menu_json' => ['group' => 'import', 'label' => 'Import menu (JSON)'],
-    'import.images_zip' => ['group' => 'import', 'label' => 'Import images/assets (ZIP)'],
-
-
+    // import
+    'import.menu_json' => ['group' => 'import', 'label' => 'permissions.import.menu_json'],
+    'import.images_zip' => ['group' => 'import', 'label' => 'permissions.import.images_zip'],
 
 ];

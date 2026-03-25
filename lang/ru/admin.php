@@ -299,12 +299,12 @@ return [
 
         // ===== PROFILE =====
         'profile_group' => 'Профиль',
-        'profile' => 'Мой профиль',
+        'profile' => 'Профиль',
 
         // ===== RESTAURANT =====
         'restaurant_group' => 'Ресторан',
         'settings' => 'Настройки',
-        'hours' => 'Часы работы',
+        'hours' => 'График работы',
 
         // ===== MENU =====
         'menu_group' => 'Меню',

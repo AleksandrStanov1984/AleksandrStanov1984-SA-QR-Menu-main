@@ -571,7 +571,7 @@ class RestaurantController extends Controller
 
         $allPermissions = config('permissions');
         $userPermissions = $restaurantUser->meta['permissions'] ?? [];
-
+      //  dd(__('permissions.categories.create'));
         return view('admin.restaurants.permissions', [
             'restaurant' => $restaurant,
             'authUser' => $authUser,

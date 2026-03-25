@@ -7,7 +7,7 @@ use App\Models\User;
 class Permissions
 {
     /**
-     * DEV режим: по умолчанию true (как сейчас),
+     * DEV режим: по умолчанию true,
      * но управляется через env, чтобы можно было тестировать реальные права.
      *
      * .env:
@@ -27,7 +27,6 @@ class Permissions
     /**
      * ЕДИНЫЙ реестр прав.
      * Сейчас: config/permissions.php
-     * Потом: заменишь реализацию на чтение из БД — и ВСЁ приложение подхватит.
      */
     public static function registry(): array
     {
@@ -42,7 +41,7 @@ class Permissions
     }
 
     /**
-     * Группировка для UI (модалки прав и т.д.)
+     * Группировка для UI
      * group => [permKey => label]
      */
     public static function groupedRegistry(): array
@@ -50,18 +49,26 @@ class Permissions
         $grouped = [];
 
         foreach (self::registry() as $key => $def) {
+
             if (!is_string($key) || trim($key) === '') continue;
             if (!is_array($def)) continue;
 
             $group = $def['group'] ?? 'other';
-            $label = $def['label'] ?? null;
 
             if (!is_string($group) || trim($group) === '') {
                 $group = 'other';
             }
 
-            if (!is_string($label) || trim($label) === '') {
+            $labelKey = $def['label'] ?? null;
+
+            if (!is_string($labelKey) || trim($labelKey) === '') {
                 continue;
+            }
+
+            $label = __('permissions.' . $labelKey);
+
+            if ($label === $labelKey) {
+                $label = ucfirst(str_replace('_', ' ', last(explode('.', $labelKey))));
             }
 
             $grouped[$group][$key] = $label;
@@ -81,7 +88,7 @@ class Permissions
 
         foreach (self::keys() as $k) {
             $v = $incoming[$k] ?? null;
-            // чекбокс может прийти как '1' / 1 / true, или отсутствовать, или '0'
+
             $out[$k] = !empty($v) && (string)$v !== '0';
         }
 
@@ -89,26 +96,24 @@ class Permissions
     }
 
     /**
-     * Проверка одного права (Единая точка).
+     * Проверка одного права.
      */
     public static function can(?User $user, string $key): bool
     {
         if (!$user) return false;
 
-        // super admin всегда ок
         if (!empty($user->is_super_admin)) return true;
 
-        // dev-режим
         if (self::devAllowAll()) return true;
 
-        // реальный контроль
-        $p = $user->permissions ?? [];
+        $meta = $user->meta ?? [];
+        $p = $meta['permissions'] ?? [];
+
         return is_array($p) && !empty($p[$key]);
     }
 
     /**
      * Проверка: есть ХОТЯ БЫ ОДНО из прав.
-     * Полезно для UI и импорта.
      */
     public static function canAny(?User $user, array $keys): bool
     {
@@ -130,7 +135,7 @@ class Permissions
 
     /**
      * Строгая проверка для импорта:
-     * если нет права — добавляем ошибку (не abort).
+     * если нет права — добавляем ошибку.
      */
     public static function requireOrFail(
         ?User $user,

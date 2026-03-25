@@ -8,9 +8,9 @@
                 class="btn secondary"
                 data-open-perm-group="1"
                 data-group-key="{{ $g }}"
-                data-group-title="{{ __('admin.permissions.groups.'.$g) }}">
+                data-group-title="{{ __('permissions.groups.'.$g) }}">
 
-            {{ __('admin.permissions.groups.'.$g) }}
+            {{ __('permissions.groups.'.$g) }}
             <span style="opacity:.65; font-weight:600;">({{ count($items) }})</span>
 
         </button>

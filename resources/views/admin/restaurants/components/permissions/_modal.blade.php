@@ -27,7 +27,7 @@
             <button type="button"
                     class="btn secondary"
                     data-close-perm-modal>
-                {{ __('admin.common.cancel') ?? 'Отмена' }}
+                {{ __('admin.common.cancel') }}
             </button>
 
             @if(($mode ?? 'view') === 'edit')

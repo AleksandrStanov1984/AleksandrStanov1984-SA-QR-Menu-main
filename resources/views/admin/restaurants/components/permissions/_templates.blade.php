@@ -27,7 +27,7 @@
                             <span class="perm-label">{{ $label }}</span>
 
                             <span class="pill green">
-                                {{ __('admin.permissions.enabled') ?? 'Включено' }}
+                                {{ __('admin.permissions.enabled') }}
                             </span>
                         </div>
                     @endif

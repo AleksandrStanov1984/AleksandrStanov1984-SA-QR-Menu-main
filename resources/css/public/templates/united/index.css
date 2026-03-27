@@ -26,6 +26,7 @@
 /* header */
 @import "./header/header.css";
 @import "./header/restaurant-info.css";
+@import "./header/gallery.css";
 
 /* footer */
 @import "./footer/footer.css";

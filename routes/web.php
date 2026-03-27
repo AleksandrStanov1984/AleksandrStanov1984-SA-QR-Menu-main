@@ -261,7 +261,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post(
             'restaurants/{restaurant}/qr/generate',
             [RestaurantQrController::class, 'generate']
-        )->name('admin.restaurants.qr.generate');
+        )->name('restaurants.qr.generate');
 
         Route::get(
             'restaurants/{restaurant}/qr/download/{format}',

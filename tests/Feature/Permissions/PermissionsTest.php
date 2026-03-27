@@ -12,16 +12,24 @@ class PermissionsTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Restaurant $restaurant;
+    protected Section $section;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->restaurant = Restaurant::factory()->create();
+
+        $this->section = Section::factory()->create([
+            'restaurant_id' => $this->restaurant->id,
+        ]);
+    }
+
     public function test_user_without_permission_cannot_access_items()
     {
-        $restaurant = Restaurant::factory()->create();
-
-        $section = Section::factory()->create([
-            'restaurant_id' => $restaurant->id,
-        ]);
-
         $user = User::factory()->create([
-            'restaurant_id' => $restaurant->id,
+            'restaurant_id' => $this->restaurant->id,
             'is_super_admin' => false,
             'meta' => [
                 'permissions' => [
@@ -33,7 +41,7 @@ class PermissionsTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post(
-            "/admin/restaurants/{$restaurant->id}/sections/{$section->id}/items"
+            "/admin/restaurants/{$this->restaurant->id}/sections/{$this->section->id}/items"
         );
 
         $response->assertStatus(403);

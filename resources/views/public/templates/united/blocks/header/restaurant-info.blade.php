@@ -52,21 +52,35 @@
                 @endif
             @endif
 
-            <span id="statusLabel">
-        {{ $today['label'] }} {{ $today['open'] }} – {{ $today['close'] }}
-
-                @if($vm->showStatus)
-                    •
-                    @if($vm->status === 'open')
-                        {{ __('public.open') }}
-                    @elseif($vm->status === 'closing_soon')
-                        {{ __('public.closing_soon') }}
+                <span id="statusLabel">
+    @if(!empty($today['closed']))
+                        {{ $today['label'] }}
                     @else
-                        {{ __('public.closed') }}
+                        {{ $today['label'] }} {{ $today['open'] }} – {{ $today['close'] }}
                     @endif
-                @endif
-    </span>
+
+                    @if($vm->showStatus)
+                        •
+                        @if($vm->status === 'open')
+                            {{ __('public.open') }}
+                        @elseif($vm->status === 'closing_soon')
+                            {{ __('public.closing_soon') }}
+                        @else
+                            {{ __('public.closed') }}
+                        @endif
+                    @endif
+                   </span>
         </button>
     @endif
 
 </div>
+
+@php
+    $showFeaturedItems = $showFeaturedItems ?? false;
+    $items = $vm->featuredItems ?? [];
+    $hasCarousel = count($items) > 4;
+@endphp
+
+@if($showFeaturedItems && $vm->showDishOfDay && !empty($items))
+    @include('public.templates.united.blocks.header.courusel-header')
+@endif

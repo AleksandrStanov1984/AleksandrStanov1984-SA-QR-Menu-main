@@ -20,7 +20,9 @@
 
 @include('public.templates.united.blocks.drawer.mobile-drawer')
 
-@include('public.templates.united.blocks.header.restaurant-info')
+@include('public.templates.united.blocks.header.restaurant-info', [
+    'showFeaturedItems' => true,
+])
 
 @include('public.templates.united.blocks.categories.category-nav')
 
@@ -32,7 +34,9 @@
 
 @include('public.templates.united.blocks.categories.category-nav')
 
-@include('public.templates.united.blocks.footer.footer')
+@include('public.templates.united.blocks.footer.footer', [
+    'showFeaturedItems' => false,
+])
 
 @include('public.templates.united.blocks.modal.item-modal')
 @include('public.templates.united.blocks.modal.hours-modal')

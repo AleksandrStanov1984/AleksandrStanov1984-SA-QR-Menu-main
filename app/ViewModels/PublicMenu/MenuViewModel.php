@@ -5,6 +5,7 @@ namespace App\ViewModels\PublicMenu;
 use App\Models\Restaurant;
 use App\Support\ImagePipeline\ImageService;
 use App\DTO\ItemMetaDTO;
+use Carbon\Carbon;
 
 class MenuViewModel
 {
@@ -37,6 +38,8 @@ class MenuViewModel
     public bool $showDishOfDay = false;
 
     public bool $showLongDescription = false;
+
+    public array $featuredItems = [];
 
     protected ImageService $images;
 
@@ -92,15 +95,17 @@ class MenuViewModel
         ];
 
         $this->theme = $this->buildTheme();
+        $this->featuredItems = $this->buildFeaturedItems();
         $this->footer = $this->buildFooter();
 
         $this->categories  = $this->buildCategoriesTree();
         $this->bestsellers = $this->buildBestsellers();
 
         $this->hours = $this->buildHours($restaurant->hours);
-        $this->status = $this->detectStatus();
 
         $this->todayHours = $this->getTodayHours();
+
+        $this->status = $this->detectStatus($this->todayHours);
         $this->showHoursModal = $this->hasFeature($features, 'hours_modal');
     }
 
@@ -230,11 +235,10 @@ class MenuViewModel
 
         return [
             'links' => $links,
-            'featured_items' => $this->buildFooterFeaturedItems(),
         ];
     }
 
-    private function buildFooterFeaturedItems(): array
+    private function buildFeaturedItems(): array
     {
         $items = $this->restaurant->sections
             ->flatMap(fn($s) => $s->items ?? collect())
@@ -308,11 +312,6 @@ class MenuViewModel
         })->values()->toArray();
     }
 
-    private function detectStatus(): string
-    {
-        return 'open';
-    }
-
     private function hasFeature(array $features, string $key): bool
     {
         return !empty($features[$key]);
@@ -320,6 +319,35 @@ class MenuViewModel
     private function getTodayHours(): ?array
     {
         return collect($this->hours)->firstWhere('today', true);
+    }
+
+    protected function detectStatus(?array $todayHours): string
+    {
+        if (!$todayHours || !empty($todayHours['closed'])) {
+            return 'closed';
+        }
+
+        $open = $todayHours['open'] ?? null;
+        $close = $todayHours['close'] ?? null;
+
+        if (!$open || !$close) {
+            return 'closed';
+        }
+
+        $now = Carbon::now();
+
+        $openAt = Carbon::parse($open);
+        $closeAt = Carbon::parse($close);
+
+        if ($now->lt($openAt) || $now->gte($closeAt)) {
+            return 'closed';
+        }
+
+        if ($now->diffInMinutes($closeAt, false) <= 60) {
+            return 'closing_soon';
+        }
+
+        return 'open';
     }
 
 }

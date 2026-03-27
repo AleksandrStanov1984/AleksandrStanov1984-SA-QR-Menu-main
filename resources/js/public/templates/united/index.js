@@ -18,6 +18,7 @@ import "./theme/theme-switcher.js";
 
 /*header*/
 import "./header/lang-dropdown.js"
+import "./header/header-carousel.js"
 
 /* footer */
 import "./footer/footer-carousel.js";

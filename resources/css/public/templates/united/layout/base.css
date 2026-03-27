@@ -170,7 +170,7 @@ a{
     color:#fff;
 }
 
-/* 🔥 адаптивные под тему */
+/*  адаптивные под тему */
 .btn--success{
     background:color-mix(in srgb, var(--accent-color) 12%, transparent);
     border-color:color-mix(in srgb, var(--accent-color) 20%, transparent);

@@ -91,7 +91,7 @@
 |--------------------------------------------------------------------------
 */
 
-.footer-gallery{
+.head-courusel-gallery{
     width:100%;
 }
 
@@ -133,7 +133,7 @@
 |--------------------------------------------------------------------------
 */
 
-.footer-gallery.is-static .footer-gallery__track{
+.head-courusel-gallery.is-static .footer-gallery__track{
 
     justify-content:center;
 
@@ -149,7 +149,7 @@
 |--------------------------------------------------------------------------
 */
 
-.footer-gallery.is-carousel .footer-gallery__track{
+.head-courusel-gallery.is-carousel .footer-gallery__track{
 
     overflow-x:auto;
     overflow-y:hidden;
@@ -159,11 +159,11 @@
     scrollbar-width:none;
 }
 
-.footer-gallery.is-carousel .footer-gallery__track::-webkit-scrollbar{
+.head-courusel-gallery.is-carousel .footer-gallery__track::-webkit-scrollbar{
     display:none;
 }
 
-.footer-gallery.is-carousel .footer-gallery__item{
+.head-courusel-gallery.is-carousel .footer-gallery__item{
     scroll-snap-align:start;
 }
 

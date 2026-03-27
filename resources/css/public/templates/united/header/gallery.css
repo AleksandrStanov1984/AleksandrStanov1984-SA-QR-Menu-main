@@ -1,0 +1,124 @@
+html,
+body{
+    overflow-x: hidden;
+}
+
+.restaurant-featured{
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+.header-carousel{
+    position: relative;
+    width: 100%;
+}
+
+.header-carousel__viewport{
+    width: 100%;
+    overflow: hidden;
+}
+
+.header-carousel__track{
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    padding: 6px 0 10px;
+    cursor: grab;
+    scrollbar-width: none;
+}
+
+.header-carousel__track::-webkit-scrollbar{
+    display: none;
+}
+
+.header-carousel__track.is-dragging{
+    cursor: grabbing;
+    scroll-behavior: auto;
+}
+
+.header-carousel__item{
+    flex: 0 0 auto;
+    width: 140px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px rgba(0,0,0,.10);
+    scroll-snap-align: start;
+}
+
+.header-carousel__item img{
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.header-carousel__arrow{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+    backdrop-filter: blur(8px);
+}
+
+.header-carousel__arrow--prev{
+    left: 4px;
+}
+
+.header-carousel__arrow--next{
+    right: 4px;
+}
+
+.header-carousel__arrow:disabled{
+    opacity: .35;
+    cursor: default;
+}
+
+@media (max-width: 639px){
+    .header-carousel__item{
+        width: calc((100vw - 24px - 12px) / 2.35);
+        min-width: 132px;
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1023px){
+    .header-carousel__item{
+        width: calc((100vw - 24px - 24px) / 3.2);
+        min-width: 160px;
+    }
+}
+
+@media (min-width: 1024px){
+    .restaurant-featured{
+        padding: 0 20px;
+    }
+
+    .header-carousel__item{
+        width: calc((100vw - 40px - 36px) / 4.8);
+        min-width: 190px;
+        max-width: 240px;
+    }
+}

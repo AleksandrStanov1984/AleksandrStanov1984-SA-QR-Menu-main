@@ -46,6 +46,8 @@ body.theme-light{
     --border-color:rgba(0,0,0,.08);
 
     --icon-color:#111827;
+
+    --line:rgba(19, 17, 17, 0.18);
 }
 
 
@@ -72,4 +74,6 @@ body.theme-dark{
     --border-color:rgba(255,255,255,.08);
 
     --icon-color:#f3f4f6;
+
+    --line: rgb(112, 115, 120);
 }

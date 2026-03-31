@@ -24,7 +24,7 @@ class QrService
             ['token' => Str::random(10)]
         );
 
-        $url = route('qr.resolve', ['token' => $token->token]);
+        $url = appUrl() . route('qr.resolve', ['token' => $token->token], false);
 
         $base = "restaurants/{$restaurant->id}/qr";
 
@@ -41,10 +41,23 @@ class QrService
             ]
         );
 
+        $settings = is_array($qrRecord->settings) ? $qrRecord->settings : [];
+
+        // =========================
+        // INVALIDATE IF URL CHANGED
+        // =========================
+        $oldUrl = $settings['qr_url'] ?? null;
+
+        if ($oldUrl !== $url) {
+            $this->deleteQrFile($settings['raw_path'] ?? null, $restaurant->id);
+            $this->deleteQrFile($qrRecord->qr_path, $restaurant->id);
+            $settings['raw_path'] = null;
+        }
+
         // =========================
         // RAW
         // =========================
-        $rawPath = $qrRecord->settings['raw_path'] ?? null;
+        $rawPath = $settings['raw_path'] ?? null;
 
         if (!$rawPath || !File::exists(public_path('assets/'.$rawPath))) {
 
@@ -71,24 +84,17 @@ class QrService
         // =========================
         if ($logo) {
 
-            // удаляем старый QR logo
             $this->deleteQrFile($qrRecord->logo_path, $restaurant->id);
-
             $logoPath = $this->storePublicAsset($logo, "{$base}/logo");
 
         } elseif (!empty($restaurant->logo_path)) {
 
-            // если НЕ загрузили — чистим QR logo
             $this->deleteQrFile($qrRecord->logo_path, $restaurant->id);
-
-            // используем базовый restaurant logo
             $logoPath = $this->normalizeRelative($restaurant->logo_path);
 
         } else {
 
-            // вообще нет — тоже чистим QR logo
             $this->deleteQrFile($qrRecord->logo_path, $restaurant->id);
-
             $logoPath = null;
         }
 
@@ -98,21 +104,16 @@ class QrService
         if ($background) {
 
             $this->deleteQrFile($qrRecord->background_path, $restaurant->id);
-
             $backgroundPath = $this->storePublicAsset($background, "{$base}/background");
 
         } elseif (!empty($restaurant->background_path)) {
 
-            // чистим QR background
             $this->deleteQrFile($qrRecord->background_path, $restaurant->id);
-
             $backgroundPath = $this->normalizeRelative($restaurant->background_path);
 
         } else {
 
-            // чистим QR background
             $this->deleteQrFile($qrRecord->background_path, $restaurant->id);
-
             $backgroundPath = null;
         }
 
@@ -141,8 +142,8 @@ class QrService
         // =========================
         // SAVE
         // =========================
-        $settings = is_array($qrRecord->settings) ? $qrRecord->settings : [];
         $settings['raw_path'] = $rawPath;
+        $settings['qr_url'] = $url;
         $settings['format'] = 'svg-card-v2';
 
         $restaurant->qr()->updateOrCreate(

@@ -1,5 +1,11 @@
 <div class="restaurant-header">
 
+    @if(!empty($vm->branding['logo']))
+        <div class="menu-logo">
+            <img src="{{ $vm->branding['logo'] }}" alt="logo">
+        </div>
+    @endif
+
     <h1 class="restaurant-title">
         {{ $vm->merchant->name }}
     </h1>

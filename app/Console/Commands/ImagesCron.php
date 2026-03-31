@@ -56,7 +56,6 @@ class ImagesCron extends Command
             $rel = $this->relFrom($assetsInboxAbs, $abs);
             $rel = ltrim(str_replace('\\', '/', $rel), '/');
 
-            // 🔥 FIX: защита от двойного assets/
             if (str_starts_with($rel, 'assets/')) {
                 $rel = substr($rel, strlen('assets/') );
             }

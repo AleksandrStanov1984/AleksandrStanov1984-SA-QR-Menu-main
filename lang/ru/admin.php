@@ -139,7 +139,11 @@ return [
         'brand' => [
             'h2' => 'Логотип',
             'logo_label' => 'Загрузить логотип (PNG/JPG/WEBP, до 2 MB)',
-            'logo_saved' => 'Логотип сохранён.',
+            'logo_saved' => 'Логотип сохранён',
+            'logo_upload_failed' => 'Ошибка загрузки логотипа',
+
+            'background_updated' => 'Фон и тема обновлены',
+            'background_upload_failed' => 'Ошибка загрузки фона',
         ],
     ],
 
@@ -311,6 +315,9 @@ return [
         'my_menu' => 'Моё меню',
         'menu_builder' => 'Конструктор меню',
 
+        'banners_group' => 'Маркетинг',
+        'banners' => 'Баннеры',
+
         // ===== CONTENT =====
         'content_group' => 'Контент',
         'branding' => 'Брендинг',
@@ -322,7 +329,7 @@ return [
         'import_images' => 'Импорт изображений',
 
         // ===== SECURITY =====
-        'security_group' => 'Безопасность',
+        'security_group' => 'Безопасность АДМИН',
         'security' => 'Безопасность',
         'password' => 'Пароль',
         'permissions' => 'Права доступа',
@@ -332,6 +339,8 @@ return [
         'menu' => 'Меню',
 
         'qr' => "QR Code",
+
+        'system_group' => 'Системные настройки',
     ],
 
     'branding' => [
@@ -575,17 +584,5 @@ return [
         'keys_required'   => 'Поле keys обязательно и должно быть массивом.',
         'keys_duplicate'  => 'Список keys содержит дубликаты.',
         'keys_mismatch'   => 'Список keys не совпадает с текущим набором элементов.',
-
-
-
-
-
-
-
-
-
-
-
-
 
 ];

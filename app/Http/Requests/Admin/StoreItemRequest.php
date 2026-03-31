@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class StoreItemRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class StoreItemRequest extends FormRequest
 
     protected function failedAuthorization(): void
     {
-        abort(403);
+        throw new AuthorizationException(__('permissions.no_access'));
     }
 
     public function rules(): array

@@ -40,6 +40,8 @@ class AdminPerformanceTest extends TestCase
             $duration,
             "Admin dashboard too slow: {$duration}s"
         );
+
+        fwrite(STDOUT, "test_admin_dashboard_loads_fast() -> Time: {$duration}s\n");
     }
 
     public function test_login_is_fast(): void
@@ -71,9 +73,122 @@ class AdminPerformanceTest extends TestCase
             $duration,
             "Login too slow: {$duration}s"
         );
+
+        fwrite(STDOUT, "test_login_is_fast() -> Time: {$duration}s\n");
     }
 
-    public function test_admin_routes_are_fast(): void
+    public function test_all_routes_are_fast(): void
+    {
+        $admin = User::factory()->create([
+            'is_super_admin' => true,
+        ]);
+
+        $restaurant = Restaurant::factory()->create();
+
+        User::factory()->create([
+            'restaurant_id' => $restaurant->id,
+            'is_super_admin' => false,
+        ]);
+
+        $this->actingAs($admin);
+
+        $routes = [
+            "/admin",
+            "/admin/restaurants",
+            "/admin/restaurants/create",
+
+            "/admin/restaurants/{$restaurant->id}/edit",
+            "/admin/restaurants/{$restaurant->id}/menu",
+            "/admin/restaurants/{$restaurant->id}/profile",
+            "/admin/restaurants/{$restaurant->id}/branding",
+            "/admin/restaurants/{$restaurant->id}/hours",
+            "/admin/restaurants/{$restaurant->id}/qr",
+            "/admin/restaurants/{$restaurant->id}/sections",
+            "/admin/restaurants/{$restaurant->id}/socials",
+            "/admin/restaurants/{$restaurant->id}/import",
+            "/admin/restaurants/{$restaurant->id}/credentials",
+
+            "/admin/profile",
+            "/admin/security/password",
+
+            "/r/{$restaurant->slug}",
+        ];
+
+        foreach ($routes as $route) {
+
+            $start = microtime(true);
+
+            $response = $this->get($route);
+
+            $duration = microtime(true) - $start;
+
+            if ($response->status() !== 200) {
+                fwrite(STDOUT, "FAILED ROUTE: {$route}\n");
+            }
+
+            $response->assertStatus(200);
+
+            $this->assertLessThan(
+                0.6,
+                $duration,
+                "Route {$route} too slow: {$duration}s"
+            );
+
+            fwrite(STDOUT, "Route {$route} -> Time: {$duration}s\n");
+        }
+    }
+
+    public function test_admin_menu_queries_count(): void
+    {
+        $user = \App\Models\User::factory()->create([
+            'is_super_admin' => true,
+        ]);
+
+        $restaurant = \App\Models\Restaurant::factory()->create();
+
+        $this->actingAs($user);
+
+        \DB::enableQueryLog();
+
+        $response = $this->get("/admin/restaurants/{$restaurant->id}/menu");
+
+        $response->assertStatus(200);
+
+        $queries = \DB::getQueryLog();
+        $count = count($queries);
+
+        fwrite(STDOUT, "Admin menu queries: {$count}\n");
+
+        $this->assertLessThan(
+            20,
+            $count,
+            "Too many queries on admin menu: {$count}"
+        );
+    }
+
+    public function test_public_menu_queries_count(): void
+    {
+        $restaurant = \App\Models\Restaurant::factory()->create();
+
+        \DB::enableQueryLog();
+
+        $response = $this->get("/r/{$restaurant->slug}");
+
+        $response->assertStatus(200);
+
+        $queries = \DB::getQueryLog();
+        $count = count($queries);
+
+        fwrite(STDOUT, "Public menu queries: {$count}\n");
+
+        $this->assertLessThan(
+            15,
+            $count,
+            "Too many queries on public menu: {$count}"
+        );
+    }
+
+    public function test_all_routes_are_fast_under_load(): void
     {
         $restaurant = Restaurant::factory()->create();
 
@@ -85,22 +200,31 @@ class AdminPerformanceTest extends TestCase
             "/admin/restaurants/{$restaurant->id}/branding",
             "/admin/restaurants/{$restaurant->id}/hours",
             "/admin/restaurants/{$restaurant->id}/qr",
+
+            // PUBLIC
+            "/r/{$restaurant->slug}",
         ];
 
         foreach ($routes as $route) {
-            $start = microtime(true);
 
-            $response = $this->get($route);
+            for ($i = 0; $i < 10; $i++) {
 
-            $duration = microtime(true) - $start;
+                $start = microtime(true);
 
-            $response->assertStatus(200);
+                $response = $this->get($route);
 
-            $this->assertLessThan(
-                0.6,
-                $duration,
-                "Route {$route} too slow: {$duration}s"
-            );
+                $duration = microtime(true) - $start;
+
+                $response->assertStatus(200);
+
+                $this->assertLessThan(
+                    0.6,
+                    $duration,
+                    "Route {$route} too slow on iteration {$i}: {$duration}s"
+                );
+
+                fwrite(STDOUT, "Route {$route} [{$i}] -> {$duration}s\n");
+            }
         }
     }
 
@@ -144,5 +268,7 @@ class AdminPerformanceTest extends TestCase
             $duration,
             "Item save too slow: {$duration}s"
         );
+
+        fwrite(STDOUT, "test_item_save_is_fast() -> Time: {$duration}s\n");
     }
 }

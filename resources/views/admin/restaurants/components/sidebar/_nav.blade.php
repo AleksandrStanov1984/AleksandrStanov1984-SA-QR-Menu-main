@@ -25,11 +25,13 @@
         <li class="sb-group-title">🏪 {{ __('admin.sidebar.restaurant_group') }}</li>
 
         @if($ctxRestaurant)
+            {{--
             <li>
                 <a href="{{ route('admin.restaurants.edit', $ctxRestaurant) }}">
                     ⚙️ {{ __('admin.sidebar.settings') }}
                 </a>
             </li>
+             --}}
 
             <li>
                 <a href="{{ route('admin.restaurants.hours', $ctxRestaurant) }}">
@@ -74,8 +76,19 @@
             </li>
         @endif
 
+        <li class="sb-group-title">
+            📢 {{ __('admin.sidebar.banners_group') }}
+        </li>
+
+        @if(($ctxRestaurant?->plan_key ?? null) === 'pro')
+            <a href="{{ route('admin.restaurants.banners.index', $ctxRestaurant) }}">
+                🖼 {{ __('admin.sidebar.banners') }}
+            </a>
+        @endif
+
 
         {{-- ================= IMPORT ================= --}}
+        {{--
         <li class="sb-group-title">📥 {{ __('admin.sidebar.import_group') }}</li>
 
         @if($ctxRestaurant)
@@ -91,10 +104,10 @@
                 </a>
             </li>
         @endif
-
+       --}}
 
         {{-- ================= SECURITY ================= --}}
-        <li class="sb-group-title">🔒 {{ __('admin.sidebar.security_group') }}</li>
+        <li class="sb-group-title">🔒 {{ __('admin.sidebar.security') }}</li>
 
         @if($ctxRestaurant)
             <li>

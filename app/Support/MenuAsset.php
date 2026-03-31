@@ -40,10 +40,6 @@ class MenuAsset
         |--------------------------------------------------------------------------
         | 2) Template asset via Vite
         |--------------------------------------------------------------------------
-        | IMPORTANT:
-        | On Windows Vite often does NOT see "resources/resources/assets"
-        | so Vite::asset() may throw exception.
-        | We MUST protect against that.
         */
         $tplRel = rtrim($tplAssetBase, '/') . '/' . $relativePath;
 

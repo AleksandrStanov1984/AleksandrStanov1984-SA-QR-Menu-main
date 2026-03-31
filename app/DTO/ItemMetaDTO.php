@@ -19,13 +19,13 @@ class ItemMetaDTO
         $this->style      = is_array($data['style'] ?? null) ? $data['style'] : [];
     }
 
-    // 🔥 создать из модели
+    // создать из модели
     public static function fromModel($item): self
     {
         return new self(is_array($item->meta) ? $item->meta : []);
     }
 
-    // 🔥 применить изменения (partial update)
+    // применить изменения (partial update)
     public function apply(array $data): void
     {
         if (array_key_exists('is_new', $data)) {
@@ -49,7 +49,7 @@ class ItemMetaDTO
         }
     }
 
-    // 🔥 обратно в массив (для БД)
+    // обратно в массив (для БД)
     public function toArray(): array
     {
         return [

@@ -92,7 +92,7 @@
 
             } catch (e) {
                 console.error(e);
-                alert('Ошибка сохранения');
+                showToast(window.UI_LANG.error, 'error');
             }
 
         });

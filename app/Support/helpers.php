@@ -17,3 +17,20 @@ if (!function_exists('ctxRestaurant')) {
         return $param instanceof Restaurant ? $param : null;
     }
 }
+
+if (!function_exists('appUrl')) {
+    function appUrl(): string
+    {
+        if (app()->runningInConsole()) {
+            return config('app.url');
+        }
+
+        $request = request();
+
+        if ($request && $request->getSchemeAndHttpHost()) {
+            return $request->getSchemeAndHttpHost();
+        }
+
+        return config('app.url');
+    }
+}

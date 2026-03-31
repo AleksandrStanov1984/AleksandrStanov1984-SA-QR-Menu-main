@@ -7,6 +7,9 @@
         <div class="modal-body">
 
             <img class="modal-image" src="" alt="" style="display:none">
+            <button class="modal-back-btn" type="button" data-close-modal style="display:none">
+                {{ __('public.back_to_menu', [], app()->getLocale()) }}
+            </button>
 
             <div class="modal-badges" style="display:none"></div>
 

@@ -25,12 +25,10 @@
   $canEdit       = Permissions::can($user, 'items.edit');
 
   // для текста: показывать description/details как кнопки
-  // (если у тебя отдельные права на просмотр текста — подставь сюда свои ключи)
   $canViewDesc   = Permissions::can($user, 'items.view.description') || $canEdit;
   $canViewDetails= Permissions::can($user, 'items.view.details') || $canEdit;
 
   // для загрузки/просмотра картинки в админке
-  // (если у тебя отдельный ключ — замени)
   $canImageUpload = Permissions::can($user, 'items.image.upload') || $canEdit;
 
   $metaUrlBase = url('/admin/restaurants/'.$restaurant->id.'/items');
@@ -39,7 +37,7 @@
     return method_exists($m, 'trashed') ? (bool)$m->trashed() : false;
   };
 
-  // дефолтная картинка (как ты указал)
+  // дефолтная картинка
   $fallbackImg = asset('assets/classic-menu/images/image-fallback.png');
 
   $itemImageUrl = function ($it) use ($fallbackImg) {
@@ -133,10 +131,10 @@
           {{-- HEADER --}}
           <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; width:100%;">
 
-            {{-- LEFT: фиксированная зона под handle+checkbox, чтобы title начинался как на скрине --}}
+            {{-- LEFT: фиксированная зона под handle+checkbox --}}
             <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1 1 auto;">
 
-              {{-- handle (не закрывает аккордеон) --}}
+              {{-- handle --}}
               <span class="mb-handle"
                     title="Drag"
                     data-no-accordion
@@ -145,7 +143,7 @@
                 ≡
               </span>
 
-              {{-- active checkbox (не закрывает аккордеон) --}}
+              {{-- active checkbox --}}
               @if($canActive)
                 <input type="checkbox"
                        data-no-accordion
@@ -164,7 +162,7 @@
                        style="margin:0; transform:translateY(1px);">
               @endif
 
-              {{-- TITLE: без ellipsis, занимает всю ширину --}}
+              {{-- TITLE: без ellipsis--}}
               <span class="mb-item-title"
                     style="display:block; min-width:0; flex:1 1 auto; white-space:normal; overflow:visible;">
                 {{ $title($it) }}
@@ -182,7 +180,7 @@
                 @endif
               </div>
 
-              {{-- caret (стилизуешь ты) --}}
+              {{-- caret  --}}
               <span class="mb-acc-caret" aria-hidden="true"></span>
             </div>
           </div>
@@ -195,7 +193,7 @@
           {{-- LEFT block --}}
           <div style="flex:1 1 auto; min-width:0;">
 
-            {{-- IMAGE block (показываем всегда; если прав на upload нет — просто превью) --}}
+            {{-- IMAGE block  --}}
             <div style="margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;">
               <div style="width:140px; height:90px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:rgba(255,255,255,.04); flex:0 0 auto;">
                 <img src="{{ $imgUrl }}"
@@ -203,7 +201,7 @@
                      style="width:100%; height:100%; object-fit:cover; display:block;">
               </div>
 
-              {{-- Кнопки текста (Description/Details) как кнопки -> открывают модалку --}}
+              {{-- Кнопки текста (Description/Details) --}}
               <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; min-width:0;">
                 @if($canViewDesc && $descTxt !== '')
                   <button type="button"
@@ -233,7 +231,7 @@
               </div>
             </div>
 
-            {{-- 3 чекбокса: под названием (как ты просил) --}}
+            {{-- 3 чекбокса: --}}
             <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
               @if($canShowImage)
                 <label class="perm-item" style="margin:0; display:flex; align-items:center; gap:8px;">

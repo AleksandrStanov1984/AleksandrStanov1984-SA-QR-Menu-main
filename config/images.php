@@ -53,6 +53,7 @@ return [
         'fallbacks' => [
             'food' => 'system/fallback/food.webp',
             'logo' => 'system/fallback/logo.webp',
+            'banner' => 'system/banners/default.webp',
         ],
         'qr'   => 'system/qr/fallback.webp',
     ],

@@ -9,35 +9,51 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResolveAdminRestaurant
 {
-    /**
-     * Resolves "current restaurant" for admin screens.
-     * - Super admin can pick a restaurant; selection stored in session.
-     * - Regular users are bound to `users.restaurant_id`.
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
+
         if (!$user) {
             return redirect()->route('admin.login');
         }
 
-        $currentRestaurantId = null;
-
-        if ((bool) $user->is_super_admin) {
-            $currentRestaurantId = (int) ($request->session()->get('admin.restaurant_id') ?? 0);
-            if ($currentRestaurantId <= 0) {
-                $currentRestaurantId = null;
-            }
-        } else {
-            $currentRestaurantId = $user->restaurant_id ? (int) $user->restaurant_id : null;
-        }
-
         $currentRestaurant = null;
-        if ($currentRestaurantId) {
-            $currentRestaurant = Restaurant::query()->find($currentRestaurantId);
+
+        // обычный пользователь
+        if (!$user->is_super_admin) {
+
+            if ($user->restaurant_id) {
+                $currentRestaurant = Restaurant::find($user->restaurant_id);
+
+                // синхронизируем session (важно)
+                session(['admin.restaurant_id' => $user->restaurant_id]);
+            }
+
+        } else {
+
+            //  ROUTE приоритет
+            $routeRestaurant = $request->route('restaurant');
+
+            if ($routeRestaurant instanceof Restaurant) {
+                $currentRestaurant = $routeRestaurant;
+
+                // сохраняем в session
+                session(['admin.restaurant_id' => $routeRestaurant->id]);
+
+            } else {
+
+                //fallback → session
+                $id = session('admin.restaurant_id');
+
+                if ($id) {
+                    $currentRestaurant = Restaurant::where('id', $id)
+                        ->where('is_active', true)
+                        ->first();
+                }
+            }
         }
 
-        // Share with request for controllers/views.
+        // прокидываем в request
         $request->attributes->set('admin_restaurant', $currentRestaurant);
 
         return $next($request);

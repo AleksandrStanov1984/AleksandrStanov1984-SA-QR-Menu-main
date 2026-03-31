@@ -19,7 +19,10 @@ class MenuPatchValidator
         {
             $errors=[];
             $plan=['dry_run'=>false,'ops'=>[],'summary'=>['create'=>0,'update'=>0,'delete'=>0]];
-            Permissions::abortUnless($user,'import.menu_json');
+
+            if ($resp = Permissions::denyRedirect(auth()->user(), 'import.menu_json')) {
+                return $resp;
+            }
 
             if (($payload['mode']??null)!=='patch') {
                 $errors[]=['path'=>'mode','message_key'=>'admin.import.errors.mode_invalid','params'=>[]];
@@ -81,7 +84,10 @@ class MenuPatchValidator
 
         // is_active
         if (array_key_exists('is_active', $set)) {
-            Permissions::abortUnless($user, 'items.toggle.active');
+            if ($resp = Permissions::denyRedirect(auth()->user(), 'items.toggle.active')) {
+                return $resp;
+            }
+
             if (!is_bool($set['is_active'])) {
                 $errors[] = $this->err("$base.set.is_active", 'admin.import.errors.boolean_required', []);
             } else {
@@ -117,25 +123,39 @@ class MenuPatchValidator
                 $meta = [];
 
                 if (array_key_exists('show_image', $m)) {
-                    Permissions::abortUnless($user, 'items.toggle.show_image');
-                    if (!is_bool($m['show_image'])) $errors[] = $this->err("$base.set.meta.show_image", 'admin.import.errors.boolean_required', []);
-                    else $meta['show_image'] = $m['show_image'];
+                    if ($resp = Permissions::denyRedirect(auth()->user(), 'items.toggle.show_image')) {
+                        return $resp;
+                    }
+
+                    if (!is_bool($m['show_image']))
+                        $errors[] = $this->err("$base.set.meta.show_image", 'admin.import.errors.boolean_required', []);
+                    else
+                        $meta['show_image'] = $m['show_image'];
                 }
 
                 if (array_key_exists('is_new', $m)) {
-                    Permissions::abortUnless($user, 'items.flag.new');
+                    if ($resp = Permissions::denyRedirect(auth()->user(), 'items.flag.new')) {
+                        return $resp;
+                    }
+
                     if (!is_bool($m['is_new'])) $errors[] = $this->err("$base.set.meta.is_new", 'admin.import.errors.boolean_required', []);
                     else $meta['is_new'] = $m['is_new'];
                 }
 
                 if (array_key_exists('dish_of_day', $m)) {
-                    Permissions::abortUnless($user, 'items.flag.dish_of_day');
+                    if ($resp = Permissions::denyRedirect(auth()->user(), 'items.flag.dish_of_day')) {
+                        return $resp;
+                    }
+
                     if (!is_bool($m['dish_of_day'])) $errors[] = $this->err("$base.set.meta.dish_of_day", 'admin.import.errors.boolean_required', []);
                     else $meta['dish_of_day'] = $m['dish_of_day'];
                 }
 
                 if (array_key_exists('spicy', $m)) {
-                    Permissions::abortUnless($user, 'items.flag.spicy');
+                    if ($resp = Permissions::denyRedirect(auth()->user(), 'items.flag.spicy')) {
+                        return $resp;
+                    }
+
                     if (!is_int($m['spicy'])) $errors[] = $this->err("$base.set.meta.spicy", 'admin.import.errors.spicy_invalid', []);
                     elseif ($m['spicy'] < 0 || $m['spicy'] > 3) $errors[] = $this->err("$base.set.meta.spicy", 'admin.import.errors.spicy_invalid', []);
                     else $meta['spicy'] = $m['spicy'];
@@ -289,7 +309,17 @@ class MenuPatchValidator
         $permBase = $type === 'category' ? 'categories' : 'subcategories';
 
         if ($action === 'create') {
-            Permissions::abortUnless($user, "{$permBase}.create");
+            Permissions::requireOrFail(
+                $user,
+                "{$permBase}.create",
+                "{$base}.{$key}",
+                $errors,
+                __('permissions.create_' . $type)
+            );
+
+            if (!empty($errors)) {
+                return;
+            }
 
             if ($exists) {
                 $errors[] = $this->err("$base.key", 'admin.import.errors.section_exists', ['key'=>$key]);
@@ -336,7 +366,17 @@ class MenuPatchValidator
         }
 
         if ($action === 'delete') {
-            Permissions::abortUnless($user, "{$permBase}.delete");
+            Permissions::requireOrFail(
+                $user,
+                "{$permBase}.delete",
+                "{$base}.{$key}",
+                $errors,
+                __('permissions.create_' . $type)
+            );
+
+            if (!empty($errors)) {
+                return;
+            }
 
             $plan['ops'][] = [
                 'type'=>'section',
@@ -347,7 +387,17 @@ class MenuPatchValidator
         }
 
         if ($action === 'toggle') {
-            Permissions::abortUnless($user, "{$permBase}.toggle");
+            Permissions::requireOrFail(
+                $user,
+                "{$permBase}.toggle",
+                "{$base}.{$key}",
+                $errors,
+                __('permissions.create_' . $type)
+            );
+
+            if (!empty($errors)) {
+                return;
+            }
 
             if (!isset($op['set']['is_active']) || !is_bool($op['set']['is_active'])) {
                 $errors[] = $this->err("$base.set.is_active", 'admin.import.errors.boolean_required', []);
@@ -364,7 +414,17 @@ class MenuPatchValidator
         }
 
         if ($action === 'update') {
-            Permissions::abortUnless($user, "{$permBase}.edit");
+            Permissions::requireOrFail(
+                $user,
+                "{$permBase}.edit",
+                "{$base}.{$key}",
+                $errors,
+                __('permissions.create_' . $type)
+            );
+
+            if (!empty($errors)) {
+                return;
+            }
 
             $set = $this->normalizeSectionSet($op['set'] ?? null, $errors, "$base.set");
             if (!$set) return;
@@ -632,8 +692,11 @@ class MenuPatchValidator
                          if ($this->isUnsafePath($icon)) {
                              $errors[] = $this->err("$base.set.icon", 'admin.import.errors.path_unsafe', []);
                          } else {
-                             // если иконка приходит как путь (из ZIP ассетов) — требуем ZIP право
-                             Permissions::abortUnless($user, 'import.images_zip');
+
+                             if ($resp = Permissions::denyRedirect(auth()->user(), 'import.images_zip')) {
+                                 return $resp;
+                             }
+
                              $out['icon'] = $icon;
                          }
                      }
@@ -644,13 +707,16 @@ class MenuPatchValidator
          return $out;
      }
 
-     private function socialMaxAllowed(User $user): int
-     {
-         if (Permissions::can($user, 'socials.add.5')) return 5;
-         if (Permissions::can($user, 'socials.add.4')) return 4;
-         if (Permissions::can($user, 'socials.add.3')) return 3;
-         return 2;
-     }
+    private function socialMaxAllowed(User $user): int
+    {
+        foreach ([5, 4, 3] as $limit) {
+            if (Permissions::can($user, "socials.add.$limit")) {
+                return $limit;
+            }
+        }
+
+        return 2;
+    }
 
      private function validateReorderOp(
          Restaurant $restaurant,
@@ -679,7 +745,17 @@ class MenuPatchValidator
              return;
          }
 
-         Permissions::abortUnless($user, $permMap[$type]);
+         Permissions::requireOrFail(
+             $user,
+             $permMap[$type],
+             "$base.permission",
+             $errors,
+             __('permissions.' . $permMap[$type])
+         );
+
+         if (!empty($errors)) {
+             return;
+         }
 
          $keys = array_values(array_unique(array_map('trim', $op['keys'])));
          if (count($keys) !== count($op['keys'])) {

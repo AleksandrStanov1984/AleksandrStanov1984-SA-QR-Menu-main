@@ -13,8 +13,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const badgeEl = modal.querySelector(".modal-badges");
     const spicyEl = modal.querySelector(".modal-spicy");
     const detailsEl = modal.querySelector(".modal-details");
+    const backBtn = modal.querySelector(".modal-back-btn");
 
     function openModalFromTrigger(trigger) {
+
+        if (backBtn) {
+            backBtn.style.display = "";
+        }
 
         const title = trigger.getAttribute("data-title") || "";
         const desc = trigger.getAttribute("data-description") || "";
@@ -24,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const isNew = trigger.getAttribute("data-is-new") === "1";
         const isDish = trigger.getAttribute("data-is-dish") === "1";
-        const spicy = parseInt(trigger.getAttribute("data-spicy") || "0");
+        const spicy = Math.max(0, Math.min(5, parseInt(trigger.getAttribute("data-spicy") || "0", 10)));
 
         titleEl.textContent = title;
 
@@ -91,12 +96,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (spicy > 0) {
             let spicyHtml = "";
 
-            for (let i = 1; i <= 5; i++) {
-                spicyHtml += `<i class="${i <= spicy ? 'is-on' : ''}">🌶</i>`;
+            for (let i = 1; i <= spicy; i++) {
+                spicyHtml += `<i class="is-on">🌶</i>`;
             }
+
             spicyEl.innerHTML = spicyHtml;
             spicyEl.style.display = "";
         } else {
+            spicyEl.innerHTML = "";
             spicyEl.style.display = "none";
         }
 
@@ -115,6 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function closeModal() {
 
+        if (backBtn) {
+            backBtn.style.display = "none";
+        }
+
         modal.classList.remove("modal-visible");
         modal.setAttribute("aria-hidden", "true");
 
@@ -132,6 +143,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const modalType = trigger.getAttribute("data-open-modal");
         if (modalType && modalType !== "" && modalType !== "item") return;
+
+        const img = trigger.getAttribute("data-image") || "";
+
+        // если нет изображения — не открываем модалку
+        if (!img || img.trim() === "" || img === "null") {
+            return;
+        }
 
         e.preventDefault();
 

@@ -62,7 +62,6 @@ return [
             'keep_source' => false,
         ],
 
-        // 🔥 ВАЖНО: БЕЗ image-inbox
         'menu_item' => [
             'name' => 'menu_item',
             'match' => 'restaurants/*/menu/items/*',
@@ -103,6 +102,26 @@ return [
             'keep_source' => false,
         ],
 
+        'system_banner' => [
+            'name' => 'system_banner',
+            'match' => 'system/banners/*',
+            'format' => 'webp',
+            'quality' => 86,
+            'sizes' => [1200],
+            'hash_names' => false,
+            'keep_source' => false,
+        ],
+
+        'banner' => [
+            'name' => 'banner',
+            'match' => 'restaurants/*/banners/*',
+            'format' => 'webp',
+            'quality' => 86,
+            'sizes' => [1200],
+            'hash_names' => false,
+            'keep_source' => false,
+        ],
+
     ],
 
     'qr' => [
@@ -117,10 +136,30 @@ return [
 
     'system_qr' => [
         'name' => 'system_qr',
-        'match' => 'system/qr/*', // 👈 ВАЖНО
+        'match' => 'system/qr/*',
         'format' => 'webp',
         'quality' => 90,
         'sizes' => [800],
+        'hash_names' => false,
+        'keep_source' => false,
+    ],
+
+    'system_banner' => [
+        'name' => 'system_banner',
+        'match' => 'system/banners/*',
+        'format' => 'webp',
+        'quality' => 86,
+        'sizes' => [1200],
+        'hash_names' => false,
+        'keep_source' => false,
+    ],
+
+    'banner' => [
+        'name' => 'banner',
+        'match' => 'restaurants/*/banners/*',
+        'format' => 'webp',
+        'quality' => 86,
+        'sizes' => [1200],
         'hash_names' => false,
         'keep_source' => false,
     ],

@@ -53,7 +53,7 @@
                     <div class="qr-download">
 
                         <button type="button" class="btn btn-success" id="qrDownloadBtn">
-                            Скачать
+                            {{ __('qr.buttons.download') }}
                         </button>
 
                         <div id="qrDropdown" class="qr-dropdown">

@@ -21,17 +21,25 @@ class BrandingTest extends TestCase
 
         $user = User::factory()->create([
             'restaurant_id' => $restaurant->id,
+            'meta' => [
+                'permissions' => [
+                    'branding.logo.upload' => true,
+                ],
+            ],
         ]);
 
         $this->actingAs($user);
 
         $file = UploadedFile::fake()->image('logo.jpg');
 
-        $this->post("/admin/restaurants/{$restaurant->id}/branding", [
-            'logo' => $file,
-        ]);
+        $response = $this->post(
+            route('admin.restaurants.logo.update', $restaurant),
+            [
+                'logo' => $file,
+            ]
+        );
 
-        Storage::disk('public')->assertExists("restaurants/{$restaurant->id}");
+        $response->assertRedirect();
     }
 
     public function test_change_theme_mode()

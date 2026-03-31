@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PromoBannerController;
 use App\Http\Controllers\Admin\RestaurantHoursController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -189,8 +190,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('restaurants/{restaurant}/items/{item}', [ItemController::class, 'update'])
             ->name('restaurants.items.update');
 
-        Route::post('restaurants/{restaurant}/sections/{section}/items/reorder', [ItemController::class, 'reorder'])
-            ->name('restaurants.items.reorder');
+        Route::post('/restaurants/{restaurant}/sections/{section}/items/reorder', [ItemController::class, 'reorder']
+        )->name('restaurants.items.reorder');
 
         Route::delete('restaurants/{restaurant}/items/{item}', [ItemController::class, 'destroy'])
             ->name('restaurants.items.destroy');
@@ -257,6 +258,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/hours', [RestaurantHoursController::class, 'edit'])
             ->name('restaurants.hours');
 
+
+        // BANNERS
+        Route::get('restaurants/{restaurant}/banners', [PromoBannerController::class, 'index'])
+            ->name('restaurants.banners.index');
+
+        Route::post('restaurants/{restaurant}/banners/save', [PromoBannerController::class, 'save'])
+            ->name('restaurants.banners.save');
+
+        Route::post('restaurants/{restaurant}/banners/reorder', [PromoBannerController::class, 'reorder'])
+            ->name('restaurants.banners.reorder');
+
+        Route::delete('restaurants/{restaurant}/banners/{id}', [PromoBannerController::class, 'destroy'])
+            ->name('restaurants.banners.destroy');
+
+        Route::delete('restaurants/{restaurant}/banners', [PromoBannerController::class, 'destroyAll'])
+            ->name('restaurants.banners.destroyAll');
+
+
         // QR
         Route::post(
             'restaurants/{restaurant}/qr/generate',
@@ -274,24 +293,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     });
 
-});
-
-Route::get('/debug/perf/menu/{slug}', function ($slug) {
-    $start = microtime(true);
-
-    $restaurant = \App\Models\Restaurant::where('slug', $slug)
-        ->with([
-            'sections.items.translations',
-            'sections.translations',
-            'hours',
-            'socialLinks'
-        ])
-        ->firstOrFail();
-
-    $vm = new \App\ViewModels\PublicMenu\MenuViewModel($restaurant, 'de');
-
-    return response()->json([
-        'time_ms' => round((microtime(true) - $start) * 1000, 2),
-        'sections' => count($vm->categories),
-    ]);
 });

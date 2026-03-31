@@ -241,6 +241,53 @@
 
 }
 
+/*
+|--------------------------------------------------------------------------
+| BACK BUTTON (under image)
+|--------------------------------------------------------------------------
+*/
+
+.modal-back-btn{
+
+    display:block;
+
+    width:100%;
+
+    margin:10px 0 14px;
+
+    padding:12px 14px;
+
+    border:none;
+
+    border-radius:14px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    text-align:center;
+
+    transition:all .15s ease;
+
+    background:var(--text-primary);
+    color:var(--card-bg);
+
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+
+.modal-back-btn:hover{
+
+    opacity:.9;
+
+}
+
+.modal-back-btn:active{
+
+    transform:scale(.98);
+}
+
 
 /*
 |--------------------------------------------------------------------------

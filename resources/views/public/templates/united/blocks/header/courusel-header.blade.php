@@ -5,6 +5,10 @@
     $items = collect($vm->featuredItems ?? [])->filter(fn ($it) => !empty($it['image']))->values();
 @endphp
 
+@if(!empty($vm->promoBanners))
+    @include('public.templates.united.blocks.banners.index')
+@endif
+
 @if($showFeaturedItems && $vm->showDishOfDay && $items->isNotEmpty())
     <section class="restaurant-featured">
         <div class="header-carousel" data-header-carousel>

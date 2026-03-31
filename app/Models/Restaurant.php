@@ -113,4 +113,10 @@ class Restaurant extends Model
     {
         return $this->belongsTo(MenuTemplate::class, 'template_key', 'key');
     }
+
+    public function banners()
+    {
+        return $this->hasMany(RestaurantBanner::class)
+            ->orderBy('sort_order');
+    }
 }

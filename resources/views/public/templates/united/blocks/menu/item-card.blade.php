@@ -25,7 +25,7 @@
 <div
     class="{{ implode(' ', $classes) }}"
 
-    @if($vm->showItemModal)
+    @if($vm->showItemModal && $hasImage)
         data-open-modal="item"
     data-title="{{ $item['title'] ?? '' }}"
     data-description="{{ $short }}"
@@ -80,8 +80,8 @@
         <div class="menu-item-meta">
             @if($spicyLevel > 0)
                 <div class="menu-item-spicy" aria-label="{{ __('menu.spicy') }}: {{ $spicyLevel }}/5">
-                    @for($i = 1; $i <= 5; $i++)
-                        <i class="{{ $i <= $spicyLevel ? 'is-on' : '' }}">🌶</i>
+                    @for($i = 1; $i <= $spicyLevel; $i++)
+                        <i class="is-on">🌶</i>
                     @endfor
                 </div>
             @endif

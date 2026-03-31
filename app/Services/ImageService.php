@@ -129,4 +129,30 @@ class ImageService
 
         return '/assets/system/icons/' . ($map[$key] ?? 'link.svg');
     }
+
+    public function banner(?string $path): string
+    {
+        $fallback = config('image.system.fallbacks.banner', 'system/banners/default.webp');
+
+        if (!$path) {
+            return '/assets/' . ltrim($fallback, '/');
+        }
+
+        $path = ltrim($path, '/');
+
+        // 1. прямой путь
+        if (File::exists(public_path($path))) {
+            return '/' . $path;
+        }
+
+        // 2. assets/...
+        $assetPath = 'assets/' . $path;
+
+        if (File::exists(public_path($assetPath))) {
+            return '/' . $assetPath;
+        }
+
+        // 3. fallback
+        return '/assets/' . ltrim($fallback, '/');
+    }
 }

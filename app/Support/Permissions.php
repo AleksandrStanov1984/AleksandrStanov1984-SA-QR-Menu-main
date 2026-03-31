@@ -159,4 +159,18 @@ class Permissions
                 : "Нет прав для действия ({$key})",
         ];
     }
+
+    public static function denyRedirect(
+        ?User $user,
+        string $key,
+        ?string $message = null
+    ) {
+        if (self::can($user, $key)) {
+            return null;
+        }
+
+        return redirect()
+            ->back()
+            ->with('warning', $message ?? __('permissions.no_access'));
+    }
 }

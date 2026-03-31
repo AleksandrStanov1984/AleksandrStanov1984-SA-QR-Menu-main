@@ -14,6 +14,8 @@
     <div class="card" style="margin-top:16px;">
         <h2>{{ __('admin.branding.title') }}</h2>
 
+        @include('admin.restaurants.components.logo', ['restaurant' => $restaurant])
+
         <form method="POST"
               action="{{ route('admin.restaurants.branding.backgrounds.update', $restaurant) }}"
               enctype="multipart/form-data"
@@ -81,7 +83,7 @@
 
                         <input type="file" name="bg_dark" accept="image/*">
                     </div>
-                </div>
+                </div><br>
             @endif
 
             <div class="actions">

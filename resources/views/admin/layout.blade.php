@@ -29,6 +29,12 @@
             </div>
         @endif
 
+            @if(session('warning'))
+                <div class="alert alert-warning">
+                    {{ session('warning') }}
+                </div>
+            @endif
+
         @if(session('error'))
             <div class="flash flash-error">
                 {{ __(session('error')) }}
@@ -64,5 +70,34 @@
 {{-- JS --}}
 @include('admin._scripts')
 
+{{-- UI SYSTEM --}}
+@include('admin.restaurants.components.ui.toast._view')
+@include('admin.restaurants.components.ui.confirm._view')
+
+@include('admin.restaurants.components.ui.toast._styles')
+@include('admin.restaurants.components.ui.confirm._styles')
+
+@include('admin.restaurants.components.ui.toast._scripts')
+@include('admin.restaurants.components.ui.confirm._scripts')
+
+<div class="global-loader" id="globalLoader">
+    <div class="loader-spinner"></div>
+</div>
+
 </body>
 </html>
+
+<script>
+    window.UI_LANG = {
+        select_file: "{{ __('ui.toast.select_file') }}",
+
+        saved: "{{ __('ui.toast.saved') }}",
+        error: "{{ __('ui.toast.error') }}",
+
+        delete_error: "{{ __('ui.toast.delete_error') }}",
+        save_error: "{{ __('ui.toast.save_error') }}",
+
+        delete_banner: "{{ __('ui.confirm.delete_banner') }}",
+        delete_all: "{{ __('ui.confirm.delete_all_banners') }}"
+    };
+</script>

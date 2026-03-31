@@ -148,3 +148,18 @@
     color:#ef4444;
 
 }
+
+.menu-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.menu-logo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: #111;
+}

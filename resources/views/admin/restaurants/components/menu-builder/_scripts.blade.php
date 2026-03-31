@@ -38,7 +38,7 @@
 
         } catch (err) {
             console.error(err);
-            alert('Ошибка удаления');
+            showToast(window.UI_LANG.delete_error, 'error');
         }
 
     });
@@ -321,7 +321,7 @@
         el.checked = !el.checked;
       }
 
-      alert('Ошибка сохранения');
+        showToast(window.UI_LANG.save_error, 'error');
     }
   });
 

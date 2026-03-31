@@ -7,6 +7,7 @@ use App\Models\ItemTranslation;
 use App\Models\MenuPlan;
 use App\Models\Restaurant;
 use App\Models\Section;
+use App\Models\SectionTranslation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -39,17 +40,13 @@ class PlanTest extends TestCase
         $response->assertDontSee('menu-item-image');
     }
 
-    public function test_pro_plan_has_modal()
+    public function test_pro_plan_without_image_has_no_modal()
     {
         MenuPlan::factory()->create([
             'key' => 'pro',
             'features' => [
                 'item_modal' => true,
                 'images' => true,
-                'spicy' => true,
-                'is_new' => true,
-                'dish_of_day' => true,
-                'long_description' => true,
             ],
         ]);
 
@@ -60,12 +57,10 @@ class PlanTest extends TestCase
 
         $section = Section::factory()->create([
             'restaurant_id' => $restaurant->id,
-            'parent_id' => null,
             'is_active' => true,
-            'sort_order' => 1,
         ]);
 
-        \App\Models\SectionTranslation::factory()->create([
+        SectionTranslation::factory()->create([
             'section_id' => $section->id,
             'locale' => 'de',
             'title' => 'Pizza',
@@ -74,11 +69,7 @@ class PlanTest extends TestCase
         $item = Item::factory()->create([
             'section_id' => $section->id,
             'is_active' => true,
-            'price' => 10,
             'meta' => [
-                'dish_of_day' => false,
-                'is_new' => false,
-                'spicy' => 0,
                 'show_image' => false,
             ],
         ]);
@@ -87,15 +78,13 @@ class PlanTest extends TestCase
             'item_id' => $item->id,
             'locale' => 'de',
             'title' => 'Margherita',
-            'description' => 'Test item',
-            'details' => 'Long text',
         ]);
 
         $response = $this->get("/r/{$restaurant->slug}");
 
         $response->assertOk();
         $response->assertSee('Margherita');
-        $response->assertSee('data-open-modal', false);
+        $response->assertDontSee('data-open-modal');
     }
 
     public function test_item_image_saved()

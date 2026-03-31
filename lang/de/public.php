@@ -1,5 +1,6 @@
 <?php
 return [
+    'back_to_menu' => 'Zurück zur Speisekarte',
     'bestsellers' => 'Empfohlene Artikel',
     'new' => 'Neu',
     'spicy' => 'Scharf',

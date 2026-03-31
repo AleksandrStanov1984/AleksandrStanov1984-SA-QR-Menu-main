@@ -9,22 +9,27 @@
 @endphp
 
 @if($user && Permissions::can($user, 'branding.logo.upload'))
-    <div class="card" style="margin-top:16px;">
-        <h2>{{ __('admin.restaurants.brand.h2') }}</h2>
 
-        <form method="POST"
-              action="{{ route('admin.restaurants.logo.update', $restaurant) }}"
-              enctype="multipart/form-data">
-            @csrf
+    <form method="POST"
+          action="{{ route('admin.restaurants.logo.update', $restaurant) }}"
+          enctype="multipart/form-data">
+        @csrf
 
-            <label>{{ __('admin.restaurants.brand.logo_label') }}</label>
-            <input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp" required>
+        <label>{{ __('admin.restaurants.brand.logo_label') }}</label>
 
-            <div style="margin-top:14px; display:flex; gap:10px; justify-content:flex-end;">
-                <button class="btn ok" type="submit">
-                    {{ __('admin.common.save') }}
-                </button>
-            </div>
-        </form>
-    </div>
+        <div style=" gap:10px; align-items:center; margin-top:10px;">
+
+            <input type="file"
+                   name="logo"
+                   accept=".png,.jpg,.jpeg,.webp"
+                   required
+                   style="flex:1;">
+
+            <button class="btn ok" type="submit">
+                {{ __('admin.common.save') }}
+            </button>
+        </div>
+    </form>
+    <br>
+
 @endif

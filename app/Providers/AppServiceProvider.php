@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use App\Models\Restaurant;
+
 use App\Observers\RestaurantObserver;
+
 use App\Support\AdminContext;
 use App\Support\Breadcrumbs;
+
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,21 +28,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 🔥 observer
-        Restaurant::observe(RestaurantObserver::class);
-
-        // GLOBAL VIEW CONTEXT
         View::composer('*', function ($view) {
 
-            // текущий ресторан (контекст)
-            $restaurant = AdminContext::restaurant();
+            $restaurant = null;
 
-            // breadcrumbs
-            $breadcrumbs = Breadcrumbs::make(request());
+            // только admin
+            if (request()->is('admin/*')) {
+                $restaurant = AdminContext::actingRestaurant();
+            }
+
+            $breadcrumbs = null;
+
+            // breadcrumbs только там где нужны
+            if (request()->is('admin/*')) {
+                $breadcrumbs = Breadcrumbs::make(request());
+            }
 
             $view->with([
-                'restaurant' => $restaurant,
-                'breadcrumbs' => $breadcrumbs,
+                'ctxRestaurant' => $restaurant,
+                'breadcrumbs'   => $breadcrumbs,
             ]);
         });
     }

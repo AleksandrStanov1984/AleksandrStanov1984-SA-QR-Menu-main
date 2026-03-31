@@ -12,12 +12,21 @@ trait AdminTestHelpers
         return User::factory()->create([
             'restaurant_id' => $restaurant->id,
             'is_super_admin' => false,
-            'permissions' => [
+            ...$this->permissions([
                 'items_manage' => true,
                 'sections_manage' => true,
                 'branding.logo.upload' => true,
                 'theme_manage' => true,
-            ],
+            ]),
         ]);
+    }
+
+    protected function permissions(array $perms): array
+    {
+        return [
+            'meta' => [
+                'permissions' => $perms,
+            ],
+        ];
     }
 }

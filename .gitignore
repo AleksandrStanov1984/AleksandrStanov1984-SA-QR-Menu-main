@@ -10,3 +10,7 @@
 .phpunit.result.cache
 /public/assets/*
 !/public/assets/.gitkeep
+
+# Build assets
+/public/build
+/public/build/*

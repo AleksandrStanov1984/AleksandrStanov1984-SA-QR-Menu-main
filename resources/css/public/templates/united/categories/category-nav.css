@@ -1,33 +1,122 @@
 /*
 |--------------------------------------------------------------------------
-| CATEGORY NAV
+| CATEGORY NAV (FINAL - FIXED + STABLE)
+|--------------------------------------------------------------------------
+*/
+
+body,
+html {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+main,
+#menuContainer {
+    overflow: visible !important;
+}
+
+/* dynamic header height (can be overridden via JS) */
+:root {
+    --header-height: 80px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| NAV BASE
 |--------------------------------------------------------------------------
 */
 
 .category-nav {
+    position: relative;
+    z-index: 200;
 
     display: flex;
     overflow-x: auto;
 
     gap: 8px;
-
     padding: 12px 16px;
 
-    background: color-mix(in srgb, var(--card-bg) 90%, transparent);
-    backdrop-filter: blur(10px);
-
-    border-bottom: 1px solid var(--border-color);
-
-    scroll-behavior: smooth;
+    background: transparent; /* ВАЖНО */
+    backdrop-filter: none;   /* ВАЖНО */
+    border-bottom: none;     /* ВАЖНО */
 }
 
+.category-link {
 
-/* hide scrollbar */
+    padding: 8px 14px;
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.08); /* стекло */
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255,255,255,0.15);
+
+    font-size: 14px;
+    font-weight: 500;
+
+    color: var(--text-primary);
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition:
+        background .15s ease,
+        transform .08s ease,
+        color .15s ease;
+}
+
+.category-link.active {
+
+    background: var(--text-primary);
+    color: var(--card-bg);
+
+    border-color: var(--text-primary);
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+/*
+|--------------------------------------------------------------------------
+| FIXED STATE
+|--------------------------------------------------------------------------
+*/
+
+.category-nav.is-fixed {
+    position: fixed;
+    top: 0;
+
+    left: 0;
+    right: 0;
+
+    width: 100%;
+    z-index: 999;
+
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transform: translateZ(0);
+    background: transparent;
+}
+
+/*
+|--------------------------------------------------------------------------
+| PLACEHOLDER (prevents layout jump)
+|--------------------------------------------------------------------------
+*/
+
+.category-nav-placeholder {
+    height: 0;
+}
+
+/*
+|--------------------------------------------------------------------------
+| SCROLLBAR
+|--------------------------------------------------------------------------
+*/
 
 .category-nav::-webkit-scrollbar {
     display: none;
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +125,7 @@
 */
 
 .category-link {
-
     padding: 8px 14px;
-
     border-radius: 999px;
 
     background: color-mix(in srgb, var(--card-bg) 85%, transparent);
@@ -47,7 +134,6 @@
     font-weight: 500;
 
     color: var(--text-primary);
-
     text-decoration: none;
 
     white-space: nowrap;
@@ -55,38 +141,26 @@
     border: 1px solid var(--border-color);
 
     transition:
-        background .15s ease,
-        transform .08s ease,
-        color .15s ease;
+        background 0.15s ease,
+        transform 0.08s ease,
+        color 0.15s ease;
 }
 
-
 /* hover */
-
 .category-link:hover {
-
     background: color-mix(in srgb, var(--card-bg) 70%, black);
 }
 
-
-/* tap effect */
-
+/* tap */
 .category-link:active {
-    transform: scale(.96);
+    transform: scale(0.96);
 }
 
-
 /* active */
-
 .category-link.active {
-
     background: var(--text-primary);
-
     color: var(--card-bg);
-
     border-color: var(--text-primary);
 
-    box-shadow:
-        0 4px 12px rgba(0,0,0,.15);
-
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

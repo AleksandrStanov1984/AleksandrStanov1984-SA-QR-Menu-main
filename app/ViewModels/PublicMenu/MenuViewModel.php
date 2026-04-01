@@ -226,7 +226,7 @@ class MenuViewModel
             'price' => (float) $item->price,
             'currency' => $item->currency ?? 'EUR',
             'image' => $showImage
-                ? $this->resolveImage($item->image_path)
+                ? $this->images->food($item->image_path)
                 : null,
             'has_image' => $showImage && !empty($item->image_path),
             'sort_order' => $item->sort_order,
@@ -236,6 +236,7 @@ class MenuViewModel
                 'is_new' => $this->showIsNew ? $metaDTO->isNew : null,
                 'dish_of_day' => $this->showDishOfDay ? $metaDTO->dishOfDay : null,
             ],
+            'show_image_block' => $showImage,
         ];
     }
 

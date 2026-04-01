@@ -19,45 +19,31 @@
 
     if ($isNew) $classes[] = 'is-new';
     if ($isDish) $classes[] = 'is-dish';
-    if (!$hasImage) $classes[] = 'is-no-image';
 @endphp
 
 <div
     class="{{ implode(' ', $classes) }}"
 
-    @if($vm->showItemModal && $hasImage)
+    @if($vm->showItemModal)
         data-open-modal="item"
-    data-title="{{ $item['title'] ?? '' }}"
-    data-description="{{ $short }}"
-    data-details="{{ $vm->showLongDescription ? $long : '' }}"
+    data-title="{{ e($item['title'] ?? '') }}"
+    data-description="{{ e($short) }}"
+    data-details="{{ e($vm->showLongDescription ? $long : '') }}"
     data-price="{{ $priceFormatted }}"
-    data-image="{{ $dataImage }}"
+    data-image="{{ $dataImage ?: '' }}"
     data-is-new="{{ $isNew ? 1 : 0 }}"
     data-is-dish="{{ $isDish ? 1 : 0 }}"
     data-spicy="{{ $spicyLevel }}"
     @endif
 >
 
-    @if($isNew || $isDish)
-        <div class="menu-item-badges" aria-hidden="true">
-            @if($isNew)
-                <span class="menu-item-badge menu-item-badge--new">NEW</span>
-            @endif
-
-            @if($isDish)
-                <span class="menu-item-badge menu-item-badge--dish">
-                    {{ __('menu.dish_of_day') }}
-                </span>
-            @endif
-        </div>
-    @endif
-
-    @if($hasImage)
+    {{-- IMAGE (независимый блок) --}}
+    @if($item['show_image_block'])
         <div class="menu-item-media">
             <img
-                class="menu-item-image"
                 src="{{ $item['image'] }}"
                 alt="{{ $item['title'] ?? '' }}"
+                class="menu-item-image {{ !$hasImage ? 'is-fallback' : '' }}"
                 loading="lazy"
                 decoding="async"
             >
@@ -65,6 +51,22 @@
     @endif
 
     <div class="menu-item-content">
+
+        {{-- 🔥 BADGES (НЕЗАВИСИМЫЕ ОТ IMAGE) --}}
+        @if($isNew || $isDish)
+            <div class="menu-item-badges">
+                @if($isNew)
+                    <span class="menu-item-badge menu-item-badge--new">NEW</span>
+                @endif
+
+                @if($isDish)
+                    <span class="menu-item-badge menu-item-badge--dish">
+                        {{ __('menu.dish_of_day') }}
+                    </span>
+                @endif
+            </div>
+        @endif
+
         <div class="menu-item-top">
             <h3 class="menu-item-title">
                 {{ $item['title'] ?? '' }}
@@ -93,6 +95,7 @@
                 {{ $item['currency'] ?? '€' }}
             </div>
         @endif
+
     </div>
 
 </div>

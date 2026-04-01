@@ -39,6 +39,17 @@
                                 decoding="async"
                                 draggable="false"
                             >
+                            <div class="header-carousel__overlay">
+                                <div class="header-carousel__title">
+                                    {{ $it['title'] ?? '' }}
+                                </div>
+
+                                @if(!empty($it['meta']['dish_of_day']))
+                                    <div class="header-carousel__badge">
+                                        {{ __('menu.dish_of_day') }}
+                                    </div>
+                                @endif
+                            </div>
                         </article>
                     @endforeach
                 </div>

@@ -1,3 +1,6 @@
+
+@include('public.templates.united.blocks.categories.category-nav')
+
 @foreach($vm->categories as $category)
 
     <section

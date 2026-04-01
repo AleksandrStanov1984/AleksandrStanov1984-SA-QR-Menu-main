@@ -22,7 +22,7 @@ body{
 
 .header-carousel__track{
     display: flex;
-    gap: 12px;
+    gap: 14px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -96,6 +96,113 @@ body{
     opacity: .35;
     cursor: default;
 }
+
+.header-carousel__item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.header-carousel__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    padding: 10px 12px;
+
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.75),
+        rgba(0,0,0,0.0)
+    );
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.header-carousel__title {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.header-carousel__badge {
+    align-self: flex-start;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    padding: 2px 8px;
+    border-radius: 6px;
+
+    background: #ff7a00;
+    color: #fff;
+}
+
+.header-carousel__item:hover img {
+    transform: scale(1.05);
+}
+
+.header-carousel__item img {
+    transition: transform 0.3s ease;
+}
+
+
+
+/* скролл */
+.header-carousel__viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
+
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.35) transparent;
+}
+
+.header-carousel__viewport::-webkit-scrollbar {
+    height: 6px;
+}
+
+.header-carousel__viewport::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.header-carousel__viewport::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.28);
+    border-radius: 999px;
+}
+
+.header-carousel__viewport::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.45);
+}
+
+.header-carousel__track {
+    display: flex;
+    gap: 14px;
+    width: max-content;
+}
+
+.header-carousel__item {
+    position: relative;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.header-carousel__item img {
+    display: block;
+    pointer-events: none;
+}
+
 
 @media (max-width: 639px){
     .header-carousel__item{

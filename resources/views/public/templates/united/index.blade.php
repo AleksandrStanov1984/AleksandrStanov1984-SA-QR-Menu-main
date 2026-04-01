@@ -24,15 +24,13 @@
     'showFeaturedItems' => true,
 ])
 
-@include('public.templates.united.blocks.categories.category-nav')
-
 <main id="menuContainer">
 
 @include('public.templates.united.blocks.menu.menu-section')
 
 </main>
 
-@include('public.templates.united.blocks.categories.category-nav')
+
 
 @include('public.templates.united.blocks.footer.footer', [
     'showFeaturedItems' => false,

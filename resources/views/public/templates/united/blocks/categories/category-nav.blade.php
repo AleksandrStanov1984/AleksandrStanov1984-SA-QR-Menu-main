@@ -1,11 +1,18 @@
-<nav id="categoryNav" class="category-nav">
-
+<nav
+    id="categoryNav"
+    class="category-nav"
+    role="navigation"
+    aria-label="Menu categories"
+>
     @foreach($vm->categories as $category)
 
-<a href="#section-{{ $category['id'] }}" class="category-link">
-{{ $category['title'] }}
-</a>
+        <a
+            href="#section-{{ $category['id'] }}"
+            class="category-link"
+            data-target="section-{{ $category['id'] }}"
+        >
+            {{ $category['title'] }}
+        </a>
 
-@endforeach
-
+    @endforeach
 </nav>

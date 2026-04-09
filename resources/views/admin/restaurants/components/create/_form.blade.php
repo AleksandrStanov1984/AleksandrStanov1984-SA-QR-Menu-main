@@ -2,7 +2,7 @@
     <h2>{{ __('admin.restaurants.create.h2') }}</h2>
 
     <form method="POST" action="{{ route('admin.restaurants.store') }}">
-        {{-- 🔒 Anti-autofill traps --}}
+        {{--  Anti-autofill traps --}}
         <input type="text" name="fake_user" autocomplete="username" style="position:absolute; left:-9999px; width:1px; height:1px;">
         <input type="password" name="fake_pass" autocomplete="current-password" style="position:absolute; left:-9999px; width:1px; height:1px;">
 

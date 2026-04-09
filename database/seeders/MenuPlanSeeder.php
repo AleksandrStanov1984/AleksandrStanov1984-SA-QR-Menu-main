@@ -18,6 +18,7 @@ class MenuPlanSeeder extends Seeder
                 'is_active' => true,
                 'is_public' => true,
                 'sort_order' => 1,
+
                 'features' => [
                     'status' => false,
                     'hours_modal' => false,
@@ -29,6 +30,10 @@ class MenuPlanSeeder extends Seeder
                     'is_new' => false,
                     'dish_of_day' => false,
                     'long_description' => false,
+                    'socials_limit' => 1,
+                    'locales_limit' => 1,
+                    'banners' => false,
+                    'banner_carousel' => false,
                 ],
             ]
         );
@@ -42,6 +47,7 @@ class MenuPlanSeeder extends Seeder
                 'is_active' => true,
                 'is_public' => true,
                 'sort_order' => 2,
+
                 'features' => [
                     'status' => true,
                     'hours_modal' => false,
@@ -53,6 +59,10 @@ class MenuPlanSeeder extends Seeder
                     'is_new' => false,
                     'dish_of_day' => false,
                     'long_description' => false,
+                    'socials_limit' => 3,
+                    'locales_limit' => 2,
+                    'banners' => false,
+                    'banner_carousel' => false,
                 ],
             ]
         );
@@ -66,18 +76,22 @@ class MenuPlanSeeder extends Seeder
                 'is_active' => true,
                 'is_public' => true,
                 'sort_order' => 3,
+
                 'features' => [
                     'status' => true,
                     'hours_modal' => true,
                     'search' => true,
                     'bestsellers' => true,
                     'images' => true,
-                    'multi_language' => true,
                     'item_modal' => true,
                     'spicy' => true,
                     'is_new' => true,
                     'dish_of_day' => true,
                     'long_description' => true,
+                    'socials_limit' => 5,
+                    'locales_limit' => 5,
+                    'banners' => true,
+                    'banner_carousel' => true,
                 ],
             ]
         );

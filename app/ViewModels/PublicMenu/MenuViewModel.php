@@ -39,6 +39,8 @@ class MenuViewModel
     public bool $showIsNew = false;
     public bool $showDishOfDay = false;
 
+    public bool $bestseller = false;
+
     public bool $showLongDescription = false;
 
     public array $featuredItems = [];
@@ -46,6 +48,8 @@ class MenuViewModel
     public array $promoBanners = [];
 
     protected ImageService $images;
+
+    public array $carouselItems = [];
 
     public function __construct(
         protected Restaurant $restaurant,
@@ -59,8 +63,7 @@ class MenuViewModel
         $this->restaurant = $restaurant;
         $this->images = app(ImageService::class);
 
-        $plan = $this->restaurant->plan;
-        $features = $plan?->features ?? [];
+        $features = config("plan_features.{$this->restaurant->plan_key}") ?? [];
         $this->features = $features;
 
         $this->showImages = $this->hasFeature($features, 'images');
@@ -68,6 +71,7 @@ class MenuViewModel
         $this->showSpicy = $this->hasFeature($features, 'spicy');
         $this->showIsNew = $this->hasFeature($features, 'is_new');
         $this->showDishOfDay = $this->hasFeature($features, 'dish_of_day');
+        $this->bestseller = $this->hasFeature($features, 'bestseller');
         $this->showLongDescription = $this->hasFeature($features, 'long_description');
         $this->showSchedule = true;
         $this->showStatus = $this->hasFeature($features, 'status');
@@ -125,6 +129,8 @@ class MenuViewModel
 
         $this->status = $this->detectStatus($this->todayHours);
         $this->showHoursModal = $this->hasFeature($features, 'hours_modal');
+
+        $this->carouselItems = $this->buildCarousel();
     }
 
     private function resolveImage(?string $path): ?string
@@ -235,6 +241,7 @@ class MenuViewModel
                 'spicy' => $this->showSpicy ? $metaDTO->spicy : null,
                 'is_new' => $this->showIsNew ? $metaDTO->isNew : null,
                 'dish_of_day' => $this->showDishOfDay ? $metaDTO->dishOfDay : null,
+                'bestseller' => $this->bestseller ? $metaDTO->bestseller : null,
             ],
             'show_image_block' => $showImage,
         ];
@@ -386,7 +393,7 @@ class MenuViewModel
 
     private function buildPromoBanners(): array
     {
-        if ($this->restaurant->plan_key !== 'pro') {
+        if (!$this->restaurant->feature('banners')) {
             return [];
         }
 
@@ -399,8 +406,7 @@ class MenuViewModel
                 ->get();
 
         $filtered = $banners
-            ->where('is_active', true)
-            ->filter(fn ($b) => !empty($b->image_path));
+            ->filter(fn ($b) => $b->is_active && !empty($b->image_path));
 
         if ($filtered->isEmpty()) {
             return [];
@@ -415,5 +421,76 @@ class MenuViewModel
             ])
             ->values()
             ->toArray();
+    }
+
+    private function buildCarousel(): array
+    {
+        $meta = is_array($this->restaurant->meta ?? null)
+            ? $this->restaurant->meta
+            : [];
+
+        // выключено
+        if (!($meta['carousel_enabled'] ?? false)) {
+            return [];
+        }
+
+        // feature check
+        if (!$this->restaurant->feature('carousel')) {
+            return [];
+        }
+
+        $source = $meta['carousel_source'] ?? 'bestseller';
+
+        $items = $this->restaurant->sections
+            ->flatMap(fn ($s) => $s->items ?? collect())
+            ->where('is_active', true)
+            ->map(function ($item) {
+                $item->meta_dto = $item->meta_dto ?? ItemMetaDTO::fromModel($item);
+                return $item;
+            });
+
+        // source selection
+        $filtered = match ($source) {
+            'is_new' => $items->filter(fn ($i) => $i->meta_dto->isNew === true),
+            'dish_of_day' => $items->filter(fn ($i) => $i->meta_dto->dishOfDay === true),
+            default => $items->filter(fn ($i) => $i->meta_dto->bestseller === true),
+        };
+
+        // limit by feature
+        $limit = match (true) {
+            $this->restaurant->feature('carousel_advanced') => 30,
+            $this->restaurant->feature('carousel') => 15,
+            default => 0,
+        };
+
+        if ($limit <= 0) {
+            return [];
+        }
+
+        $result = $filtered
+            ->sortBy(fn ($i) => (int) ($i->sort_order ?? 0))
+            ->take($limit)
+            ->map(fn ($i) => $this->mapItem($i))
+            ->values();
+
+        if ($result->isEmpty()) {
+            return [];
+        }
+
+        if ($result->count() < 5) {
+            $original = $result->values();
+
+            while ($result->count() < 5) {
+                foreach ($original as $item) {
+                    $result->push($item);
+
+                    if ($result->count() >= 5) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $result->toArray();
     }
 }

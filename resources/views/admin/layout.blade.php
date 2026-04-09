@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="{{ str_replace('_','-', app()->getLocale()) }}">
 <head>
@@ -10,7 +9,6 @@
 <body>
 
 @include('admin.layout.topbar')
-
 @include('admin.layout.breadcrumbs')
 
 <div class="wrap layout-with-sidebar">
@@ -23,24 +21,29 @@
     {{-- MAIN CONTENT --}}
     <div class="main-content">
 
+        {{-- WARNING --}}
+        @if(session('warning'))
+            <div class="flash flash-warning">
+                {{ session('warning') }}
+            </div>
+        @endif
+
+        {{-- SUCCESS --}}
         @if(session('status'))
             <div class="flash flash-success">
                 {{ __(session('status')) }}
             </div>
         @endif
 
-            @if(session('warning'))
-                <div class="alert alert-warning">
-                    {{ session('warning') }}
-                </div>
-            @endif
 
+        {{-- ERROR --}}
         @if(session('error'))
             <div class="flash flash-error">
                 {{ __(session('error')) }}
             </div>
         @endif
 
+        {{-- VALIDATION --}}
         @if($errors->any())
             <div class="flash flash-error">
                 <ul>
@@ -58,14 +61,17 @@
 </div>
 
 @include('admin.layout.footer')
-
 @include('admin.layout._modals')
 
-{{-- QR Loader --}}
-<div id="qrLoader" class="qr-loader" aria-hidden="true">
-    <div class="qr-loader__backdrop"></div>
-    <div class="qr-loader__spinner"></div>
-</div>
+{{-- AUTO HIDE FLASH --}}
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.flash').forEach(el => {
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 300);
+        });
+    }, 5000);
+</script>
 
 {{-- JS --}}
 @include('admin._scripts')
@@ -101,3 +107,27 @@
         delete_all: "{{ __('ui.confirm.delete_all_banners') }}"
     };
 </script>
+
+<style>
+    .flash {
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        transition: 0.3s;
+    }
+
+    .flash-success {
+        background: #e6f9ec;
+        color: #1b7f3b;
+    }
+
+    .flash-warning {
+        background: #fff4e5;
+        color: #b26a00;
+    }
+
+    .flash-error {
+        background: #fdecea;
+        color: #b42318;
+    }
+</style>

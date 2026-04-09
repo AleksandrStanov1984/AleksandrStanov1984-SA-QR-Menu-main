@@ -58,24 +58,24 @@
                 @endif
             @endif
 
-                <span id="statusLabel">
-    @if(!empty($today['closed']))
-                        {{ $today['label'] }}
-                    @else
-                        {{ $today['label'] }} {{ $today['open'] }} – {{ $today['close'] }}
-                    @endif
+            <span id="statusLabel">
+                @if(!empty($today['closed']))
+                    {{ $today['label'] }}
+                @else
+                    {{ $today['label'] }} {{ $today['open'] }} – {{ $today['close'] }}
+                @endif
 
-                    @if($vm->showStatus)
-                        •
-                        @if($vm->status === 'open')
-                            {{ __('public.open') }}
-                        @elseif($vm->status === 'closing_soon')
-                            {{ __('public.closing_soon') }}
-                        @else
-                            {{ __('public.closed') }}
-                        @endif
+                @if($vm->showStatus)
+                    •
+                    @if($vm->status === 'open')
+                        {{ __('public.open') }}
+                    @elseif($vm->status === 'closing_soon')
+                        {{ __('public.closing_soon') }}
+                    @else
+                        {{ __('public.closed') }}
                     @endif
-                   </span>
+                @endif
+            </span>
         </button>
     @endif
 
@@ -83,10 +83,16 @@
 
 @php
     $showFeaturedItems = $showFeaturedItems ?? false;
-    $items = $vm->featuredItems ?? [];
-    $hasCarousel = count($items) > 4;
+
+    $items = collect($vm->carouselItems ?? [])
+        ->filter(fn ($it) => !empty($it['image']))
+        ->values();
+
+    $hasCarousel = $items->isNotEmpty();
 @endphp
 
-@if($showFeaturedItems && $vm->showDishOfDay && !empty($items))
-    @include('public.templates.united.blocks.header.courusel-header')
+@if($showFeaturedItems && $hasCarousel)
+    @include('public.templates.united.blocks.header.courusel-header', [
+        'items' => $items,
+    ])
 @endif

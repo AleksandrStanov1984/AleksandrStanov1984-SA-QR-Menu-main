@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\PromoBannerController;
 use App\Http\Controllers\Admin\RestaurantHoursController;
 use Illuminate\Support\Facades\Route;
@@ -76,21 +77,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Restaurant
         Route::resource('restaurants', RestaurantController::class)->except(['show']);
 
-        Route::post('/select-restaurant', [DashboardController::class, 'selectRestaurant'])->name('select_restaurant');
+        Route::post('/select-restaurant', [DashboardController::class, 'selectRestaurant'])
+            ->name('select_restaurant');
 
-        Route::post('restaurants/{restaurant}/toggle', [RestaurantController::class, 'toggleActive'])->name('restaurants.toggle');
+        Route::post('restaurants/{restaurant}/toggle', [RestaurantController::class, 'toggleActive'])
+            ->name('restaurants.toggle');
 
 
-        // Permissions
+        // PERMISSIONS
         Route::post('restaurants/{restaurant}/user-permissions', [RestaurantController::class, 'updateUserPermissions'])
             ->name('restaurants.user_permissions');
 
-        Route::get(
-            'restaurants/{restaurant}/permissions', [RestaurantController::class, 'permissions'])
+        Route::get('restaurants/{restaurant}/permissions', [RestaurantController::class, 'permissions'])
             ->name('restaurants.permissions');
 
 
-        // Language
+        // LANGUAGES
         Route::post('restaurants/{restaurant}/languages/import', [LanguageImportController::class, 'import'])
             ->name('restaurants.languages.import');
 
@@ -98,13 +100,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.languages.default');
 
 
-        // Profile
+        // PROFILE
         Route::get('restaurants/{restaurant}/profile', [RestaurantController::class, 'profile'])
             ->name('restaurants.profile');
 
-        Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+        Route::get('/profile', [ProfileController::class, 'show'])
+            ->name('profile');
 
-        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile', [ProfileController::class, 'update'])
+            ->name('profile.update');
 
         Route::post('restaurants/{restaurant}/profile', [ProfileController::class, 'updateRestaurant'])
             ->name('restaurants.profile.update');
@@ -139,18 +143,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.credentials.password');
 
 
-        // Brand
+        // BRANDING
         Route::post('restaurants/{restaurant}/logo', [RestaurantBrandController::class, 'update'])
             ->name('restaurants.logo.update');
-
-        Route::get('restaurants/{restaurant}/branding', [RestaurantBrandController::class, 'edit'])
-            ->name('restaurants.branding');
 
         Route::post('restaurants/{restaurant}/branding/backgrounds', [RestaurantBrandController::class, 'updateBackgrounds'])
             ->name('restaurants.branding.backgrounds.update');
 
+        Route::get('restaurants/{restaurant}/branding', [RestaurantBrandController::class, 'edit'])
+            ->name('restaurants.branding');
 
-        // Section
+
+        // SECTIONS
         Route::get('restaurants/{restaurant}/sections', [SectionController::class, 'index'])
             ->name('restaurants.sections.index');
 
@@ -170,20 +174,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.sections.destroy');
 
 
-        // Menu Category
+        // CATEGORIES / SUBCATEGORIES
         Route::get('restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])
             ->name('restaurants.menu');
 
         Route::post('restaurants/{restaurant}/categories', [CategoryController::class, 'store'])
             ->name('restaurants.categories.store');
 
-
-        // Menu Subcategory
         Route::post('restaurants/{restaurant}/subcategories', [SubcategoryController::class, 'store'])
             ->name('restaurants.subcategories.store');
 
 
-        // Menu Item
+        // Menu ITEMS
         Route::post('restaurants/{restaurant}/sections/{section}/items', [ItemController::class, 'store'])
             ->name('restaurants.items.store');
 
@@ -208,7 +210,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('menu.profile');
 
 
-        // Social Links
+        // SOCIALS
         Route::post('restaurants/{restaurant}/social-links', [SocialLinkController::class, 'store'])
             ->name('restaurants.social_links.store');
 
@@ -250,10 +252,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.import.images');
 
 
-        //Hours
-        Route::post('/restaurants/{restaurant}/hours',
-            [RestaurantHoursController::class, 'update']
-        )->name('restaurants.hours.update');
+        // HOURS
+        Route::post('restaurants/{restaurant}/hours', [RestaurantHoursController::class, 'update'])
+            ->name('restaurants.hours.update');
 
         Route::get('restaurants/{restaurant}/hours', [RestaurantHoursController::class, 'edit'])
             ->name('restaurants.hours');
@@ -261,31 +262,40 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // BANNERS
         Route::get('restaurants/{restaurant}/banners', [PromoBannerController::class, 'index'])
-            ->name('restaurants.banners.index');
+            ->name('restaurants.banners.index')
+            ->defaults('plan', 'pro');
 
         Route::post('restaurants/{restaurant}/banners/save', [PromoBannerController::class, 'save'])
-            ->name('restaurants.banners.save');
+            ->name('restaurants.banners.save')
+            ->defaults('plan', 'pro');
 
         Route::post('restaurants/{restaurant}/banners/reorder', [PromoBannerController::class, 'reorder'])
-            ->name('restaurants.banners.reorder');
+            ->name('restaurants.banners.reorder')
+            ->defaults('plan', 'pro');
 
         Route::delete('restaurants/{restaurant}/banners/{id}', [PromoBannerController::class, 'destroy'])
-            ->name('restaurants.banners.destroy');
+            ->name('restaurants.banners.destroy')
+            ->defaults('plan', 'pro');
 
         Route::delete('restaurants/{restaurant}/banners', [PromoBannerController::class, 'destroyAll'])
-            ->name('restaurants.banners.destroyAll');
+            ->name('restaurants.banners.destroyAll')
+            ->defaults('plan', 'pro');
+
+
+        // Carousel
+        Route::get('/admin/restaurants/{restaurant}/carousel', [CarouselController::class, 'index']
+        )->name('restaurants.carousel');
+
+        Route::post('/restaurants/{restaurant}/carousel', [CarouselController::class, 'update'])
+            ->name('restaurants.carousel.update');
 
 
         // QR
-        Route::post(
-            'restaurants/{restaurant}/qr/generate',
-            [RestaurantQrController::class, 'generate']
-        )->name('restaurants.qr.generate');
+        Route::post('restaurants/{restaurant}/qr/generate', [RestaurantQrController::class, 'generate'])
+            ->name('restaurants.qr.generate');
 
-        Route::get(
-            'restaurants/{restaurant}/qr/download/{format}',
-            [RestaurantQrController::class, 'download']
-        )->name('restaurants.qr.download');
+        Route::get('restaurants/{restaurant}/qr/download/{format}', [RestaurantQrController::class, 'download'])
+            ->name('restaurants.qr.download');
 
         Route::get('restaurants/{restaurant}/qr', [RestaurantQrController::class, 'index'])
             ->name('restaurants.qr');

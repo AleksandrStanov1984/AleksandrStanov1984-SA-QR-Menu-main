@@ -4,7 +4,7 @@
   <div class="modal__panel" style="max-width:720px;">
     <div class="mb-row">
       <strong id="mbTextModalTitle">{{ __('admin.menu_builder.text') ?? 'Текст' }}</strong>
-      <button class="btn small" type="button" data-mb-close aria-label="{{ __('admin.actions.close') ?? 'Close' }}">✕</button>
+      <button class="btn small" type="button" data-mb-close aria-label="{{ __('admin.actions.close') }}">✕</button>
     </div>
 
     <div id="mbTextModalBody"

@@ -10,6 +10,8 @@ class ItemMetaDTO
     public int $spicy;
     public array $style;
 
+    public bool $bestseller;
+
     public function __construct(array $data = [])
     {
         $this->isNew      = (bool)($data['is_new'] ?? false);
@@ -17,15 +19,15 @@ class ItemMetaDTO
         $this->showImage  = (bool)($data['show_image'] ?? true);
         $this->spicy      = (int)($data['spicy'] ?? 0);
         $this->style      = is_array($data['style'] ?? null) ? $data['style'] : [];
+
+        $this->bestseller = (bool)($data['bestseller'] ?? false);
     }
 
-    // создать из модели
     public static function fromModel($item): self
     {
         return new self(is_array($item->meta) ? $item->meta : []);
     }
 
-    // применить изменения (partial update)
     public function apply(array $data): void
     {
         if (array_key_exists('is_new', $data)) {
@@ -47,9 +49,12 @@ class ItemMetaDTO
         if (array_key_exists('style', $data)) {
             $this->style = is_array($data['style']) ? $data['style'] : [];
         }
+
+        if (array_key_exists('bestseller', $data)) {
+            $this->bestseller = filter_var($data['bestseller'], FILTER_VALIDATE_BOOLEAN);
+        }
     }
 
-    // обратно в массив (для БД)
     public function toArray(): array
     {
         return [
@@ -58,6 +63,8 @@ class ItemMetaDTO
             'show_image'   => $this->showImage,
             'spicy'        => $this->spicy,
             'style'        => $this->style,
+            'bestseller'   => $this->bestseller,
         ];
     }
 }
+

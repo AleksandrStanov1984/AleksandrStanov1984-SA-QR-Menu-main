@@ -4,9 +4,9 @@
 
     $hasImage = !empty($item['has_image']);
 
+    $isBestseller = !empty($item['ui']['bestseller']);
     $isNew  = !empty($item['ui']['is_new']);
     $isDish = !empty($item['ui']['dish_of_day']);
-
     $spicyLevel = (int)($item['ui']['spicy'] ?? 0);
 
     $priceFormatted = !empty($item['price'])
@@ -17,6 +17,7 @@
 
     $classes = ['menu-item'];
 
+    if ($isBestseller) $classes[] = 'is-bestseller';
     if ($isNew) $classes[] = 'is-new';
     if ($isDish) $classes[] = 'is-dish';
 @endphp
@@ -37,7 +38,6 @@
     @endif
 >
 
-    {{-- IMAGE (независимый блок) --}}
     @if($item['show_image_block'])
         <div class="menu-item-media">
             <img
@@ -52,11 +52,18 @@
 
     <div class="menu-item-content">
 
-        {{-- 🔥 BADGES (НЕЗАВИСИМЫЕ ОТ IMAGE) --}}
-        @if($isNew || $isDish)
+        @if($isBestseller || $isNew || $isDish)
             <div class="menu-item-badges">
+                @if($isBestseller)
+                    <span class="menu-item-badge menu-item-badge--bestseller">
+                        {{ __('menu.bestseller') }}
+                    </span>
+                @endif
+
                 @if($isNew)
-                    <span class="menu-item-badge menu-item-badge--new">NEW</span>
+                    <span class="menu-item-badge menu-item-badge--new">
+                        {{ __('menu.badge_new') }}
+                    </span>
                 @endif
 
                 @if($isDish)

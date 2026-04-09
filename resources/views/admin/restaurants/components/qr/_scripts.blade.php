@@ -200,6 +200,20 @@
         });
     });
 
+    document.querySelectorAll('[data-copy-url]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const url = btn.dataset.copyUrl;
+
+            navigator.clipboard.writeText(url).then(() => {
+                btn.innerText = '✓';
+
+                setTimeout(() => {
+                    btn.innerText = '📋';
+                }, 1200);
+            });
+        });
+    });
+
 
     // =========================
     // ENABLE QR BUTTON

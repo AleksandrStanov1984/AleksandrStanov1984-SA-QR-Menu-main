@@ -80,11 +80,65 @@
             📢 {{ __('admin.sidebar.banners_group') }}
         </li>
 
-        @if(($ctxRestaurant?->plan_key ?? null) === 'pro')
-            <a href="{{ route('admin.restaurants.banners.index', $ctxRestaurant) }}">
-                🖼 {{ __('admin.sidebar.banners') }}
-            </a>
-        @endif
+        <li>
+            @if($ctxRestaurant && $ctxRestaurant->feature('banners'))
+                {{-- PRO: активная ссылка --}}
+                <a href="{{ route('admin.restaurants.banners.index', $ctxRestaurant) }}"
+                   class="{{ request()->routeIs('admin.restaurants.banners.*') ? 'is-active' : '' }}">
+                    🖼 {{ __('admin.sidebar.banners') }}
+                </a>
+            @else
+                {{-- НЕ PRO: заблокировано --}}
+                <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:8px 10px;
+            opacity:0.6;
+            cursor:not-allowed;
+        ">
+                    <span>🖼 {{ __('admin.sidebar.banners') }}</span>
+
+                    <span style="
+                font-size:11px;
+                background:rgba(255,255,255,0.08);
+                padding:2px 6px;
+                border-radius:6px;
+            ">
+                🔒 PRO
+            </span>
+                </div>
+            @endif
+        </li>
+
+        <li>
+            @if($ctxRestaurant && $ctxRestaurant->feature('carousel'))
+                <a href="{{ route('admin.restaurants.carousel', $ctxRestaurant) }}"
+                   class="{{ request()->routeIs('admin.restaurants.carousel*') ? 'is-active' : '' }}">
+                    🎠 {{ __('admin.sidebar.carousel') }}
+                </a>
+            @else
+                <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:8px 10px;
+            opacity:0.6;
+            cursor:not-allowed;
+        ">
+                    <span>🎠 {{ __('admin.sidebar.carousel') }}</span>
+
+                    <span style="
+                font-size:11px;
+                background:rgba(255,255,255,0.08);
+                padding:2px 6px;
+                border-radius:6px;
+            ">
+                🔒 BASIC / PRO
+            </span>
+                </div>
+            @endif
+        </li>
 
 
         {{-- ================= IMPORT ================= --}}

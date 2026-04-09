@@ -5,53 +5,49 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Restaurant;
 
 class RestaurantUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Restaurant #10 user
-        |--------------------------------------------------------------------------
-        */
+        $restaurants = Restaurant::all();
 
-        User::updateOrCreate(
+        foreach ($restaurants as $restaurant) {
 
-            ['email' => 'restaurant10@example.com'],
+            $rid = $restaurant->id;
 
-            [
-                'name' => 'Restaurant 10 Manager',
+            User::updateOrCreate(
 
-                'password' => Hash::make('password123'),
+                [
+                    // ✅ теперь это owner, а не "restaurant"
+                    'email' => "owner{$rid}@example.com"
+                ],
 
-                'restaurant_id' => 10,
+                [
+                    'name' => $restaurant->name . ' Owner',
 
-                'is_super_admin' => false
-            ]
+                    'password' => Hash::make('password123'),
 
-        );
+                    'restaurant_id' => $rid,
 
-        /*
-        |--------------------------------------------------------------------------
-        | Additional staff user
-        |--------------------------------------------------------------------------
-        */
+                    'is_super_admin' => false,
 
-        User::updateOrCreate(
-
-            ['email' => 'restaurant10.staff@example.com'],
-
-            [
-                'name' => 'Restaurant 10 Staff',
-
-                'password' => Hash::make('password123'),
-
-                'restaurant_id' => 10,
-
-                'is_super_admin' => false
-            ]
-
-        );
+                    // 👉 полный доступ (на будущее, сейчас не влияет)
+                    'meta' => [
+                        'permissions' => [
+                            'menu_manage' => true,
+                            'items_manage' => true,
+                            'sections_manage' => true,
+                            'branding_manage' => true,
+                            'hours_manage' => true,
+                            'socials_manage' => true,
+                            'qr_manage' => true,
+                            'import_manage' => true,
+                        ]
+                    ]
+                ]
+            );
+        }
     }
 }

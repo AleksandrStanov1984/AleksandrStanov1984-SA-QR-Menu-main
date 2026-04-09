@@ -138,6 +138,20 @@
     color: #fff;
 }
 
+.menu-item-badge--bestseller {
+    border: 1px solid rgba(255, 191, 0, 0.45);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 235, 140, 0.92),
+        rgba(255, 191, 0, 0.88)
+    );
+    color: #5f3b00;
+    text-shadow: 0 1px 0 rgba(255,255,255,.25);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.35),
+        0 4px 10px rgba(255, 191, 0, 0.22);
+}
+
 /*
 |--------------------------------------------------------------------------
 | TEXT

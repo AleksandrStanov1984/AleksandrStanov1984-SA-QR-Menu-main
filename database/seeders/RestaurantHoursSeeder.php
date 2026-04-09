@@ -3,45 +3,68 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Restaurant;
 use App\Models\RestaurantHour;
 
 class RestaurantHoursSeeder extends Seeder
 {
     public function run(): void
     {
+        $restaurantIds = Restaurant::pluck('id')->toArray();
 
-        $restaurantId = 10;
+        foreach ($restaurantIds as $restaurantId) {
 
-        $hours = [
+            // базовые часы (рандом)
+            $baseOpen  = rand(9, 11);
+            $baseClose = rand(21, 23);
 
-            0 => ['10:00','21:00'], // Sunday
-            1 => ['10:00','22:00'],
-            2 => ['10:00','22:00'],
-            3 => ['10:00','22:00'],
-            4 => ['10:00','22:00'],
-            5 => ['10:00','23:00'],
-            6 => ['10:00','23:00'],
+            for ($day = 0; $day <= 6; $day++) {
 
-        ];
+                // логика Германии: воскресенье чаще закрыт
+                $isClosed = ($day === 0)
+                    ? rand(0, 100) < 40 // воскресенье 40% закрыт
+                    : rand(0, 100) < 10;
 
-        foreach ($hours as $day => $time) {
+                if ($isClosed) {
+                    RestaurantHour::updateOrCreate(
+                        [
+                            'restaurant_id' => $restaurantId,
+                            'day_of_week' => $day
+                        ],
+                        [
+                            'open_time' => null,
+                            'close_time' => null,
+                            'is_closed' => true
+                        ]
+                    );
+                    continue;
+                }
 
-            RestaurantHour::updateOrCreate(
+                // пятница/суббота дольше работают
+                if ($day >= 5) {
+                    $open  = $baseOpen;
+                    $close = $baseClose + rand(1, 2);
+                } else {
+                    $open  = $baseOpen + rand(-1, 1);
+                    $close = $baseClose + rand(-1, 1);
+                }
 
-                [
-                    'restaurant_id' => $restaurantId,
-                    'day_of_week' => $day
-                ],
+                // ограничения
+                $open  = max(8, min(12, $open));
+                $close = max(20, min(24, $close));
 
-                [
-                    'open_time' => $time[0],
-                    'close_time' => $time[1],
-                    'is_closed' => false
-                ]
-
-            );
-
+                RestaurantHour::updateOrCreate(
+                    [
+                        'restaurant_id' => $restaurantId,
+                        'day_of_week' => $day
+                    ],
+                    [
+                        'open_time' => sprintf('%02d:00', $open),
+                        'close_time' => sprintf('%02d:00', $close),
+                        'is_closed' => false
+                    ]
+                );
+            }
         }
-
     }
 }

@@ -4,8 +4,9 @@
     $u = auth()->user();
     $meta = is_array($restaurant->meta ?? null) ? $restaurant->meta : [];
 
-    $canBgUpload  = Permissions::can($u, 'branding.backgrounds.upload');
-    $canThemeMode = Permissions::can($u, 'branding.theme_mode.edit');
+    // PLAN-BASED FEATURES (главное)
+    $canBgUpload  = $restaurant->feature('custom_background');
+    $canThemeMode = true; // доступно всем
 
     $themeMode = $meta['theme_mode'] ?? 'light';
 @endphp
@@ -24,7 +25,7 @@
             @csrf
 
             {{-- ===================== --}}
-            {{-- THEME MODE --}}
+            {{-- THEME MODE (доступно всем) --}}
             {{-- ===================== --}}
             @if($canThemeMode)
                 <div class="block">
@@ -52,7 +53,7 @@
             @endif
 
             {{-- ===================== --}}
-            {{-- BACKGROUNDS --}}
+            {{-- BACKGROUNDS (PRO only) --}}
             {{-- ===================== --}}
             @if($canBgUpload)
                 <div class="grid">
@@ -84,6 +85,11 @@
                         <input type="file" name="bg_dark" accept="image/*">
                     </div>
                 </div><br>
+            @else
+                {{-- Апселл (опционально, но рекомендую) --}}
+                <div class="mut" style="margin-top:12px;">
+                    {{ __('admin.plan.pro_required_backgrounds') ?? 'Custom backgrounds available in PRO plan' }}
+                </div>
             @endif
 
             <div class="actions">
@@ -96,4 +102,3 @@
 @endif
 
 @include('admin.restaurants.components.branding-backgrounds._scripts')
-

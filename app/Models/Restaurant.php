@@ -91,17 +91,18 @@ class Restaurant extends Model
         return $this->hasOne(RestaurantQr::class);
     }
 
+    public function feature(string $key, $default = null)
+    {
+        return data_get(
+            config("plan_features.{$this->plan_key}"),
+            $key,
+            $default
+        );
+    }
+
     public function hasFeature(string $feature): bool
     {
-        return match ($feature) {
-
-            'images' => in_array($this->plan_key, ['basic','pro']),
-            'badges' => $this->plan_key === 'pro',
-            'hours.modal' => $this->plan_key === 'pro',
-            'hours.status' => in_array($this->plan_key, ['basic','pro']),
-
-            default => false,
-        };
+        return (bool) $this->feature($feature, false);
     }
 
     public function plan()

@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\Renderers\TenantAccessRenderer;
+use App\Exceptions\TenantAccessException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,5 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (TenantAccessException $e, $request) {
+            return app(TenantAccessRenderer::class)->handle($e, $request);
+        });
     })->create();

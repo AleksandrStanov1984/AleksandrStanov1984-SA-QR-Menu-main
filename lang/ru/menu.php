@@ -2,21 +2,43 @@
 
 return [
 
-    'dish_of_day' => 'Tagesgericht',
-    'opening_hours' => 'Öffnungszeiten',
+    'opening_hours' => 'Часы работы',
 
-    'open' => 'Geöffnet',
-    'closed' => 'Geschlossen',
-    'closing_soon' => 'Schließt bald',
+    'open' => 'Открыто',
+    'closed' => 'Закрыто',
+    'closing_soon' => 'Скоро закрывается',
 
-    'today' => 'heute',
+    'today' => 'сегодня',
 
-    'monday' => 'Montag',
-    'tuesday' => 'Dienstag',
-    'wednesday' => 'Mittwoch',
-    'thursday' => 'Donnerstag',
-    'friday' => 'Freitag',
-    'saturday' => 'Samstag',
-    'sunday' => 'Sonntag',
+    'monday' => 'Понедельник',
+    'tuesday' => 'Вторник',
+    'wednesday' => 'Среда',
+    'thursday' => 'Четверг',
+    'friday' => 'Пятница',
+    'saturday' => 'Суббота',
+    'sunday' => 'Воскресенье',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Menu Features / UI
+    |--------------------------------------------------------------------------
+    */
+
+    'bestseller' => 'Бестселлер',
+    'carousel' => 'Карусель',
+    'carousel_source' => 'Источник карусели',
+
+    'new' => 'Новинка',
+    'dish_of_day' => 'Блюдо дня',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pills / Badges
+    |--------------------------------------------------------------------------
+    */
+
+    'badge_new' => 'NEW',
+    'badge_day' => 'Блюдо дня',
+    'badge_bestseller' => 'Бестселлер',
 
 ];

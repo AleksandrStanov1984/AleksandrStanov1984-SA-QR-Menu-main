@@ -7,26 +7,32 @@ use App\Models\User;
 class Permissions
 {
     /**
-     * DEV режим: по умолчанию true,
-     * но управляется через env, чтобы можно было тестировать реальные права.
+     * IMPORTANT (MVP MODE)
      *
-     * .env:
-     * DEV_ALLOW_ALL_PERMISSIONS=true|false
+     * Permissions system is temporarily DISABLED.
+     *
+     * Access control is based ONLY on:
+     * - tenant
+     * - plan
+     *
+     * All permission checks return TRUE intentionally.
+     *
+     * Do NOT re-enable partially.
+     * Full reactivation will be done in future phase.
+     */
+
+    /**
+     * DEV режим (оставлен для будущего, сейчас не используется)
      */
     public const DEV_ALLOW_ALL = true;
 
-    /**
-     * Проверяем, разрешён ли DEV режим через env.
-     */
     protected static function devAllowAll(): bool
     {
-        // если env не задан — ведём себя как сейчас
-        return (bool) env('DEV_ALLOW_ALL_PERMISSIONS', self::DEV_ALLOW_ALL);
+        return true; // hard override
     }
 
     /**
-     * ЕДИНЫЙ реестр прав.
-     * Сейчас: config/permissions.php
+     * Реестр прав (сохраняем для будущего)
      */
     public static function registry(): array
     {
@@ -41,8 +47,7 @@ class Permissions
     }
 
     /**
-     * Группировка для UI
-     * group => [permKey => label]
+     * Группировка для UI (оставляем, UI может использовать)
      */
     public static function groupedRegistry(): array
     {
@@ -79,8 +84,7 @@ class Permissions
     }
 
     /**
-     * Нормализация входа perm[...] только по реально пришедшим ключам.
-     * Возвращает частичный массив key => bool, без заполнения отсутствующих ключей.
+     * Нормализация входящих данных (оставляем)
      */
     public static function normalize(array $incoming): array
     {
@@ -99,46 +103,31 @@ class Permissions
     }
 
     /**
-     * Проверка одного права.
+     * Проверка одного права (MVP: ВСЕГДА TRUE)
      */
     public static function can(?User $user, string $key): bool
     {
-        if (!$user) return false;
-
-        if (!empty($user->is_super_admin)) return true;
-
-        if (self::devAllowAll()) return true;
-
-        $meta = $user->meta ?? [];
-        $p = $meta['permissions'] ?? [];
-
-        return is_array($p) && !empty($p[$key]);
+        return true;
     }
 
     /**
-     * Проверка: есть ХОТЯ БЫ ОДНО из прав.
+     * Проверка: есть хотя бы одно право (MVP: ВСЕГДА TRUE)
      */
     public static function canAny(?User $user, array $keys): bool
     {
-        foreach ($keys as $k) {
-            if (self::can($user, $k)) {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 
     /**
-     * Abort 403, если нет права.
+     * Abort (MVP: отключено)
      */
     public static function abortUnless(?User $user, string $key): void
     {
-        abort_unless(self::can($user, $key), 403);
+        // intentionally disabled
     }
 
     /**
-     * Строгая проверка для импорта:
-     * если нет права — добавляем ошибку.
+     * Import validation (MVP: отключено)
      */
     public static function requireOrFail(
         ?User $user,
@@ -147,30 +136,17 @@ class Permissions
         array &$errors,
         ?string $label = null
     ): void {
-        if (self::can($user, $key)) {
-            return;
-        }
-
-        $errors[] = [
-            'path'       => $path,
-            'permission' => $key,
-            'message'    => $label
-                ? "Нет прав: {$label}"
-                : "Нет прав для действия ({$key})",
-        ];
+        // intentionally disabled
     }
 
+    /**
+     * Redirect on deny (MVP: всегда null)
+     */
     public static function denyRedirect(
         ?User $user,
         string $key,
         ?string $message = null
     ) {
-        if (self::can($user, $key)) {
-            return null;
-        }
-
-        return redirect()
-            ->back()
-            ->with('warning', $message ?? __('permissions.no_access'));
+        return null;
     }
 }

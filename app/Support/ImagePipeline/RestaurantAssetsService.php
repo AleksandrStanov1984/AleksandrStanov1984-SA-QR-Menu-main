@@ -10,23 +10,63 @@ class RestaurantAssetsService
     {
         if ($restaurantId <= 0) return;
 
-        $directories = [
-            storage_path("app/image-inbox/assets/restaurants/{$restaurantId}/logo"),
-            storage_path("app/image-inbox/assets/restaurants/{$restaurantId}/hero"),
-            storage_path("app/image-inbox/assets/restaurants/{$restaurantId}/menu/items"),
-            storage_path("app/image-inbox/assets/restaurants/{$restaurantId}/categories"),
-            storage_path("app/image-inbox/assets/restaurants/{$restaurantId}/gallery"),
+        // =============================
+        // STORAGE (image-inbox)
+        // =============================
+        $storageBase = storage_path("app/image-inbox/assets/restaurants/{$restaurantId}");
 
-            public_path("assets/restaurants/{$restaurantId}/logo"),
-            public_path("assets/restaurants/{$restaurantId}/hero"),
-            public_path("assets/restaurants/{$restaurantId}/menu/items"),
-            public_path("assets/restaurants/{$restaurantId}/categories"),
-            public_path("assets/restaurants/{$restaurantId}/gallery"),
+        $storageDirs = [
+            'banners',
+
+            // BRANDING
+            'branding/logo',
+            'branding/backgrounds/light',
+            'branding/backgrounds/dark',
+
+            // MENU
+            'menu/items',
+
+            // QR
+            'qr/raw',
+            'qr/logo',
+            'qr/background',
+            'qr/final',
         ];
 
-        foreach ($directories as $dir) {
+        foreach ($storageDirs as $dir) {
             try {
-                File::ensureDirectoryExists($dir, 0755, true);
+                File::ensureDirectoryExists("{$storageBase}/{$dir}", 0755, true);
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
+        // =============================
+        // PUBLIC (runtime)
+        // =============================
+        $publicBase = public_path("assets/restaurants/{$restaurantId}");
+
+        $publicDirs = [
+            'banners',
+
+            // BRANDING
+            'branding/logo',
+            'branding/backgrounds/light',
+            'branding/backgrounds/dark',
+
+            // MENU
+            'menu/items',
+
+            // QR
+            'qr/raw',
+            'qr/logo',
+            'qr/background',
+            'qr/final',
+        ];
+
+        foreach ($publicDirs as $dir) {
+            try {
+                File::ensureDirectoryExists("{$publicBase}/{$dir}", 0755, true);
             } catch (\Throwable $e) {
                 report($e);
             }

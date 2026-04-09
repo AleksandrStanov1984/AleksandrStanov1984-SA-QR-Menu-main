@@ -20,21 +20,23 @@
 
 @include('public.templates.united.blocks.drawer.mobile-drawer')
 
-@include('public.templates.united.blocks.header.restaurant-info', [
-    'showFeaturedItems' => true,
-])
+<div class="container">
+    @include('public.templates.united.blocks.header.restaurant-info', [
+        'showFeaturedItems' => true,
+    ])
+</div>
 
 <main id="menuContainer">
-
-@include('public.templates.united.blocks.menu.menu-section')
-
+    <div class="container">
+        @include('public.templates.united.blocks.menu.menu-section')
+    </div>
 </main>
 
-
-
-@include('public.templates.united.blocks.footer.footer', [
-    'showFeaturedItems' => false,
-])
+<div class="container">
+    @include('public.templates.united.blocks.footer.footer', [
+        'showFeaturedItems' => false,
+    ])
+</div>
 
 @include('public.templates.united.blocks.modal.item-modal')
 @include('public.templates.united.blocks.modal.hours-modal')

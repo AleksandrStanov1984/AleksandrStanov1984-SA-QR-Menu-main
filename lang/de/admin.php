@@ -409,7 +409,7 @@ return [
 
     'socials' => [
         'title' => 'Social-Links',
-        'hint' => 'Maximal 5 Links. Die ersten zwei sind für alle verfügbar, zusätzliche — je nach Rechten (3/4/5).',
+        'hint' => 'Maximal 5 Links. Links sind je nach Tarifplan verfügbar.',
         'add' => 'Link hinzufügen',
         'edit' => 'Bearbeiten',
         'delete' => 'Löschen',

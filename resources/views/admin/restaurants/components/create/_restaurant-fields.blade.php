@@ -17,32 +17,33 @@
 
 <div class="col6">
     <label>{{ __('admin.fields.template') }}</label>
-    @php($tpl = old('template_key', 'classic'))
+
+    @php($tpl = old('template_key', $templates->first()?->key))
+
     <select name="template_key" required>
-        <option value="classic"  @selected($tpl==='classic')>{{ __('admin.templates.classic') }}</option>
-        <option value="fastfood" @selected($tpl==='fastfood')>{{ __('admin.templates.fastfood') }}</option>
-        <option value="bar"      @selected($tpl==='bar')>{{ __('admin.templates.bar') }}</option>
-        <option value="services" @selected($tpl==='services')>{{ __('admin.templates.services') }}</option>
+        @foreach($templates as $template)
+            <option value="{{ $template->key }}"
+                @selected($tpl === $template->key)>
+
+                {{ $template->name }}
+            </option>
+        @endforeach
     </select>
 </div>
 
 <div class="col6">
     <label>{{ __('admin.fields.plan') }}</label>
 
-    @php($plan = old('plan_key', 'starter'))
+    @php($plan = old('plan_key'))
 
     <select name="plan_key" required>
-        <option value="starter" @selected($plan === 'starter')>
-            {{ __('admin.plans.starter') }}
-        </option>
+        @foreach($plans as $p)
+            <option value="{{ $p->key }}"
+                @selected($plan === $p->key)>
 
-        <option value="basic" @selected($plan === 'basic')>
-            {{ __('admin.plans.basic') }}
-        </option>
-
-        <option value="pro" @selected($plan === 'pro')>
-            {{ __('admin.plans.pro') }}
-        </option>
+                {{ $p->name }} ({{ number_format($p->price, 2) }}€)
+            </option>
+        @endforeach
     </select>
 </div>
 

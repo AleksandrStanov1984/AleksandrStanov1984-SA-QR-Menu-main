@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\TenantAccessException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -21,69 +21,50 @@ class Handler extends ExceptionHandler
 
     public function register(): void
     {
-        //
-    }
-
-    public function render($request, Throwable $e)
-    {
-        /**
-         * =========================
-         * SAFE FALLBACK RESOLVER
-         * =========================
-         */
-        $resolveFallback = function () use ($request) {
-            $user = $request->user();
-
-            // если у пользователя есть ресторан → ведём в его edit
-            if ($user && $user->restaurant_id) {
-                return route('admin.restaurants.edit', $user->restaurant_id);
-            }
-
-            // иначе общий список
-            return route('admin.restaurants.index');
-        };
-
         /**
          * =========================
          * TENANT ACCESS
          * =========================
          */
-        if ($e instanceof TenantAccessException) {
+        $this->renderable(function (TenantAccessException $e, $request) {
 
-            if (!$request->expectsJson()) {
-                return redirect()
-                    ->back(fallback: $resolveFallback())
-                    ->with('warning', $e->getMessage() ?: __('permissions.no_access'));
+            $resolveFallback = function () use ($request) {
+                $user = $request->user();
+
+                if ($user && $user->restaurant_id) {
+                    return route('admin.restaurants.edit', $user->restaurant_id);
+                }
+
+                return route('admin.restaurants.index');
+            };
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: __('permissions.no_access'),
+                ], 403);
             }
 
-            return response()->json([
-                'message' => $e->getMessage() ?: __('permissions.no_access'),
-            ], 403);
-        }
+            return redirect()
+                ->to(url()->previous() ?: $resolveFallback())
+                ->with('warning', $e->getMessage() ?: __('permissions.no_access'));
+        });
 
         /**
          * =========================
-         * AUTHORIZATION (FormRequest / Policies)
+         * AUTHORIZATION
          * =========================
          */
-        if ($e instanceof AuthorizationException) {
+        $this->renderable(function (AuthorizationException $e, $request) {
 
-            if (!$request->expectsJson()) {
-                return redirect()
-                    ->back(fallback: $resolveFallback())
-                    ->with('warning', $e->getMessage() ?: __('permissions.no_access'));
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: __('permissions.no_access'),
+                ], 403);
             }
 
-            return response()->json([
-                'message' => $e->getMessage() ?: __('permissions.no_access'),
-            ], 403);
-        }
-
-        /**
-         * =========================
-         * DEFAULT
-         * =========================
-         */
-        return parent::render($request, $e);
+            return redirect()
+                ->back()
+                ->with('warning', $e->getMessage() ?: __('permissions.no_access'));
+        });
     }
 }

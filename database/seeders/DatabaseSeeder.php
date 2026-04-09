@@ -10,11 +10,23 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
-            Restaurant10Seeder::class,
-            RestaurantHoursSeeder::class,
-            RestaurantUsersSeeder::class,
+
             MenuPlanSeeder::class,
             MenuTemplateSeeder::class,
+
+            RestaurantStarterSeeder::class,
+            RestaurantBasicSeeder::class,
+            RestaurantProSeeder::class,
+
+            RestaurantHoursSeeder::class,
+            RestaurantSocialSeeder::class,
+
+          //  RestaurantUsersSeeder::class,
+
+            DevQuickLoginSeeder::class,
+
+            RestaurantTokenSeeder::class,
+
         ]);
     }
 }

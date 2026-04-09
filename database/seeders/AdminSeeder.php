@@ -10,12 +10,17 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
+        // =============================
+        // ADMIN
+        // =============================
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'admin@test.com'],
             [
                 'name' => 'Super Admin',
-                'password' => Hash::make('admin123'),
+                'password' => Hash::make('password123'),
                 'is_super_admin' => true,
+                'restaurant_id' => null,
+                'meta' => [],
             ]
         );
     }

@@ -8,6 +8,7 @@ use App\Models\Section;
 use App\Models\SectionTranslation;
 use App\Http\Requests\Admin\StoreSubcategoryRequest;
 use Illuminate\Support\Arr;
+use App\Support\Permissions;
 
 class SubcategoryController extends Controller
 {
@@ -15,38 +16,38 @@ class SubcategoryController extends Controller
     {
         $user = $request->user();
 
-        // scope: user только свой ресторан
         if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
             abort(403);
         }
 
-        // permissions (пока can=true, но проверка обязательна)
-        PPermissions::abortUnless($user, 'subcategories.create');
+        if ($resp = Permissions::denyRedirect(auth()->user(), 'subcategories.create')) {
+            return $resp;
+        }
 
-        // permissions
         if (!$user->is_super_admin && !$user->hasPerm('sections_manage')) {
             abort(403);
         }
 
         $locales = $restaurant->enabled_locales ?: ['de'];
         $defaultLocale = $restaurant->default_locale ?: 'de';
+
         if (!in_array($defaultLocale, $locales, true)) {
             $defaultLocale = $locales[0] ?? 'de';
         }
 
         $data = $request->validated();
 
-        // parent должен быть категорией этого ресторана (top-level)
         $parent = Section::query()
             ->where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
             ->where('type', 'category')
-            ->findOrFail((int)$data['parent_id']);
+            ->whereKey((int)$data['parent_id'])
+            ->firstOrFail();
 
-        // sort_order следующий внутри parent
         $nextSort = (int) Section::where('restaurant_id', $restaurant->id)
             ->where('parent_id', $parent->id)
             ->max('sort_order');
+
         $nextSort = $nextSort ? $nextSort + 1 : 1;
 
         $section = Section::create([
@@ -59,11 +60,14 @@ class SubcategoryController extends Controller
             'title_color'   => $data['title_color'] ?? null,
         ]);
 
-        $fallbackTitle = trim((string)Arr::get($data, "title.$defaultLocale", ''));
+        $fallbackTitle = trim((string) Arr::get($data, "title.$defaultLocale", ''));
 
         foreach ($locales as $loc) {
-            $title = trim((string)Arr::get($data, "title.$loc", ''));
-            if ($title === '') $title = $fallbackTitle;
+            $title = trim((string) Arr::get($data, "title.$loc", ''));
+
+            if ($title === '') {
+                $title = $fallbackTitle;
+            }
 
             SectionTranslation::create([
                 'section_id' => $section->id,

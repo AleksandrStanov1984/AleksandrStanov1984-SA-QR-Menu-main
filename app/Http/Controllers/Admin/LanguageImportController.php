@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\ItemTranslation;
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
+use App\Support\Guards\AccessGuardTrait;
 use App\Support\Permissions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,6 +18,7 @@ use Illuminate\Support\Str;
 
 class LanguageImportController extends Controller
 {
+    use AccessGuardTrait;
     /**
      * Upload JSON with new language content and optionally set as default.
      * For now we accept a simple, explicit structure:
@@ -41,14 +44,9 @@ class LanguageImportController extends Controller
      */
     public function import(Request $request, Restaurant $restaurant): RedirectResponse
     {
+        $this->assertRestaurantAccess($request, $restaurant, 'import_manage');
+
         $user = $request->user();
-
-        if (!$user?->is_super_admin) {
-            abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-
-            Permissions::abortUnless($user, 'import_manage');
-
-        }
 
         $data = $request->validate([
             'locale' => ['required', 'string', 'max:5', 'regex:/^[a-zA-Z]{2}(-[a-zA-Z]{2})?$/'],
@@ -107,14 +105,26 @@ class LanguageImportController extends Controller
     {
         $user = $request->user();
 
-        if (!$user?->is_super_admin) {
-            abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-
-            abort_unless($user->hasPerm('import_manage'), 403);
+        if (
+            !$user ||
+            (
+                !$user->is_super_admin &&
+                (
+                    (int)$user->restaurant_id !== (int)$restaurant->id ||
+                    !Permissions::can($user, 'import_manage')
+                )
+            )
+        ) {
+            throw new TenantAccessException(__('permissions.no_access'));
         }
 
         $data = $request->validate([
-            'default_locale' => ['required', 'string', 'max:5', 'regex:/^[a-zA-Z]{2}(-[a-zA-Z]{2})?$/'],
+            'default_locale' => [
+                'required',
+                'string',
+                'max:5',
+                'regex:/^[a-zA-Z]{2}(-[a-zA-Z]{2})?$/',
+            ],
         ]);
 
         $locale = Str::lower(trim($data['default_locale']));

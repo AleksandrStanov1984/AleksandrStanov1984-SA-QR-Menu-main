@@ -10,6 +10,7 @@ use App\Models\SectionTranslation;
 use App\Models\Item;
 use App\Models\ItemTranslation;
 
+use App\Support\Import\SafeZipExtractor;
 use App\Support\Permissions;
 use App\Support\Import\MenuPatchValidator;
 use App\Support\Import\MenuPatchApplier;
@@ -38,8 +39,9 @@ class MenuImportController extends Controller
 
     public function importJson(Request $request, Restaurant $restaurant)
         {
-            // доступ к импорту (UI может быть скрыт, но backend обязателен)
-            Permissions::abortUnless($request->user(), 'import.menu_json');
+            if ($resp = Permissions::denyRedirect(auth()->user(), 'import.menu_json')) {
+                return $resp;
+            }
 
             $request->validate([
                 'menu_json' => ['required', 'file', 'mimetypes:application/json,text/plain', 'max:5120'], // 5MB
@@ -66,7 +68,12 @@ class MenuImportController extends Controller
             $res = $validator->validate($data, $request->user(), $restaurant);
 
             $errors = $res['errors'] ?? [];
-            $plan = $res['plan'] ?? ['dry_run' => false, 'ops' => [], 'summary' => []];
+
+            $plan = data_get($res, 'plan', [
+                'dry_run' => false,
+                'ops' => [],
+                'summary' => [],
+            ]);
 
             if (!empty($errors)) {
                 return $this->failWithLog($restaurant, $errors);
@@ -97,7 +104,9 @@ class MenuImportController extends Controller
 
         public function downloadLog(Request $request, Restaurant $restaurant, string $token)
         {
-            Permissions::abortUnless($request->user(), 'import.menu_json');
+            if ($resp = Permissions::denyRedirect(auth()->user(), 'import.menu_json')) {
+                return $resp;
+            }
 
             $path = "tmp/import-logs/{$token}.txt";
             abort_unless(Storage::disk('local')->exists($path), 404);
@@ -142,11 +151,9 @@ class MenuImportController extends Controller
 
     public function importZip(Request $request, Restaurant $restaurant)
     {
-        if (!Permissions::can($request->user(), 'import.images_zip')) {
-            abort(403);
+        if ($resp = Permissions::denyRedirect($request->user(), 'import.images_zip')) {
+            return $resp;
         }
-
-        Permissions::abortUnless($request->user(), 'import.images_zip');
 
         $zip = $request->file('assets_zip');
 
@@ -266,8 +273,9 @@ class MenuImportController extends Controller
 
 public function downloadMenuJson(Request $request, Restaurant $restaurant)
 {
-    // Права на экспорт (пока используем import.menu_json, потом можно завести export.menu_json)
-    Permissions::abortUnless($request->user(), 'import.menu_json');
+    if ($resp = Permissions::denyRedirect(auth()->user(), 'import.menu_json')) {
+        return $resp;
+    }
 
     $payload = [
         'mode' => 'snapshot',

@@ -113,21 +113,25 @@ class ImageService
             return $this->url($path);
         }
 
-        $map = [
-            'facebook'  => 'facebook.svg',
-            'instagram' => 'instagram.svg',
-            'whatsapp'  => 'whatsapp.svg',
-            'telegram'  => 'telegram.svg',
-            'tiktok'    => 'tiktok.svg',
-        ];
+        $map = config('social_icons.map', []);
+        $fallback = config('social_icons.fallback', 'website.svg');
+        $base = config('social_icons.base_path', 'assets/system/icons');
 
         $key = strtolower(trim($title ?? ''));
 
-        //  нормализация
+        // базовая нормализация
         $key = str_replace(['.com', 'www.', 'https://', 'http://'], '', $key);
         $key = explode('/', $key)[0];
+        $key = explode('.', $key)[0];
 
-        return '/assets/system/icons/' . ($map[$key] ?? 'link.svg');
+        // поиск по вхождению (ключевая часть)
+        foreach ($map as $social => $file) {
+            if (str_contains($key, $social)) {
+                return asset($base . '/' . $file);
+            }
+        }
+
+        return asset($base . '/' . $fallback);
     }
 
     public function banner(?string $path): string

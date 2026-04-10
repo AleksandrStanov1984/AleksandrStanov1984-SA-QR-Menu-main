@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
 
 use App\Models\MenuPlan;
@@ -11,6 +12,7 @@ use App\Models\Section;
 use App\Models\RestaurantSocialLink;
 use App\Models\MenuTemplate;
 
+use App\Support\Guards\AccessGuardTrait;
 use App\Support\Permissions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,21 +22,20 @@ use Illuminate\Support\Facades\Hash;
 
 class RestaurantController extends Controller
 {
+    use AccessGuardTrait;
+
     private function capFirst(?string $v): ?string
     {
         $v = $v !== null ? trim($v) : null;
         if ($v === null || $v === '') return null;
 
-        $first = mb_strtoupper(mb_substr($v, 0, 1));
-        $rest  = mb_substr($v, 1);
-        return $first . $rest;
+        return mb_strtoupper(mb_substr($v, 0, 1)) . mb_substr($v, 1);
     }
 
     private function cleanText(?string $v): ?string
     {
         if ($v === null) return null;
-        $v = strip_tags($v);
-        $v = trim($v);
+        $v = trim(strip_tags($v));
         return $v === '' ? null : $v;
     }
 
@@ -44,47 +45,41 @@ class RestaurantController extends Controller
         if ($v === null) return null;
 
         $v = preg_replace('/[^\d+]/', '', $v);
-
-        $digits = preg_replace('/\D/', '', $v);
-        $digits = substr($digits, 0, 15);
+        $digits = substr(preg_replace('/\D/', '', $v), 0, 15);
 
         return $digits ? ('+' . $digits) : null;
     }
 
     public function index(Request $request): View
     {
-        $user = $request->user();
-        abort_unless($user?->is_super_admin, 403);
+        $this->assertSuperAdmin($request);
 
-        $restaurants = Restaurant::query()->orderBy('name')->paginate(25);
+        $restaurants = Restaurant::orderBy('name')->paginate(25);
+
         return view('admin.restaurants.index', compact('restaurants'));
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function create(Request $request): View
     {
-        $user = $request->user();
-        abort_unless($user?->is_super_admin, 403);
+        $this->assertSuperAdmin($request);
 
-        $templates = MenuTemplate::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $plans = MenuPlan::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        return view('admin.restaurants.create', compact('templates', 'plans'));
+        return view('admin.restaurants.create', [
+            'templates' => MenuTemplate::where('is_active', true)->orderBy('sort_order')->get(),
+            'plans' => MenuPlan::where('is_active', true)->orderBy('sort_order')->get(),
+        ]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function store(Request $request): RedirectResponse
     {
-        $user = $request->user();
-        abort_unless($user?->is_super_admin, 403);
+        $this->assertSuperAdmin($request);
 
         $data = $request->validate([
-            // restaurant
             'name' => ['required', 'string', 'max:20', 'regex:/^[^\d<>]+$/u'],
             'template_key' => ['required', 'exists:menu_templates,key'],
             'plan_key' => ['required', 'exists:menu_plans,key'],
@@ -95,7 +90,6 @@ class RestaurantController extends Controller
             'house_number' => ['nullable', 'string', 'regex:/^\d{1,3}[A-Za-z]?$/'],
             'postal_code' => ['nullable', 'string', 'regex:/^\d{5}$/'],
 
-            // user
             'user_name' => ['required', 'string', 'max:255', 'regex:/^[^<>]*$/u'],
             'user_email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6', 'max:255'],
@@ -110,13 +104,13 @@ class RestaurantController extends Controller
         $data['phone'] = $this->cleanPhone($data['phone'] ?? null);
 
         $baseSlug = Str::slug($data['name']) ?: ('restaurant-' . time());
+        $existing = Restaurant::where('slug', 'like', "{$baseSlug}%")->pluck('slug');
 
         $slug = $baseSlug;
-
         $i = 2;
 
-        while (Restaurant::query()->where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $i;
+        while ($existing->contains($slug)) {
+            $slug = "{$baseSlug}-{$i}";
             $i++;
         }
 
@@ -129,11 +123,11 @@ class RestaurantController extends Controller
             'enabled_locales' => ['de'],
             'is_active' => true,
 
-            'phone' => $data['phone'] ?? null,
-            'city' => $data['city'] ?? null,
-            'street' => $data['street'] ?? null,
-            'house_number' => $data['house_number'] ?? null,
-            'postal_code' => $data['postal_code'] ?? null,
+            'phone' => $data['phone'],
+            'city' => $data['city'],
+            'street' => $data['street'],
+            'house_number' => $data['house_number'],
+            'postal_code' => $data['postal_code'],
         ]);
 
         $restaurant->token()->firstOrCreate(
@@ -151,7 +145,6 @@ class RestaurantController extends Controller
             ]
         );
 
-        // create restaurant user
         User::create([
             'name' => $this->cleanText($data['user_name']),
             'email' => $data['user_email'],
@@ -167,224 +160,90 @@ class RestaurantController extends Controller
             ->with('status', 'Restaurant created.');
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function edit(Request $request, Restaurant $restaurant): View
     {
+        $this->assertRestaurantAccess($request, $restaurant);
+
         $user = $request->user();
-        if (!$user?->is_super_admin) {
-            abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-        }
+        $isSuper = $user->is_super_admin;
 
-        $isSuper = (bool) ($user->is_super_admin ?? false);
+        $socialLinksQuery = $restaurant->socialLinks()->orderBy('sort_order');
 
-        $templates = MenuTemplate::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        $socialLinks = $isSuper
+            ? $socialLinksQuery->withTrashed()->get()
+            : $socialLinksQuery->whereNull('deleted_at')->get();
 
-        $plans = MenuPlan::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $socialLinksQuery = RestaurantSocialLink::query()
-            ->where('restaurant_id', $restaurant->id)
-            ->orderBy('sort_order');
-
-        if ($isSuper) {
-            $socialLinksQuery->withTrashed();
-        } else {
-            $socialLinksQuery->whereNull('deleted_at');
-        }
-
-        $socialLinks = $socialLinksQuery->get();
-
-        $restaurantUser = User::query()
-            ->where('restaurant_id', $restaurant->id)
+        $restaurantUser = User::where('restaurant_id', $restaurant->id)
             ->where('is_super_admin', false)
-            ->orderBy('id')
             ->first();
 
-        $adminLocale = session('admin_locale', app()->getLocale());
-        $locales = $restaurant->enabled_locales ?: ['de'];
-
-        // --- categories query (withTrashed for super admin) ---
-        $catQuery = Section::query()
-            ->where('restaurant_id', $restaurant->id)
+        $categories = Section::where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
-            ->orderBy('sort_order');
-
-        if ($isSuper) {
-            $catQuery->withTrashed();
-        }
-
-        $categories = $catQuery
+            ->orderBy('sort_order')
+            ->when($isSuper, fn($q) => $q->withTrashed())
             ->with([
-                'translations',
-
-                // children (subcategories)
-                'children' => function ($q) use ($isSuper) {
-                    if ($isSuper) $q->withTrashed();
-
-                    $q->orderBy('sort_order')
-                        ->with([
-                            'translations',
-
-                            // items of subcategory
-                            'items' => function ($qi) use ($isSuper) {
-                                if ($isSuper) $qi->withTrashed();
-                                $qi->orderBy('sort_order')->with('translations');
-                            },
-                        ]);
-                },
-
-                // items of category
-                'items' => function ($qi) use ($isSuper) {
-                    if ($isSuper) $qi->withTrashed();
-                    $qi->orderBy('sort_order')->with('translations');
-                },
+                'translations:id,section_id,locale,title',
+                'children.translations:id,section_id,locale,title',
+                'children.items.translations:id,item_id,locale,title,description',
+                'items.translations:id,item_id,locale,title,description',
             ])
             ->get();
 
-        $menuTree = $categories->map(function ($cat) {
-            $cat->items = ($cat->items ?? collect())->sort(function ($a, $b) {
-                $am = $a->meta ?? [];
-                $bm = $b->meta ?? [];
+        return view('admin.restaurants.edit', [
+            'restaurant' => $restaurant,
+            'restaurantUser' => $restaurantUser,
+            'menuTree' => $this->buildMenuTree($categories),
+            'locales' => $restaurant->enabled_locales ?: ['de'],
+            'adminLocale' => session('admin_locale', app()->getLocale()),
+            'socialLinks' => $socialLinks,
+            'templates' => MenuTemplate::where('is_active', true)->orderBy('sort_order')->get(),
+            'plans' => MenuPlan::where('is_active', true)->orderBy('sort_order')->get(),
+        ]);
+    }
 
-                $an = (int) !empty($am['is_new']);
-                $bn = (int) !empty($bm['is_new']);
-                if ($an !== $bn) return $bn <=> $an;
+    private function buildMenuTree($categories)
+    {
+        return $categories->map(function ($cat) {
 
-                $ad = (int) !empty($am['dish_of_day']);
-                $bd = (int) !empty($bm['dish_of_day']);
-                if ($ad !== $bd) return $bd <=> $ad;
+            $cat->items = $cat->items
+                ->sortByDesc(fn($i) => !empty($i->meta['is_new']))
+                ->sortByDesc(fn($i) => !empty($i->meta['dish_of_day']))
+                ->sortBy('sort_order')
+                ->values();
 
-                return ((int) ($a->sort_order ?? 0)) <=> ((int) ($b->sort_order ?? 0));
-            })->values();
+            $cat->children = $cat->children->map(function ($sub) {
 
-            $cat->children = ($cat->children ?? collect())->map(function ($sub) {
-                $sub->items = ($sub->items ?? collect())->sort(function ($a, $b) {
-                    $am = $a->meta ?? [];
-                    $bm = $b->meta ?? [];
-
-                    $an = (int) !empty($am['is_new']);
-                    $bn = (int) !empty($bm['is_new']);
-                    if ($an !== $bn) return $bn <=> $an;
-
-                    $ad = (int) !empty($am['dish_of_day']);
-                    $bd = (int) !empty($bm['dish_of_day']);
-                    if ($ad !== $bd) return $bd <=> $ad;
-
-                    return ((int) ($a->sort_order ?? 0)) <=> ((int) ($b->sort_order ?? 0));
-                })->values();
+                $sub->items = $sub->items
+                    ->sortByDesc(fn($i) => !empty($i->meta['is_new']))
+                    ->sortByDesc(fn($i) => !empty($i->meta['dish_of_day']))
+                    ->sortBy('sort_order')
+                    ->values();
 
                 return $sub;
             });
 
             return $cat;
         });
-
-        return view('admin.restaurants.edit', [
-            'restaurant' => $restaurant,
-            'restaurantUser' => $restaurantUser,
-
-            'menuTree' => $menuTree,
-            'locales' => $locales,
-            'adminLocale' => $adminLocale,
-
-            'socialLinks' => $socialLinks,
-            'templates' => $templates,
-            'plans' => $plans,
-        ]);
     }
 
-    public function update(Request $request, Restaurant $restaurant): RedirectResponse
-    {
-        $user = $request->user();
-
-        Permissions::abortUnless($request->user(), 'restaurants.edit');
-
-        if (!$user?->is_super_admin) {
-            abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-        }
-
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:20', 'regex:/^[^\d<>]+$/u'],
-            'template_key' => [$user?->is_super_admin ? 'required' : 'nullable', 'exists:menu_templates,key'],
-            'plan_key' => [$user?->is_super_admin ? 'required' : 'nullable', 'exists:menu_plans,key'],
-
-            'phone' => ['nullable', 'string', 'regex:/^\+\d{1,15}$/'],
-            'city' => ['nullable', 'string', 'max:50', 'regex:/^[^<>]*$/u'],
-            'street' => ['nullable', 'string', 'max:50', 'regex:/^[^<>]*$/u'],
-            'house_number' => ['nullable', 'string', 'regex:/^\d{1,3}[A-Za-z]?$/'],
-            'postal_code' => ['nullable', 'string', 'regex:/^\d{5}$/'],
-        ]);
-
-        if (!$user->is_super_admin) {
-            unset($data['template_key'], $data['plan_key']);
-        }
-
-        // normalize
-        $data['name'] = $this->capFirst($this->cleanText($data['name']));
-        $data['city'] = $this->capFirst($this->cleanText($data['city'] ?? null));
-        $data['street'] = $this->capFirst($this->cleanText($data['street'] ?? null));
-        $data['house_number'] = $this->cleanText($data['house_number'] ?? null);
-        $data['postal_code'] = $this->cleanText($data['postal_code'] ?? null);
-        $data['phone'] = $this->cleanPhone($data['phone'] ?? null);
-
-        $restaurant->fill($data)->save();
-
-        return back()->with('status', 'Saved.');
-    }
-
-    public function destroy(Request $request, Restaurant $restaurant): RedirectResponse
-    {
-        $user = $request->user();
-        abort_unless($user?->is_super_admin, 403);
-
-        $restaurant->is_active = false;
-        $restaurant->save();
-
-        return redirect()->route('admin.restaurants.index')->with('status', 'Restaurant deactivated.');
-    }
-
-    public function toggleActive(Request $request, Restaurant $restaurant): RedirectResponse
-    {
-        $user = $request->user();
-        abort_unless($user?->is_super_admin, 403);
-
-        $restaurant->is_active = !$restaurant->is_active;
-        $restaurant->save();
-
-        return back()->with('status', $restaurant->is_active ? 'Restaurant activated.' : 'Restaurant deactivated.');
-    }
-
+    /**
+     * @throws TenantAccessException
+     */
     public function updateUserPermissions(Request $request, Restaurant $restaurant)
     {
-        $user = $request->user();
-        abort_unless($user && $user->is_super_admin, 403);
+        $this->assertSuperAdmin($request);
 
-        $restaurantUser = User::where('restaurant_id', $restaurant->id)->first();
-        abort_unless($restaurantUser, 404);
+        $restaurantUser = User::where('restaurant_id', $restaurant->id)->firstOrFail();
 
-        // берём входящие данные
-        $incoming = $request->input('perm', []);
-        if (!is_array($incoming)) {
-            $incoming = [];
-        }
+        $incoming = Permissions::normalize($request->input('perm', []));
 
-        // нормализуем ТОЛЬКО пришедшие ключи
-        $incoming = Permissions::normalize($incoming);
-
-        // текущие permissions
         $meta = $restaurantUser->meta ?? [];
         $existing = $meta['permissions'] ?? [];
 
-        // merge (точечное обновление)
-        foreach ($incoming as $key => $value) {
-            $existing[$key] = $value;
-        }
-
-        $meta['permissions'] = $existing;
+        $meta['permissions'] = array_replace($existing, $incoming);
 
         $restaurantUser->meta = $meta;
         $restaurantUser->save();
@@ -392,20 +251,19 @@ class RestaurantController extends Controller
         return back()->with('status', __('admin.permissions.saved') ?? 'Saved');
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function menu(Request $request, Restaurant $restaurant): View
     {
+        $this->assertRestaurantAccess($request, $restaurant);
+
         $user = $request->user();
-
-        if (!$user?->is_super_admin) {
-            abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-        }
-
         $isSuper = (bool) ($user->is_super_admin ?? false);
 
         $adminLocale = session('admin_locale', app()->getLocale());
         $locales = $restaurant->enabled_locales ?: ['de'];
 
-        // ===== ТОЛЬКО МЕНЮ =====
         $catQuery = Section::query()
             ->where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
@@ -417,22 +275,33 @@ class RestaurantController extends Controller
 
         $categories = $catQuery
             ->with([
-                'translations',
+                'translations:id,section_id,locale,title',
+
                 'children' => function ($q) use ($isSuper) {
                     if ($isSuper) $q->withTrashed();
 
                     $q->orderBy('sort_order')
                         ->with([
-                            'translations',
+                            'translations:id,section_id,locale,title',
+
                             'items' => function ($qi) use ($isSuper) {
                                 if ($isSuper) $qi->withTrashed();
-                                $qi->orderBy('sort_order')->with('translations');
+
+                                $qi->orderBy('sort_order')
+                                    ->with([
+                                        'translations:id,item_id,locale,title,description,details'
+                                    ]);
                             },
                         ]);
                 },
+
                 'items' => function ($qi) use ($isSuper) {
                     if ($isSuper) $qi->withTrashed();
-                    $qi->orderBy('sort_order')->with('translations');
+
+                    $qi->orderBy('sort_order')
+                        ->with([
+                            'translations:id,item_id,locale,title,description,details'
+                        ]);
                 },
             ])
             ->get();
@@ -447,56 +316,12 @@ class RestaurantController extends Controller
         ]);
     }
 
-    private function buildMenuTree($categories)
-    {
-        return $categories->map(function ($cat) {
-
-            $cat->items = ($cat->items ?? collect())->sort(function ($a, $b) {
-                $am = $a->meta ?? [];
-                $bm = $b->meta ?? [];
-
-                $an = (int) !empty($am['is_new']);
-                $bn = (int) !empty($bm['is_new']);
-                if ($an !== $bn) return $bn <=> $an;
-
-                $ad = (int) !empty($am['dish_of_day']);
-                $bd = (int) !empty($bm['dish_of_day']);
-                if ($ad !== $bd) return $bd <=> $ad;
-
-                return ((int) $a->sort_order) <=> ((int) $b->sort_order);
-            })->values();
-
-            $cat->children = ($cat->children ?? collect())->map(function ($sub) {
-
-                $sub->items = ($sub->items ?? collect())->sort(function ($a, $b) {
-                    $am = $a->meta ?? [];
-                    $bm = $b->meta ?? [];
-
-                    $an = (int) !empty($am['is_new']);
-                    $bn = (int) !empty($bm['is_new']);
-                    if ($an !== $bn) return $bn <=> $an;
-
-                    $ad = (int) !empty($am['dish_of_day']);
-                    $bd = (int) !empty($bm['dish_of_day']);
-                    if ($ad !== $bd) return $bd <=> $ad;
-
-                    return ((int) $a->sort_order) <=> ((int) $b->sort_order);
-                })->values();
-
-                return $sub;
-            });
-
-            return $cat;
-        });
-    }
-
+    /**
+     * @throws TenantAccessException
+     */
     public function profile(Request $request, Restaurant $restaurant): View
     {
-        $user = $request->user();
-
-        if (!$user?->is_super_admin) {
-            abort_unless((int) $user->restaurant_id === (int) $restaurant->id, 403);
-        }
+        $this->assertRestaurantAccess($request, $restaurant);
 
         $templates = MenuTemplate::query()
             ->where('is_active', true)
@@ -511,8 +336,74 @@ class RestaurantController extends Controller
         return view('admin.restaurants.profile', [
             'restaurant' => $restaurant,
             'templates' => $templates,
-            'plans' => $plans, // 👈 ВОТ ЭТО КЛЮЧ
+            'plans' => $plans,
         ]);
+    }
+
+    public function permissions(Request $request, Restaurant $restaurant): View
+    {
+        $user = $request->user();
+
+        //abort_unless($user?->is_super_admin, 403);
+
+        $restaurantUser = User::query()
+            ->where('restaurant_id', $restaurant->id)
+            ->where('is_super_admin', false)
+            ->firstOrFail();
+
+        return view('admin.restaurants.permissions', [
+            'restaurant' => $restaurant,
+            'restaurantUser' => $restaurantUser,
+            'groupedPermissions' => Permissions::groupedRegistry(),
+            'currentPermissions' => $restaurantUser->meta['permissions'] ?? [],
+        ]);
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function destroy(Request $request, Restaurant $restaurant): RedirectResponse
+    {
+        $this->assertSuperAdmin($request);
+
+        $ctx = \App\Support\AdminContext::actingRestaurant();
+
+        if (!$ctx || $ctx->id !== $restaurant->id) {
+            abort(404);
+        }
+
+        $restaurant->update([
+            'is_active' => false,
+        ]);
+
+        return redirect()
+            ->route('admin.restaurants.index')
+            ->with('status', 'Restaurant deactivated.');
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function toggleActive(Request $request, Restaurant $restaurant): RedirectResponse
+    {
+        $this->assertSuperAdmin($request);
+
+        $ctx = \App\Support\AdminContext::actingRestaurant();
+
+        if (!$ctx || $ctx->id !== $restaurant->id) {
+            abort(404);
+        }
+
+        $restaurant->update([
+            'is_active' => !$restaurant->is_active,
+        ]);
+
+        return back()->with(
+            'status',
+            $restaurant->is_active
+                ? 'Restaurant activated.'
+                : 'Restaurant deactivated.'
+        );
     }
 
     public function updateRestaurant(Request $request): RedirectResponse
@@ -521,14 +412,11 @@ class RestaurantController extends Controller
 
         Permissions::abortUnless($user, 'restaurant.profile.edit');
 
-        if ($user->is_super_admin) {
-            $restaurantId = session('admin.restaurant_id');
-            abort_unless($restaurantId, 403);
+        $restaurant = $user->is_super_admin
+            ? \App\Support\AdminContext::actingRestaurant()
+            : $user->restaurant;
 
-            $restaurant = Restaurant::findOrFail($restaurantId);
-        } else {
-            $restaurant = $user->restaurant;
-        }
+        abort_unless($restaurant, 403);
 
         $isSuper = (bool) ($user?->is_super_admin ?? false);
 
@@ -541,11 +429,18 @@ class RestaurantController extends Controller
             'street' => ['nullable', 'string'],
             'house_number' => ['nullable', 'string'],
             'postal_code' => ['nullable', 'string'],
-            'template_key' => [$isSuper ? 'required' : 'nullable', 'exists:menu_templates,key'],
-            'plan_key' => [$isSuper ? 'required' : 'nullable', 'exists:menu_plans,key'],
+
+            'template_key' => [
+                $isSuper ? 'required' : 'nullable',
+                'exists:menu_templates,key'
+            ],
+
+            'plan_key' => [
+                $isSuper ? 'required' : 'nullable',
+                'exists:menu_plans,key'
+            ],
         ]);
 
-        // normalize
         $restaurant->name = $this->capFirst($this->cleanText($data['restaurant_name']));
         $restaurant->contact_name = $this->cleanText($data['contact_name'] ?? null);
         $restaurant->phone = $this->cleanPhone($data['phone'] ?? null);
@@ -570,26 +465,51 @@ class RestaurantController extends Controller
         return back()->with('status', 'Saved.');
     }
 
-    public function permissions(Request $request, Restaurant $restaurant)
+    public function update(Request $request, Restaurant $restaurant): RedirectResponse
     {
-        $authUser = $request->user();
+        $user = $request->user();
 
-        $restaurantUser = User::query()
-            ->where('restaurant_id', $restaurant->id)
-            ->first();
+        Permissions::abortUnless($user, 'restaurants.edit');
 
-        $allPermissions = config('permissions');
-        $userPermissions = $restaurantUser->meta['permissions'] ?? [];
-      //  dd(__('permissions.categories.create'));
-        return view('admin.restaurants.permissions', [
-            'restaurant' => $restaurant,
-            'authUser' => $authUser,
-            'restaurantUser' => $restaurantUser,
-            'allPermissions' => $allPermissions,
-            'userPermissions' => $userPermissions,
-            'isSuper' => $authUser->is_super_admin,
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        $isSuper = (bool) ($user?->is_super_admin ?? false);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:20', 'regex:/^[^\d<>]+$/u'],
+
+            'template_key' => [
+                $isSuper ? 'required' : 'nullable',
+                'exists:menu_templates,key'
+            ],
+
+            'plan_key' => [
+                $isSuper ? 'required' : 'nullable',
+                'exists:menu_plans,key'
+            ],
+
+            'phone' => ['nullable', 'string', 'regex:/^\+\d{1,15}$/'],
+            'city' => ['nullable', 'string', 'max:50', 'regex:/^[^<>]*$/u'],
+            'street' => ['nullable', 'string', 'max:50', 'regex:/^[^<>]*$/u'],
+            'house_number' => ['nullable', 'string', 'regex:/^\d{1,3}[A-Za-z]?$/'],
+            'postal_code' => ['nullable', 'string', 'regex:/^\d{5}$/'],
         ]);
-    }
 
+        // Tenant users не могут менять plan/template
+        if (!$isSuper) {
+            unset($data['template_key'], $data['plan_key']);
+        }
+
+        $data['name'] = $this->capFirst($this->cleanText($data['name']));
+        $data['city'] = $this->capFirst($this->cleanText($data['city'] ?? null));
+        $data['street'] = $this->capFirst($this->cleanText($data['street'] ?? null));
+        $data['house_number'] = $this->cleanText($data['house_number'] ?? null);
+        $data['postal_code'] = $this->cleanText($data['postal_code'] ?? null);
+        $data['phone'] = $this->cleanPhone($data['phone'] ?? null);
+
+        $restaurant->update($data);
+
+        return back()->with('status', 'Saved.');
+    }
 
 }

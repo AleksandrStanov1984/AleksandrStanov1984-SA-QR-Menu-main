@@ -3,17 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+
 use App\Models\Restaurant;
 use App\Models\RestaurantHour;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 use App\Support\Permissions;
 
 class RestaurantHoursController extends Controller
 {
+    /**
+     * @throws \Throwable
+     */
     public function update(Request $request, Restaurant $restaurant)
     {
-        Permissions::abortUnless(auth()->user(), 'restaurants.edit');
+        if ($resp = Permissions::denyRedirect(auth()->user(), 'restaurants.edit')) {
+            return $resp;
+        }
 
         $request->validate([
             'hours' => ['required', 'array'],

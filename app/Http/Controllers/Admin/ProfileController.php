@@ -18,20 +18,17 @@ class ProfileController extends Controller
         /** @var Restaurant|null $restaurant */
         $restaurant = $request->attributes->get('admin_restaurant');
 
-        $grouped = \App\Support\Permissions::groupedRegistry();
+        $grouped = Permissions::groupedRegistry();
 
         ksort($grouped);
-        foreach ($grouped as $g => $items) {
-            sort($items);
-            $grouped[$g] = $items;
-        }
 
-        $flat = [];
-        foreach ($grouped as $items) {
-            foreach ($items as $label) {
-                $flat[] = $label;
-            }
+        foreach ($grouped as &$items) {
+            sort($items);
         }
+        unset($items);
+
+        // 🔥 flatten быстрее через array_merge
+        $flat = array_merge(...array_values($grouped));
 
         return view('admin.profile', [
             'user' => $user,
@@ -49,8 +46,9 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $user->name = $data['name'];
-        $user->save();
+        $user->update([
+            'name' => $data['name'],
+        ]);
 
         return back()->with('status', __('admin.profile.saved'));
     }
@@ -59,7 +57,9 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        Permissions::abortUnless($user, 'restaurant.profile.edit');
+        if ($resp = Permissions::denyRedirect(auth()->user(), 'restaurant.profile.edit')) {
+            return $resp;
+        }
 
         $isSuper = (bool) ($user?->is_super_admin ?? false);
 
@@ -74,32 +74,34 @@ class ProfileController extends Controller
             'street' => ['nullable', 'string', 'max:255'],
             'house_number' => ['nullable', 'string', 'max:50'],
 
-
             'template_key' => [$isSuper ? 'required' : 'nullable', 'exists:menu_templates,key'],
             'plan_key' => [$isSuper ? 'required' : 'nullable', 'exists:menu_plans,key'],
         ]);
 
-        $restaurant->name = $data['restaurant_name'];
-        $restaurant->contact_name = $data['contact_name'] ?? null;
-        $restaurant->contact_email = $data['contact_email'] ?? null;
-        $restaurant->phone = $data['phone'] ?? null;
-
-        $restaurant->city = $data['city'] ?? null;
-        $restaurant->postal_code = $data['postal_code'] ?? null;
-        $restaurant->street = $data['street'] ?? null;
-        $restaurant->house_number = $data['house_number'] ?? null;
+        $updateData = [
+            'name' => $data['restaurant_name'],
+            'contact_name' => $data['contact_name'] ?? null,
+            'contact_email' => $data['contact_email'] ?? null,
+            'phone' => $data['phone'] ?? null,
+            'city' => $data['city'] ?? null,
+            'postal_code' => $data['postal_code'] ?? null,
+            'street' => $data['street'] ?? null,
+            'house_number' => $data['house_number'] ?? null,
+        ];
 
         if ($isSuper) {
-            if (isset($data['template_key'])) {
-                $restaurant->template_key = $data['template_key'];
-            }
-
-            if (isset($data['plan_key'])) {
-                $restaurant->plan_key = $data['plan_key'];
-            }
+            $updateData['template_key'] = $data['template_key'];
+            $updateData['plan_key'] = $data['plan_key'];
         }
 
-        $restaurant->save();
+        if ($isSuper && isset($data['plan_key'])) {
+            // тут позже можно:
+            // - лог
+            // - событие
+            // - пересчёт social links
+        }
+
+        $restaurant->update($updateData);
 
         return back()->with('status', __('admin.profile.restaurant.saved'));
     }

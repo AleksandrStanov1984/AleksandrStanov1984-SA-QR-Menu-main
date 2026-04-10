@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Support\Permissions;
 use App\Services\QrService;
 use App\Services\ImageService;
+use Illuminate\Support\Facades\URL;
 
 class RestaurantQrController extends Controller
 {
@@ -17,15 +18,20 @@ class RestaurantQrController extends Controller
     {
         $restaurant->load('qr');
 
+        $menuUrl = route('restaurant.show', $restaurant->slug);
+
         return view('admin.restaurants.qr', [
             'restaurant' => $restaurant,
             'qr' => $restaurant->qr,
+            'menuUrl' => $menuUrl,
         ]);
     }
 
     public function generate(Request $request, Restaurant $restaurant)
     {
-        Permissions::abortUnless(auth()->user(), 'restaurants.edit');
+        if ($resp = Permissions::denyRedirect(auth()->user(), 'restaurants.edit')) {
+            return $resp;
+        }
 
         $path = app(QrService::class)->generate(
             $restaurant,
@@ -41,7 +47,9 @@ class RestaurantQrController extends Controller
 
     public function download(Restaurant $restaurant, string $format)
     {
-        Permissions::abortUnless(auth()->user(), 'restaurants.edit');
+        if ($resp = Permissions::denyRedirect(auth()->user(), 'restaurants.edit')) {
+            return $resp;
+        }
 
         if (!in_array($format, ['svg', 'pdf'], true)) {
             abort(404);
@@ -91,23 +99,31 @@ class RestaurantQrController extends Controller
                 . ' --export-background-opacity=1'
                 . ' --export-filename="' . $pngPath . '"';
 
-            exec($command);
+            try {
 
-            if (!file_exists($pngPath)) {
-                abort(500, 'SVG → PNG failed (Inkscape)');
-            }
+                exec($command);
 
-            $pngBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pngPath));
+                if (!file_exists($pngPath)) {
+                    abort(500, 'SVG → PNG failed (Inkscape)');
+                }
 
-            $html = '
+                $pngBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pngPath));
+
+                $html = '
     <div style="text-align:center;">
         <img src="'.$pngBase64.'" style="width:100%; max-width:800px;">
     </div>
     ';
 
-            $pdf = Pdf::loadHTML($html);
+                $pdf = Pdf::loadHTML($html);
 
-            return $pdf->download($filename . '.pdf');
+                return $pdf->download($filename . '.pdf');
+
+            } finally {
+                if (file_exists($pngPath)) {
+                    @unlink($pngPath);
+                }
+            }
         }
 
         abort(404);

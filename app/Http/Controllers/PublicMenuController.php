@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Restaurant;
+use App\Models\RestaurantToken;
+
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+
 use App\Support\PublicMenu\TemplateResolver;
 use App\ViewModels\PublicMenu\MenuViewModel;
 
@@ -14,13 +18,50 @@ class PublicMenuController extends Controller
         abort_unless($restaurant->is_active, 404);
 
         $restaurant->load([
-            'sections.items.translations',
+
+            // =========================
+            // SECTIONS
+            // =========================
+            'sections' => function ($q) {
+                $q->where('is_active', true)
+                    ->orderBy('sort_order');
+            },
+
             'sections.translations',
-            'socialLinks',
-            'hours'
+
+            'sections.items' => function ($q) {
+                $q->where('is_active', true)
+                    ->orderBy('sort_order');
+            },
+
+            'sections.items.translations',
+
+            // =========================
+            // SOCIAL
+            // =========================
+            'socialLinks' => function ($q) {
+                $q->where('is_active', true)
+                    ->orderBy('sort_order');
+            },
+
+            // =========================
+            // HOURS
+            // =========================
+            'hours',
+
+            // =========================
+            // BANNERS
+            // =========================
+            'banners' => function ($q) {
+                $q->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->limit(5);
+            },
         ]);
 
         $locale = $this->resolveLocale($request, $restaurant);
+
+        app()->setLocale($locale);
 
         $vm = new MenuViewModel($restaurant, $locale);
 
@@ -33,14 +74,27 @@ class PublicMenuController extends Controller
     {
         $requested = $request->query('lang');
 
-        $supported = method_exists($restaurant, 'languages')
-            ? ($restaurant->languages?->pluck('code')->toArray() ?? ['de'])
-            : ['de'];
+        $default = $restaurant->default_locale ?? 'de';
 
-        if ($requested && in_array($requested, $supported)) {
-            return $requested;
+        if (!$requested) {
+            return $default;
         }
 
-        return $restaurant->default_locale ?? 'de';
+        return in_array($requested, ['de', 'en', 'ru'], true)
+            ? $requested
+            : $default;
+    }
+
+    public function qr(string $token): RedirectResponse
+    {
+        $record = RestaurantToken::where('token', $token)->firstOrFail();
+
+        $restaurant = $record->restaurant;
+
+        abort_unless($restaurant && $restaurant->is_active, 404);
+
+        return redirect()->to(
+            route('restaurant.show', $restaurant->slug, false)
+        );
     }
 }

@@ -3,28 +3,34 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+
 use App\Models\Restaurant;
+
+use App\Support\Guards\AccessGuardTrait;
 use Illuminate\Http\Request;
+
 use App\Support\Permissions;
+
 use App\Services\ImagePipelineService;
+
+use App\Exceptions\TenantAccessException;
 
 class RestaurantBrandController extends Controller
 {
-    private function assertRestaurantScope(Request $request, Restaurant $restaurant): void
-    {
-        $user = $request->user();
+    use AccessGuardTrait;
 
-        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
-            abort(403);
-        }
-    }
-
+    /**
+     * @throws TenantAccessException
+     */
     public function update(Request $request, Restaurant $restaurant)
     {
-        $this->assertRestaurantScope($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant);
 
         $user = $request->user();
-        Permissions::abortUnless($user, 'branding.logo.upload');
+
+        if ($resp = Permissions::denyRedirect(auth()->user(), 'branding.logo.upload')) {
+            return $resp;
+        }
 
         $request->validate([
             'logo' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:3000'],
@@ -32,27 +38,19 @@ class RestaurantBrandController extends Controller
 
         try {
             $pipeline = app(ImagePipelineService::class);
+            $file = $request->file('logo');
 
             $segment = 'branding/logo';
 
             $path = $restaurant->logo_path
-                ? $pipeline->replace(
-                    $request->file('logo'),
-                    $restaurant->id,
-                    $restaurant->logo_path,
-                    $segment
-                )
-                : $pipeline->uploadAndProcess(
-                    $request->file('logo'),
-                    $restaurant->id,
-                    $segment
-                );
+                ? $pipeline->replace($file, $restaurant->id, $restaurant->logo_path, $segment)
+                : $pipeline->uploadAndProcess($file, $restaurant->id, $segment);
 
             $restaurant->update([
                 'logo_path' => $path,
             ]);
 
-            return back()->with('success', __('admin.restaurants.brand.logo_saved'));
+            return back()->with('status', __('admin.restaurants.brand.logo_saved'));
 
         } catch (\Throwable $e) {
 
@@ -61,13 +59,16 @@ class RestaurantBrandController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Logo upload failed');
+            return back()->with('error', __('admin.restaurants.brand.logo_upload_failed'));
         }
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function updateBackgrounds(Request $request, Restaurant $restaurant)
     {
-        $this->assertRestaurantScope($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant);
 
         $user = $request->user();
 
@@ -82,7 +83,7 @@ class RestaurantBrandController extends Controller
             'bg_dark'    => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
         ]);
 
-        $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
+        $meta = (array) $restaurant->meta;
         $meta['theme_mode'] = $meta['theme_mode'] ?? 'light';
 
         if ($canMode && $request->filled('theme_mode')) {
@@ -94,40 +95,26 @@ class RestaurantBrandController extends Controller
 
             $segment = 'branding/backgrounds';
 
-            if ($canBg && $request->hasFile('bg_light') && $request->file('bg_light')->isValid()) {
+            $bgLight = $request->file('bg_light');
+            $bgDark  = $request->file('bg_dark');
+
+            if ($canBg && $bgLight && $bgLight->isValid()) {
                 $meta['bg_light'] = !empty($meta['bg_light'])
-                    ? $pipeline->replace(
-                        $request->file('bg_light'),
-                        $restaurant->id,
-                        $meta['bg_light'],
-                        $segment
-                    )
-                    : $pipeline->uploadAndProcess(
-                        $request->file('bg_light'),
-                        $restaurant->id,
-                        $segment
-                    );
+                    ? $pipeline->replace($bgLight, $restaurant->id, $meta['bg_light'], $segment)
+                    : $pipeline->uploadAndProcess($bgLight, $restaurant->id, $segment);
             }
 
-            if ($canBg && $request->hasFile('bg_dark') && $request->file('bg_dark')->isValid()) {
+            if ($canBg && $bgDark && $bgDark->isValid()) {
                 $meta['bg_dark'] = !empty($meta['bg_dark'])
-                    ? $pipeline->replace(
-                        $request->file('bg_dark'),
-                        $restaurant->id,
-                        $meta['bg_dark'],
-                        $segment
-                    )
-                    : $pipeline->uploadAndProcess(
-                        $request->file('bg_dark'),
-                        $restaurant->id,
-                        $segment
-                    );
+                    ? $pipeline->replace($bgDark, $restaurant->id, $meta['bg_dark'], $segment)
+                    : $pipeline->uploadAndProcess($bgDark, $restaurant->id, $segment);
             }
 
-            $restaurant->meta = $meta;
-            $restaurant->save();
+            $restaurant->update([
+                'meta' => $meta,
+            ]);
 
-            return back()->with('status', 'Фон и тема обновлены');
+            return back()->with('status', __('admin.restaurants.brand.background_updated'));
 
         } catch (\Throwable $e) {
 
@@ -136,7 +123,7 @@ class RestaurantBrandController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Background upload failed');
+            return back()->with('error', __('admin.restaurants.brand.background_upload_failed'));
         }
     }
 

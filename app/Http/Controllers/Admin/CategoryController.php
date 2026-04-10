@@ -7,7 +7,7 @@ use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
 use App\Http\Requests\Admin\StoreCategoryRequest;
-use Illuminate\Support\Arr;
+use App\Support\Permissions;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -16,32 +16,36 @@ class CategoryController extends Controller
     {
         $user = $request->user();
 
-        // безопасность: user может работать только со своим рестораном
+        // безопасность: user может работать только со своим
         if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
             abort(403);
         }
 
-        // permissions (пока can=true, но проверка обязательна)
-        Permissions::abortUnless($user, 'categories.create');
+        if ($resp = Permissions::denyRedirect(auth()->user(), 'categories.create')) {
+            return $resp;
+        }
 
         if (!$user->is_super_admin && !$user->hasPerm('sections_manage')) {
             abort(403);
         }
 
-        // какие языки активны у ресторана
+        // языки
         $locales = $restaurant->enabled_locales ?: ['de'];
         $defaultLocale = $restaurant->default_locale ?: 'de';
+
         if (!in_array($defaultLocale, $locales, true)) {
             $defaultLocale = $locales[0] ?? 'de';
         }
 
         $data = $request->validated();
+        $titles = $data['title'] ?? [];
 
-        // sort_order следующий
-        $nextSort = (int) Section::where('restaurant_id', $restaurant->id)
+        $lastSort = Section::where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
-            ->max('sort_order');
-        $nextSort = $nextSort ? $nextSort + 1 : 1;
+            ->orderByDesc('sort_order')
+            ->value('sort_order');
+
+        $nextSort = $lastSort ? $lastSort + 1 : 1;
 
         $section = Section::create([
             'restaurant_id' => $restaurant->id,
@@ -51,23 +55,26 @@ class CategoryController extends Controller
             'is_active'     => (bool)($data['is_active'] ?? true),
             'title_font'    => $data['title_font'] ?? null,
             'title_color'   => $data['title_color'] ?? null,
-            // key можно генерить позже отдельной логикой, если нужно
         ]);
 
-        foreach ($locales as $loc) {
-            $title = trim((string) Arr::get($data, "title.$loc", ''));
+        // bulk insert переводов
+        $translations = [];
 
-            // fallback: если где-то пусто — берём дефолтный
+        foreach ($locales as $loc) {
+            $title = trim((string) ($titles[$loc] ?? ''));
+
             if ($title === '') {
-                $title = trim((string) Arr::get($data, "title.$defaultLocale", ''));
+                $title = trim((string) ($titles[$defaultLocale] ?? ''));
             }
 
-            SectionTranslation::create([
+            $translations[] = [
                 'section_id' => $section->id,
                 'locale'     => $loc,
                 'title'      => $title,
-            ]);
+            ];
         }
+
+        SectionTranslation::insert($translations);
 
         return back()->with('success', __('admin.sections.categories.created'));
     }

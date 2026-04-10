@@ -2,19 +2,39 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
+
 use App\Http\Controllers\Controller;
+
 use App\Models\Restaurant;
 use App\Models\RestaurantSocialLink;
+
 use App\Services\ImageService;
-use App\Support\Permissions;
+
+use App\Support\Guards\AccessGuardTrait;
+
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class SocialLinkController extends Controller
 {
+    use AccessGuardTrait;
+
     public function index(Restaurant $restaurant)
     {
         $linksArr = $restaurant->socialLinks()
+        ->select([
+            'id',
+            'title',
+            'url',
+            'icon_path',
+            'sort_order',
+            'is_active',
+            'deleted_at',
+        ])
             ->orderBy('sort_order')
             ->get();
 
@@ -24,19 +44,14 @@ class SocialLinkController extends Controller
         ]);
     }
 
-    private function assertRestaurantScope(Request $request, Restaurant $restaurant): void
-    {
-        $user = $request->user();
-        if (!$user) abort(403);
-
-        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
-            abort(403);
-        }
-    }
-
+    /**
+     * @throws TenantAccessException
+     */
     private function assertLinkBelongs(Restaurant $restaurant, RestaurantSocialLink $link): void
     {
-        abort_unless((int)$link->restaurant_id === (int)$restaurant->id, 404);
+        if ((int)$link->restaurant_id !== (int)$restaurant->id) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
     }
 
     private function sanitizeTitle(string $title): string
@@ -46,27 +61,33 @@ class SocialLinkController extends Controller
         return trim($title);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     private function validateSafeUrl(string $url): string
     {
         $url = trim($url);
 
         if (Str::contains($url, ['<', '>', '"', "'", 'javascript:', 'data:', 'vbscript:', 'file:'], true)) {
-            abort(422, 'Invalid URL');
+            throw new TenantAccessException('Invalid URL');
         }
 
         $parts = parse_url($url);
         if (!$parts || empty($parts['scheme']) || empty($parts['host'])) {
-            abort(422, 'Invalid URL');
+            throw new TenantAccessException('Invalid URL');
         }
 
         $scheme = strtolower((string)$parts['scheme']);
         if (!in_array($scheme, ['http', 'https'], true)) {
-            abort(422, 'Invalid URL');
+            throw new TenantAccessException('Invalid URL');
         }
 
         return $url;
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     private function sanitizeSvgUpload(Request $request, string $field): void
     {
         $file = $request->file($field);
@@ -74,45 +95,40 @@ class SocialLinkController extends Controller
 
         $content = @file_get_contents($file->getRealPath());
         if (!is_string($content) || $content === '') {
-            abort(422, 'Invalid SVG');
+            throw new TenantAccessException('Invalid SVG');
         }
 
         $lc = strtolower($content);
 
         if (Str::contains($lc, ['<script', 'onload=', 'onerror=', 'javascript:'], true)) {
-            abort(422, 'Unsafe SVG');
+            throw new TenantAccessException('Unsafe SVG');
         }
     }
 
-    private function canAddCount(Request $request, Restaurant $restaurant, int $currentCount): bool
+    /**
+     *  Получаем лимит по плану
+     */
+    private function getLimit(Restaurant $restaurant): int
     {
-        $user = $request->user();
-
-        if ($currentCount >= 5) return false;
-
-        if ($currentCount < 2) return true;
-
-        if ($currentCount === 2) return Permissions::can($user, 'socials.add.3');
-        if ($currentCount === 3) return Permissions::can($user, 'socials.add.4');
-        if ($currentCount === 4) return Permissions::can($user, 'socials.add.5');
-
-        return false;
+        return (int) $restaurant->feature('social_limit', 1);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function store(Request $request, Restaurant $restaurant)
     {
-        $this->assertRestaurantScope($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant);
 
-        $currentCount = RestaurantSocialLink::query()
-            ->where('restaurant_id', $restaurant->id)
-            ->whereNull('deleted_at')
-            ->count();
-
-        abort_unless($this->canAddCount($request, $restaurant, $currentCount), 403);
-
-        if ($request->hasFile('icon')) {
-            Permissions::abortUnless($request->user(), 'socials.icon.upload');
+        if (!$restaurant->feature('social_links')) {
+            throw new TenantAccessException(__('permissions.no_access'));
         }
+
+        $limit = $this->getLimit($restaurant);
+
+        $activeCount = $restaurant->socialLinks()
+            ->where('is_active', true)
+            ->count();
 
         $data = $request->validate([
             'title' => ['required', 'string', 'max:120'],
@@ -127,7 +143,7 @@ class SocialLinkController extends Controller
             $this->sanitizeSvgUpload($request, 'icon');
         }
 
-        $nextSort = (int) RestaurantSocialLink::where('restaurant_id', $restaurant->id)->max('sort_order');
+        $nextSort = (int) $restaurant->socialLinks()->max('sort_order');
         $nextSort = $nextSort ? $nextSort + 1 : 1;
 
         $iconPath = null;
@@ -140,31 +156,30 @@ class SocialLinkController extends Controller
                 );
         }
 
+        $isActive = $activeCount < $limit;
+
         RestaurantSocialLink::create([
             'restaurant_id' => $restaurant->id,
             'title' => $title,
             'url' => $url,
             'icon_path' => $iconPath,
             'sort_order' => $nextSort,
-            'is_active' => true,
+            'is_active' => $isActive,
         ]);
 
         return back()->with('status', __('admin.socials.saved'));
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function update(Request $request, Restaurant $restaurant, RestaurantSocialLink $link)
     {
-        $this->assertRestaurantScope($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant);
         $this->assertLinkBelongs($restaurant, $link);
 
-        if (!$link->is_active) {
-            abort(403);
-        }
-
-        Permissions::abortUnless($request->user(), 'socials.edit');
-
-        if ($request->hasFile('icon')) {
-            Permissions::abortUnless($request->user(), 'socials.icon.upload');
+        if (!$restaurant->feature('social_links')) {
+            throw new TenantAccessException(__('permissions.no_access'));
         }
 
         $data = $request->validate([
@@ -181,13 +196,11 @@ class SocialLinkController extends Controller
             $this->sanitizeSvgUpload($request, 'icon');
         }
 
-        // remove icon
         if (!empty($data['remove_icon']) && !empty($link->icon_path)) {
-            app(\App\Services\ImageService::class)->delete($link->icon_path);
+            app(ImageService::class)->delete($link->icon_path);
             $link->icon_path = null;
         }
 
-        // upload new icon
         if ($request->hasFile('icon')) {
             if (!empty($link->icon_path)) {
                 app(ImageService::class)->delete($link->icon_path);
@@ -200,46 +213,117 @@ class SocialLinkController extends Controller
                 );
         }
 
-        $link->title = $title;
-        $link->url = $url;
-        $link->save();
+        $link->update([
+            'title' => $title,
+            'url' => $url,
+        ]);
 
         return back()->with('status', __('admin.socials.updated_ok'));
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function destroy(Request $request, Restaurant $restaurant, RestaurantSocialLink $link)
     {
-        $this->assertRestaurantScope($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant);
         $this->assertLinkBelongs($restaurant, $link);
 
-        if (!$link->is_active) {
-            abort(403);
+        if (!$restaurant->feature('social_links')) {
+            throw new TenantAccessException(__('permissions.no_access'));
         }
-
-        Permissions::abortUnless($request->user(), 'socials.delete');
 
         if (!empty($link->icon_path)) {
-            app(\App\Services\ImageService::class)->delete($link->icon_path);
+            app(ImageService::class)->delete($link->icon_path);
         }
 
-        $link->deleted_by_user_id = $request->user()?->id;
-        $link->save();
+        $link->update([
+            'deleted_by_user_id' => $request->user()?->id
+        ]);
 
         $link->delete();
 
         return back()->with('status', __('admin.socials.deleted_ok'));
     }
 
+    /**
+     * @throws TenantAccessException
+     * @throws Throwable
+     */
     public function toggleActive(Request $request, Restaurant $restaurant, RestaurantSocialLink $link)
     {
-        $this->assertRestaurantScope($request, $restaurant);
+        $this->assertRestaurantAccess($request, $restaurant);
         $this->assertLinkBelongs($restaurant, $link);
 
-        Permissions::abortUnless($request->user(), 'socials.toggle.active');
+        if (!$restaurant->feature('social_links')) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
 
-        $link->is_active = !$link->is_active;
-        $link->save();
+        $limit = $this->getLimit($restaurant);
 
-        return back()->with('status', __('admin.common.saved') ?? 'Saved');
+        DB::transaction(function () use ($restaurant, $link, $limit) {
+
+            $activeLinks = $restaurant->socialLinks()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->lockForUpdate()
+                ->get();
+
+            if (!$link->is_active) {
+                if ($activeLinks->count() >= $limit) {
+                    $last = $activeLinks->last();
+
+                    if ($last && $last->id !== $link->id) {
+                        $last->update([
+                            'is_active' => false
+                        ]);
+                    }
+                }
+
+                $link->update([
+                    'is_active' => true
+                ]);
+
+            } else {
+                $link->update([
+                    'is_active' => false
+                ]);
+            }
+        });
+
+        return back()->with('status', __('admin.common.saving'));
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function reorder(Request $request, Restaurant $restaurant)
+    {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        $items = $request->input('items', []);
+
+        foreach ($items as $item) {
+            \App\Models\RestaurantSocialLink::where('id', $item['id'])
+                ->where('restaurant_id', $restaurant->id)
+                ->update([
+                    'sort_order' => (int)$item['sort_order']
+                ]);
+        }
+
+        // пересчёт active по лимиту
+        $limit = (int) $restaurant->feature('social_limit', 1);
+
+        $links = $restaurant->socialLinks()
+            ->orderBy('sort_order')
+            ->get();
+
+        foreach ($links as $index => $link) {
+            $link->update([
+                'is_active' => $index < $limit
+            ]);
+        }
+
+        return response()->json(['ok' => true]);
     }
 }

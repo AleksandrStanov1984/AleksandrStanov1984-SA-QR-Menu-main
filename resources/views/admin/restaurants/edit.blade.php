@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('admin.restaurants.edit.title'))
+@section('title', $restaurant->name)
 @section('subtitle', $restaurant->name)
 
 @section('content')

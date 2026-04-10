@@ -55,21 +55,56 @@
         @if($isBestseller || $isNew || $isDish)
             <div class="menu-item-badges">
                 @if($isBestseller)
-                    <span class="menu-item-badge menu-item-badge--bestseller">
-                        {{ __('menu.bestseller') }}
-                    </span>
+                    <span class="menu-item-badge menu-item-badge--bestseller"
+                          title="{{ __('menu.bestseller') }}">
+
+        <svg class="badge-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <!-- внешняя форма -->
+    <path
+        d="M12 2C9.5 6 6 8 6 12a6 6 0 0 0 12 0c0-3-2-5.5-6-10Z"
+        fill="currentColor"
+    />
+            <!-- внутренняя «жилка» -->
+    <path
+        d="M12 9c-1.5 2-2.5 3-2.5 4.5a2.5 2.5 0 0 0 5 0C14.5 12 13.5 11 12 9Z"
+        fill="#fff"
+        opacity="0.35"
+    />
+</svg>
+
+    </span>
                 @endif
 
                 @if($isNew)
                     <span class="menu-item-badge menu-item-badge--new">
-                        {{ __('menu.badge_new') }}
-                    </span>
+        {{ __('menu.badge_new') }}
+    </span>
                 @endif
 
                 @if($isDish)
-                    <span class="menu-item-badge menu-item-badge--dish">
-                        {{ __('menu.dish_of_day') }}
-                    </span>
+                    <span class="menu-item-badge menu-item-badge--dish"
+                          title="{{ __('menu.dish_of_day') }}">
+
+        <svg class="badge-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path
+        d="M5 14.25C5 14.25 6.1 9.5 12 9.5C17.9 9.5 19 14.25 19 14.25"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    />
+    <path
+        d="M4 14.25H20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+    />
+    <circle cx="12" cy="7.1" r="1.35" fill="currentColor"/>
+</svg>
+
+    </span>
                 @endif
             </div>
         @endif

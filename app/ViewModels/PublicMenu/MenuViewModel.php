@@ -6,6 +6,7 @@ use App\DTO\ItemMetaDTO;
 use App\Models\Restaurant;
 use App\Support\ImagePipeline\ImageService;
 use Carbon\Carbon;
+use App\Support\Hours;
 
 use Illuminate\Support\Facades\File;
 
@@ -127,7 +128,7 @@ class MenuViewModel
         $this->hours = $this->buildHours($restaurant->hours);
         $this->todayHours = $this->getTodayHours();
 
-        $this->status = $this->detectStatus($this->todayHours);
+        $this->status = Hours::status($this->todayHours);
         $this->showHoursModal = $this->hasFeature($features, 'hours_modal');
 
         $this->carouselItems = $this->buildCarousel();
@@ -343,11 +344,12 @@ class MenuViewModel
 
         return collect($hours)->map(function ($row) use ($days, $today) {
             return [
+                'day_of_week' => (int) ($row->day_of_week ?? -1),
                 'label' => $days[$row->day_of_week] ?? '',
                 'open' => $row->open_time ? Carbon::parse($row->open_time)->format('H:i') : null,
                 'close' => $row->close_time ? Carbon::parse($row->close_time)->format('H:i') : null,
                 'closed' => (bool) ($row->is_closed ?? false),
-                'today' => ($row->day_of_week ?? null) === $today,
+                'today' => (int) ($row->day_of_week ?? -1) === $today,
             ];
         })->values()->toArray();
     }
@@ -360,35 +362,6 @@ class MenuViewModel
     private function getTodayHours(): ?array
     {
         return collect($this->hours)->firstWhere('today', true);
-    }
-
-    protected function detectStatus(?array $todayHours): string
-    {
-        if (!$todayHours || !empty($todayHours['closed'])) {
-            return 'closed';
-        }
-
-        $open = $todayHours['open'] ?? null;
-        $close = $todayHours['close'] ?? null;
-
-        if (!$open || !$close) {
-            return 'closed';
-        }
-
-        $now = Carbon::now();
-
-        $openAt = Carbon::parse($open);
-        $closeAt = Carbon::parse($close);
-
-        if ($now->lt($openAt) || $now->gte($closeAt)) {
-            return 'closed';
-        }
-
-        if ($now->diffInMinutes($closeAt, false) <= 60) {
-            return 'closing_soon';
-        }
-
-        return 'open';
     }
 
     private function buildPromoBanners(): array

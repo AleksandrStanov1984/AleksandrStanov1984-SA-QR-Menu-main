@@ -297,12 +297,13 @@
 
                         {{-- Острота --}}
                         @if($canSpicyFeature && $canSpicy)
-                            <div style="margin-top:12px;">
+                            <div style="margin-top:12px;" >
                                 <div style="margin-bottom:6px;">{{ __('admin.menu_builder.spicy') }}</div>
                                 <select data-item-meta="spicy"
                                         data-item-id="{{ $it->id }}"
                                         data-disable-when-inactive
                                         {{ $rowLocked ? 'disabled' : '' }}
+                                        class="ui-select-native"
                                         style="width:120px; color: var(--text); background: rgba(255,255,255,.08); border:1px solid var(--line); border-radius:10px; padding:6px 10px;">
                                     @for($i=0;$i<=5;$i++)
                                         <option value="{{ $i }}" @selected($spicy === $i)>{{ $i }}</option>
@@ -347,9 +348,3 @@
         </div>
     @endforeach
 </div>
-
-<style>
-    /* убрать маркер у summary */
-    details > summary::-webkit-details-marker { display:none; }
-    details > summary::marker { content:""; }
-</style>

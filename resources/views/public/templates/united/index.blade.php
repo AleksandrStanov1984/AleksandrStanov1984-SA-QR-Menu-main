@@ -18,7 +18,9 @@
 
 @include('public.templates.united.blocks.header.header')
 
+<div class="container">
 @include('public.templates.united.blocks.drawer.mobile-drawer')
+</div>
 
 <div class="container">
     @include('public.templates.united.blocks.header.restaurant-info', [
@@ -32,11 +34,11 @@
     </div>
 </main>
 
-<div class="container">
+
     @include('public.templates.united.blocks.footer.footer', [
         'showFeaturedItems' => false,
     ])
-</div>
+
 
 @include('public.templates.united.blocks.modal.item-modal')
 @include('public.templates.united.blocks.modal.hours-modal')

@@ -137,6 +137,49 @@
  details > summary::-webkit-details-marker { display:none; }
  details > summary::marker { content:""; }
 
+  /* ПЕРЕБИВАЕМ inline style */
+  select[data-item-meta="spicy"] {
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+
+      height: 36px !important;
+      padding: 0 34px 0 10px !important;
+
+      border-radius: 10px !important;
+      border: 1px solid var(--line) !important;
+
+      background: var(--card) !important;
+      color: var(--text) !important;
+
+      font-size: 13px !important;
+      font-weight: 500 !important;
+
+      cursor: pointer !important;
+
+      /* стрелка */
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 10px center !important;
+      background-size: 12px !important;
+
+      box-shadow: 0 6px 16px rgba(0,0,0,.25) !important;
+
+      transition: all .15s ease !important;
+  }
+
+  select[data-item-meta="spicy"]:hover {
+      border-color: rgba(255,255,255,0.2) !important;
+  }
+
+  select[data-item-meta="spicy"]:focus {
+      outline: none !important;
+      border-color: #2563eb !important;
+      box-shadow:
+          0 0 0 2px rgba(37,99,235,.25),
+          0 6px 16px rgba(0,0,0,.25) !important;
+  }
+
 
 
 </style>

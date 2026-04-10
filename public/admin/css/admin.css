@@ -72,7 +72,7 @@ a { color: inherit; }
     height:38px;
     border-radius:10px;
     border:1px solid var(--line);
-    background:var(--card);
+    background:var(--text);
     cursor:pointer;
     align-items:center;
     justify-content:center;

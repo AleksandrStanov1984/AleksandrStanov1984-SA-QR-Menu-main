@@ -8,6 +8,7 @@ use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\Item;
 
+use App\Support\Guards\AccessGuardTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,6 +16,7 @@ use App\Support\Permissions;
 
 class SectionController extends Controller
 {
+    use AccessGuardTrait;
 
     public function store(Request $request, Restaurant $restaurant)
     {

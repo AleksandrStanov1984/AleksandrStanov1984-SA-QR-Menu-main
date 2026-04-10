@@ -63,6 +63,37 @@
         justify-content:flex-end;
     }
 
+    /* select внутри блока карусели */
+    #carouselSourceBlock select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+
+        height: 36px;
+        padding: 0 34px 0 10px;
+
+        border-radius: 10px;
+        border: 1px solid var(--line);
+
+        background: var(--card);
+        color: var(--text-primary);
+
+        font-size: 13px;
+        font-weight: 500;
+
+        cursor: pointer;
+
+        /* стрелка */
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px;
+
+        box-shadow: 0 6px 16px rgba(0,0,0,.25);
+
+        transition: all .15s ease;
+    }
+
     /* =========================================
        RESPONSIVE
        ========================================= */

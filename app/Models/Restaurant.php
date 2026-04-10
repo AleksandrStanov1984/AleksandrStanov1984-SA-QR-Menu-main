@@ -55,7 +55,6 @@ class Restaurant extends Model
     public function socialLinks()
     {
         return $this->hasMany(RestaurantSocialLink::class)
-            ->where('is_active', true)
             ->orderBy('sort_order');
     }
 

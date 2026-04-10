@@ -21,6 +21,7 @@ return [
         'hours_modal' => false,
 
         // ===== SOCIAL =====
+        'social_links' => true,
         'social_limit' => 1,
 
         // ===== CAROUSEL =====
@@ -47,6 +48,7 @@ return [
         'hours_modal' => false,
 
         // ===== SOCIAL =====
+        'social_links' => true,
         'social_limit' => 3,
 
         // ===== CAROUSEL =====
@@ -73,6 +75,7 @@ return [
         'hours_modal' => true,
 
         // ===== SOCIAL =====
+        'social_links' => true,
         'social_limit' => 5,
 
         // ===== CAROUSEL =====

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_','-', app()->getLocale()) }}">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <head>
     @include('admin.layout.head')
 

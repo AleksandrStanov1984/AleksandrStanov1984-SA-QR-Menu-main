@@ -29,5 +29,7 @@
   .sl-acc.is-deleted { border-color: rgba(255,0,0,.45); background: rgba(255,0,0,.06); }
   .sl-acc.is-inactive { opacity:.55; }
 
+  .mb-handle{cursor:grab; user-select:none; padding:2px 8px; border:1px solid var(--line); border-radius: 10px;}
+
   /* при inactive — пусть кнопки выглядят disabled визуально (реально мы их не показываем) */
 </style>

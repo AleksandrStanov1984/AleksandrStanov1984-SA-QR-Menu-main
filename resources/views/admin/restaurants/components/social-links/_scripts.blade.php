@@ -189,5 +189,45 @@
       document.querySelectorAll('[data-sl-item]').forEach(d => { d.open = open; });
     });
   }
+
+    // =========================
+    // DRAG & DROP
+    // =========================
+
+    const list = document.querySelector('[data-sl-list]');
+    const REORDER_URL = @json(route('admin.restaurants.social_links.reorder', $restaurant));
+
+    if (list && window.Sortable) {
+
+        new Sortable(list, {
+            animation: 150,
+            ghostClass: 'drag-ghost',
+            handle: '.mb-handle',
+
+            onEnd: function () {
+
+                const items = [...list.querySelectorAll('[data-sl-item]')];
+
+                const order = items.map((el, index) => ({
+                    id: el.dataset.id,
+                    sort_order: index + 1
+                }));
+
+                console.log(order);
+
+                fetch(REORDER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN
+                    },
+                    body: JSON.stringify({ items: order })
+                })
+                    .then(res => res.json())
+                    .then(() => location.reload());
+            }
+        });
+
+    }
 })();
 </script>

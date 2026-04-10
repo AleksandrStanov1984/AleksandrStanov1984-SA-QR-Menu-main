@@ -226,6 +226,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/socials', [SocialLinkController::class, 'index'])
             ->name('restaurants.socials');
 
+        Route::post('restaurants/{restaurant}/social-links/reorder', [SocialLinkController::class, 'reorder']
+        )->name('restaurants.social_links.reorder');
+
 
         // Author
         Route::get('/about', [AboutController::class, 'index'])

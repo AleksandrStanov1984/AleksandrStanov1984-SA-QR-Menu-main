@@ -124,7 +124,7 @@
 
             $imgUrl = app(\App\Services\ImageService::class)->url($getImage($it));
 
-            // id аккордеона (для будущего сохранения можно)
+            // id аккордеона
             $accId = 'mbItemAcc_'.$it->id;
         @endphp
 

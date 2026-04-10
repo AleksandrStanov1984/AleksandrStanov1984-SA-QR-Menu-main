@@ -26,7 +26,7 @@
         {{-- ===================== --}}
         {{-- MENU URL --}}
         {{-- ===================== --}}
-        @if(!empty($menuUrl))
+        @if(!empty($qrPath) && !empty($menuUrl))
             <div style="margin-top:14px; display:flex; justify-content:center;">
 
                 <div style="

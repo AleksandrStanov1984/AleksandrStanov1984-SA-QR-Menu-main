@@ -2,34 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
 use App\Http\Requests\Admin\StoreCategoryRequest;
+use App\Support\Guards\AccessGuardTrait;
 use App\Support\Permissions;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use AccessGuardTrait;
+
+    /**
+     * @throws TenantAccessException
+     */
     public function store(StoreCategoryRequest $request, Restaurant $restaurant)
     {
-        $user = $request->user();
+        $this->assertRestaurantAccess($request, $restaurant);
 
-        // безопасность: user может работать только со своим
-        if (!$user->is_super_admin && (int)$user->restaurant_id !== (int)$restaurant->id) {
-            abort(403);
-        }
-
-        if ($resp = Permissions::denyRedirect(auth()->user(), 'categories.create')) {
+        if ($resp = Permissions::denyRedirect($request->user(), 'categories.create')) {
             return $resp;
         }
 
-        if (!$user->is_super_admin && !$user->hasPerm('sections_manage')) {
-            abort(403);
-        }
-
-        // языки
         $locales = $restaurant->enabled_locales ?: ['de'];
         $defaultLocale = $restaurant->default_locale ?: 'de';
 
@@ -42,8 +38,7 @@ class CategoryController extends Controller
 
         $lastSort = Section::where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
-            ->orderByDesc('sort_order')
-            ->value('sort_order');
+            ->max('sort_order');
 
         $nextSort = $lastSort ? $lastSort + 1 : 1;
 
@@ -57,7 +52,6 @@ class CategoryController extends Controller
             'title_color'   => $data['title_color'] ?? null,
         ]);
 
-        // bulk insert переводов
         $translations = [];
 
         foreach ($locales as $loc) {
@@ -76,6 +70,6 @@ class CategoryController extends Controller
 
         SectionTranslation::insert($translations);
 
-        return back()->with('success', __('admin.sections.categories.created'));
+        return back()->with('status', __('admin.sections.categories.created'));
     }
 }

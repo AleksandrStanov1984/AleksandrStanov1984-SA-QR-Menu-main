@@ -4,7 +4,7 @@
 (function(){
 
     // ----------------------------
-    // 🔥 AJAX DELETE
+    // AJAX DELETE
     // ----------------------------
     document.addEventListener('submit', async function (e) {
 
@@ -15,30 +15,49 @@
 
         try {
             const resp = await fetch(form.action, {
-                method: 'POST',
+                method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json',
-                },
-                body: new FormData(form)
+                }
             });
 
-            if (!resp.ok) throw new Error('Delete failed');
+            if (!resp.ok) {
+                throw new Error(await resp.text());
+            }
 
             const data = await resp.json();
 
-            const row = document.querySelector(`[data-item-id="${data.deleted_id}"]`);
+            // ищем item или section
+            let row =
+                document.querySelector(`[data-item-id="${data.deleted_id}"]`) ||
+                document.querySelector(`[data-section-id="${data.deleted_id}"]`);
+
             if (row) {
-                const wrap = row.closest('[data-item-row]');
+                const wrap =
+                    row.closest('[data-item-row]') ||
+                    row.closest('[data-section-row]') ||
+                    row.closest('.card');
+
                 if (wrap) wrap.remove();
             }
 
+            // закрыть модалку
             const modal = document.getElementById('mbConfirmDelete');
-            if (modal) modal.setAttribute('aria-hidden','true');
+            if (modal) modal.setAttribute('aria-hidden', 'true');
+
+            // успех
+            showFlash(
+                data.message || window.UI_LANG.saved || 'Done',
+                'success'
+            );
 
         } catch (err) {
             console.error(err);
-            showToast(window.UI_LANG.delete_error, 'error');
+            showFlash(
+                window.UI_LANG.delete_error || 'Error',
+                'error'
+            );
         }
 
     });
@@ -119,12 +138,11 @@
 
     if(!modal || !form) return;
 
-    // всегда DELETE через POST + _method
     form.method = 'POST';
     if(url) form.action = url;
     ensureMethod(form, 'DELETE');
 
-    if(txtEl) txtEl.textContent = text || 'Вы уверены, что хотите удалить?';
+    if(txtEl) txtEl.textContent = text;
 
     if(hEl){
       hEl.textContent = hint || '';
@@ -135,7 +153,7 @@
   };
 
   // ----------------------------
-  // Word-like preview (Item modal only)
+  // Word-like preview
   // ----------------------------
   const fontMap = {
     inter: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif',
@@ -220,7 +238,7 @@
     row.classList.toggle('mb-inactive', !!inactive);
     row.setAttribute('data-item-active', inactive ? '0' : '1');
 
-    // disable all except keep-enabled (если оно вообще используется)
+    // disable all except keep-enabled
     row.querySelectorAll('[data-disable-when-inactive]').forEach(el => {
       if(el.hasAttribute('data-keep-enabled')) return;
       el.disabled = !!inactive;
@@ -281,7 +299,6 @@
     try{
       await patchItemMeta(base, itemId, payload);
 
-      // dish_of_day=true -> снять у остальных в пределах этого же списка (+ pill)
       if(key === 'dish_of_day' && payload.dish_of_day){
         const list = el.closest('[data-sortable-items]') || document;
         list.querySelectorAll(`[data-item-meta="dish_of_day"][data-item-id]`).forEach(cb => {
@@ -321,18 +338,20 @@
         el.checked = !el.checked;
       }
 
-        showToast(window.UI_LANG.save_error, 'error');
+        showFlash(
+            window.UI_LANG.delete_error || 'Error',
+            'error'
+        );
     }
   });
 
-  // init disable for inactive rows
   document.querySelectorAll('[data-item-row]').forEach(row => {
     const active = row.getAttribute('data-item-active');
     if(active === '0') setRowInactiveUI(row, true);
   });
 
   // ----------------------------
-  // Sortable (items only) — respects data-sortable="0"
+  // Sortable
   // ----------------------------
   document.querySelectorAll('[data-sortable-items]').forEach((el) => {
     // если родитель выключен — не даём таскать
@@ -586,13 +605,6 @@
 
     openModal('mbTextModal');
   });
-
-
-
-
-
-
-
 
 
 })();

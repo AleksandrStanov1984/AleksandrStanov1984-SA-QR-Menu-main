@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
@@ -10,12 +11,19 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Support\Permissions;
 use App\Services\QrService;
 use App\Services\ImageService;
-use Illuminate\Support\Facades\URL;
+use App\Support\Guards\AccessGuardTrait;
 
 class RestaurantQrController extends Controller
 {
-    public function index(Restaurant $restaurant)
+    use AccessGuardTrait;
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function index(Request $request, Restaurant $restaurant)
     {
+        $this->assertRestaurantAccess($request, $restaurant);
+
         $restaurant->load('qr');
 
         $menuUrl = route('restaurant.show', $restaurant->slug);
@@ -27,9 +35,14 @@ class RestaurantQrController extends Controller
         ]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function generate(Request $request, Restaurant $restaurant)
     {
-        if ($resp = Permissions::denyRedirect(auth()->user(), 'restaurants.edit')) {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        if ($resp = Permissions::denyRedirect($request->user(), 'restaurants.edit')) {
             return $resp;
         }
 
@@ -40,31 +53,36 @@ class RestaurantQrController extends Controller
         );
 
         return response()->json([
-            'success' => true,
+            'status' => true,
             'image' => app(ImageService::class)->qr($path),
         ]);
     }
 
-    public function download(Restaurant $restaurant, string $format)
+    /**
+     * @throws TenantAccessException
+     */
+    public function download(Request $request, Restaurant $restaurant, string $format)
     {
-        if ($resp = Permissions::denyRedirect(auth()->user(), 'restaurants.edit')) {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        if ($resp = Permissions::denyRedirect($request->user(), 'restaurants.edit')) {
             return $resp;
         }
 
         if (!in_array($format, ['svg', 'pdf'], true)) {
-            abort(404);
+            throw new TenantAccessException(__('admin.errors.invalid_format'));
         }
 
         $qr = $restaurant->qr;
 
         if (!$qr || !$qr->qr_path) {
-            abort(404);
+            throw new TenantAccessException(__('admin.errors.qr_not_found'));
         }
 
         $svgPath = public_path('assets/' . ltrim($qr->qr_path, '/'));
 
         if (!File::exists($svgPath)) {
-            abort(404);
+            throw new TenantAccessException(__('admin.errors.file_not_found'));
         }
 
         $filename = 'qr-' . $restaurant->slug;
@@ -79,53 +97,47 @@ class RestaurantQrController extends Controller
         // =========================
         // PDF
         // =========================
-        if ($format === 'pdf') {
+        $tmpDir = storage_path('app/tmp');
 
-            $tmpDir = storage_path('app/tmp');
-
-            if (!file_exists($tmpDir)) {
-                mkdir($tmpDir, 0777, true);
-            }
-
-            $pngPath = $tmpDir . '/qr_' . uniqid() . '.png';
-
-            // WINDOWS PATH (ВАЖНО!)
-            $inkscape = '"C:\\Program Files\\Inkscape\\bin\\inkscape.exe"';
-
-            $command = $inkscape
-                . ' "' . $svgPath . '"'
-                . ' --export-type=png'
-                . ' --export-area-page'
-                . ' --export-background-opacity=1'
-                . ' --export-filename="' . $pngPath . '"';
-
-            try {
-
-                exec($command);
-
-                if (!file_exists($pngPath)) {
-                    abort(500, 'SVG → PNG failed (Inkscape)');
-                }
-
-                $pngBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pngPath));
-
-                $html = '
-    <div style="text-align:center;">
-        <img src="'.$pngBase64.'" style="width:100%; max-width:800px;">
-    </div>
-    ';
-
-                $pdf = Pdf::loadHTML($html);
-
-                return $pdf->download($filename . '.pdf');
-
-            } finally {
-                if (file_exists($pngPath)) {
-                    @unlink($pngPath);
-                }
-            }
+        if (!file_exists($tmpDir)) {
+            mkdir($tmpDir, 0777, true);
         }
 
-        abort(404);
+        $pngPath = $tmpDir . '/qr_' . uniqid() . '.png';
+
+        $inkscape = '"C:\\Program Files\\Inkscape\\bin\\inkscape.exe"';
+
+        $command = $inkscape
+            . ' "' . $svgPath . '"'
+            . ' --export-type=png'
+            . ' --export-area-page'
+            . ' --export-background-opacity=1'
+            . ' --export-filename="' . $pngPath . '"';
+
+        try {
+
+            exec($command);
+
+            if (!file_exists($pngPath)) {
+                throw new TenantAccessException(__('admin.errors.qr_convert_failed'));
+            }
+
+            $pngBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($pngPath));
+
+            $html = '
+                <div style="text-align:center;">
+                    <img src="'.$pngBase64.'" style="width:100%; max-width:800px;">
+                </div>
+            ';
+
+            $pdf = Pdf::loadHTML($html);
+
+            return $pdf->download($filename . '.pdf');
+
+        } finally {
+            if (file_exists($pngPath)) {
+                @unlink($pngPath);
+            }
+        }
     }
 }

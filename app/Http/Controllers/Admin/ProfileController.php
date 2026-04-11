@@ -27,7 +27,6 @@ class ProfileController extends Controller
         }
         unset($items);
 
-        // 🔥 flatten быстрее через array_merge
         $flat = array_merge(...array_values($grouped));
 
         return view('admin.profile', [

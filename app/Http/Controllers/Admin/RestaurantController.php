@@ -406,65 +406,9 @@ class RestaurantController extends Controller
         );
     }
 
-    public function updateRestaurant(Request $request): RedirectResponse
-    {
-        $user = $request->user();
-
-        Permissions::abortUnless($user, 'restaurant.profile.edit');
-
-        $restaurant = $user->is_super_admin
-            ? \App\Support\AdminContext::actingRestaurant()
-            : $user->restaurant;
-
-        abort_unless($restaurant, 403);
-
-        $isSuper = (bool) ($user?->is_super_admin ?? false);
-
-        $data = $request->validate([
-            'restaurant_name' => ['required', 'string', 'max:255'],
-            'contact_name' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string'],
-            'contact_email' => ['nullable', 'email'],
-            'city' => ['nullable', 'string'],
-            'street' => ['nullable', 'string'],
-            'house_number' => ['nullable', 'string'],
-            'postal_code' => ['nullable', 'string'],
-
-            'template_key' => [
-                $isSuper ? 'required' : 'nullable',
-                'exists:menu_templates,key'
-            ],
-
-            'plan_key' => [
-                $isSuper ? 'required' : 'nullable',
-                'exists:menu_plans,key'
-            ],
-        ]);
-
-        $restaurant->name = $this->capFirst($this->cleanText($data['restaurant_name']));
-        $restaurant->contact_name = $this->cleanText($data['contact_name'] ?? null);
-        $restaurant->phone = $this->cleanPhone($data['phone'] ?? null);
-        $restaurant->contact_email = $this->cleanText($data['contact_email'] ?? null);
-        $restaurant->city = $this->capFirst($this->cleanText($data['city'] ?? null));
-        $restaurant->street = $this->capFirst($this->cleanText($data['street'] ?? null));
-        $restaurant->house_number = $this->cleanText($data['house_number'] ?? null);
-        $restaurant->postal_code = $this->cleanText($data['postal_code'] ?? null);
-
-        if ($isSuper) {
-            if (isset($data['template_key'])) {
-                $restaurant->template_key = $data['template_key'];
-            }
-
-            if (isset($data['plan_key'])) {
-                $restaurant->plan_key = $data['plan_key'];
-            }
-        }
-
-        $restaurant->save();
-
-        return back()->with('status', 'Saved.');
-    }
-
+    /**
+     * @throws TenantAccessException
+     */
     public function update(Request $request, Restaurant $restaurant): RedirectResponse
     {
         $user = $request->user();

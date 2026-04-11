@@ -75,7 +75,9 @@ class RestaurantBrandController extends Controller
         $canBg   = Permissions::can($user, 'branding.backgrounds.upload');
         $canMode = Permissions::can($user, 'branding.theme_mode.edit');
 
-        abort_unless($canBg || $canMode, 403);
+        if (!$canBg && !$canMode) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
 
         $request->validate([
             'theme_mode' => ['nullable', 'in:auto,light,dark'],
@@ -92,7 +94,6 @@ class RestaurantBrandController extends Controller
 
         try {
             $pipeline = app(ImagePipelineService::class);
-
             $segment = 'branding/backgrounds';
 
             $bgLight = $request->file('bg_light');

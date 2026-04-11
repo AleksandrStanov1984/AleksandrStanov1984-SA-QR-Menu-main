@@ -92,7 +92,7 @@
     // ===== FLASH AUTO HIDE =====
 
     document.addEventListener('DOMContentLoaded', function () {
-        const flashes = document.querySelectorAll('.flash-success');
+        const flashes = document.querySelectorAll('.flash');
 
         flashes.forEach(el => {
             setTimeout(() => {
@@ -103,4 +103,27 @@
             }, 5000);
         });
     });
+
+    // ===== FLASH (AJAX SUPPORT) =====
+    window.showFlash = function(message, type = 'success') {
+
+        const container = document.querySelector('.main-content');
+        if (!container) return;
+
+        const div = document.createElement('div');
+
+        div.className = 'flash flash-' + type;
+        div.textContent = message;
+
+        // вставляем как Laravel делает (сверху)
+        container.prepend(div);
+
+        // авто скрытие (единый стиль)
+        setTimeout(() => {
+            div.style.transition = 'opacity 0.3s ease';
+            div.style.opacity = '0';
+
+            setTimeout(() => div.remove(), 300);
+        }, 5000);
+    };
 </script>

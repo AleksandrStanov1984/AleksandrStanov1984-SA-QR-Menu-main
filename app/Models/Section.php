@@ -25,12 +25,12 @@ class Section extends Model
        'is_active' => 'boolean'
     ];
 
-    public function restaurant()
+    public function restaurant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
        return $this->belongsTo(Restaurant::class);
     }
 
-    public function parent()
+    public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Section::class, 'parent_id');
     }
@@ -48,5 +48,15 @@ class Section extends Model
     public function translations()
     {
        return $this->hasMany(SectionTranslation::class);
+    }
+
+    public function isCategory(): bool
+    {
+        return is_null($this->parent_id);
+    }
+
+    public function isSubcategory(): bool
+    {
+        return !is_null($this->parent_id);
     }
 }

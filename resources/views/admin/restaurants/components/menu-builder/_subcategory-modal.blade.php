@@ -19,7 +19,7 @@
         @endforeach
       </div>
 
-      <div class="grid" style="margin-top:12px;">
+     {{-- <div class="grid" style="margin-top:12px;">
         <div class="col6">
           <label>{{ __('admin.sections.categories.font') }}</label>
           <select name="title_font">
@@ -34,7 +34,7 @@
           <label>{{ __('admin.sections.categories.color') }}</label>
           <input name="title_color" placeholder="#FFFFFF">
         </div>
-      </div>
+      </div> --}}
 
       <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:10px;">
         <button class="btn ok" type="submit">{{ __('admin.actions.create') ?? 'Create' }}</button>

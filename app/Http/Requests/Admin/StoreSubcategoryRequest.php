@@ -8,16 +8,27 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSubcategoryRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     protected function prepareForValidation(): void
     {
-        $t = $this->input('title');
-        if (is_string($t)) {
-            $t = trim($t);
-            $t = strip_tags($t);
-            $t = preg_replace('/\s+/u', ' ', $t);
-            $this->merge(['title' => $t]);
+        $titles = $this->input('title');
+
+        if (is_array($titles)) {
+            $clean = [];
+
+            foreach ($titles as $loc => $t) {
+                $t = trim((string) $t);
+                $t = strip_tags($t);
+                $t = preg_replace('/\s+/u', ' ', $t);
+
+                $clean[$loc] = $t;
+            }
+
+            $this->merge(['title' => $clean]);
         }
     }
 
@@ -25,8 +36,11 @@ class StoreSubcategoryRequest extends FormRequest
     {
         return [
             'parent_id' => ['required', 'integer', 'exists:sections,id'],
-            'title' => [
-                'required',
+
+            'title' => ['required', 'array'],
+
+            'title.*' => [
+                'nullable',
                 'string',
                 'max:50',
                 'regex:/^[\p{L}][\p{L}\s\-]*$/u',
@@ -35,17 +49,33 @@ class StoreSubcategoryRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    public function withValidator($validator): void
     {
         $validator->after(function ($v) {
+
             $parentId = (int) $this->input('parent_id');
             $parent = Section::query()->find($parentId);
 
-            if (!$parent) return;
+            if (!$parent) {
+                return;
+            }
 
-            // parent должен быть категорией (parent_id=null)
             if (!is_null($parent->parent_id)) {
-                $v->errors()->add('parent_id', __('admin.validation.parent_must_be_category'));
+                $v->errors()->add(
+                    'parent_id',
+                    __('admin.validation.parent_must_be_category')
+                );
+            }
+
+            $titles = $this->input('title', []);
+
+            $hasAny = collect($titles)->filter(fn($t) => !empty(trim($t)))->isNotEmpty();
+
+            if (!$hasAny) {
+                $v->errors()->add(
+                    'title',
+                    __('admin.validation.title_required')
+                );
             }
         });
     }

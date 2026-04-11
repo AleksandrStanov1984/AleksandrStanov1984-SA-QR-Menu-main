@@ -13,36 +13,14 @@ use App\Models\ItemTranslation;
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Services\ImagePipelineService;
+use App\Support\Guards\AccessGuardTrait;
 use App\Support\Permissions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
-    private function assertRestaurantAccess(
-        Request $request,
-        Restaurant $restaurant,
-        ?string $perm = null
-    ): void {
-        $user = $request->user();
-
-        if (!$user) {
-            throw new TenantAccessException(__('permissions.no_access'));
-        }
-
-        // tenant isolation
-        if (
-            !$user->is_super_admin &&
-            (int) $user->restaurant_id !== (int) $restaurant->id
-        ) {
-            throw new TenantAccessException(__('permissions.no_access'));
-        }
-
-        // permission check
-        if ($perm && !Permissions::can($user, $perm)) {
-            throw new TenantAccessException(__('permissions.no_access'));
-        }
-    }
+    use AccessGuardTrait;
 
     private function sanitizeText(?string $value): ?string
     {
@@ -53,6 +31,10 @@ class ItemController extends Controller
         return trim(strip_tags($value));
     }
 
+    /**
+     * @throws TenantAccessException
+     * @throws \Throwable
+     */
     public function store(StoreItemRequest $request, Restaurant $restaurant, Section $section)
     {
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
@@ -138,6 +120,10 @@ class ItemController extends Controller
         });
     }
 
+    /**
+     * @throws \Throwable
+     * @throws TenantAccessException
+     */
     public function update(UpdateItemRequest $request, Restaurant $restaurant, Item $item)
     {
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
@@ -203,6 +189,9 @@ class ItemController extends Controller
         });
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function updateMeta(Request $request, Restaurant $restaurant, Item $item)
     {
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
@@ -223,7 +212,7 @@ class ItemController extends Controller
             $item->save();
 
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'is_active' => $item->is_active,
             ]);
         }
@@ -255,11 +244,14 @@ class ItemController extends Controller
         $item->save();
 
         return response()->json([
-            'success' => true,
+            'status' => true,
             'meta' => $meta->toArray(),
         ]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function updateActive(Request $request, Restaurant $restaurant, Item $item)
     {
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
@@ -278,11 +270,14 @@ class ItemController extends Controller
         ]);
 
         return response()->json([
-            'success' => true,
+            'status' => true,
             'is_active' => $item->is_active,
         ]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function destroy(Request $request, Restaurant $restaurant, Item $item)
     {
         $this->assertRestaurantAccess($request, $restaurant, 'items.delete');
@@ -301,7 +296,7 @@ class ItemController extends Controller
         $item->delete();
 
         return response()->json([
-            'success' => true,
+            'status' => true,
             'deleted_id' => $item->id,
         ]);
     }
@@ -328,7 +323,7 @@ class ItemController extends Controller
         }
 
         return response()->json([
-            'success' => true
+            'status' => true
         ]);
     }
 }

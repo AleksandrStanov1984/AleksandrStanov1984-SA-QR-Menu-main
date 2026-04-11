@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
 
 use App\Models\Restaurant;
@@ -18,8 +19,13 @@ class SectionController extends Controller
 {
     use AccessGuardTrait;
 
+    /**
+     * @throws TenantAccessException
+     */
     public function store(Request $request, Restaurant $restaurant)
     {
+        $this->assertRestaurantAccess($request, $restaurant);
+
         if ($resp = Permissions::denyRedirect(auth()->user(), 'sections_manage')) {
             return $resp;
         }
@@ -66,10 +72,12 @@ class SectionController extends Controller
         return view('admin.sections.index', compact('restaurant', 'sections', 'allParents'));
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function update(Request $request, Restaurant $restaurant, Section $section)
     {
-        // tenant + базовый доступ
-        $this->assertRestaurantAccess($request, $restaurant, 'sections_manage');
+        $this->assertRestaurantAccess($request, $restaurant);
 
         $user = $request->user();
 
@@ -77,14 +85,15 @@ class SectionController extends Controller
             if ($resp = Permissions::denyRedirect($user, 'categories.edit')) {
                 return $resp;
             }
-
         } else {
             if ($resp = Permissions::denyRedirect($user, 'subcategories.edit')) {
                 return $resp;
             }
         }
 
-        abort_unless((int)$section->restaurant_id === (int)$restaurant->id, 404);
+        if ((int)$section->restaurant_id !== (int)$restaurant->id) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
 
         $data = $request->validate([
             'is_active'   => ['nullable', 'boolean'],
@@ -123,35 +132,46 @@ class SectionController extends Controller
             }
         }
 
-        return back()->with('success', __('admin.common.saved') ?? 'Saved');
+        return back()->with('status', __('admin.common.saving'));
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function toggleActive(Request $request, Restaurant $restaurant, Section $section)
     {
-        $this->assertRestaurantAccess($request, $restaurant, 'sections_manage');
-        abort_unless((int)$section->restaurant_id === (int)$restaurant->id, 404);
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        if ((int)$section->restaurant_id !== (int)$restaurant->id) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
 
         $section->update([
             'is_active' => !$section->is_active
         ]);
 
-        return back()->with('success', __('admin.sections.toggled'));
+        return back()->with('status', __('admin.sections.toggled'));
     }
 
+    /**
+     * @throws TenantAccessException
+     * @throws \Throwable
+     */
     public function destroy(Request $request, Restaurant $restaurant, Section $section)
     {
-        $this->assertRestaurantAccess($request, $restaurant, 'sections_manage');
-        abort_unless((int)$section->restaurant_id === (int)$restaurant->id, 404);
+        $this->assertRestaurantAccess($request, $restaurant);
 
-        $user = $request->user();
+        if ((int)$section->restaurant_id !== (int)$restaurant->id) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
 
         if ($resp = Permissions::denyRedirect(auth()->user(), 'sections.delete')) {
             return $resp;
         }
 
-        DB::transaction(function () use ($section, $restaurant, $user) {
+        DB::transaction(function () use ($section, $restaurant, $request) {
 
-            $userId = $user->id ?? null;
+            $userId = $request->user()?->id;
 
             // CATEGORY
             if (is_null($section->parent_id)) {
@@ -161,11 +181,12 @@ class SectionController extends Controller
                     ->where('parent_id', $section->id)
                     ->pluck('id');
 
-                Item::whereIn('section_id', $childIds->push($section->id))
+                $ids = $childIds->push($section->id);
+
+                Item::whereIn('section_id', $ids)
                     ->update(['deleted_by_user_id' => $userId]);
 
-                Item::whereIn('section_id', $childIds->push($section->id))
-                    ->delete();
+                Item::whereIn('section_id', $ids)->delete();
 
                 Section::whereIn('id', $childIds)
                     ->update(['deleted_by_user_id' => $userId]);
@@ -179,7 +200,6 @@ class SectionController extends Controller
             }
 
             // SUBCATEGORY
-
             Item::where('section_id', $section->id)
                 ->update(['deleted_by_user_id' => $userId]);
 
@@ -189,6 +209,9 @@ class SectionController extends Controller
             $section->delete();
         });
 
-        return back()->with('success', __('admin.sections.deleted') ?? 'Deleted');
+        return response()->json([
+            'deleted_id' => $section->id,
+            'message' => __('admin.sections.deleted'),
+        ]);
     }
 }

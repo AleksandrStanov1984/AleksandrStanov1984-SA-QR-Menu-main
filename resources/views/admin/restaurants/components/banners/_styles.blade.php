@@ -107,6 +107,16 @@
         animation: spin 0.7s linear infinite;
     }
 
+    .banner-card {
+        touch-action: none;
+    }
+
+    .banner-card.dragging {
+        opacity: 0.6;
+        transform: scale(1.02);
+        z-index: 10;
+    }
+
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
@@ -126,6 +136,18 @@
     @media (max-width: 768px) {
         .banners-grid {
             grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .banners-grid {
+            grid-template-columns: 1fr !important;
+            justify-items: center; /* ВОТ КЛЮЧ */
+        }
+
+        .banner-card {
+            width: 100%;
+            max-width: 340px; /* чтобы не растягивалась на весь экран */
         }
     }
 </style>

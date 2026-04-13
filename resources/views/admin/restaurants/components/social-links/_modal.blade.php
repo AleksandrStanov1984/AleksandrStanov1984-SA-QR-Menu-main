@@ -85,7 +85,7 @@
                             </div>
 
                             <div class="mut" style="font-size:12px; margin-top:8px;">
-                                SVG only, max 256KB.
+                                SVG, max 256KB.
                             </div>
                         </div>
 

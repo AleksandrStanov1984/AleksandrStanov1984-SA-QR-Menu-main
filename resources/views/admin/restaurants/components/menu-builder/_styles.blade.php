@@ -180,6 +180,22 @@
           0 6px 16px rgba(0,0,0,.25) !important;
   }
 
+  .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+  }
+
+  .perm-item input[type="checkbox"] {
+      flex: 0 0 auto;
+      margin: 0;
+  }
+
+  .perm-item span {
+      flex: 1 1 auto;
+  }
+
 
 
 </style>

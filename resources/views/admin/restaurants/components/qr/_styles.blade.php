@@ -152,4 +152,16 @@
         font-size: 18px;
         font-weight: 500;
     }
+
+    @media (max-width: 768px) {
+        .card .qr-actions {
+            flex-direction: column !important;
+            width: 100% !important;
+        }
+
+        .card .qr-actions .btn {
+            width: 100% !important;
+            min-width: unset !important;
+        }
+    }
 </style>

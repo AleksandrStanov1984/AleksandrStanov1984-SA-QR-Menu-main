@@ -13,7 +13,6 @@
         // HELPERS
         // =========================
         async function request(url, options = {}) {
-
             const res = await fetch(url, {
                 ...options,
                 headers: {
@@ -59,9 +58,7 @@
         // PREVIEW
         // =========================
         document.querySelectorAll('.banner-input').forEach(input => {
-
             input.addEventListener('change', function () {
-
                 const file = this.files[0];
                 if (!file) return;
 
@@ -76,16 +73,13 @@
                 };
 
                 reader.readAsDataURL(file);
-
             });
-
         });
 
         // =========================
         // SAVE ONE
         // =========================
         document.querySelectorAll('.btn-save-one').forEach(btn => {
-
             btn.addEventListener('click', async function () {
 
                 const card = this.closest('.banner-card');
@@ -107,7 +101,6 @@
 
                     toast(window.UI_LANG.saved, 'success');
 
-                    // 🔥 FIX — сбрасываем input
                     input.value = '';
                     updateButtonsState();
 
@@ -119,9 +112,7 @@
                 } finally {
                     setLoading(false);
                 }
-
             });
-
         });
 
         // =========================
@@ -133,7 +124,6 @@
             let has = false;
 
             document.querySelectorAll('.banner-card').forEach(card => {
-
                 const input = card.querySelector('.banner-input');
                 const slot = card.dataset.slot;
 
@@ -141,7 +131,6 @@
                     has = true;
                     fd.append(`banners[${slot}]`, input.files[0]);
                 }
-
             });
 
             if (!has) {
@@ -155,7 +144,6 @@
                 await request(saveUrl, { method: 'POST', body: fd });
 
                 toast(window.UI_LANG.saved, 'success');
-
                 setTimeout(() => location.reload(), 400);
 
             } catch (e) {
@@ -164,16 +152,13 @@
             } finally {
                 setLoading(false);
             }
-
         });
 
         // =========================
-        // DELETE ONE
+        // DELETE
         // =========================
         document.querySelectorAll('.btn-delete').forEach(btn => {
-
             btn.addEventListener('click', () => {
-
                 const id = btn.dataset.id;
                 if (!id) return;
 
@@ -187,7 +172,6 @@
                         });
 
                         toast(window.UI_LANG.saved, 'success');
-
                         setTimeout(() => location.reload(), 300);
 
                     } catch (e) {
@@ -198,16 +182,10 @@
                     }
 
                 });
-
             });
-
         });
 
-        // =========================
-        // DELETE ALL
-        // =========================
         document.getElementById('deleteAll')?.addEventListener('click', () => {
-
             confirmAction(window.UI_LANG.delete_all, async () => {
 
                 setLoading(true);
@@ -216,7 +194,6 @@
                     await request(deleteAllUrl, { method: 'DELETE' });
 
                     toast(window.UI_LANG.saved, 'success');
-
                     setTimeout(() => location.reload(), 300);
 
                 } catch (e) {
@@ -227,13 +204,23 @@
                 }
 
             });
-
         });
 
         // =========================
-        // DRAG & DROP
+        // DRAG (DESKTOP FIXED)
         // =========================
         let dragged = null;
+        let canDrag = false;
+
+        container.querySelectorAll('.banner-drag').forEach(handle => {
+            handle.addEventListener('mousedown', () => {
+                canDrag = true;
+            });
+        });
+
+        document.addEventListener('mouseup', () => {
+            canDrag = false;
+        });
 
         container.querySelectorAll('.banner-card').forEach(card => {
 
@@ -241,7 +228,12 @@
 
             card.setAttribute('draggable', true);
 
-            card.addEventListener('dragstart', () => {
+            card.addEventListener('dragstart', (e) => {
+                if (!canDrag) {
+                    e.preventDefault();
+                    return;
+                }
+
                 dragged = card;
                 card.classList.add('dragging');
             });
@@ -262,15 +254,53 @@
                     container.insertBefore(dragged, after);
                 }
             });
+        });
 
+        // =========================
+        // TOUCH DRAG (MOBILE)
+        // =========================
+        let touchItem = null;
+
+        container.querySelectorAll('.banner-card').forEach(card => {
+
+            if (!card.dataset.id) return;
+
+            card.addEventListener('touchstart', (e) => {
+                if (!e.target.closest('.banner-drag')) return;
+
+                touchItem = card;
+                card.classList.add('dragging');
+            }, { passive: false });
+
+            card.addEventListener('touchmove', (e) => {
+                if (!touchItem) return;
+
+                e.preventDefault();
+
+                const touch = e.touches[0];
+                const after = getAfter(container, touch.clientY);
+
+                if (!after) {
+                    container.appendChild(touchItem);
+                } else {
+                    container.insertBefore(touchItem, after);
+                }
+            }, { passive: false });
+
+            card.addEventListener('touchend', () => {
+                if (!touchItem) return;
+
+                touchItem.classList.remove('dragging');
+                touchItem = null;
+
+                saveOrder();
+            });
         });
 
         function getAfter(container, y) {
-
             const els = [...container.querySelectorAll('.banner-card:not(.dragging)')];
 
             return els.reduce((closest, el) => {
-
                 const box = el.getBoundingClientRect();
                 const offset = y - box.top - box.height / 2;
 
@@ -279,13 +309,10 @@
                 }
 
                 return closest;
-
             }, { offset: -Infinity }).element;
-
         }
 
         function saveOrder() {
-
             const ids = [...container.querySelectorAll('.banner-card')]
                 .map(el => el.dataset.id)
                 .filter(Boolean);
@@ -297,7 +324,6 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ids })
             });
-
         }
 
         // =========================
@@ -327,15 +353,12 @@
                 } else {
                     if (deleteBtn) deleteBtn.disabled = true;
                 }
-
             });
 
             document.getElementById('saveAll')?.toggleAttribute('disabled', !hasFiles);
             document.getElementById('deleteAll')?.toggleAttribute('disabled', !hasBanners);
-
         }
 
-        // INIT
         updateButtonsState();
 
     });

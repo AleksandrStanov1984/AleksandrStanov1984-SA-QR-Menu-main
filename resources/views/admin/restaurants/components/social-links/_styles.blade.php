@@ -32,4 +32,30 @@
   .mb-handle{cursor:grab; user-select:none; padding:2px 8px; border:1px solid var(--line); border-radius: 10px;}
 
   /* при inactive — пусть кнопки выглядят disabled визуально (реально мы их не показываем) */
+
+  .modal__panel {
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+  }
+
+  .modal__body {
+      overflow-y: auto;
+      flex: 1 1 auto;
+  }
+
+  .modal__head {
+      flex: 0 0 auto;
+  }
+
+  .modal__foot {
+      flex: 0 0 auto;
+  }
+
+  @media (max-width: 768px) {
+      .modal__panel {
+          max-height: 95vh;
+      }
+  }
+
 </style>

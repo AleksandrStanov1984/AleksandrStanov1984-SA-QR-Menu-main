@@ -78,7 +78,6 @@
         background: var(--card);
         color: var(--text-primary);
 
-        font-size: 13px;
         font-weight: 500;
 
         cursor: pointer;
@@ -92,6 +91,10 @@
         box-shadow: 0 6px 16px rgba(0,0,0,.25);
 
         transition: all .15s ease;
+
+        width: 50%;
+        max-width: 50%;
+        font-size: 16px;
     }
 
     /* =========================================
@@ -99,9 +102,12 @@
        ========================================= */
 
     @media (max-width: 768px){
-        .carousel-row{
-            grid-template-columns: 1fr;
-            gap:6px;
+        #carouselSourceBlock select {
+            appearance: auto;
+            -webkit-appearance: auto;
+            -moz-appearance: auto;
+
+            background-image: none;
         }
     }
 </style>

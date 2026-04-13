@@ -75,20 +75,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 // BADGES
-        let badges = "";
+        const isBestseller = trigger.getAttribute("data-bestseller") === "1";
 
-        if (isNew) {
-            badges += '<span class="menu-item-badge menu-item-badge--new">NEW</span>';
-        }
+        const badges = [];
 
         if (isDish) {
-            badges += '<span class="menu-item-badge menu-item-badge--dish">Dish of Day</span>';
+            badges.push(`<span class="menu-item-badge menu-item-badge--dish">
+        ${window.UI_LANG.badge_dish}
+    </span>`);
         }
 
-        if (badges) {
-            badgeEl.innerHTML = badges;
+        if (isNew) {
+            badges.push(`<span class="menu-item-badge menu-item-badge--new">
+        ${window.UI_LANG.badge_new}
+    </span>`);
+        }
+
+        if (isBestseller) {
+            badges.push(`<span class="menu-item-badge menu-item-badge--bestseller">
+        ★ ${window.UI_LANG.badge_bestseller}
+    </span>`);
+        }
+
+        if (badges.length) {
+            badgeEl.innerHTML = badges.join('');
             badgeEl.style.display = "";
         } else {
+            badgeEl.innerHTML = "";
             badgeEl.style.display = "none";
         }
 

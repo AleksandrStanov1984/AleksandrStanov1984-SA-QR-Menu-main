@@ -163,3 +163,27 @@
     border: 2px solid rgba(255,255,255,0.15);
     background: #111;
 }
+
+@media (max-width: 380px){
+
+    .restaurant-status{
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+
+        font-size: 12px;
+        padding: 6px 10px;
+        gap: 4px;
+
+        max-width: 100%;
+        word-break: break-word;
+    }
+
+    #statusLabel{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
+}

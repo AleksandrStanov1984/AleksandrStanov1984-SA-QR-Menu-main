@@ -47,3 +47,11 @@
 
 </body>
 </html>
+
+<script>
+    window.UI_LANG = {
+        badge_new: "{{ __('menu.new') }}",
+        badge_dish: "{{ __('menu.dish_of_day') }}",
+        badge_bestseller: "{{ __('menu.bestseller') }}"
+    };
+</script>

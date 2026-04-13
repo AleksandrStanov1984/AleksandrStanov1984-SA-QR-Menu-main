@@ -34,6 +34,7 @@
     data-image="{{ $dataImage ?: '' }}"
     data-is-new="{{ $isNew ? 1 : 0 }}"
     data-is-dish="{{ $isDish ? 1 : 0 }}"
+    data-bestseller="{{ $isBestseller ? 1 : 0 }}"
     data-spicy="{{ $spicyLevel }}"
     @endif
 >
@@ -77,7 +78,7 @@
 
                 @if($isNew)
                     <span class="menu-item-badge menu-item-badge--new">
-        {{ __('menu.badge_new') }}
+        {{ __('menu.new') }}
     </span>
                 @endif
 

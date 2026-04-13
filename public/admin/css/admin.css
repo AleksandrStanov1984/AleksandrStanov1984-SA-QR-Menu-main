@@ -620,6 +620,60 @@ label{
    PERMISSIONS GRID (MOBILE)
 ================================= */
 
+@media (max-width: 768px){
+
+    .mb-item-head{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .mb-item-right{
+        margin-left: 0;
+    }
+
+    .mb-item-actions{
+        flex-wrap: wrap;
+    }
+
+    .mb-actions{
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .mb-actions-col{
+        align-items: stretch;
+    }
+
+    .mb-item-title{
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    .mb-item-flags{
+        margin-left: 0;
+    }
+    .card input,
+    .card select,
+    .card textarea{
+        width: 100%;
+        min-width: 0;
+    }
+
+    .inline-group{
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sl-item{
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+}
+
 @media (max-width: 900px){
     .perm-grid{
         grid-auto-flow: row;

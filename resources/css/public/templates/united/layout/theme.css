@@ -30,23 +30,15 @@
 */
 
 body.theme-light{
-
     --page-bg:#fafafa;
-
     --card-bg:#ffffff;
-
     --header-bg:rgba(255,255,255,.9);
     --footer-bg:#ffffff;
-
     --modal-bg:#ffffff;
-
     --text-primary:#111827;
     --text-muted:#6b7280;
-
     --border-color:rgba(0,0,0,.08);
-
     --icon-color:#111827;
-
     --line:rgba(19, 17, 17, 0.18);
 }
 
@@ -58,22 +50,165 @@ body.theme-light{
 */
 
 body.theme-dark{
-
     --page-bg:#111;
-
     --card-bg:#1c1c1e;
-
     --header-bg:rgba(17,17,17,.9);
     --footer-bg:#1c1c1e;
-
     --modal-bg:#1c1c1e;
-
     --text-primary:#f3f4f6;
     --text-muted:#9ca3af;
-
     --border-color:rgba(255,255,255,.08);
-
     --icon-color:#f3f4f6;
-
     --line: rgb(112, 115, 120);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| BACKGROUND ENGINE — FULL PAGE BACKGROUND
+|--------------------------------------------------------------------------
+*/
+
+body {
+    background-color: var(--page-bg);
+    min-height: 100vh;
+}
+
+/* реальный фон страницы */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image: var(--menu-bg-image);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    opacity: 1;
+
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* лёгкий overlay для читаемости */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: rgba(255,255,255,0.08);
+
+    pointer-events: none;
+    z-index: -1;
+}
+
+body.theme-light::before {
+    background: rgba(255,255,255,0.10);
+}
+
+body.theme-dark::before {
+    background: rgba(0,0,0,0.28);
+}
+
+/* весь контент поверх */
+body > * {
+    position: relative;
+    z-index: 1;
+}
+
+/*
+|--------------------------------------------------------------------------
+| BACKGROUND ENGINE — RESPONSIVE TUNING
+|--------------------------------------------------------------------------
+*/
+
+/* Ultra small phones — iPhone Mini / 320–360 */
+@media (max-width: 360px) {
+    body::after {
+        background-position: center 35%;
+    }
+
+    body.theme-light::before {
+        background: rgba(255,255,255,0.12);
+    }
+
+    body.theme-dark::before {
+        background: rgba(0,0,0,0.32);
+    }
+}
+
+/* Small/regular phones — iPhone XR/12/14/15 */
+@media (min-width: 361px) and (max-width: 480px) {
+    body::after {
+        background-position: center 35%;
+    }
+
+    body.theme-light::before {
+        background: rgba(255,255,255,0.11);
+    }
+
+    body.theme-dark::before {
+        background: rgba(0,0,0,0.30);
+    }
+}
+
+/* Large phones — Pro Max / Plus */
+@media (min-width: 481px) and (max-width: 768px) {
+    body::after {
+        background-position: center 35%;
+    }
+
+    body.theme-light::before {
+        background: rgba(255,255,255,0.10);
+    }
+
+    body.theme-dark::before {
+        background: rgba(0,0,0,0.28);
+    }
+}
+
+/* Tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body::after {
+        background-position: center 35%;
+    }
+
+    body.theme-light::before {
+        background: rgba(255,255,255,0.09);
+    }
+
+    body.theme-dark::before {
+        background: rgba(0,0,0,0.26);
+    }
+}
+
+/* Laptops / small desktop */
+@media (min-width: 1025px) and (max-width: 1440px) {
+    body::after {
+        background-position: center 35%;
+    }
+
+    body.theme-light::before {
+        background: rgba(255,255,255,0.08);
+    }
+
+    body.theme-dark::before {
+        background: rgba(0,0,0,0.24);
+    }
+}
+
+/* Large desktop */
+@media (min-width: 1441px) {
+    body::after {
+        background-position: center 35%;
+    }
+
+    body.theme-light::before {
+        background: rgba(255,255,255,0.07);
+    }
+
+    body.theme-dark::before {
+        background: rgba(0,0,0,0.22);
+    }
 }

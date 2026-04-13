@@ -44,7 +44,7 @@ return [
 
         'restaurant_logo' => [
             'name' => 'restaurant_logo',
-            'match' => 'restaurants/*/logo/*',
+            'match' => 'restaurants/*/branding/logo/*',
             'format' => 'webp',
             'quality' => 82,
             'sizes' => [600],
@@ -118,6 +118,26 @@ return [
             'format' => 'webp',
             'quality' => 86,
             'sizes' => [1200],
+            'hash_names' => false,
+            'keep_source' => false,
+        ],
+
+        'branding_bg_light' => [
+            'name' => 'branding_bg_light',
+            'match' => 'restaurants/*/branding/backgrounds/light/*',
+            'format' => 'webp',
+            'quality' => 86,
+            'sizes' => [1600],
+            'hash_names' => false,
+            'keep_source' => false,
+        ],
+
+        'branding_bg_dark' => [
+            'name' => 'branding_bg_dark',
+            'match' => 'restaurants/*/branding/backgrounds/dark/*',
+            'format' => 'webp',
+            'quality' => 86,
+            'sizes' => [1600],
             'hash_names' => false,
             'keep_source' => false,
         ],

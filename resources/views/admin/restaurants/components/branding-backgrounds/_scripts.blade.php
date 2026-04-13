@@ -5,16 +5,14 @@
         if (!form) return;
 
         // =========================
-        // 🔥 AUTO SAVE THEME MODE
+        // AUTO SAVE THEME MODE
         // =========================
         form.querySelectorAll('input[name="theme_mode"]').forEach(radio => {
-            radio.addEventListener('change', () => {
-                submitForm();
-            });
+            radio.addEventListener('change', submitForm);
         });
 
         // =========================
-        // 🖼 PREVIEW IMAGES
+        // PREVIEW IMAGES
         // =========================
         form.querySelectorAll('input[type="file"]').forEach(input => {
 
@@ -27,15 +25,21 @@
 
                 reader.onload = function(ev){
 
-                    let img = input.closest('.col6')?.querySelector('img');
+                    // ищем правильный контейнер
+                    const col = input.closest('.branding-col');
+                    if (!col) return;
 
+                    const wrap = col.querySelector('.branding-preview-wrap');
+                    if (!wrap) return;
+
+                    let img = wrap.querySelector('img');
+
+                    // если нет картинки — создаём правильную
                     if (!img) {
                         img = document.createElement('img');
-                        img.style.width = '100%';
-                        img.style.borderRadius = '10px';
-                        img.style.border = '1px solid var(--line)';
-                        img.style.marginBottom = '8px';
-                        input.before(img);
+                        img.className = 'branding-preview';
+                        wrap.innerHTML = ''; // убираем "No image"
+                        wrap.appendChild(img);
                     }
 
                     img.src = ev.target.result;
@@ -47,7 +51,7 @@
         });
 
         // =========================
-        // 🚀 SUBMIT
+        // SUBMIT
         // =========================
         function submitForm(){
 

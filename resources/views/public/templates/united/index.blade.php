@@ -3,23 +3,25 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $vm->merchant->name }}</title>
 
-@include('public.templates.united.layout.styles')
+    @include('public.templates.united.layout.styles')
 
 </head>
 
 <body
     data-theme-mode="{{ $vm->branding['theme_mode'] ?? 'light' }}"
+    data-bg-light="{{ $vm->branding['bg_light'] ?? '' }}"
+    data-bg-dark="{{ $vm->branding['bg_dark'] ?? '' }}"
     class="theme-{{ $vm->branding['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
 >
 
 @include('public.templates.united.blocks.header.header')
 
 <div class="container">
-@include('public.templates.united.blocks.drawer.mobile-drawer')
+    @include('public.templates.united.blocks.drawer.mobile-drawer')
 </div>
 
 <div class="container">
@@ -34,11 +36,9 @@
     </div>
 </main>
 
-
-    @include('public.templates.united.blocks.footer.footer', [
-        'showFeaturedItems' => false,
-    ])
-
+@include('public.templates.united.blocks.footer.footer', [
+    'showFeaturedItems' => false,
+])
 
 @include('public.templates.united.blocks.modal.item-modal')
 @include('public.templates.united.blocks.modal.hours-modal')

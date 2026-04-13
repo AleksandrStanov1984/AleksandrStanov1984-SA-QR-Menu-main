@@ -1,18 +1,16 @@
 @php
-    use App\Support\Permissions;
-
-    $u = auth()->user();
     $meta = is_array($restaurant->meta ?? null) ? $restaurant->meta : [];
 
-    // PLAN-BASED FEATURES (главное)
     $canBgUpload  = $restaurant->feature('custom_background');
-    $canThemeMode = true; // доступно всем
+    $canThemeMode = true;
 
     $themeMode = $meta['theme_mode'] ?? 'light';
 @endphp
 
+@include('admin.restaurants.components.branding-backgrounds._styles')
+
 @if($canBgUpload || $canThemeMode)
-    <div class="card" style="margin-top:16px;">
+    <div class="card branding-card" style="margin-top:16px;">
         <h2>{{ __('admin.branding.title') }}</h2>
 
         @include('admin.restaurants.components.logo', ['restaurant' => $restaurant])
@@ -20,31 +18,27 @@
         <form method="POST"
               action="{{ route('admin.restaurants.branding.backgrounds.update', $restaurant) }}"
               enctype="multipart/form-data"
-              data-branding-form
-        >
+              data-branding-form>
             @csrf
 
-            {{-- ===================== --}}
-            {{-- THEME MODE (доступно всем) --}}
-            {{-- ===================== --}}
             @if($canThemeMode)
-                <div class="block">
+                <div class="block branding-theme-block">
                     <div class="block-title">
                         {{ __('admin.branding.mode_title') }}
                     </div>
 
-                    <div class="radio-row">
-                        <label>
+                    <div class="radio-row branding-theme-row">
+                        <label class="branding-theme-option">
                             <input type="radio" name="theme_mode" value="auto" @checked($themeMode === 'auto')>
                             <span>{{ __('admin.branding.mode_auto') }}</span>
                         </label>
 
-                        <label>
+                        <label class="branding-theme-option">
                             <input type="radio" name="theme_mode" value="light" @checked($themeMode === 'light')>
                             <span>{{ __('admin.branding.mode_light') }}</span>
                         </label>
 
-                        <label>
+                        <label class="branding-theme-option">
                             <input type="radio" name="theme_mode" value="dark" @checked($themeMode === 'dark')>
                             <span>{{ __('admin.branding.mode_dark') }}</span>
                         </label>
@@ -52,46 +46,55 @@
                 </div>
             @endif
 
-            {{-- ===================== --}}
-            {{-- BACKGROUNDS (PRO only) --}}
-            {{-- ===================== --}}
             @if($canBgUpload)
-                <div class="grid">
-                    <div class="col6">
+                <div class="branding-grid">
+                    <div class="branding-col">
                         <label>{{ __('admin.branding.bg_light') }}</label>
 
-                        @if(!empty($meta['bg_light']))
-                            <img
-                                src="{{ asset('assets/'.$meta['bg_light']) }}"
-                                alt="bg light"
-                                class="preview"
-                            >
-                        @endif
+                        <div class="branding-preview-wrap">
+                            @if(!empty($meta['bg_light']))
+                                <img
+                                    src="{{ asset('assets/'.$meta['bg_light']) }}"
+                                    alt="bg light"
+                                    class="branding-preview"
+                                >
+                            @else
+                                <div class="branding-preview branding-preview--empty">
+                                    {{ __('admin.branding.no_image') ?? 'No image' }}
+                                </div>
+                            @endif
+                        </div>
 
                         <input type="file" name="bg_light" accept="image/*">
                     </div>
 
-                    <div class="col6">
+                    <div class="branding-col">
                         <label>{{ __('admin.branding.bg_dark') }}</label>
 
-                        @if(!empty($meta['bg_dark']))
-                            <img
-                                src="{{ asset('assets/'.$meta['bg_dark']) }}"
-                                alt="bg dark"
-                                class="preview"
-                            >
-                        @endif
+                        <div class="branding-preview-wrap">
+                            @if(!empty($meta['bg_dark']))
+                                <img
+                                    src="{{ asset('assets/'.$meta['bg_dark']) }}"
+                                    alt="bg dark"
+                                    class="branding-preview"
+                                >
+                            @else
+                                <div class="branding-preview branding-preview--empty">
+                                    {{ __('admin.branding.no_image') ?? 'No image' }}
+                                </div>
+                            @endif
+                        </div>
 
                         <input type="file" name="bg_dark" accept="image/*">
                     </div>
-                </div><br>
+                </div>
             @else
-                {{-- Апселл (опционально, но рекомендую) --}}
                 <div class="mut" style="margin-top:12px;">
                     {{ __('admin.plan.pro_required_backgrounds') ?? 'Custom backgrounds available in PRO plan' }}
                 </div>
             @endif
 
+            <br>
             <div class="actions">
                 <button class="btn ok" type="submit">
                     {{ __('admin.branding.save_bg') }}

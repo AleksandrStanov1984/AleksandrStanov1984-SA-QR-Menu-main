@@ -24,6 +24,22 @@ class Permissions
     /**
      * DEV режим (оставлен для будущего, сейчас не используется)
      */
+
+    /**
+     * ROLE IN MVP:
+     *
+     * This class DOES NOT control access.
+     * It ONLY exists as:
+     * - permission registry (for UI)
+     * - future RBAC layer
+     *
+     * Actual access control is handled by:
+     * - tenant isolation
+     * - plan features
+     * - AccessGuardTrait
+     *
+     * Do NOT rely on this class for security.
+     */
     public const DEV_ALLOW_ALL = true;
 
     protected static function devAllowAll(): bool

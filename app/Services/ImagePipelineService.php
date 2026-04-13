@@ -8,6 +8,9 @@ use Illuminate\Support\Str;
 
 class ImagePipelineService
 {
+    /**
+     * @throws \Exception
+     */
     public function uploadAndProcess(
         UploadedFile $file,
         int $restaurantId,
@@ -49,6 +52,9 @@ class ImagePipelineService
         return "restaurants/{$restaurantId}/{$segment}/{$filename}.webp";
     }
 
+    /**
+     * @throws \Exception
+     */
     public function replace(
         UploadedFile $file,
         int $restaurantId,
@@ -63,6 +69,9 @@ class ImagePipelineService
         return $this->uploadAndProcess($file, $restaurantId, $segment);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function uploadSvg(UploadedFile $file, string $targetPath): string
     {
         $filename = (string) Str::uuid() . '.svg';

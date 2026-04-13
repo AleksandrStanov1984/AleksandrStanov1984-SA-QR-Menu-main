@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-
-use App\Models\Restaurant;
-
-use App\Support\Guards\AccessGuardTrait;
-use Illuminate\Http\Request;
-
-use App\Support\Permissions;
-
-use App\Services\ImagePipelineService;
-
 use App\Exceptions\TenantAccessException;
+use App\Http\Controllers\Controller;
+use App\Models\Restaurant;
+use App\Services\ImagePipelineService;
+use App\Support\Guards\AccessGuardTrait;
+use App\Support\Permissions;
+use Illuminate\Http\Request;
 
 class RestaurantBrandController extends Controller
 {
@@ -26,9 +21,7 @@ class RestaurantBrandController extends Controller
     {
         $this->assertRestaurantAccess($request, $restaurant);
 
-        $user = $request->user();
-
-        if ($resp = Permissions::denyRedirect(auth()->user(), 'branding.logo.upload')) {
+        if ($resp = Permissions::denyRedirect($request->user(), 'branding.logo.upload')) {
             return $resp;
         }
 
@@ -51,9 +44,7 @@ class RestaurantBrandController extends Controller
             ]);
 
             return back()->with('status', __('admin.restaurants.brand.logo_saved'));
-
         } catch (\Throwable $e) {
-
             \Log::error('Restaurant logo upload failed', [
                 'restaurant_id' => $restaurant->id,
                 'error' => $e->getMessage(),
@@ -72,7 +63,7 @@ class RestaurantBrandController extends Controller
 
         $user = $request->user();
 
-        $canBg   = Permissions::can($user, 'branding.backgrounds.upload');
+        $canBg = Permissions::can($user, 'branding.backgrounds.upload');
         $canMode = Permissions::can($user, 'branding.theme_mode.edit');
 
         if (!$canBg && !$canMode) {
@@ -85,30 +76,32 @@ class RestaurantBrandController extends Controller
             'bg_dark'    => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
         ]);
 
-        $meta = (array) $restaurant->meta;
+        $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
         $meta['theme_mode'] = $meta['theme_mode'] ?? 'light';
 
         if ($canMode && $request->filled('theme_mode')) {
-            $meta['theme_mode'] = $request->input('theme_mode');
+            $meta['theme_mode'] = $request->string('theme_mode')->toString();
         }
 
         try {
             $pipeline = app(ImagePipelineService::class);
-            $segment = 'branding/backgrounds';
 
             $bgLight = $request->file('bg_light');
             $bgDark  = $request->file('bg_dark');
 
+            $segmentLight = 'branding/backgrounds/light';
+            $segmentDark  = 'branding/backgrounds/dark';
+
             if ($canBg && $bgLight && $bgLight->isValid()) {
                 $meta['bg_light'] = !empty($meta['bg_light'])
-                    ? $pipeline->replace($bgLight, $restaurant->id, $meta['bg_light'], $segment)
-                    : $pipeline->uploadAndProcess($bgLight, $restaurant->id, $segment);
+                    ? $pipeline->replace($bgLight, $restaurant->id, $meta['bg_light'], $segmentLight)
+                    : $pipeline->uploadAndProcess($bgLight, $restaurant->id, $segmentLight);
             }
 
             if ($canBg && $bgDark && $bgDark->isValid()) {
                 $meta['bg_dark'] = !empty($meta['bg_dark'])
-                    ? $pipeline->replace($bgDark, $restaurant->id, $meta['bg_dark'], $segment)
-                    : $pipeline->uploadAndProcess($bgDark, $restaurant->id, $segment);
+                    ? $pipeline->replace($bgDark, $restaurant->id, $meta['bg_dark'], $segmentDark)
+                    : $pipeline->uploadAndProcess($bgDark, $restaurant->id, $segmentDark);
             }
 
             $restaurant->update([
@@ -116,9 +109,7 @@ class RestaurantBrandController extends Controller
             ]);
 
             return back()->with('status', __('admin.restaurants.brand.background_updated'));
-
         } catch (\Throwable $e) {
-
             \Log::error('Restaurant branding background upload failed', [
                 'restaurant_id' => $restaurant->id,
                 'error' => $e->getMessage(),
@@ -128,8 +119,13 @@ class RestaurantBrandController extends Controller
         }
     }
 
-    public function edit(Restaurant $restaurant)
+    /**
+     * @throws TenantAccessException
+     */
+    public function edit(Request $request, Restaurant $restaurant)
     {
+        $this->assertRestaurantAccess($request, $restaurant);
+
         return view('admin.restaurants.branding', [
             'restaurant' => $restaurant,
         ]);

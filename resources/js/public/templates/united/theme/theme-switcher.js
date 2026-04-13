@@ -1,6 +1,6 @@
 /*
 |--------------------------------------------------------------------------
-| THEME SWITCHER (FINAL)
+| THEME SWITCHER (FINAL + BACKGROUND)
 |--------------------------------------------------------------------------
 */
 
@@ -9,12 +9,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
     const btn  = document.getElementById("themeToggle");
 
-    // 🔥 берём из backend (пробрасывается из Blade)
     const mode = body.dataset.themeMode || "light";
+
+    const bgLight = body.dataset.bgLight || "";
+    const bgDark  = body.dataset.bgDark || "";
 
     const applyTheme = (theme) => {
         body.classList.remove("theme-light", "theme-dark");
         body.classList.add(`theme-${theme}`);
+
+        let bg = theme === "dark"
+            ? (bgDark || bgLight)
+            : (bgLight || bgDark);
+
+        if (bg) {
+            body.style.setProperty("--menu-bg-image", `url('${bg}')`);
+        }
     };
 
     const getSystemTheme = () => {
@@ -34,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ----------------------------
-    // AUTO REACT (если система поменялась)
+    // AUTO REACT
     // ----------------------------
 
     if (mode === "auto") {
@@ -45,15 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ----------------------------
-    // MANUAL TOGGLE (кнопка)
+    // MANUAL TOGGLE
     // ----------------------------
 
     if (btn) {
         btn.addEventListener("click", () => {
 
-            // manual override
             const isDark = body.classList.contains("theme-dark");
-
             applyTheme(isDark ? "light" : "dark");
 
         });

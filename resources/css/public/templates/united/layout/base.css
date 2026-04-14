@@ -3,48 +3,34 @@
 | GLOBAL RESET
 |--------------------------------------------------------------------------
 */
-
 *,
 *::before,
 *::after{
     box-sizing:border-box;
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | ROOT VARIABLES (fallback only)
 |--------------------------------------------------------------------------
 */
-
 :root{
-
     --page-bg:#ffffff;
-
     --card-bg:#f3f4f6;
-
     --text-primary:#111827;
-
     --text-muted:#6b7280;
-
     --border-color:rgba(0,0,0,.08);
-
     --accent-color:#ff6600;
-
     --icon-color:#111827;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | BODY
 |--------------------------------------------------------------------------
 */
-
 body{
-
     margin:0;
-
     font-family:
         system-ui,
         -apple-system,
@@ -53,46 +39,36 @@ body{
         Helvetica,
         Arial,
         sans-serif;
-
     background:var(--page-bg);
-
     color:var(--text-primary);
-
     line-height:1.45;
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | MEDIA
 |--------------------------------------------------------------------------
 */
-
 img{
     max-width:100%;
     display:block;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | LINKS
 |--------------------------------------------------------------------------
 */
-
 a{
     text-decoration:none;
     color:inherit;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | CONTAINER
 |--------------------------------------------------------------------------
 */
-
 .container{
     width:100%;
     max-width:1100px;
@@ -100,42 +76,30 @@ a{
     padding:0 16px;
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | BUTTONS
 |--------------------------------------------------------------------------
 */
-
 .btn{
-
     display:inline-flex;
     align-items:center;
     justify-content:center;
     gap:8px;
-
     padding:10px 14px;
-
     border-radius:12px;
-
     border:1px solid var(--border-color);
-
     background:var(--card-bg);
-
     color:var(--text-primary);
-
     font-weight:600;
     font-size:14px;
     line-height:1;
-
     cursor:pointer;
-
     transition:
         opacity .15s ease,
         transform .1s ease,
         background .15s ease,
         border-color .15s ease;
-
 }
 
 .btn:hover{
@@ -151,26 +115,22 @@ a{
     cursor:not-allowed;
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | BUTTON VARIANTS
 |--------------------------------------------------------------------------
 */
-
 .btn--ghost{
     background:transparent;
     border-color:transparent;
 }
 
-/* primary — всегда контрастный */
 .btn--primary{
     background:var(--accent-color);
     border-color:var(--accent-color);
     color:#fff;
 }
 
-/*  адаптивные под тему */
 .btn--success{
     background:color-mix(in srgb, var(--accent-color) 12%, transparent);
     border-color:color-mix(in srgb, var(--accent-color) 20%, transparent);
@@ -183,13 +143,11 @@ a{
     color:var(--text-primary);
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | ICON BUTTON
 |--------------------------------------------------------------------------
 */
-
 .btn--icon{
     width:38px;
     height:38px;

@@ -3,32 +3,23 @@
 | THEME BASE (fallback)
 |--------------------------------------------------------------------------
 */
-
 :root{
     --page-bg:#fafafa;
-
     --card-bg:#ffffff;
-
     --header-bg:rgba(255,255,255,.9);
     --footer-bg:#ffffff;
-
     --modal-bg:#ffffff;
-
     --text-primary:#111827;
     --text-muted:#6b7280;
-
     --border-color:rgba(0,0,0,.08);
-
     --icon-color:#111827;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | THEME: LIGHT
 |--------------------------------------------------------------------------
 */
-
 body.theme-light{
     --page-bg:#fafafa;
     --card-bg:#ffffff;
@@ -42,13 +33,11 @@ body.theme-light{
     --line:rgba(19, 17, 17, 0.18);
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | THEME: DARK
 |--------------------------------------------------------------------------
 */
-
 body.theme-dark{
     --page-bg:#111;
     --card-bg:#1c1c1e;
@@ -62,43 +51,34 @@ body.theme-dark{
     --line: rgb(112, 115, 120);
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | BACKGROUND ENGINE — FULL PAGE BACKGROUND
 |--------------------------------------------------------------------------
 */
-
 body {
     background-color: var(--page-bg);
     min-height: 100vh;
 }
 
-/* реальный фон страницы */
 body::after {
     content: "";
     position: fixed;
     inset: 0;
-
     background-image: var(--menu-bg-image);
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-
     opacity: 1;
-
     pointer-events: none;
     z-index: -2;
 }
 
-/* лёгкий overlay для читаемости */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-
     background: rgba(255,255,255,0.08);
-
     pointer-events: none;
     z-index: -1;
 }
@@ -122,8 +102,6 @@ body > * {
 | BACKGROUND ENGINE
 |--------------------------------------------------------------------------
 */
-
-/* Ultra small phones — iPhone Mini / 320–360 */
 @media (max-width: 360px) {
     body::after {
         background-position: center 35%;
@@ -138,7 +116,6 @@ body > * {
     }
 }
 
-/* Small/regular phones — iPhone XR/12/14/15 */
 @media (min-width: 361px) and (max-width: 480px) {
     body::after {
         background-position: center 35%;
@@ -153,7 +130,6 @@ body > * {
     }
 }
 
-/* Large phones — Pro Max / Plus */
 @media (min-width: 481px) and (max-width: 768px) {
     body::after {
         background-position: center 35%;
@@ -168,7 +144,6 @@ body > * {
     }
 }
 
-/* Tablets */
 @media (min-width: 769px) and (max-width: 1024px) {
     body::after {
         background-position: center 35%;
@@ -183,7 +158,6 @@ body > * {
     }
 }
 
-/* Laptops / small desktop */
 @media (min-width: 1025px) and (max-width: 1440px) {
     body::after {
         background-position: center 35%;
@@ -198,7 +172,6 @@ body > * {
     }
 }
 
-/* Large desktop */
 @media (min-width: 1441px) {
     body::after {
         background-position: center 35%;

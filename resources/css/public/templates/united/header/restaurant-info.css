@@ -3,150 +3,96 @@
 | RESTAURANT HEADER
 |--------------------------------------------------------------------------
 */
-
 .restaurant-header{
-
     text-align:center;
-
     padding:36px 20px 28px;
-
     max-width:720px;
-
     margin:0 auto;
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | TITLE
 |--------------------------------------------------------------------------
 */
-
 .restaurant-title{
-
     font-size:28px;
-
     font-weight:700;
-
     letter-spacing:.2px;
-
     color:var(--text-primary);
-
     margin-bottom:10px;
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | ADDRESS
 |--------------------------------------------------------------------------
 */
-
 .restaurant-address{
-
     display:flex;
-
     justify-content:center;
     align-items:center;
-
     gap:6px;
-
     color:var(--text-muted);
-
     font-size:14px;
-
     margin-bottom:16px;
 }
 
 .restaurant-address i{
-
     font-size:16px;
-
     opacity:.7;
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | STATUS BUTTON
 |--------------------------------------------------------------------------
 */
-
 .restaurant-status{
-
     display:inline-flex;
-
     align-items:center;
-
     gap:8px;
-
     border-radius:999px;
-
     padding:6px 12px;
-
     font-weight:600;
-
     font-size:14px;
-
     border:1px solid var(--border-color);
-
     background:var(--card-bg);
-
     color:var(--text-primary);
-
     cursor:pointer;
-
     transition:
         background .15s ease,
         transform .08s ease,
         box-shadow .15s ease;
-
 }
 
 .restaurant-status:hover{
-
     background: color-mix(in srgb, var(--card-bg) 85%, black);
-
 }
 
 .restaurant-status:active{
-
     transform:scale(.96);
-
 }
 
 .restaurant-status i{
-
     font-size:16px;
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | STATUS COLORS
 |--------------------------------------------------------------------------
 */
-
 .status-open{
-
     color:#16a34a;
-
 }
 
 .status-closing_soon{
-
     color:#eab308;
-
 }
 
 .status-closed{
-
     color:#ef4444;
-
 }
 
 .menu-logo {
@@ -165,16 +111,13 @@
 }
 
 @media (max-width: 380px){
-
     .restaurant-status{
         flex-wrap: wrap;
         justify-content: center;
         text-align: center;
-
         font-size: 12px;
         padding: 6px 10px;
         gap: 4px;
-
         max-width: 100%;
         word-break: break-word;
     }
@@ -185,5 +128,4 @@
         align-items: center;
         gap: 2px;
     }
-
 }

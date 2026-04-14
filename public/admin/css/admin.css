@@ -9,8 +9,6 @@
     --line: rgba(255,255,255,.10);
     --btn: #2b3f66;
     --btn2: #1c2b48;
-
-    /* подстройка липкого верхнего отступа (topbar + crumbs) */
     --sticky-top: 110px;
 }
 
@@ -40,7 +38,7 @@ a { color: inherit; }
 .layout-with-sidebar{
     display:flex;
     gap:18px;
-    align-items:stretch; /* важно: тянуть по высоте */
+    align-items:stretch;
 }
 
 /* контент справа */
@@ -49,18 +47,14 @@ a { color: inherit; }
     min-width:0;
 }
 
-/* sidebar: слева, +20% ширины, “карточка” до низа */
 .admin-sidebar{
-    width:312px;                 /* +20% */
+    width:312px;
     flex-shrink:0;
-
     background:var(--card);
     border: 1px solid var(--line);
     border-radius:14px;
-
     position: sticky;
     top: var(--sticky-top);
-
     height: calc(100vh - var(--sticky-top) - 14px);
     overflow: hidden;
 }
@@ -86,8 +80,6 @@ a { color: inherit; }
 .sb-mobile-close{
     display:none;
 }
-
-
 
 /* topbar */
 .topbar{
@@ -123,25 +115,18 @@ select{
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-
     padding: 8px 34px 8px 10px;
-
     border-radius: 10px;
     border: 1px solid var(--line);
-
     background:var(--btn);
     color: var(--text);
-
     font-size: 14px;
     font-weight: 500;
-
     cursor: pointer;
-
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 12px;
-
     box-shadow: 0 6px 16px rgba(0,0,0,.25);
     -webkit-text-fill-color: var(--text);
 }
@@ -249,11 +234,9 @@ label{
     text-decoration:none;
     font-size:13px;
 }
+
 .sb-nav a:hover{ background:rgba(255,255,255,.06); }
 .sb-sep{ height:2px; background:var(--line); margin:20px 5%; }
-
-
-/* ===== Restaurants table fixes ===== */
 
 .table{
     width:100%;
@@ -328,15 +311,11 @@ label{
     opacity:.95;
 }
 
-/* ===== Modal (fix) ===== */
 .modal{
     position:fixed;
     inset:0;
     z-index:9999;
-
-    /* важно: по умолчанию скрыто */
     display:none;
-
     align-items:flex-start;
     justify-content:center;
     padding:24px 14px;
@@ -363,7 +342,6 @@ label{
     box-shadow:0 20px 60px rgba(0,0,0,.45);
 }
 
-/* minimalist password eye */
 .pw-field{
     position:relative;
 }
@@ -377,12 +355,10 @@ label{
     top:50%;
     right:12px;
     transform:translateY(-50%);
-
     background:none;
     border:none;
     padding:0;
     margin:0;
-
     color:var(--mut);
     cursor:pointer;
     line-height:1;
@@ -399,19 +375,17 @@ label{
     display: grid;
     grid-auto-flow: column;
     grid-template-rows: repeat(5, auto);
-    column-gap: 40px;   /* расстояние между колонками */
+    column-gap: 40px;
     row-gap: 14px;
     margin-top: 14px;
 }
 
-/* каждая строка = текст + чекбокс рядом */
 .perm-item{
     display: grid;
-    grid-template-columns: auto 22px; /* ← ключевая правка */
+    grid-template-columns: auto 22px;
     align-items: center;
     gap: 10px;
-
-    max-width: 260px; /* 🔒 ограничиваем ширину строки */
+    max-width: 260px;
     font-size: 14px;
     color: var(--text);
 }
@@ -490,7 +464,7 @@ label{
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
-    margin-left: 26px; /* визуально под названием */
+    margin-left: 26px;
 }
 
 .mb-item-price {
@@ -589,7 +563,6 @@ label{
         display:inline-flex;
     }
 
-    /* sidebar drawer */
     .admin-sidebar{
         position:fixed;
         top:0;
@@ -597,10 +570,8 @@ label{
         width:312px;
         height:100vh;
         z-index:1001;
-
         border-radius:0;
         overflow:auto;
-
         transition:left .25s ease;
     }
 
@@ -632,7 +603,6 @@ label{
         inset:0;
         background:rgba(0,0,0,.55);
         z-index:1000;
-
         opacity:0;
         pointer-events:none;
         transition:opacity .2s ease;

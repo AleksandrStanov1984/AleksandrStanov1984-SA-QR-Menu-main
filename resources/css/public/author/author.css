@@ -1,7 +1,6 @@
 /* ===========================
    AUTHOR PAGE
    =========================== */
-
 .author-hero{
     position: relative;
     background: #070a12;
@@ -33,7 +32,6 @@
 }
 
 /* === TEXT PART === */
-
 .author-hero__name{
     font-family: var(--font-title);
     font-size: 16px;
@@ -72,7 +70,6 @@
 }
 
 /* === SOCIAL === */
-
 .author-hero__socials{
     margin-top: 18px;
     display: flex;
@@ -104,7 +101,6 @@
 }
 
 /* === PROFILE IMAGE === */
-
 .author-hero__profile{
     display: grid;
     place-items: center;
@@ -120,7 +116,6 @@
 }
 
 /* === DIVIDER === */
-
 .author-hero__divider{
     margin: 34px 0;
     height: 1px;
@@ -128,7 +123,6 @@
 }
 
 /* === PANELS === */
-
 .author-panels{
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -184,7 +178,6 @@
 }
 
 /* === MOBILE === */
-
 @media (max-width: 900px){
     .author-hero__inner{
         padding: 44px 20px 36px;

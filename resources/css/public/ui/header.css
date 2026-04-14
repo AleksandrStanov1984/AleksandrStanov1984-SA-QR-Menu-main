@@ -6,22 +6,17 @@
     padding-top: clamp(0.6rem, 2vh, 1rem);
 }
 
-/* панель на ширину контейнера, высота растёт от контента */
 .std-header__panel{
     width: 100%;
     margin: 0;
-
     background: var(--panel-bg);
     border: 1px solid var(--panel-stroke);
     border-radius: var(--std-radius-xl);
     box-shadow: var(--std-shadow-panel);
     backdrop-filter: blur(12px);
-
     padding-block: clamp(1.05rem, 3.2vh, 2.0rem);
     padding-inline: clamp(0.9rem, 4vw, 1.4rem);
-
     min-height: clamp(92px, 12vh, 140px);
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -37,17 +32,14 @@
     gap: clamp(0.9rem, 3vw, 1.4rem);
 }
 
-/* ЛОГО: заметно больше + аккуратная “площадка”, чтобы не выглядело случайно */
 .std-header__logo{
     flex: 0 0 auto;
     width: clamp(86px, 18vw, 130px);
     height: clamp(86px, 18vw, 130px);
-
     border-radius: 16px;
     background: rgba(255,255,255,.22);
     border: 1px solid rgba(0,0,0,.06);
     backdrop-filter: blur(10px);
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,29 +65,23 @@ html[data-theme="dark"] .std-header__logo{
     gap: 0.15rem;
 }
 
-/* название НЕ режем, разрешаем перенос */
 .std-header__title{
     font-weight: 900;
     font-size: clamp(1.05rem, 3.6vw, 1.55rem);
     letter-spacing: .3px;
     text-transform: uppercase;
     line-height: 1.12;
-
     white-space: normal;
     overflow: visible;
     text-overflow: unset;
     word-break: break-word;
 }
 
-/* подзаголовок (если где-то останется) — скрываем по умолчанию */
+/* подзаголовок */
 .std-header__sub{
     display: none;
 }
 
-/* контролы справа: КОЛОНКА
-   TOP: языки
-   BOTTOM: ☀️ + ≡
-*/
 .std-header__controls{
     flex: 0 0 auto;
     display: flex;
@@ -116,7 +102,6 @@ html[data-theme="dark"] .std-header__logo{
     gap: clamp(0.45rem, 2vw, 0.7rem);
 }
 
-/* ===== Language pill (красивый segmented) ===== */
 .std-lang{
     display: inline-flex;
     align-items: center;
@@ -124,7 +109,6 @@ html[data-theme="dark"] .std-header__logo{
     padding: 4px;
     border-radius: 999px;
     border: 1px solid var(--panel-stroke);
-
     background: rgba(255,255,255,.18);
     backdrop-filter: blur(12px);
     overflow: hidden;
@@ -172,7 +156,6 @@ html[data-theme="dark"] .std-lang{
     line-height: 1;
 }
 
-/* language pill можно чуть компактнее на маленьких */
 @media (max-width: 380px){
     .std-lang{ padding: 3px; }
     .std-lang__btn{ padding: 7px 9px; }

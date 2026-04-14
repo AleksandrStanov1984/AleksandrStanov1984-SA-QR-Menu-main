@@ -3,91 +3,64 @@
 | HEADER
 |--------------------------------------------------------------------------
 */
-
 .site-header {
-
     position: sticky;
     top: 0;
-
     background: color-mix(in srgb, var(--card-bg) 92%, transparent);
     backdrop-filter: blur(10px);
-
     border-bottom: 1px solid var(--border-color);
-
     z-index: 100;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | INNER
 |--------------------------------------------------------------------------
 */
-
 .header-inner {
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     padding: 12px 20px;
-
     max-width: 1200px;
     margin: 0 auto;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | LOGO
 |--------------------------------------------------------------------------
 */
-
 .header-logo {
-
     font-weight: 600;
     font-size: 18px;
-
     letter-spacing: .2px;
-
     color: var(--text-primary);
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | HEADER ACTIONS
 |--------------------------------------------------------------------------
 */
-
 .header-actions {
-
     display: flex;
     align-items: center;
-
     gap: 14px;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | DRAWER BUTTON
 |--------------------------------------------------------------------------
 */
-
 .drawer-btn {
-
     font-size: 22px;
-
     cursor: pointer;
-
     background: none;
     border: none;
-
     padding: 4px;
-
     color: var(--text-primary);
-
     transition:
         transform .12s ease,
         opacity .12s ease;
@@ -101,41 +74,29 @@
     transform: scale(.9);
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | LANGUAGE DROPDOWN
 |--------------------------------------------------------------------------
 */
-
 .lang-dropdown {
     position: relative;
 }
 
-
 /* toggle button */
 
 .lang-toggle {
-
     background: var(--card-bg);
-
     border: 1px solid var(--border-color);
-
     font-size: 13px;
     font-weight: 500;
-
     cursor: pointer;
-
     display: flex;
     align-items: center;
     gap: 6px;
-
     color: var(--text-primary);
-
     padding: 6px 10px;
-
     border-radius: 999px;
-
     transition:
         background .15s ease,
         transform .08s ease;
@@ -149,42 +110,27 @@
     transform: scale(.95);
 }
 
-
-/* arrow */
-
 .lang-arrow {
     font-size: 10px;
     opacity: .7;
 }
-
 
 /*
 |--------------------------------------------------------------------------
 | DROPDOWN MENU
 |--------------------------------------------------------------------------
 */
-
 .lang-menu {
-
     position: absolute;
-
     top: 36px;
     right: 0;
-
     background: var(--card-bg);
-
     border: 1px solid var(--border-color);
-
     border-radius: 10px;
-
-    box-shadow:
-        0 10px 25px rgba(0,0,0,.12);
-
+    box-shadow: 0 10px 25px rgba(0,0,0,.12);
     display: none;
     flex-direction: column;
-
     min-width: 80px;
-
     overflow: hidden;
 }
 
@@ -192,23 +138,16 @@
     display: flex;
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | MENU LINKS
 |--------------------------------------------------------------------------
 */
-
 .lang-menu a {
-
     padding: 10px 14px;
-
     text-decoration: none;
-
     color: var(--text-primary);
-
     font-size: 13px;
-
     transition:
         background .15s ease,
         transform .08s ease;

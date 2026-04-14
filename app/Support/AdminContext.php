@@ -26,28 +26,35 @@ class AdminContext
             return null;
         }
 
-        //  обычный пользователь
-        if (!$user->is_super_admin) {
-            return $user->restaurant;
-        }
-
-        //  route приоритет
+        // =========================
+        // ROUTE
+        // =========================
         $routeRestaurant = request()->route('restaurant');
 
         if ($routeRestaurant instanceof Restaurant) {
             return $routeRestaurant;
         }
 
-        //  session
+        // =========================
+        // SESSION
+        // =========================
         $id = session('acting_restaurant_id');
 
-        if (!$id) {
-            return null;
+        if ($id) {
+            return Restaurant::where('id', $id)
+                ->where('is_active', true)
+                ->first();
         }
 
-        return Restaurant::where('id', $id)
-            ->where('is_active', true)
-            ->first();
+        // =========================
+        // FALLBACK
+        // =========================
+        if (!$user->is_super_admin && $user->restaurant) {
+            self::setActingRestaurant($user->restaurant);
+            return $user->restaurant;
+        }
+
+        return null;
     }
 
     public static function setActingRestaurant(Restaurant $restaurant): void

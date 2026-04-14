@@ -2,6 +2,8 @@
 
 return [
 
+    'enabled' => false,
+
     // categories
     'categories.create' => ['group' => 'menu', 'label' => 'permissions.categories.create'],
     'categories.edit'   => ['group' => 'menu', 'label' => 'permissions.categories.edit'],

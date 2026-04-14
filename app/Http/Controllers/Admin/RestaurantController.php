@@ -323,6 +323,15 @@ class RestaurantController extends Controller
     {
         $this->assertRestaurantAccess($request, $restaurant);
 
+        $authUser = $request->user();
+
+        if ($authUser->is_super_admin) {
+            $user = $restaurant->users()->first();
+
+        } else {
+            $user = $authUser;
+        }
+
         $templates = MenuTemplate::query()
             ->where('is_active', true)
             ->orderBy('sort_order')
@@ -335,8 +344,10 @@ class RestaurantController extends Controller
 
         return view('admin.restaurants.profile', [
             'restaurant' => $restaurant,
+            'user' => $user,
             'templates' => $templates,
             'plans' => $plans,
+            'profileMode' => 'restaurant',
         ]);
     }
 

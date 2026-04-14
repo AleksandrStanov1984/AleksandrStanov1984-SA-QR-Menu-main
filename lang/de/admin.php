@@ -269,10 +269,10 @@ return [
         'styles_hint' => 'Wählen Sie Schrift/Farbe/Größe.',
         'empty' => 'Es sind noch keine Kategorien vorhanden.',
 
-        'show_image_modal' => 'Aktives Bild und Modal',
+        'show_image_modal' => 'Bild und Modal',
         'flag_new' => 'Neu',
         'flag_dish_of_day' => 'Element des Tages',
-        'image_hint' => 'Nur JPG / PNG / WEBP (SVG ist verboten)',
+        'image_hint' => 'JPG/PNG/WEBP (SVG ist verboten)',
 
         'field_title' => 'Überschrift',
         'field_desc' => 'Beschreibung',

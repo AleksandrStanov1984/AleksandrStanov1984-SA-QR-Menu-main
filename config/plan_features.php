@@ -27,6 +27,9 @@ return [
         // ===== CAROUSEL =====
         'carousel' => false,
         'carousel_advanced' => false,
+
+        // ===== LOCALES =====
+        'locales' => ['de'],
     ],
 
     'basic' => [
@@ -54,6 +57,9 @@ return [
         // ===== CAROUSEL =====
         'carousel' => true,
         'carousel_advanced' => false,
+
+        // ===== LOCALES =====
+        'locales' => ['de', 'en'],
     ],
 
     'pro' => [
@@ -81,6 +87,9 @@ return [
         // ===== CAROUSEL =====
         'carousel' => true,
         'carousel_advanced' => true,
+
+        // ===== LOCALES =====
+        'locales' => ['de', 'en', 'ru'],
     ],
 
 ];

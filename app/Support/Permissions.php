@@ -69,6 +69,10 @@ class Permissions
     {
         $grouped = [];
 
+        if (!config('permissions.enabled')) {
+            return $grouped;
+        }
+
         foreach (self::registry() as $key => $def) {
 
             if (!is_string($key) || trim($key) === '') continue;

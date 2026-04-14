@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MenuPlan;
+use App\Models\MenuTemplate;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -15,11 +17,17 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        /** @var Restaurant|null $restaurant */
-        $restaurant = $request->attributes->get('admin_restaurant');
+        if ($user->is_super_admin) {
 
+            $restaurant = $request->route('restaurant')
+                ?? \App\Support\AdminContext::actingRestaurant();
+
+        } else {
+            $restaurant = $user->restaurant;
+        }
+
+        // ===== PERMISSIONS =====
         $grouped = Permissions::groupedRegistry();
-
         ksort($grouped);
 
         foreach ($grouped as &$items) {
@@ -29,11 +37,17 @@ class ProfileController extends Controller
 
         $flat = array_merge(...array_values($grouped));
 
+        // ===== DATA =====
+        $templates = \App\Models\MenuTemplate::all();
+        $plans = \App\Models\MenuPlan::all();
+
         return view('admin.profile', [
             'user' => $user,
             'restaurant' => $restaurant,
             'permissions_grouped' => $grouped,
             'permissions' => $flat,
+            'templates' => $templates,
+            'plans' => $plans,
         ]);
     }
 

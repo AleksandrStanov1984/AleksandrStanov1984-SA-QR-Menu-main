@@ -19,41 +19,39 @@ class ResolveAdminRestaurant
 
         $currentRestaurant = null;
 
-        // обычный пользователь
+        // =========================
+        // 👤 USER
+        // =========================
         if (!$user->is_super_admin) {
 
             if ($user->restaurant_id) {
                 $currentRestaurant = Restaurant::find($user->restaurant_id);
 
-                // синхронизируем session (важно)
-                session(['admin.restaurant_id' => $user->restaurant_id]);
+                if ($currentRestaurant) {
+                    \App\Support\AdminContext::setActingRestaurant($currentRestaurant);
+                }
             }
 
         } else {
 
-            //  ROUTE приоритет
+            // =========================
+            // ADMIN
+            // =========================
+
             $routeRestaurant = $request->route('restaurant');
 
             if ($routeRestaurant instanceof Restaurant) {
                 $currentRestaurant = $routeRestaurant;
 
-                // сохраняем в session
-                session(['admin.restaurant_id' => $routeRestaurant->id]);
+                \App\Support\AdminContext::setActingRestaurant($routeRestaurant);
 
             } else {
 
-                //fallback → session
-                $id = session('admin.restaurant_id');
-
-                if ($id) {
-                    $currentRestaurant = Restaurant::where('id', $id)
-                        ->where('is_active', true)
-                        ->first();
-                }
+                // fallback session
+                $currentRestaurant = \App\Support\AdminContext::actingRestaurant();
             }
         }
 
-        // прокидываем в request
         $request->attributes->set('admin_restaurant', $currentRestaurant);
 
         return $next($request);

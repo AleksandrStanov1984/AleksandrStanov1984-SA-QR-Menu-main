@@ -276,10 +276,10 @@ return [
             'styles_hint' => 'Выберите шрифт/цвет/размер.',
             'empty' => 'Категорий пока нет.',
 
-            'show_image_modal' => 'Активная img и modal',
+            'show_image_modal' => 'Img и modal',
             'flag_new' => 'Новинка',
             'flag_dish_of_day' => 'Элемент дня',
-            'image_hint' => 'Только JPG / PNG / WEBP (SVG запрещён)',
+            'image_hint' => 'JPG/PNG/WEBP (SVG запрещён)',
 
             'field_title' => 'Заголовок',
             'field_desc' => 'Описание',

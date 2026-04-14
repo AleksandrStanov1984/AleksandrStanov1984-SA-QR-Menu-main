@@ -6,15 +6,7 @@ use Illuminate\Routing\Route;
 if (!function_exists('ctxRestaurant')) {
     function ctxRestaurant(): ?Restaurant
     {
-        $route = request()->route();
-
-        if (!$route instanceof Route) {
-            return null;
-        }
-
-        $param = $route->parameter('restaurant');
-
-        return $param instanceof Restaurant ? $param : null;
+        return \App\Support\AdminContext::actingRestaurant();
     }
 }
 
@@ -32,5 +24,14 @@ if (!function_exists('appUrl')) {
         }
 
         return config('app.url');
+    }
+}
+
+if (!function_exists('profile_route')) {
+    function profile_route(?Restaurant $restaurant = null): string
+    {
+        return $restaurant
+            ? route('admin.profile', ['restaurant' => $restaurant->id])
+            : route('admin.profile.global');
     }
 }

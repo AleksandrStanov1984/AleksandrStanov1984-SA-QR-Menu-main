@@ -82,17 +82,12 @@
 </div>
 
 @php
-    $showFeaturedItems = $showFeaturedItems ?? false;
-
-    $items = collect($vm->carouselItems ?? [])
-        ->filter(fn ($it) => !empty($it['image']))
-        ->values();
-
-    $hasCarousel = $items->isNotEmpty();
+    $marketingBanners = collect($vm->promoBanners ?? []);
+    $marketingItems = collect($vm->carouselItems ?? []);
 @endphp
 
-@if($showFeaturedItems && $hasCarousel)
+@if($marketingBanners->isNotEmpty() || $marketingItems->isNotEmpty())
     @include('public.templates.united.blocks.header.courusel-header', [
-        'items' => $items,
+        'items' => $marketingItems,
     ])
 @endif

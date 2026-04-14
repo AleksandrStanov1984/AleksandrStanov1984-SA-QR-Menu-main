@@ -9,14 +9,14 @@
    MARKETING BLOCK
 ========================= --}}
 
-@if(!empty($banners) || $items->isNotEmpty())
+@if(!empty($banners))
     <section class="restaurant-marketing">
 
         {{-- BANNERS --}}
         @if(!empty($banners))
             @include('public.templates.united.blocks.banners.index')
         @endif
-
+@endif
         {{-- CAROUSEL --}}
         @if($items->isNotEmpty())
             <div class="header-carousel" data-header-carousel>
@@ -79,4 +79,3 @@
         @endif
 
     </section>
-@endif

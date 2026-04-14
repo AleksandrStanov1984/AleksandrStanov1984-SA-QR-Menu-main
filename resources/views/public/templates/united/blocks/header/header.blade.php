@@ -17,9 +17,11 @@
 
                 <div class="lang-menu" id="langMenu">
 
-                    <a href="?lang=de">DE</a>
-                    <a href="?lang=en">EN</a>
-                    <a href="?lang=ru">RU</a>
+                    @foreach($vm->locales() as $locale)
+                        <a href="?lang={{ $locale }}">
+                            {{ strtoupper($locale) }}
+                        </a>
+                    @endforeach
 
                 </div>
 

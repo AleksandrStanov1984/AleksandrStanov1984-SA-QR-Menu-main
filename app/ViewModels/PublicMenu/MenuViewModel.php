@@ -466,4 +466,22 @@ class MenuViewModel
 
         return $result->toArray();
     }
+
+    public function locales(): array
+    {
+        $restaurant = $this->restaurant;
+
+        if (!$restaurant) {
+            return ['de'];
+        }
+
+        $planLocales = $restaurant->feature('locales', ['de']);
+        $enabledLocales = $restaurant->enabled_locales ?? [];
+
+        $locales = !empty($enabledLocales)
+            ? array_values(array_intersect($planLocales, $enabledLocales))
+            : $planLocales;
+
+        return !empty($locales) ? $locales : ['de'];
+    }
 }

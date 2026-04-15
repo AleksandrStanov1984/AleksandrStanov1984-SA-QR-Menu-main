@@ -130,4 +130,98 @@ class RestaurantBrandController extends Controller
             'restaurant' => $restaurant,
         ]);
     }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function uploadOg(Request $request, Restaurant $restaurant)
+    {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        if (!$restaurant->feature('og_images')) {
+            return back()->with('error', 'Feature not available for your plan');
+        }
+
+        $request->validate([
+            'image'  => ['required', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
+            'locale' => ['required', 'string'],
+        ]);
+
+        $locale = $request->input('locale');
+
+        $limit = $restaurant->feature('og_limit');
+
+        $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
+        $meta['og'] = $meta['og'] ?? [];
+
+        if ($limit !== null && count($meta['og']) >= $limit && empty($meta['og'][$locale])) {
+            return back()->with('error', 'OG limit reached for your plan');
+        }
+
+        try {
+            $pipeline = app(\App\Services\ImagePipelineService::class);
+
+            $path = $pipeline->uploadAndProcess(
+                $request->file('image'),
+                $restaurant->id,
+                "branding/og/{$locale}"
+            );
+
+            $meta['og'][$locale] = $path;
+
+            $restaurant->update([
+                'meta' => $meta
+            ]);
+
+            return back()->with('status', 'Saved');
+
+        } catch (\Throwable $e) {
+
+            \Log::error('OG upload failed', [
+                'restaurant_id' => $restaurant->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Upload failed');
+        }
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function deleteOg(Request $request, Restaurant $restaurant, string $locale)
+    {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        if (!$restaurant->feature('og_images')) {
+            return back()->with('error', 'Feature not available for your plan');
+        }
+
+        try {
+            $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
+
+            if (!empty($meta['og'][$locale])) {
+
+                app(\App\Services\ImageService::class)->delete($meta['og'][$locale]);
+
+                unset($meta['og'][$locale]);
+
+                $restaurant->update([
+                    'meta' => $meta
+                ]);
+            }
+
+            return back()->with('status', 'Deleted');
+
+        } catch (\Throwable $e) {
+
+            \Log::error('OG delete failed', [
+                'restaurant_id' => $restaurant->id,
+                'locale' => $locale,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Delete failed');
+        }
+    }
 }

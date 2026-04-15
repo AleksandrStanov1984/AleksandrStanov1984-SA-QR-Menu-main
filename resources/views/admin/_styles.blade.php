@@ -1,3 +1,5 @@
+{{-- resources/views/admin/_styles.blade.php --}}
+
 <style>
     /* ===== LOADER ===== */
 

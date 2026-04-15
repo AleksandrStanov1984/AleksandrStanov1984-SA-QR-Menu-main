@@ -142,6 +142,42 @@ return [
             'keep_source' => false,
         ],
 
+        'branding_og' => [
+            'name' => 'branding_og',
+            'match' => 'restaurants/*/branding/og/*/*',
+            'format' => 'webp',
+            'quality' => 86,
+            'sizes' => [
+                [1200, 630],
+            ],
+            'hash_names' => false,
+            'keep_source' => false,
+        ],
+
+        'system_og' => [
+            'name' => 'system_og',
+            'match' => 'system/og/*/*',
+            'format' => 'webp',
+            'quality' => 86,
+            'exact' => [
+                'w' => 1200,
+                'h' => 630,
+            ],
+            'keep_source' => false,
+        ],
+
+        'system_og_root' => [
+            'name' => 'system_og_root',
+            'match' => 'system/og/*',
+            'format' => 'webp',
+            'quality' => 86,
+            'exact' => [
+                'w' => 1200,
+                'h' => 630,
+            ],
+            'keep_source' => false,
+        ],
+
     ],
 
     'qr' => [
@@ -174,14 +210,14 @@ return [
         'keep_source' => false,
     ],
 
-    'banner' => [
-        'name' => 'banner',
-        'match' => 'restaurants/*/banners/*',
+    'system_og' => [
+        'name' => 'system_og_locale',
+        'match' => 'system/og/*/*',
         'format' => 'webp',
         'quality' => 86,
-        'sizes' => [1200],
-        'hash_names' => false,
+        'sizes' => [
+            [1200, 630],
+        ],
         'keep_source' => false,
     ],
-
 ];

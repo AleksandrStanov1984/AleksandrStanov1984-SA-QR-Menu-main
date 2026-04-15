@@ -20,7 +20,6 @@ class RestaurantUsersSeeder extends Seeder
             User::updateOrCreate(
 
                 [
-                    // ✅ теперь это owner, а не "restaurant"
                     'email' => "owner{$rid}@example.com"
                 ],
 
@@ -33,7 +32,6 @@ class RestaurantUsersSeeder extends Seeder
 
                     'is_super_admin' => false,
 
-                    // 👉 полный доступ (на будущее, сейчас не влияет)
                     'meta' => [
                         'permissions' => [
                             'menu_manage' => true,

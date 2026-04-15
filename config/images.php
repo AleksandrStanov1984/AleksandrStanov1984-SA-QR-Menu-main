@@ -56,6 +56,7 @@ return [
             'banner' => 'system/banners/default.webp',
         ],
         'qr'   => 'system/qr/fallback.webp',
+        'og' => 'system/og',
     ],
 
     /*
@@ -69,19 +70,17 @@ return [
         'base' => 'restaurants',
 
         'directories' => [
-
             'logo'       => 'logo',
             'hero'       => 'hero',
             'menu_items' => 'menu/items',
             'categories' => 'categories',
             'gallery'    => 'gallery',
-
             'qr'         => 'qr',
             'qr_logo'    => 'qr/logo',
             'qr_bg'      => 'qr/background',
             'qr_final'   => 'qr/final',
-
             'social'     => 'social',
+            'og'         => 'branding/og',
 
         ],
 

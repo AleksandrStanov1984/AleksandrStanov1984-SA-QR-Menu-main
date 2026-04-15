@@ -7,30 +7,61 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCategoryRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     protected function prepareForValidation(): void
     {
-        $t = $this->input('title');
-        if (is_string($t)) {
-            $t = trim($t);
-            $t = strip_tags($t);
-            $t = preg_replace('/\s+/u', ' ', $t);
-            $this->merge(['title' => $t]);
+        $titles = $this->input('title');
+
+        if (is_array($titles)) {
+            $clean = [];
+
+            foreach ($titles as $loc => $t) {
+                $t = trim((string) $t);
+                $t = strip_tags($t);
+                $t = preg_replace('/\s+/u', ' ', $t);
+
+                $clean[$loc] = $t;
+            }
+
+            $this->merge(['title' => $clean]);
         }
     }
 
     public function rules(): array
     {
         return [
-            'title' => [
-                'required',
+            'title' => ['required', 'array'],
+
+            'title.*' => [
+                'nullable',
                 'string',
                 'max:50',
-                // без цифр и спецсимволов; разрешаем буквы + пробел + дефис
                 'regex:/^[\p{L}][\p{L}\s\-]*$/u',
                 new FirstLetterUppercase(),
             ],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($v) {
+
+            $titles = $this->input('title', []);
+
+            $hasAny = collect($titles)
+                ->filter(fn($t) => !empty(trim($t)))
+                ->isNotEmpty();
+
+            if (!$hasAny) {
+                $v->errors()->add(
+                    'title',
+                    __('admin.validation.title_required')
+                );
+            }
+        });
     }
 }

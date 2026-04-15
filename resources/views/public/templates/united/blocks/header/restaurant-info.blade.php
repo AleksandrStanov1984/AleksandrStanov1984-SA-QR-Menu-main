@@ -80,14 +80,3 @@
     @endif
 
 </div>
-
-@php
-    $marketingBanners = collect($vm->promoBanners ?? []);
-    $marketingItems = collect($vm->carouselItems ?? []);
-@endphp
-
-@if($marketingBanners->isNotEmpty() || $marketingItems->isNotEmpty())
-    @include('public.templates.united.blocks.header.courusel-header', [
-        'items' => $marketingItems,
-    ])
-@endif

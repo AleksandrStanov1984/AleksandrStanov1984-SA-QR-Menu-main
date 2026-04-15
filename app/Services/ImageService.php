@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Restaurant;
 use Illuminate\Support\Facades\File;
 
 class ImageService
@@ -158,5 +159,96 @@ class ImageService
 
         // 3. fallback
         return '/assets/' . ltrim($fallback, '/');
+    }
+
+    public function og(string $locale): string
+    {
+        $locale = strtolower($locale);
+
+        // 1. restaurant (будет потом)
+        // $restaurantPath = "restaurants/{$id}/og/{$locale}/default.webp";
+
+        // 2. system locale
+        $localized = "system/og/{$locale}/default.webp";
+
+        // 3. system default
+        $global = "system/og/default.webp";
+
+        if (File::exists(public_path("assets/{$localized}"))) {
+            return "/assets/{$localized}";
+        }
+
+        if (File::exists(public_path("assets/{$global}"))) {
+            return "/assets/{$global}";
+        }
+
+        return config('image.urls.fallback');
+    }
+
+    public function ogForLocale(Restaurant $restaurant, string $locale): string
+    {
+        $og = $meta['og'] ?? [];
+
+        if (!empty($og[$locale])) {
+            return '/assets/' . ltrim($og[$locale], '/');
+        }
+
+        $default = "assets/system/og/{$locale}/default.webp";
+
+        if ($this->exists($default)) {
+            return '/' . $default;
+        }
+
+        return '/assets/system/og/default.webp';
+    }
+
+    private function normalizeAssetPath(string $path): string
+    {
+        $path = ltrim($path, '/');
+
+        // если уже начинается с assets → не дублируем
+        if (str_starts_with($path, 'assets/')) {
+            return '/' . $path;
+        }
+
+        return '/assets/' . $path;
+    }
+
+    private function exists(string $path): bool
+    {
+        return is_file(public_path(ltrim($path, '/')));
+    }
+
+    public function path(string $path): string
+    {
+        return public_path('assets/' . ltrim($path, '/'));
+    }
+
+    public function existsPublic(string $path): bool
+    {
+        return is_file($this->path($path));
+    }
+
+    public function food(?string $path): string
+    {
+        $fallback = config('image.system.fallbacks.food', 'system/fallback/food.webp');
+
+        if (!$path) {
+            return '/assets/' . $fallback;
+        }
+
+        $path = ltrim($path, '/');
+
+        if (File::exists(public_path($path))) {
+            return '/' . $path;
+        }
+
+        $assetPath = 'assets/' . $path;
+
+        if (File::exists(public_path($assetPath))) {
+            return '/' . $assetPath;
+        }
+
+        return '/assets/' . $fallback;
     }
 }

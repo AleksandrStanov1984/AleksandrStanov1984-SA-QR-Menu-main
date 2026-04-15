@@ -1,6 +1,14 @@
+{{-- resources/views/admin/layout.blade.php --}}
+
+
 <!doctype html>
 <html lang="{{ str_replace('_','-', app()->getLocale()) }}">
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+@if(!request()->is('admin/*'))
+    {{-- OG meta --}}
+@endif
+
 <head>
     @include('admin.layout.head')
 
@@ -87,8 +95,8 @@
 @include('admin.restaurants.components.ui.toast._scripts')
 @include('admin.restaurants.components.ui.confirm._scripts')
 
-<div class="global-loader" id="globalLoader">
-    <div class="loader-spinner"></div>
+<div id="appLoader" class="app-loader hidden">
+    <div class="spinner"></div>
 </div>
 
 </body>

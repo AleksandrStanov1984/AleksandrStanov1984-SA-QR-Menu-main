@@ -5,6 +5,16 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $vm->ogTitle }}">
+    <meta property="og:description" content="{{ $vm->ogDescription }}">
+    <meta property="og:image" content="{{ url($vm->ogImage) }}">
+    <meta property="og:url" content="{{ $vm->ogUrl }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ url($vm->ogImage) }}">
+
     <title>{{ $vm->merchant->name }}</title>
 
     @include('public.templates.united.layout.styles')
@@ -28,6 +38,17 @@
     @include('public.templates.united.blocks.header.restaurant-info', [
         'showFeaturedItems' => true,
     ])
+
+    @php
+        $marketingBanners = collect($vm->promoBanners ?? []);
+        $marketingItems = collect($vm->carouselItems ?? []);
+    @endphp
+
+    @if($marketingBanners->isNotEmpty() || $marketingItems->isNotEmpty())
+        @include('public.templates.united.blocks.header.courusel-header', [
+            'items' => $marketingItems,
+        ])
+    @endif
 </div>
 
 <main id="menuContainer">

@@ -153,6 +153,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/branding', [RestaurantBrandController::class, 'edit'])
             ->name('restaurants.branding');
 
+        // OG
+        Route::post('/restaurants/{restaurant}/branding/og', [RestaurantBrandController::class, 'uploadOg']
+        )->name('restaurants.og.upload');
+
+        Route::delete('/restaurants/{restaurant}/branding/og/{locale}', [RestaurantBrandController::class, 'deleteOg']
+        )->name('restaurants.og.delete');
+
 
         // SECTIONS
         Route::get('restaurants/{restaurant}/sections', [SectionController::class, 'index'])

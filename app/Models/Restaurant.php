@@ -119,4 +119,19 @@ class Restaurant extends Model
         return $this->hasMany(RestaurantBanner::class)
             ->orderBy('sort_order');
     }
+
+    public function ogLimit(): ?int
+    {
+        return $this->feature('og_limit');
+    }
+
+    public function hasOgFeature(): bool
+    {
+        return $this->feature('og_images');
+    }
+
+    public function getOg(): array
+    {
+        return $this->meta['og'] ?? [];
+    }
 }

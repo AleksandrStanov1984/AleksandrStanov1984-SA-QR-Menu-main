@@ -79,9 +79,11 @@ class RestaurantQrController extends Controller
             throw new TenantAccessException(__('admin.errors.qr_not_found'));
         }
 
-        $svgPath = public_path('assets/' . ltrim($qr->qr_path, '/'));
+        $imageService = app(ImageService::class);
 
-        if (!File::exists($svgPath)) {
+        $svgPath = $imageService->path($qr->qr_path);
+
+        if (!$imageService->existsPublic($qr->qr_path)) {
             throw new TenantAccessException(__('admin.errors.file_not_found'));
         }
 
@@ -116,9 +118,9 @@ class RestaurantQrController extends Controller
 
         try {
 
-            exec($command);
+            exec($command, $output, $code);
 
-            if (!file_exists($pngPath)) {
+            if ($code !== 0 || !file_exists($pngPath)) {
                 throw new TenantAccessException(__('admin.errors.qr_convert_failed'));
             }
 

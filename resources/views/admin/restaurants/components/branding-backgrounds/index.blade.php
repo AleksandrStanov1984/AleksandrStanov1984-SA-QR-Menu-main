@@ -1,3 +1,6 @@
+{{-- resources/views/admin/restaurants/components/branding-backgrounds/index.blade.php --}}
+
+
 @php
     $meta = is_array($restaurant->meta ?? null) ? $restaurant->meta : [];
 
@@ -103,5 +106,7 @@
         </form>
     </div>
 @endif
+
+@include('admin.restaurants.components.branding-backgrounds.og.index')
 
 @include('admin.restaurants.components.branding-backgrounds._scripts')

@@ -4,26 +4,31 @@ namespace App\ViewModels\PublicMenu;
 
 use App\DTO\ItemMetaDTO;
 use App\Models\Restaurant;
-use App\Support\ImagePipeline\ImageService;
+
 use Carbon\Carbon;
 use App\Support\Hours;
+use App\Services\ImageService;
 
 use Illuminate\Support\Facades\File;
 
 class MenuViewModel
 {
     public string $templateKey;
+
     public string $locale = 'de';
 
     public string $status = 'open';
     public object $merchant;
+
     public array $branding = [];
+
     public array $theme = [];
 
     public array $categories = [];
     public array $bestsellers = [];
 
     public array $footer = [];
+
     public array $hours = [];
 
     public array $features = [];
@@ -32,25 +37,23 @@ class MenuViewModel
     public bool $showSchedule = false;
     public bool $showStatus = false;
     public ?array $todayHours = null;
-
     public bool $showImages = false;
     public bool $showItemModal = false;
-
     public bool $showSpicy = false;
     public bool $showIsNew = false;
     public bool $showDishOfDay = false;
 
     public bool $bestseller = false;
-
     public bool $showLongDescription = false;
-
     public array $featuredItems = [];
-
     public array $promoBanners = [];
 
     protected ImageService $images;
-
     public array $carouselItems = [];
+    public string $ogImage;
+    public string $ogTitle;
+    public string $ogDescription;
+    public string $ogUrl;
 
     public function __construct(
         protected Restaurant $restaurant,
@@ -132,6 +135,15 @@ class MenuViewModel
         $this->showHoursModal = $this->hasFeature($features, 'hours_modal');
 
         $this->carouselItems = $this->buildCarousel();
+
+        $this->ogImage = $this->images
+            ->ogForLocale($restaurant, $this->locale);
+
+        $this->ogTitle = $restaurant->name;
+
+        $this->ogDescription = $this->buildOgDescription($restaurant);
+
+        $this->ogUrl = request()->fullUrl();
     }
 
     private function resolveImage(?string $path): ?string
@@ -483,5 +495,18 @@ class MenuViewModel
             : $planLocales;
 
         return !empty($locales) ? $locales : ['de'];
+    }
+
+    private function buildOgDescription(Restaurant $restaurant): string
+    {
+        $desc = $restaurant->description ?? '';
+
+        if (!$desc) {
+            return __('menu.default_og_description', [
+                'name' => $restaurant->name
+            ]);
+        }
+
+        return mb_strimwidth(strip_tags($desc), 0, 160, '...');
     }
 }

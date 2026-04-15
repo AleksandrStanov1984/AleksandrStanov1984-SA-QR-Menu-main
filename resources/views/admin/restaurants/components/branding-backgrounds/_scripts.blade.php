@@ -1,3 +1,6 @@
+{{-- resources/views/admin/restaurants/components/branding-backgrounds/_scripts.blade.php --}}
+
+
 <script>
     (function(){
 

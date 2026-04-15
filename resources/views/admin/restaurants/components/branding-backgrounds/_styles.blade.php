@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/branding-backgrounds/_styles.blade.php --}}
+
 <style>
     .branding-card {
         max-width: 100%;

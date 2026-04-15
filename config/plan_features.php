@@ -30,6 +30,10 @@ return [
 
         // ===== LOCALES =====
         'locales' => ['de'],
+
+        // ===== BRANDING =====
+        'og_images' => true,
+        'og_limit' => 1,
     ],
 
     'basic' => [
@@ -60,6 +64,10 @@ return [
 
         // ===== LOCALES =====
         'locales' => ['de', 'en'],
+
+        // ===== BRANDING =====
+        'og_images' => true,
+        'og_limit' => 2,
     ],
 
     'pro' => [
@@ -90,6 +98,10 @@ return [
 
         // ===== LOCALES =====
         'locales' => ['de', 'en', 'ru'],
+
+        // ===== BRANDING =====
+        'og_images' => true,
+        'og_limit' => null, // unlimited
     ],
 
 ];

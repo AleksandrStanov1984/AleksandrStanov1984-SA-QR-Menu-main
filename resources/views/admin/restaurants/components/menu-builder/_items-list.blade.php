@@ -135,6 +135,8 @@
              data-item-row
              data-item-active="{{ $rowActiveForUi }}"
              data-deleted="{{ $deleted ? '1' : '0' }}"
+             data-search="{{ mb_strtolower($title($it)) }}"
+             data-type="item"
              style="border:1px solid var(--line); border-radius:16px; padding:10px; background:rgba(255,255,255,.03);">
 
             {{-- АККОРДЕОН --}}

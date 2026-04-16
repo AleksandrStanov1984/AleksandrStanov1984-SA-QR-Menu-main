@@ -9,6 +9,19 @@
 
 @include('admin.restaurants.components.menu-builder._styles')
 
+<div class="mb-search">
+
+    <input
+        type="text"
+        id="mbSearchInput"
+        placeholder="Поиск..."
+        autocomplete="off"
+    >
+
+    <div id="mbSearchResults" class="mb-search-results"></div>
+
+</div>
+
 <div class="card" style="margin-top:16px;">
   <div class="mb-row">
     <div>

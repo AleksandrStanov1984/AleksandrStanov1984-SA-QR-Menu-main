@@ -685,7 +685,6 @@
                 throw new Error(await resp.text());
             }
 
-            // меняем preview на fallback
             const img = document.querySelector(`[data-item-image="${itemId}"]`);
 
             if (img) {
@@ -708,6 +707,79 @@
         }
 
     });
+
+    const mbInput = document.getElementById('mbSearchInput');
+    const mbResults = document.getElementById('mbSearchResults');
+
+    if (mbInput) {
+
+        mbInput.addEventListener('input', () => {
+
+            const val = mbInput.value.toLowerCase().trim();
+            mbResults.innerHTML = '';
+
+            if (!val) {
+                mbResults.style.display = 'none';
+                return;
+            }
+
+            const all = document.querySelectorAll('[data-search]');
+            let found = [];
+
+            all.forEach(el => {
+                if (el.dataset.search.includes(val)) {
+                    found.push(el);
+                }
+            });
+
+            if (!found.length) {
+                mbResults.style.display = 'none';
+                return;
+            }
+
+            found.slice(0, 10).forEach(el => {
+
+                const div = document.createElement('div');
+                div.className = 'mb-search-item';
+
+                const type = el.dataset.type;
+                const text = el.dataset.search;
+
+                // 🔥 ВАЖНО — новый вывод
+                div.innerHTML = `
+                <div class="mb-search-line ${type}">
+                    ${text}
+                </div>
+            `;
+
+                div.onclick = () => {
+
+                    el.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    el.classList.add('mb-highlight');
+
+                    setTimeout(() => {
+                        el.classList.remove('mb-highlight');
+                    }, 1500);
+
+                    mbResults.style.display = 'none';
+                };
+
+                mbResults.appendChild(div);
+            });
+
+            mbResults.style.display = 'block';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.mb-search')) {
+                mbResults.style.display = 'none';
+            }
+        });
+    }
 
 
 })();

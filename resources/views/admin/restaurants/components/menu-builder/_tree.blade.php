@@ -37,6 +37,8 @@
              data-section-id="{{ $cat->id }}"
              data-section-row="category"
              data-deleted="{{ $catDeleted ? '1' : '0' }}"
+             data-search="{{ mb_strtolower($tTitle($cat, $defaultLocale)) }}"
+             data-type="category"
              style="padding:12px;">
       <div class="mb-row">
         <div class="mb-left">
@@ -141,6 +143,8 @@
                    data-section-id="{{ $sub->id }}"
                    data-section-row="subcategory"
                    data-deleted="{{ $subDeleted ? '1' : '0' }}"
+                   data-search="{{ mb_strtolower($tTitle($sub, $defaultLocale)) }}"
+                   data-type="subcategory"
                    style="padding:12px; margin-top:10px;">
             <div class="mb-row">
               <div class="mb-left">

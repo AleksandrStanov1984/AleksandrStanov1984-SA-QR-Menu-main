@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/hours/_styles.blade.php --}}
+{{-- admin/restaurants/components/hours/_styles --}}
 <style>
     /* =========================================
        HOURS BLOCK

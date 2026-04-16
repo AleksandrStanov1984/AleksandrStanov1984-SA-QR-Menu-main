@@ -1,3 +1,6 @@
+{{-- resources/views/admin/restaurants/components/qr/_qr.blade.php --}}
+{{-- admin/restaurants/components/qr/_qr --}}
+
 @php
     $qrPath = optional($restaurant->qr)->qr_path;
 @endphp
@@ -143,17 +146,6 @@
 
     </div>
 
-</div>
-
-<div id="qrLoader" class="qr-loader" style="display:none;">
-    <div class="qr-loader__backdrop"></div>
-
-    <div class="qr-loader__content">
-        <div class="qr-spinner"></div>
-        <div class="qr-loader__text">
-            {{ __('qr.loading.title') }}
-        </div>
-    </div>
 </div>
 
 @include('admin.restaurants.components.qr._modal-qr')

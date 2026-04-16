@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/qr/_styles.blade.php --}}
+{{-- admin/restaurants/components/qr/_styles --}}
 <style>
     /* ===== ОСНОВА ===== */
 
@@ -112,46 +114,6 @@
         cursor: not-allowed;
     }
 
-    .qr-loader {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        pointer-events: all;
-    }
-
-    .qr-loader__backdrop {
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.6);
-    }
-
-    .qr-loader__content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        color: #fff;
-    }
-
-    .qr-spinner {
-        width: 54px;
-        height: 54px;
-        border: 4px solid rgba(255,255,255,0.2);
-        border-top: 4px solid #fff;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin: 0 auto 14px;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    .qr-loader__text {
-        font-size: 18px;
-        font-weight: 500;
-    }
 
     @media (max-width: 768px) {
         .card .qr-actions {

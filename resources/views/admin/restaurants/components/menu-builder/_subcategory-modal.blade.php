@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_subcategory-modal.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/_subcategory-modal --}}
 <div class="modal" id="mbModalSubcategory" aria-hidden="true">
   <div class="modal__backdrop" data-mb-close></div>
   <div class="modal__panel">

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_item-modal.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/_item-modal --}}
 @php
     use App\Support\Permissions;
 
@@ -7,6 +9,10 @@
     // feature flags
     $canImagesFeature   = (bool) $restaurant->feature('images');
     $canDetailsFeature  = (bool) $restaurant->feature('long_description');
+
+    $imageService = app(\App\Services\ImageService::class);
+    $fallbackFood = $imageService->food(null);
+
 @endphp
 
 <div class="modal" id="mbModalItem" aria-hidden="true">
@@ -100,7 +106,7 @@
                         <textarea
                             name="translations[{{ $loc }}][description]"
                             maxlength="100"
-                            style="width:100%; min-height:70px;"
+                            style="width:100%; min-height:90px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--text);"
                         ></textarea>
 
                         {{-- DETAILS (PRO ONLY) --}}
@@ -120,15 +126,46 @@
             {{-- ===================== --}}
             {{-- IMAGE (BASIC + PRO) --}}
             {{-- ===================== --}}
+
             @if($canImagesFeature)
                 <hr style="border:0;border-top:1px solid var(--line); margin:12px 0;">
 
-                <label style="margin-top:10px;">{{ __('admin.menu_builder.image') }}</label>
-                <input type="file" name="image" id="mbItemImageInput" accept=".jpg,.jpeg,.png,.webp">
+                <div class="mb-image-block">
 
-                <div class="mb-muted" style="margin-top:6px;">
-                    {{ __('admin.menu_builder.image_hint') }}
+                    {{-- PREVIEW --}}
+                    <div class="mb-image-preview">
+                        <img id="mbItemImagePreview"
+                             src="{{ $fallbackFood }}"
+                             data-fallback-src="{{ $fallbackFood }}">
+
+                        <button type="button"
+                                id="mbItemImageDelete"
+                                class="mb-image-delete"
+                                style="display:none;">
+                            {{ __('menu.image_delete') }}
+                        </button>
+                    </div>
+
+                    {{-- CONTROLS --}}
+                    <div class="mb-image-controls">
+
+                        <label class="mb-file-btn">
+                            {{ __('menu.image_select') }}
+                            <input type="file"
+                                   name="image"
+                                   id="mbItemImageInput"
+                                   accept=".jpg,.jpeg,.png,.webp">
+                        </label>
+
+                        <div class="mb-image-hint">
+                            {{ __('menu.image_hint') }}
+                        </div>
+
+                    </div>
+
                 </div>
+
+                <input type="hidden" name="remove_image" id="mbRemoveImage" value="0">
             @endif
 
             <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:10px;">

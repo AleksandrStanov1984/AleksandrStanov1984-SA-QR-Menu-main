@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/hours/_scripts.blade.php --}}
+{{-- admin/restaurants/components/hours/_scripts --}}
 <script>
     (function(){
 

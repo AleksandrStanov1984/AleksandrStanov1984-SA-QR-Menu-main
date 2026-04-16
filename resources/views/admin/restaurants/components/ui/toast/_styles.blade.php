@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/ui/toast/_styles.blade.php --}}
+{{-- admin/restaurants/components/ui/toast/_styles --}}
 <style>
     .toast {
         position: fixed;

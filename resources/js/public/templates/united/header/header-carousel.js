@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/header/header-carousel.js
 export function initHeaderCarousel() {
     const carousels = document.querySelectorAll('[data-header-carousel]');
     if (!carousels.length) return;

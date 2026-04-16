@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/drawer/drawer-controller.js
 /*
 |--------------------------------------------------------------------------
 | MOBILE DRAWER CONTROLLER

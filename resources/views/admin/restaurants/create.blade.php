@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/create.blade.php --}}
+{{-- admin/restaurants/create --}}
 @extends('admin.layout')
 
 @section('title', __('admin.restaurants.create.title'))

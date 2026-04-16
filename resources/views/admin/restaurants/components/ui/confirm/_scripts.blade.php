@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/ui/confirm/_scripts.blade.php --}}
+{{-- admin/restaurants/components/ui/confirm/_scripts --}}
 <script>
     window.showConfirm = function (message, onConfirm) {
 

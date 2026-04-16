@@ -13,6 +13,7 @@ use App\Models\ItemTranslation;
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Services\ImagePipelineService;
+use App\Services\ImageService;
 use App\Support\Guards\AccessGuardTrait;
 use App\Support\Permissions;
 use Illuminate\Http\Request;
@@ -198,14 +199,9 @@ class ItemController extends Controller
 
         $item->loadMissing('section');
 
-        $section = $item->section;
-        if (!$section || (int) $section->restaurant_id !== (int) $restaurant->id) {
-            abort(404);
-        }
-
         $data = $request->all();
 
-        // is_activ
+        // is_active отдельно
         if (array_key_exists('is_active', $data)) {
 
             $item->is_active = (bool)$data['is_active'];
@@ -218,27 +214,8 @@ class ItemController extends Controller
         }
 
         // meta
-        $data = $request->all();
         $meta = ItemMetaDTO::fromModel($item);
         $meta->apply($data);
-
-        if ($meta->isNew) {
-            Item::where('section_id', $section->id)
-                ->where('id', '!=', $item->id)
-                ->whereRaw("JSON_EXTRACT(COALESCE(meta, JSON_OBJECT()), '$.is_new') = true")
-                ->update([
-                    'meta' => DB::raw("JSON_SET(COALESCE(meta, JSON_OBJECT()), '$.is_new', false)"),
-                ]);
-        }
-
-        if ($meta->dishOfDay) {
-            Item::where('section_id', $section->id)
-                ->where('id', '!=', $item->id)
-                ->whereRaw("JSON_EXTRACT(COALESCE(meta, JSON_OBJECT()), '$.dish_of_day') = true")
-                ->update([
-                    'meta' => DB::raw("JSON_SET(COALESCE(meta, JSON_OBJECT()), '$.dish_of_day', false)"),
-                ]);
-        }
 
         $item->meta = $meta->toArray();
         $item->save();
@@ -257,11 +234,6 @@ class ItemController extends Controller
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
         $item->loadMissing('section');
-
-        $section = $item->section;
-        if (!$section || (int) $section->restaurant_id !== (int) $restaurant->id) {
-            abort(404);
-        }
 
         $value = (bool) $request->input('is_active', true);
 
@@ -284,10 +256,6 @@ class ItemController extends Controller
 
         $item->loadMissing('section');
 
-        $section = $item->section;
-        if (!$section || (int) $section->restaurant_id !== (int) $restaurant->id) {
-            abort(404);
-        }
 
         if ($item->image_path) {
             app(\App\Services\ImageService::class)->delete($item->image_path);
@@ -308,10 +276,6 @@ class ItemController extends Controller
     {
         $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
 
-        if ((int)$section->restaurant_id !== (int)$restaurant->id) {
-            abort(404);
-        }
-
         $ids = $request->input('item_ids', []);
 
         foreach ($ids as $index => $id) {
@@ -324,6 +288,28 @@ class ItemController extends Controller
 
         return response()->json([
             'status' => true
+        ]);
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function deleteImage(Request $request, Restaurant $restaurant, Item $item)
+    {
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
+
+        $imageService = app(ImageService::class);
+
+        if ($item->image_path) {
+            $imageService->delete($item->image_path);
+        }
+
+        $item->update([
+            'image_path' => null,
+        ]);
+
+        return response()->json([
+            'message' => __('menu.image_deleted'),
         ]);
     }
 }

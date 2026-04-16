@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/index.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/index --}}
 @php
   $locales = $locales ?? ($restaurant->enabled_locales ?: ['de']);
 

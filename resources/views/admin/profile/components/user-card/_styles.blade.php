@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile/components/user-card/_styles.blade.php --}}
+{{-- admin/profile/components/user-card/_styles --}}
 <style>
 
     .profile-card {

@@ -1,4 +1,5 @@
 {{-- resources/views/admin/layout/head.blade.php --}}
+{{-- admin/layout/head --}}
 
 
 <meta charset="utf-8">
@@ -9,4 +10,4 @@
 
 <link rel="stylesheet" href="{{ asset('admin/css/admin.css') }}">
 
-@vite(['resources/js/app.js'])
+@vite(['resources/js/admin.js'])

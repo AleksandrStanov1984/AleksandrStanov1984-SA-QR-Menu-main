@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/banners/_styles.blade.php --}}
 <style>
 
     .banners-grid {
@@ -115,6 +116,32 @@
         opacity: 0.6;
         transform: scale(1.02);
         z-index: 10;
+    }
+
+    /*
+|--------------------------------------------------------------------------
+| BANNER FILE INPUT
+|--------------------------------------------------------------------------
+*/
+    .banner-file-btn{
+        display:block;
+        width:100%;
+        padding:8px 10px;
+        border-radius:10px;
+        border:1px solid var(--line);
+        background:rgba(255,255,255,.04);
+        text-align:center;
+        font-size:12px;
+        cursor:pointer;
+        transition:all .15s ease;
+    }
+
+    .banner-file-btn:hover{
+        background:rgba(255,255,255,.08);
+    }
+
+    .banner-file-input{
+        display:none;
     }
 
     @keyframes spin {

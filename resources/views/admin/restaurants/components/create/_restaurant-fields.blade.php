@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/create/_restaurant-fields.blade.php --}}
+{{-- admin/restaurants/components/create/_restaurant-fields --}}
 <div class="col12">
     <h3 class="mut">{{ __('admin.restaurants.create.sections.restaurant') }}</h3>
 </div>

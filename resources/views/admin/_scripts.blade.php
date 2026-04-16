@@ -1,4 +1,5 @@
 {{-- resources/views/admin/_scripts.blade.php --}}
+{{-- admin/_scripts --}}
 
 <script>
     // ===== MODAL =====

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/import/_zip.blade.php --}}
+{{-- admin/restaurants/components/import/_zip --}}
 @php
   use App\Support\Permissions;
 @endphp

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/security/password.blade.php --}}
+{{-- admin/security/password --}}
 @extends('admin.layout')
 
 @section('title', __('admin.profile.title'))

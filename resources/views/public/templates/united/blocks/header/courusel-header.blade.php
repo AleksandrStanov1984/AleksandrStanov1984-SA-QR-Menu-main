@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/header/courusel-header.blade.php --}}
+{{-- public/templates/united/blocks/header/courusel-header --}}
 @inject('img', 'App\Services\ImageService')
 
 @php

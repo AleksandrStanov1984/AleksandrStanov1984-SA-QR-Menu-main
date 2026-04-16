@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/layout/styles.blade.php --}}
+{{-- public/templates/united/layout/styles --}}
 @vite('resources/css/app.css')
 
 <!-- SYSTEM COLOR SCHEME -->

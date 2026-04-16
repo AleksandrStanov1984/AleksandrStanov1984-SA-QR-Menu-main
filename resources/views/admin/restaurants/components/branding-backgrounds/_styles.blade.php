@@ -1,4 +1,5 @@
 {{-- resources/views/admin/restaurants/components/branding-backgrounds/_styles.blade.php --}}
+{{-- admin/restaurants/components/branding-backgrounds/_styles --}}
 
 <style>
     .branding-card {
@@ -83,8 +84,78 @@
     }
 
     /* =========================
+   UPLOADER
+   ========================= */
+
+    .branding-item{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .branding-preview-wrapper{
+        position:relative;
+    }
+
+    .branding-preview{
+        border-radius:12px;
+    }
+
+    .branding-file-btn{
+        display:block;
+        width:100%;
+        padding:10px;
+        border-radius:10px;
+        background:#1f2e46;
+        color:#fff;
+        text-align:center;
+        cursor:pointer;
+        font-size:13px;
+        transition:.2s;
+        border:1px solid rgba(255,255,255,.06);
+    }
+
+    .branding-file-btn:hover{
+        background:#2a3c5c;
+    }
+
+    /* скрытый input */
+    .branding-file-input{
+        display:none;
+    }
+
+    .branding-preview-wrapper {
+        position: relative;
+    }
+
+    .branding-delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+
+        width: 28px;
+        height: 28px;
+
+        border-radius: 50%;
+        border: none;
+
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .branding-delete-btn:hover {
+        background: rgba(255,0,0,0.85);
+    }
+
+    /* =========================
    MOBILE (≤768px)
-========================= */
+   ========================= */
     @media (max-width: 768px) {
 
         .branding-card {

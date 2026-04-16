@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/qr/_modal-qr.blade.php --}}
+{{-- admin/restaurants/components/qr/_modal-qr --}}
 <div class="modal" id="mbModalQrUpload" aria-hidden="true">
 
     <div class="modal__backdrop" data-mb-close></div>

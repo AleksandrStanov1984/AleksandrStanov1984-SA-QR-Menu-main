@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile/components/modals/change-email/index.blade.php --}}
+{{-- admin/profile/components/modals/change-email/index --}}
 
 @include('admin.profile.components.modals.change-email._styles')
 

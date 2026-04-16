@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/banners/index.blade.php --}}
+{{-- public/templates/united/blocks/banners/index --}}
 @include('public.templates.united.blocks.banners._styles')
 
 @if(!empty($vm->promoBanners))

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/permissions/_styles.blade.php --}}
+{{-- admin/restaurants/components/permissions/_styles --}}
 <style>
 
     /* ===== MODAL ===== */

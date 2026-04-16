@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'choose_file' => 'Выбрать файл',
     'carousel_settings' => 'Настройки карусели',
     'carousel_saved' => 'Настройки карусели сохранены',
     'carousel_no_items_for_source' => 'К сожалению, нет блюд в категории ":source". Добавьте хотя бы 3 наименования.',
@@ -16,6 +17,10 @@ return [
         'starter' => 'Starter',
         'basic' => 'Basic',
         'pro' => 'Pro',
+    ],
+
+    'og' => [
+        'title' => 'OG изображения',
     ],
 
     'common' => [
@@ -34,6 +39,7 @@ return [
         'enable' => 'Включить',
         'close' => 'Закрыть',
         'saving' => 'Сохранино!',
+        'choose_file' => 'Выбрать файл',
     ],
 
     'fields' => [

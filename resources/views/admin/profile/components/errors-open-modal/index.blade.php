@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile/components/errors-open-modal/index.blade.php --}}
+{{-- admin/profile/components/errors-open-modal/index --}}
 @if ($errors->any())
 <script>
     (function () {

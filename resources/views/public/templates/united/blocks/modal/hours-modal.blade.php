@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/modal/hours-modal.blade.php --}}
+{{-- public/templates/united/blocks/modal/hours-modal --}}
 <div id="hoursModal" class="modal">
 
     <div class="modal-box">

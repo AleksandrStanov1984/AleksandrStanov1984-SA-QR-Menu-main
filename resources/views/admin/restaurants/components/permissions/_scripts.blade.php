@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/permissions/_scripts.blade.php --}}
+{{-- admin/restaurants/components/permissions/_scripts --}}
 <script>
     (function () {
 

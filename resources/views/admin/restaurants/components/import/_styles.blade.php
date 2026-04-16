@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/import/_styles.blade.php --}}
+{{-- admin/restaurants/components/import/_styles --}}
 <style>
 /* container look like cards */
 .mb-import-acc{

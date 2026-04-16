@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/carousel/_styles.blade.php --}}
+{{-- admin/restaurants/components/carousel/_styles --}}
 <style>
     /* =========================================
       CAROUSEL

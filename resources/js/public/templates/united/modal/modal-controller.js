@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/modal/modal-controller.js
 document.addEventListener("DOMContentLoaded", () => {
 
     const modal = document.getElementById("itemModal");

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/categories-create.blade.php --}}
+{{-- admin/restaurants/components/categories-create --}}
 <div class="card" style="margin-top:16px;">
     <h2>{{ __('admin.sections.categories.h2') }}</h2>
     <p class="muted" style="margin-top:-6px;">{{ __('admin.sections.categories.hint') }}</p>

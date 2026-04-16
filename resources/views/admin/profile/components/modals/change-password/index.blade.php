@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile/components/modals/change-password/index.blade.php --}}
+{{-- admin/profile/components/modals/change-password/index --}}
 
 @include('admin.profile.components.modals.change-password._styles')
 

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/layout/_styles.blade.php --}}
+{{-- admin/layout/_styles --}}
 <style>
 
     .crumbs a {

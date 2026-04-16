@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_styles.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/_styles --}}
 <style>
   .mb-row{display:flex; gap:10px; align-items:center; justify-content:space-between;}
   .mb-left{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
@@ -196,6 +198,111 @@
       flex: 1 1 auto;
   }
 
+
+
+  /* ===== ITEM IMAGE UPLOAD (MENU BUILDER) ===== */
+
+  .mb-image-block {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+  }
+
+  .mb-image-preview {
+      width: 120px;
+      height: 80px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      flex: 0 0 auto;
+      position: relative;
+  }
+
+  .mb-image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
+
+  /* DELETE (overlay) */
+  .mb-image-delete {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,.6);
+      color: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      display: none;
+  }
+
+  .mb-image-delete:hover {
+      background: rgba(255,0,0,.8);
+  }
+
+  /* RIGHT SIDE */
+  .mb-image-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+  }
+
+  /* FILE BUTTON */
+  .mb-file-btn {
+      position: relative;
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      cursor: pointer;
+      transition: .2s;
+  }
+
+  .mb-file-btn:hover {
+      background: rgba(255,255,255,.1);
+  }
+
+  .mb-file-btn input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+  }
+
+  /* hint */
+  .mb-image-hint {
+      font-size: 12px;
+      opacity: .6;
+  }
+
+  .mb-image-remove-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,.6);
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .2s;
+  }
+
+  .mb-image-remove-btn:hover {
+      background: rgba(255,0,0,.8);
+  }
 
 
 </style>

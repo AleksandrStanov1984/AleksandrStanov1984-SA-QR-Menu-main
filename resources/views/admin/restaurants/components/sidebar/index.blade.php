@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/sidebar/index.blade.php --}}
 
 @include('admin.restaurants.components.sidebar._styles')
 

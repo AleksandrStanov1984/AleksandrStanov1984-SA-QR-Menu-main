@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile/components/user-card/index.blade.php --}}
+{{-- admin/profile/components/user-card/index --}}
 
 @include('admin.profile.components.user-card._styles')
 

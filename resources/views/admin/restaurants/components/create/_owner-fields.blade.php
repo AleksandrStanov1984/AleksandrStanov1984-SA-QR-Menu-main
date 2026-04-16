@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/create/_owner-fields.blade.php --}}
+{{-- admin/restaurants/components/create/_owner-fields --}}
 <div class="col12" style="margin-top:12px">
     <h3 class="mut">{{ __('admin.restaurants.create.sections.user') }}</h3>
 </div>

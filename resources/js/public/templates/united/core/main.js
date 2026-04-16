@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/core/main.js
 /*
 |--------------------------------------------------------------------------
 | UNITED TEMPLATE CORE

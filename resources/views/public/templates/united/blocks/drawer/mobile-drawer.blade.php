@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/drawer/mobile-drawer.blade.php --}}
+{{-- public/templates/united/blocks/drawer/mobile-drawer --}}
 <div id="mobileDrawer" class="mobile-drawer">
 
     <div id="drawerClose" class="drawer-close">

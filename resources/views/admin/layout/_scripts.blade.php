@@ -1,3 +1,5 @@
+{{-- resources/views/admin/layout/_scripts.blade.php --}}
+{{-- admin/layout/_scripts --}}
 <script>
     document.querySelectorAll('[data-select]').forEach(select => {
         const trigger = select.querySelector('.ui-select-trigger');

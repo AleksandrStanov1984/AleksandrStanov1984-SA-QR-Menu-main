@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/modal/item-modal.blade.php --}}
+{{-- public/templates/united/blocks/modal/item-modal --}}
 <div id="itemModal" class="modal" aria-hidden="true">
 
     <div class="modal-box" role="dialog" aria-modal="true">

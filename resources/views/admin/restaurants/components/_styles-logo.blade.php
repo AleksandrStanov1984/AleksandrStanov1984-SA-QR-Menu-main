@@ -1,0 +1,32 @@
+{{-- resources/views/admin/restaurants/components/_styles-logo.blade.php --}}
+<style>
+    .branding-delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+
+        width: 28px;
+        height: 28px;
+
+        border-radius: 50%;
+        border: none;
+
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+
+        cursor: pointer;
+        font-size: 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        transition: 0.2s;
+    }
+
+    .branding-delete-btn:hover {
+        background: rgba(255,0,0,0.85);
+    }
+
+
+</style>

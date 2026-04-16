@@ -1,3 +1,5 @@
+{{-- resources/views/admin/layout/_modals.blade.php --}}
+{{-- admin/layout/_modals --}}
 <style>
     .modal-close {
     position: absolute;

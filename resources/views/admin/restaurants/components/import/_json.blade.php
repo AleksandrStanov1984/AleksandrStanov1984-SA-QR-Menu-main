@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/import/_json.blade.php --}}
+{{-- admin/restaurants/components/import/_json --}}
 @php
   use App\Support\Permissions;
 @endphp

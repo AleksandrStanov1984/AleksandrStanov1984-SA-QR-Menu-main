@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/footer/footer.blade.php --}}
+{{-- public/templates/united/blocks/footer/footer --}}
 
 <footer class="section section--full site-footer">
 

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_items-list.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/_items-list --}}
 @php
     use App\Support\Permissions;
 
@@ -207,10 +209,25 @@
 
                         {{-- IMAGE block  --}}
                         <div style="margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;">
-                            <div style="width:140px; height:90px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:rgba(255,255,255,.04); flex:0 0 auto;">
+                            <div style="position:relative; width:140px; height:90px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:rgba(255,255,255,.04); flex:0 0 auto;">
+
                                 <img src="{{ $imgUrl }}"
                                      alt="item image"
+                                     data-item-image="{{ $it->id }}"
                                      style="width:100%; height:100%; object-fit:cover; display:block;">
+
+                                {{-- DELETE IMAGE --}}
+                                @if($canImagesFeature && $canImageUpload)
+                                    <button type="button"
+                                            class="mb-image-remove-btn"
+                                            data-item-remove-image="{{ $it->id }}"
+                                            data-disable-when-inactive
+                                            {{ $rowLocked ? 'disabled' : '' }}
+                                            title="{{ __('menu.image_delete') }}">
+                                        ✕
+                                    </button>
+                                @endif
+
                             </div>
 
                             {{-- Кнопки текста (Description/Details) --}}
@@ -219,9 +236,9 @@
                                     <button type="button"
                                             class="btn small secondary"
                                             data-open-text-modal="1"
-                                            data-text-title="{{ __('admin.menu_builder.description') ?? 'Описание' }}"
+                                            data-text-title="{{ __('admin.menu_builder.description')  }}"
                                             data-text-body='@json($descTxt)'>
-                                        {{ __('admin.menu_builder.description') ?? 'Описание' }}
+                                        {{ __('admin.menu_builder.description') }}
                                     </button>
                                 @endif
 
@@ -229,15 +246,15 @@
                                     <button type="button"
                                             class="btn small secondary"
                                             data-open-text-modal="1"
-                                            data-text-title="{{ __('admin.menu_builder.details') ?? 'Подробно' }}"
+                                            data-text-title="{{ __('admin.menu_builder.details') }}"
                                             data-text-body='@json($detTxt)'>
-                                        {{ __('admin.menu_builder.details') ?? 'Подробно' }}
+                                        {{ __('admin.menu_builder.details')  }}
                                     </button>
                                 @endif
 
                                 @if($canImagesFeature && $canImageUpload)
                                     <span style="opacity:.65; font-size:13px;">
-                    {{ __('admin.menu_builder.image_hint') ?? 'Изображение: показывается загруженное или дефолтное.' }}
+                    {{ __('admin.menu_builder.image_hint')  }}
                   </span>
                                 @endif
                             </div>

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/edit/_languages.blade.php --}}
+{{-- admin/restaurants/components/edit/_languages --}}
 @php
     $u = auth()->user();
     $canLanguages = $u?->is_super_admin || $u?->hasPerm('languages_manage') || $u?->hasPerm('import_manage');

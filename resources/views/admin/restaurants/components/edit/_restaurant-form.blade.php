@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/edit/_restaurant-form.blade.php --}}
+{{-- admin/restaurants/components/edit/_restaurant-form --}}
 @php
     use App\Support\Permissions;
     $user = auth()->user();

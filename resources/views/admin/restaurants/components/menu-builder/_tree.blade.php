@@ -1,3 +1,6 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_tree.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/_tree --}}
+
 @php
   use App\Support\Permissions;
 
@@ -30,9 +33,11 @@
       $catLocked = $catInactive;
     @endphp
 
-    <div class="card {{ $catInactive ? 'mb-inactive' : '' }} {{ $catDeleted ? 'mb-deleted' : '' }}"
-         data-deleted="{{ $catDeleted ? '1' : '0' }}"
-         style="padding:12px;">
+        <div class="card {{ $catInactive ? 'mb-inactive' : '' }} {{ $catDeleted ? 'mb-deleted' : '' }}"
+             data-section-id="{{ $cat->id }}"
+             data-section-row="category"
+             data-deleted="{{ $catDeleted ? '1' : '0' }}"
+             style="padding:12px;">
       <div class="mb-row">
         <div class="mb-left">
           {{-- TOGGLE CATEGORY --}}
@@ -132,9 +137,11 @@
             $subItemsLocked = $catLocked || $subInactive;
           @endphp
 
-          <div class="card-no-border {{ ($subInactive || $catLocked) ? 'mb-inactive' : '' }} {{ $subDeleted ? 'mb-deleted' : '' }}"
-               data-deleted="{{ $subDeleted ? '1' : '0' }}"
-               style="padding:12px; margin-top:10px;">
+              <div class="card-no-border {{ ($subInactive || $catLocked) ? 'mb-inactive' : '' }} {{ $subDeleted ? 'mb-deleted' : '' }}"
+                   data-section-id="{{ $sub->id }}"
+                   data-section-row="subcategory"
+                   data-deleted="{{ $subDeleted ? '1' : '0' }}"
+                   style="padding:12px; margin-top:10px;">
             <div class="mb-row">
               <div class="mb-left">
                 {{-- TOGGLE SUBCATEGORY --}}

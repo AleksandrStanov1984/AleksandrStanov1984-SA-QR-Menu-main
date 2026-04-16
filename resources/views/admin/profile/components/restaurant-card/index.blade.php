@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile/components/restaurant-card/index.blade.php --}}
+{{-- admin/profile/components/restaurant-card/index --}}
 @php
     $profileMode = $profileMode ?? 'self';
     $isSuper = (bool)($user?->is_super_admin ?? false);

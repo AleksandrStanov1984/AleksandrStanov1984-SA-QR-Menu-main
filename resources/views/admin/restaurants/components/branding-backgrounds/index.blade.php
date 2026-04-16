@@ -1,3 +1,4 @@
+{{-- admin/restaurants/components/branding-backgrounds/index --}}
 {{-- resources/views/admin/restaurants/components/branding-backgrounds/index.blade.php --}}
 
 
@@ -51,53 +52,102 @@
 
             @if($canBgUpload)
                 <div class="branding-grid">
+
+                    {{-- LIGHT --}}
                     <div class="branding-col">
-                        <label>{{ __('admin.branding.bg_light') }}</label>
+                        <div class="branding-item">
 
-                        <div class="branding-preview-wrap">
-                            @if(!empty($meta['bg_light']))
+                            <div class="branding-item__title">
+                                {{ __('admin.branding.bg_light') }}
+                            </div>
+
+                            <div class="branding-preview-wrapper">
+
                                 <img
-                                    src="{{ asset('assets/'.$meta['bg_light']) }}"
-                                    alt="bg light"
+                                    src="{{ app(\App\Services\ImageService::class)->url($meta['bg_light'] ?? null) }}"
                                     class="branding-preview"
+                                    data-preview="bg_light"
                                 >
-                            @else
-                                <div class="branding-preview branding-preview--empty">
-                                    {{ __('admin.branding.no_image') ?? 'No image' }}
-                                </div>
-                            @endif
-                        </div>
 
-                        <input type="file" name="bg_light" accept="image/*">
+                                @if(!empty($meta['bg_light']))
+                                    <button
+                                        type="button"
+                                        class="branding-delete-btn"
+                                        data-bg-delete="bg_light"
+                                        data-bg-url="{{ route('admin.restaurants.branding.backgrounds.delete', [$restaurant, 'bg_light']) }}"
+                                    >
+                                        ✕
+                                    </button>
+                                @endif
+
+                            </div>
+
+                            <label class="branding-file-btn">
+                                {{ __('admin.common.choose_file') ?? 'Datei wählen' }}
+
+                                <input
+                                    type="file"
+                                    name="bg_light"
+                                    class="branding-file-input"
+                                    data-input="bg_light"
+                                    accept=".jpg,.jpeg,.png,.webp"
+                                >
+                            </label>
+
+                        </div>
                     </div>
 
+                    {{-- DARK --}}
                     <div class="branding-col">
-                        <label>{{ __('admin.branding.bg_dark') }}</label>
+                        <div class="branding-item">
 
-                        <div class="branding-preview-wrap">
-                            @if(!empty($meta['bg_dark']))
+                            <div class="branding-item__title">
+                                {{ __('admin.branding.bg_dark') }}
+                            </div>
+
+                            <div class="branding-preview-wrapper">
+
                                 <img
-                                    src="{{ asset('assets/'.$meta['bg_dark']) }}"
-                                    alt="bg dark"
+                                    src="{{ app(\App\Services\ImageService::class)->url($meta['bg_dark'] ?? null) }}"
                                     class="branding-preview"
+                                    data-preview="bg_dark"
                                 >
-                            @else
-                                <div class="branding-preview branding-preview--empty">
-                                    {{ __('admin.branding.no_image') ?? 'No image' }}
-                                </div>
-                            @endif
-                        </div>
 
-                        <input type="file" name="bg_dark" accept="image/*">
+                                @if(!empty($meta['bg_dark']))
+                                    <button
+                                        type="button"
+                                        class="branding-delete-btn"
+                                        data-bg-delete="bg_dark"
+                                        data-bg-url="{{ route('admin.restaurants.branding.backgrounds.delete', [$restaurant, 'bg_dark']) }}"
+                                    >
+                                        ✕
+                                    </button>
+                                @endif
+
+                            </div>
+
+                            <label class="branding-file-btn">
+                                {{ __('admin.common.choose_file') ?? 'Datei wählen' }}
+
+                                <input
+                                    type="file"
+                                    name="bg_dark"
+                                    class="branding-file-input"
+                                    data-input="bg_dark"
+                                    accept=".jpg,.jpeg,.png,.webp"
+                                >
+                            </label>
+
+                        </div>
                     </div>
+
                 </div>
             @else
                 <div class="mut" style="margin-top:12px;">
-                    {{ __('admin.plan.pro_required_backgrounds') ?? 'Custom backgrounds available in PRO plan' }}
+                    {{ __('admin.plan.pro_required_backgrounds') }}
                 </div>
             @endif
 
-            <br>
             <div class="actions">
                 <button class="btn ok" type="submit">
                     {{ __('admin.branding.save_bg') }}

@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/modal/modal-hours.js
 document.addEventListener("DOMContentLoaded", () => {
 
     const modal = document.getElementById("hoursModal");

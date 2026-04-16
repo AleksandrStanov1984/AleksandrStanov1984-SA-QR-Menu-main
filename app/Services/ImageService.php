@@ -11,10 +11,8 @@ class ImageService
     {
         $fallback = config('image.urls.fallback', '/assets/system/fallback/food.webp');
 
-        // 1. если нет пути — решаем: это иконка или нет
         if (!$path) {
 
-            // если есть title → считаем что это social icon
             if ($title) {
                 return $this->socialIcon(null, $title);
             }
@@ -24,19 +22,16 @@ class ImageService
 
         $path = ltrim($path, '/');
 
-        // 2. прямой путь
         if (File::exists(public_path($path))) {
             return '/' . $path;
         }
 
-        // 3. assets/...
         $assetPath = 'assets/' . $path;
 
         if (File::exists(public_path($assetPath))) {
             return '/' . $assetPath;
         }
 
-        // 4. если путь есть, но файл не найден → fallback
         if ($title) {
             return $this->socialIcon(null, $title);
         }
@@ -120,12 +115,10 @@ class ImageService
 
         $key = strtolower(trim($title ?? ''));
 
-        // базовая нормализация
         $key = str_replace(['.com', 'www.', 'https://', 'http://'], '', $key);
         $key = explode('/', $key)[0];
         $key = explode('.', $key)[0];
 
-        // поиск по вхождению (ключевая часть)
         foreach ($map as $social => $file) {
             if (str_contains($key, $social)) {
                 return asset($base . '/' . $file);
@@ -145,58 +138,36 @@ class ImageService
 
         $path = ltrim($path, '/');
 
-        // 1. прямой путь
         if (File::exists(public_path($path))) {
             return '/' . $path;
         }
 
-        // 2. assets/...
         $assetPath = 'assets/' . $path;
 
         if (File::exists(public_path($assetPath))) {
             return '/' . $assetPath;
         }
 
-        // 3. fallback
         return '/assets/' . ltrim($fallback, '/');
-    }
-
-    public function og(string $locale): string
-    {
-        $locale = strtolower($locale);
-
-        // 1. restaurant (будет потом)
-        // $restaurantPath = "restaurants/{$id}/og/{$locale}/default.webp";
-
-        // 2. system locale
-        $localized = "system/og/{$locale}/default.webp";
-
-        // 3. system default
-        $global = "system/og/default.webp";
-
-        if (File::exists(public_path("assets/{$localized}"))) {
-            return "/assets/{$localized}";
-        }
-
-        if (File::exists(public_path("assets/{$global}"))) {
-            return "/assets/{$global}";
-        }
-
-        return config('image.urls.fallback');
     }
 
     public function ogForLocale(Restaurant $restaurant, string $locale): string
     {
+        $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
         $og = $meta['og'] ?? [];
 
         if (!empty($og[$locale])) {
-            return '/assets/' . ltrim($og[$locale], '/');
+
+            $path = 'assets/' . ltrim($og[$locale], '/');
+
+            if (File::exists(public_path($path))) {
+                return '/' . $path;
+            }
         }
 
-        $default = "assets/system/og/{$locale}/default.webp";
-
-        if ($this->exists($default)) {
-            return '/' . $default;
+        $localized = "assets/system/og/{$locale}/default.webp";
+        if (File::exists(public_path($localized))) {
+            return '/' . $localized;
         }
 
         return '/assets/system/og/default.webp';
@@ -250,5 +221,28 @@ class ImageService
         }
 
         return '/assets/' . $fallback;
+    }
+
+    public function logo(?string $path): string
+    {
+        $fallback = config('image.system.fallbacks.logo', 'system/logo/logo.svg');
+
+        if (!$path) {
+            return '/assets/' . ltrim($fallback, '/');
+        }
+
+        $path = ltrim($path, '/');
+
+        if (File::exists(public_path($path))) {
+            return '/' . $path;
+        }
+
+        $assetPath = 'assets/' . $path;
+
+        if (File::exists(public_path($assetPath))) {
+            return '/' . $assetPath;
+        }
+
+        return '/assets/' . ltrim($fallback, '/');
     }
 }

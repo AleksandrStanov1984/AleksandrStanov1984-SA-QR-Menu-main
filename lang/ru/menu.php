@@ -41,4 +41,9 @@ return [
     'badge_day' => 'Блюдо дня',
     'badge_bestseller' => 'Бестселлер',
 
+    'image' => 'Изображение',
+    'image_select' => 'Выбрать файл',
+    'image_delete' => 'Удалить',
+    'image_hint' => 'JPG / PNG / WEBP',
+
 ];

@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/index.js
 
 /* core */
 import "./core/main.js";

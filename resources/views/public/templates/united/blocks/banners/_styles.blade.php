@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/banners/_styles.blade.php --}}
+{{-- public/templates/united/blocks/banners/_styles --}}
 <style>
     .menu-banners {
         margin-bottom: 16px;

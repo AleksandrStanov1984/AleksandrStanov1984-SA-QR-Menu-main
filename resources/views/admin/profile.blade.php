@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile.blade.php --}}
+{{-- admin/profile --}}
 @extends('admin.layout')
 
 @section('title', __('admin.profile.title'))

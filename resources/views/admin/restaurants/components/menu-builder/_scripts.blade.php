@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_scripts.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/_scripts --}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <script>
@@ -13,6 +15,9 @@
 
         e.preventDefault();
 
+        if (window.showLoader)
+            window.showLoader();
+
         try {
             const resp = await fetch(form.action, {
                 method: 'DELETE',
@@ -22,31 +27,29 @@
                 }
             });
 
-            if (!resp.ok) {
-                throw new Error(await resp.text());
+            let data = {};
+
+            try {
+                data = await resp.json();
+            } catch (e) {
+                console.warn('Response not JSON');
             }
 
-            const data = await resp.json();
+            if (!resp.ok) {
+                throw new Error(data.message || 'Delete failed');
+            }
 
-            // ищем item или section
             let row =
                 document.querySelector(`[data-item-id="${data.deleted_id}"]`) ||
                 document.querySelector(`[data-section-id="${data.deleted_id}"]`);
 
             if (row) {
-                const wrap =
-                    row.closest('[data-item-row]') ||
-                    row.closest('[data-section-row]') ||
-                    row.closest('.card');
-
-                if (wrap) wrap.remove();
+                row.remove();
             }
 
-            // закрыть модалку
             const modal = document.getElementById('mbConfirmDelete');
             if (modal) modal.setAttribute('aria-hidden', 'true');
 
-            // успех
             showFlash(
                 data.message || window.UI_LANG.saved || 'Done',
                 'success'
@@ -54,13 +57,20 @@
 
         } catch (err) {
             console.error(err);
+
             showFlash(
                 window.UI_LANG.delete_error || 'Error',
                 'error'
             );
+
+        } finally {
+            if (window.resetLoader) {
+                window.resetLoader(); // 🔥 ЖЁСТКИЙ СБРОС
+            }
         }
 
     });
+
   // ----------------------------
   // utils
   // ----------------------------
@@ -122,7 +132,7 @@
   };
 
   // ----------------------------
-  // Confirm Delete modal (universal)
+  // Confirm Delete modal
   // ----------------------------
   const openDeleteConfirm = (btn) => {
     if(isDisabledEl(btn)) return;
@@ -298,31 +308,6 @@
 
     try{
       await patchItemMeta(base, itemId, payload);
-
-      if(key === 'dish_of_day' && payload.dish_of_day){
-        const list = el.closest('[data-sortable-items]') || document;
-        list.querySelectorAll(`[data-item-meta="dish_of_day"][data-item-id]`).forEach(cb => {
-          if(cb.getAttribute('data-item-id') !== String(itemId)){
-            cb.checked = false;
-            const r2 = cb.closest('[data-item-row]');
-            setPill(r2, 'day', false);
-          }
-        });
-      }
-
-        if(key === 'is_new' && payload.is_new){
-            const list = el.closest('[data-sortable-items]') || document;
-
-            list.querySelectorAll(`[data-item-meta="is_new"][data-item-id]`).forEach(cb => {
-                if(cb.getAttribute('data-item-id') !== String(itemId)){
-                    cb.checked = false;
-
-                    const r2 = cb.closest('[data-item-row]');
-                    setPill(r2, 'new', false);
-                }
-            });
-        }
-
     }catch(err){
       console.error(err);
 
@@ -605,6 +590,124 @@
 
     openModal('mbTextModal');
   });
+
+    // PREVIEW
+    document.addEventListener('change', function (e) {
+        const input = e.target;
+
+        if (input.id !== 'mbItemImageInput') return;
+
+        const file = input.files[0];
+        if (!file) return;
+
+        const preview = document.getElementById('mbItemImagePreview');
+        if (preview) {
+            preview.src = URL.createObjectURL(file);
+        }
+
+        const del = document.getElementById('mbItemImageDelete');
+        if (del) del.style.display = 'inline-block';
+    });
+
+
+// DELETE IMAGE
+    document.addEventListener('change', function (e) {
+        if (e.target.id !== 'mbItemImageInput') return;
+
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const preview = document.getElementById('mbItemImagePreview');
+        const deleteBtn = document.getElementById('mbItemImageDelete');
+        const removeInput = document.getElementById('mbRemoveImage');
+
+        if (preview) {
+            preview.src = URL.createObjectURL(file);
+        }
+
+        if (deleteBtn) {
+            deleteBtn.style.display = 'block';
+        }
+
+        if (removeInput) {
+            removeInput.value = '0';
+        }
+    });
+
+    document.getElementById('mbItemImageDelete')?.addEventListener('click', function () {
+        const preview = document.getElementById('mbItemImagePreview');
+        const input = document.getElementById('mbItemImageInput');
+        const removeInput = document.getElementById('mbRemoveImage');
+
+        if (preview) {
+            preview.src = preview.dataset.fallbackSrc || '';
+        }
+
+        if (input) {
+            input.value = '';
+        }
+
+        if (removeInput) {
+            removeInput.value = '1';
+        }
+
+        this.style.display = 'none';
+    });
+
+    document.addEventListener('click', async (e) => {
+
+        const btn = e.target.closest('[data-item-remove-image]');
+        if (!btn) return;
+
+        if (btn.disabled) return;
+
+        const itemId = btn.getAttribute('data-item-remove-image');
+        if (!itemId) return;
+
+        const base = btn.closest('[data-sortable-items]')
+            ?.getAttribute('data-item-meta-base');
+
+        if (!base) return;
+
+        try {
+
+            window.showLoader?.();
+
+            const resp = await fetch(`${base}/${itemId}/image`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!resp.ok) {
+                throw new Error(await resp.text());
+            }
+
+            // меняем preview на fallback
+            const img = document.querySelector(`[data-item-image="${itemId}"]`);
+
+            if (img) {
+                img.src = "{{ app(\App\Services\ImageService::class)->food(null) }}";
+            }
+
+            showFlash(
+                window.UI_LANG.saved || 'Saved',
+                'success'
+            );
+
+        } catch (err) {
+            console.error(err);
+            showFlash(
+                window.UI_LANG.delete_error || 'Error',
+                'error'
+            );
+        } finally {
+            window.hideLoader?.();
+        }
+
+    });
 
 
 })();

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/import/_log.blade.php --}}
+{{-- admin/restaurants/components/import/_log --}}
 @php
     $hasErrors = session('import_status') === 'error';
     $logToken  = session('import_log_token');

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/import/index.blade.php --}}
+{{-- admin/restaurants/components/import/index --}}
 <div class="card mb-import-card">
     <div class="card__head">
         <div class="card__title">

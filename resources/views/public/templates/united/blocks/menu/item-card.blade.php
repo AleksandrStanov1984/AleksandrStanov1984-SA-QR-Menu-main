@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/menu/item-card.blade.php --}}
+{{-- public/templates/united/blocks/menu/item-card --}}
 @php
     $short = $item['description'] ?? '';
     $long  = $item['details'] ?? '';

@@ -1,3 +1,4 @@
+{{-- admin/restaurants/carousel --}}
 {{-- resources/views/admin/restaurants/carousel.blade.php --}}
 
 @extends('admin.layout')

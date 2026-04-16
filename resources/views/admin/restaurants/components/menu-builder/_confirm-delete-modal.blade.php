@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_confirm-delete-modal.blade.php --}}
+{{-- admin/restaurants/components/menu-builder/_confirm-delete-modal --}}
 <div class="modal" id="mbConfirmDelete" aria-hidden="true">
   <div class="modal__backdrop" data-mb-close></div>
 

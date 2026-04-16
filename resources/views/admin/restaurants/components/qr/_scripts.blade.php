@@ -1,22 +1,6 @@
+{{-- resources/views/admin/restaurants/components/qr/_scripts.blade.php --}}
+{{-- admin/restaurants/components/qr/_scripts --}}
 <script>
-    // =========================
-    // LOADER
-    // =========================
-    function showQrLoader() {
-        const loader = document.getElementById('qrLoader');
-        if (loader) {
-            loader.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    function hideQrLoader() {
-        const loader = document.getElementById('qrLoader');
-        if (loader) {
-            loader.style.display = 'none';
-            document.body.style.overflow = '';
-        }
-    }
 
     // =========================
     // FORCE RENDER FRAME

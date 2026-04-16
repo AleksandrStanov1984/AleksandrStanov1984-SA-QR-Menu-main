@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/ui/confirm/_styles.blade.php --}}
+{{-- admin/restaurants/components/ui/confirm/_styles --}}
 <style>
     .confirm-modal {
         position: fixed;

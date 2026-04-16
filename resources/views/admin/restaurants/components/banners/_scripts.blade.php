@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/banners/_scripts.blade.php --}}
+{{-- admin/restaurants/components/banners/_scripts --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -42,17 +44,19 @@
             }
         }
 
-        function toast(msg, type = 'success') {
-            if (typeof showToast === 'function') {
-                showToast(msg, type);
+        function setLoading(state) {
+            document.body.classList.toggle('is-loading', state);
+
+            if (state) {
+                window.showLoader?.();
             } else {
-                console.log(msg);
+                window.hideLoader?.();
             }
         }
 
-        function setLoading(state) {
-            document.body.classList.toggle('is-loading', state);
-        }
+        const reloadPage = () => {
+            setTimeout(() => window.location.reload(), 300);
+        };
 
         // =========================
         // PREVIEW
@@ -87,7 +91,7 @@
                 const slot = card.dataset.slot;
 
                 if (!input.files.length) {
-                    toast(window.UI_LANG.select_file, 'warning');
+                    showFlash(window.UI_LANG.select_file, 'error');
                     return;
                 }
 
@@ -99,16 +103,14 @@
                 try {
                     await request(saveUrl, { method: 'POST', body: fd });
 
-                    toast(window.UI_LANG.saved, 'success');
+                    showFlash(window.UI_LANG.saved, 'success');
 
-                    input.value = '';
-                    updateButtonsState();
-
-                    setTimeout(() => location.reload(), 300);
+                    console.log('BEFORE RELOAD');
+                    reloadPage();
+                    console.log('AFTER RELOAD');
 
                 } catch (e) {
-                    console.error(e);
-                    toast(window.UI_LANG.save_error, 'error');
+                    showFlash(window.UI_LANG.save_error, 'error');
                 } finally {
                     setLoading(false);
                 }
@@ -134,7 +136,7 @@
             });
 
             if (!has) {
-                toast(window.UI_LANG.select_file, 'warning');
+                showFlash(window.UI_LANG.select_file, 'error');
                 return;
             }
 
@@ -143,12 +145,13 @@
             try {
                 await request(saveUrl, { method: 'POST', body: fd });
 
-                toast(window.UI_LANG.saved, 'success');
-                setTimeout(() => location.reload(), 400);
+                showFlash(window.UI_LANG.saved, 'success');
+
+                reloadPage();
 
             } catch (e) {
                 console.error(e);
-                toast(window.UI_LANG.save_error, 'error');
+                showFlash(window.UI_LANG.save_error, 'error');
             } finally {
                 setLoading(false);
             }
@@ -159,6 +162,7 @@
         // =========================
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', () => {
+
                 const id = btn.dataset.id;
                 if (!id) return;
 
@@ -171,21 +175,29 @@
                             method: 'DELETE'
                         });
 
-                        toast(window.UI_LANG.saved, 'success');
-                        setTimeout(() => location.reload(), 300);
+                        showFlash(window.UI_LANG.saved, 'success');
+
+                        console.log('BEFORE RELOAD');
+                        reloadPage();
+                        console.log('AFTER RELOAD');
 
                     } catch (e) {
                         console.error(e);
-                        toast(window.UI_LANG.delete_error, 'error');
+                        showFlash(window.UI_LANG.delete_error, 'error');
                     } finally {
                         setLoading(false);
                     }
 
                 });
+
             });
         });
 
+        // =========================
+        // DELETE ALL
+        // =========================
         document.getElementById('deleteAll')?.addEventListener('click', () => {
+
             confirmAction(window.UI_LANG.delete_all, async () => {
 
                 setLoading(true);
@@ -193,21 +205,23 @@
                 try {
                     await request(deleteAllUrl, { method: 'DELETE' });
 
-                    toast(window.UI_LANG.saved, 'success');
-                    setTimeout(() => location.reload(), 300);
+                    showFlash(window.UI_LANG.saved, 'success');
+
+                    reloadPage();
 
                 } catch (e) {
                     console.error(e);
-                    toast(window.UI_LANG.delete_error, 'error');
+                    showFlash(window.UI_LANG.delete_error, 'error');
                 } finally {
                     setLoading(false);
                 }
 
             });
+
         });
 
         // =========================
-        // DRAG (DESKTOP FIXED)
+        // DRAG
         // =========================
         let dragged = null;
         let canDrag = false;

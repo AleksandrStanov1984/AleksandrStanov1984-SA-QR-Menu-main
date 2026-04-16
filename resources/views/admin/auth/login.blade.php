@@ -1,3 +1,5 @@
+{{-- resources/views/admin/auth/login.blade.php --}}
+{{-- admin/auth/login --}}
 @extends('admin.layout')
 
 @include('admin.auth._styles')

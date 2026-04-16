@@ -1,3 +1,4 @@
+// resources/js/admin/menu-builder.js
 document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('mbItemForm');

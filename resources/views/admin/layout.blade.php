@@ -1,4 +1,5 @@
 {{-- resources/views/admin/layout.blade.php --}}
+{{-- admin/layout --}}
 
 
 <!doctype html>
@@ -117,26 +118,4 @@
     };
 </script>
 
-<style>
-    .flash {
-        padding: 12px 16px;
-        border-radius: 6px;
-        margin-bottom: 15px;
-        transition: 0.3s;
-    }
 
-    .flash-success {
-        background: #e6f9ec;
-        color: #1b7f3b;
-    }
-
-    .flash-warning {
-        background: #fff4e5;
-        color: #b26a00;
-    }
-
-    .flash-error {
-        background: #fdecea;
-        color: #b42318;
-    }
-</style>

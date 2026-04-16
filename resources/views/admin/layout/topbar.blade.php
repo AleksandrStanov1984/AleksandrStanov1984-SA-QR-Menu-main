@@ -1,3 +1,5 @@
+{{-- resources/views/admin/layout/topbar.blade.php --}}
+{{-- admin/layout/topbar --}}
 @php
     use App\Support\AdminContext;
 

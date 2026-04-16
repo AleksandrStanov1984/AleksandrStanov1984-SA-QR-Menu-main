@@ -262,22 +262,9 @@ final class ImageService
         unset($img);
         if (function_exists('gc_collect_cycles')) gc_collect_cycles();
 
-        $extTarget = strtolower(pathinfo($target, PATHINFO_EXTENSION));
-        if (in_array($extTarget, ['jpg','jpeg'], true)) {
+        $ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+        if (in_array($ext, ['jpg','jpeg'], true)) {
             $this->jpegOptim($target, $profile, $opt);
-        }
-
-        $extSource = strtolower(pathinfo($absFile, PATHINFO_EXTENSION));
-
-        $canDeleteSource =
-            $opt->deleteSources
-            && !$opt->dryRun
-            && !$profile->keepSource
-            && in_array($extSource, ['jpg','jpeg','png'], true)
-            && $absFile !== $target;
-
-        if ($canDeleteSource && is_file($absFile)) {
-            @unlink($absFile);
         }
 
         return [[
@@ -508,8 +495,21 @@ final class ImageService
 
     private function readImage(string $absFile)
     {
-        if (method_exists($this->manager, 'read')) return $this->manager->read($absFile);
-        return $this->manager->make($absFile);
+        try {
+            $img = $this->manager->read($absFile);
+
+            if ($img->width() <= 1 || $img->height() <= 1) {
+                throw new \Exception('Invalid size from Imagick');
+            }
+
+            return $img;
+
+        } catch (\Throwable $e) {
+
+            // fallback на GD
+            $manager = new ImageManager(new GdDriver());
+            return $manager->read($absFile);
+        }
     }
 
     private function createCanvas(int $w, int $h)
@@ -518,113 +518,4 @@ final class ImageService
         return $this->manager->canvas($w, $h);
     }
 
-//    public function url(?string $path, ?string $title = null): string
-//    {
-//        $fallback = config('image.urls.fallback', '/assets/system/fallback/food.webp');
-//
-//        // 1. если нет пути — решаем: это иконка или нет
-//        if (!$path) {
-//
-//            // если есть title → считаем что это social icon
-//            if ($title) {
-//                return $this->socialIcon(null, $title);
-//            }
-//
-//            return $fallback;
-//        }
-//
-//        $path = ltrim($path, '/');
-//
-//        // 2. прямой путь
-//        if (File::exists(public_path($path))) {
-//            return '/' . $path;
-//        }
-//
-//        // 3. assets/...
-//        $assetPath = 'assets/' . $path;
-//
-//        if (File::exists(public_path($assetPath))) {
-//            return '/' . $assetPath;
-//        }
-//
-//        // 4. если путь есть, но файл не найден → fallback
-//        if ($title) {
-//            return $this->socialIcon(null, $title);
-//        }
-//
-//        return $fallback;
-//    }
-//
-//    public function socialIcon(?string $path, ?string $title = null): string
-//    {
-//        if ($path) {
-//            return $this->url($path);
-//        }
-//
-//        $map = config('social_icons.map', []);
-//        $fallback = config('social_icons.fallback', 'website.svg');
-//        $base = config('social_icons.base_path', 'assets/system/icons');
-//
-//        $key = strtolower(trim($title ?? ''));
-//
-//        // базовая нормализация
-//        $key = str_replace(['.com', 'www.', 'https://', 'http://'], '', $key);
-//        $key = explode('/', $key)[0];
-//        $key = explode('.', $key)[0];
-//
-//        // поиск по вхождению (ключевая часть)
-//        foreach ($map as $social => $file) {
-//            if (str_contains($key, $social)) {
-//                return asset($base . '/' . $file);
-//            }
-//        }
-//
-//        return asset($base . '/' . $fallback);
-//    }
-//
-//    public function banner(?string $path): string
-//    {
-//        $fallback = config('image.system.fallbacks.banner', 'system/banners/default.webp');
-//
-//        if (!$path) {
-//            return '/assets/' . $fallback;
-//        }
-//
-//        $path = ltrim($path, '/');
-//
-//        if (File::exists(public_path($path))) {
-//            return '/' . $path;
-//        }
-//
-//        $assetPath = 'assets/' . $path;
-//
-//        if (File::exists(public_path($assetPath))) {
-//            return '/' . $assetPath;
-//        }
-//
-//        return '/assets/' . $fallback;
-//    }
-//
-//    public function food(?string $path): string
-//    {
-//        $fallback = config('image.system.fallbacks.food', 'system/fallback/food.webp');
-//
-//        if (!$path) {
-//            return '/assets/' . $fallback;
-//        }
-//
-//        $path = ltrim($path, '/');
-//
-//        if (File::exists(public_path($path))) {
-//            return '/' . $path;
-//        }
-//
-//        $assetPath = 'assets/' . $path;
-//
-//        if (File::exists(public_path($assetPath))) {
-//            return '/' . $assetPath;
-//        }
-//
-//        return '/assets/' . $fallback;
-//    }
 }

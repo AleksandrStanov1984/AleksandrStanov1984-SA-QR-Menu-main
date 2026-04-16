@@ -147,11 +147,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/logo', [RestaurantBrandController::class, 'update'])
             ->name('restaurants.logo.update');
 
+        Route::delete('restaurants/{restaurant}/logo', [RestaurantBrandController::class, 'delete'])
+            ->name('restaurants.logo.delete');
+
         Route::post('restaurants/{restaurant}/branding/backgrounds', [RestaurantBrandController::class, 'updateBackgrounds'])
             ->name('restaurants.branding.backgrounds.update');
 
         Route::get('restaurants/{restaurant}/branding', [RestaurantBrandController::class, 'edit'])
             ->name('restaurants.branding');
+
+        Route::delete('restaurants/{restaurant}/branding/backgrounds/{type}', [RestaurantBrandController::class, 'deleteBackground']
+        )->name('restaurants.branding.backgrounds.delete');
 
         // OG
         Route::post('/restaurants/{restaurant}/branding/og', [RestaurantBrandController::class, 'uploadOg']
@@ -211,6 +217,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('restaurants/{restaurant}/items/{item}/meta', [ItemController::class, 'updateMeta'])
             ->name('restaurants.items.meta');
 
+        Route::delete('restaurants/{restaurant}/items/{item}/image', [ItemController::class, 'deleteImage']
+        )->name('restaurants.items.image.delete');
+
 
         // Menu Profile
         Route::get('/menu/profile', [MenuProfileController::class, 'edit'])
@@ -235,6 +244,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('restaurants/{restaurant}/social-links/reorder', [SocialLinkController::class, 'reorder']
         )->name('restaurants.social_links.reorder');
+
+        Route::delete('restaurants/{restaurant}/social-links/{link}/icon', [SocialLinkController::class, 'removeIcon'])
+            ->name('restaurants.social_links.remove_icon');
 
 
         // Author

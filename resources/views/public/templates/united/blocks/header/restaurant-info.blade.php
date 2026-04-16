@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/header/restaurant-info.blade.php --}}
+{{-- public/templates/united/blocks/header/restaurant-info --}}
 <div class="restaurant-header">
 
     @if(!empty($vm->branding['logo']))

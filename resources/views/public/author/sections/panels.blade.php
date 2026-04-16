@@ -1,3 +1,5 @@
+{{-- resources/views/public/author/sections/panels.blade.php --}}
+{{-- public/author/sections/panels --}}
 @php
     $tPrefix = 'author';
 @endphp

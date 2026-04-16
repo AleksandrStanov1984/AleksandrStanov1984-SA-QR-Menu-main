@@ -1,3 +1,5 @@
+{{-- resources/views/admin/layout/_styles_topbar.blade.php --}}
+{{-- admin/layout/_styles_topbar --}}
 <style>
     /* ======================================
     MOBILE (все телефоны)

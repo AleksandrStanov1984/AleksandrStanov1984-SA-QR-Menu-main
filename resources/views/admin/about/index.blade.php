@@ -1,3 +1,5 @@
+{{-- resources/views/admin/about/index.blade.php --}}
+{{-- admin/about/index --}}
 @extends('admin.layout')
 
 @section('title', __('admin.sidebar.about'))

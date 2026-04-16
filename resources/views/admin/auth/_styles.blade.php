@@ -1,3 +1,5 @@
+{{-- resources/views/admin/auth/_styles.blade.php --}}
+{{-- admin/auth/_styles --}}
 <style>
     .form-center {
         display: flex;

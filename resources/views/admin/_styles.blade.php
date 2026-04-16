@@ -1,3 +1,4 @@
+{{-- admin/_styles --}}
 {{-- resources/views/admin/_styles.blade.php --}}
 
 <style>
@@ -37,23 +38,30 @@
 
     /* ===== FLASH ===== */
 
-    .flash-success {
-        background: #1f8f6a;
-        color: #fff;
+    .flash {
         padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        transition: 0.3s;
+    }
+
+    .flash-success {
+        background: #e6f9ec;
+        color: #1b7f3b;
+    }
+
+    .flash-warning {
+        background: #fff4e5;
+        color: #b26a00;
     }
 
     .flash-error {
-        background: #e74c3c;
-        color: #fff;
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 12px;
+        background: #fdecea;
+        color: #b42318;
     }
 
     .flash-success,
+    .flash-warning,
     .flash-error {
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         font-weight: 500;

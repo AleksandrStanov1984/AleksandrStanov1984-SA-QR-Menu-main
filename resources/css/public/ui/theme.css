@@ -1,3 +1,4 @@
+/* resources/css/public/ui/theme.css */
 /* ===== UI / THEME (dark) ===== */
 html[data-theme="dark"]{
     --bg-overlay: rgba(6,8,12,.62);

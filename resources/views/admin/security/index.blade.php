@@ -1,3 +1,5 @@
+{{-- resources/views/admin/security/index.blade.php --}}
+{{-- admin/security/index --}}
 @extends('admin.layout')
 
 @section('title', __('admin.security.title'))

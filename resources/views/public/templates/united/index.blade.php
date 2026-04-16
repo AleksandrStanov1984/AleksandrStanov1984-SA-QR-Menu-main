@@ -1,3 +1,4 @@
+{{-- resources/views/public/templates/united/index.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ $vm->locale }}">
 

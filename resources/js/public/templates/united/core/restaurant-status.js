@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/core/restaurant-status.js
 function updateRestaurantStatus(hours) {
 
     const now = new Date();

@@ -167,6 +167,8 @@ class RestaurantBrandController extends Controller
                 "branding/og/{$locale}"
             );
 
+            $this->cleanupOriginal($restaurant->id, "branding/og/{$locale}", $path);
+
             $meta['og'][$locale] = $path;
 
             $restaurant->update([
@@ -222,6 +224,84 @@ class RestaurantBrandController extends Controller
             ]);
 
             return back()->with('error', 'Delete failed');
+        }
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function delete(Request $request, Restaurant $restaurant)
+    {
+        $this->assertRestaurantAccess($request, $restaurant, 'branding.logo.upload');
+
+        $imageService = app(\App\Services\ImageService::class);
+
+        if ($restaurant->logo_path) {
+            $imageService->delete($restaurant->logo_path);
+        }
+
+        $restaurant->update([
+            'logo_path' => null,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => __('menu.image_deleted'),
+        ]);
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function deleteBackground(Request $request, Restaurant $restaurant, string $type)
+    {
+        $this->assertRestaurantAccess($request, $restaurant, 'items_manage');
+
+        if (!in_array($type, ['bg_light', 'bg_dark'])) {
+            abort(404);
+        }
+
+        $meta = is_array($restaurant->meta ?? null) ? $restaurant->meta : [];
+
+        if (!empty($meta[$type])) {
+            app(\App\Services\ImageService::class)->delete($meta[$type]);
+            unset($meta[$type]);
+        }
+
+        $restaurant->update([
+            'meta' => $meta,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'type' => $type,
+        ]);
+    }
+
+    private function cleanupOriginal(int $restaurantId, string $segment, string $finalPath): void
+    {
+        try {
+            $filename = pathinfo($finalPath, PATHINFO_FILENAME);
+
+            $dir = public_path("assets/restaurants/{$restaurantId}/{$segment}");
+
+            if (!is_dir($dir)) return;
+
+            foreach (glob($dir . '/' . $filename . '.*') as $file) {
+
+                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                if ($ext !== 'webp' && is_file($file)) {
+                    @unlink($file);
+                }
+            }
+
+        } catch (\Throwable $e) {
+            \Log::warning('Cleanup original failed', [
+                'restaurant_id' => $restaurantId,
+                'segment' => $segment,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }

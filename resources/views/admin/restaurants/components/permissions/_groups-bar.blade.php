@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/permissions/_groups-bar.blade.php --}}
+{{-- admin/restaurants/components/permissions/_groups-bar --}}
 @php
     $viewOnly = (bool)($viewOnly ?? false);
 @endphp

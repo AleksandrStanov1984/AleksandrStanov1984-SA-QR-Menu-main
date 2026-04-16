@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/sidebar/_nav.blade.php --}}
+{{-- admin/restaurants/components/sidebar/_nav --}}
 @php
     $user = auth()->user();
     $isSuper = (bool)($user?->is_super_admin);

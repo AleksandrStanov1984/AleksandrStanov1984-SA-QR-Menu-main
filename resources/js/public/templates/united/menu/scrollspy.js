@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/menu/scrollspy.js
 /*
 |--------------------------------------------------------------------------
 | SCROLLSPY (FINAL - FIXED + CENTER ACTIVE)

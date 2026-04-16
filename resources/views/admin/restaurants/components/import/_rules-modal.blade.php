@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/import/_rules-modal.blade.php --}}
+{{-- admin/restaurants/components/import/_rules-modal --}}
 <div class="modal" id="mbImportRulesModal" aria-hidden="true">
   <div class="modal__overlay" data-mb-close></div>
 

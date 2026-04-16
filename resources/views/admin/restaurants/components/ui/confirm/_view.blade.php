@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/ui/confirm/_view.blade.php --}}
+{{-- admin/restaurants/components/ui/confirm/_view --}}
 <div id="confirmModal" class="confirm-modal hidden">
     <div class="confirm-box">
         <p id="confirmText"></p>

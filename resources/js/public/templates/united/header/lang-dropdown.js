@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/header/lang-dropdown.js
 /*
 |--------------------------------------------------------------------------
 | LANGUAGE DROPDOWN

@@ -1,3 +1,5 @@
+{{-- resources/views/public/partials/header.blade.php --}}
+{{-- public/partials/header --}}
 <header id="menu-header" class="std-header">
     <div class="std-header__panel">
 

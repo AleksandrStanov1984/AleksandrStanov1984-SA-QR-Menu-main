@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/social-links/_modal.blade.php --}}
 @php
     $limit = (int) $restaurant->feature('social_limit', 1);
 @endphp
@@ -25,7 +26,6 @@
 
             <div class="modal__body" style="margin-top:12px;">
 
-                {{--  инфо про лимит --}}
                 <div class="mut" style="font-size:12px; margin-bottom:10px;">
                     {{ __('admin.socials.limit_info', ['limit' => $limit]) }}
                 </div>
@@ -60,33 +60,36 @@
 
                     <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
 
-                        <div class="sl-icon-box" style="width:84px; height:84px;">
+                        {{-- PREVIEW --}}
+                        <div class="sl-icon-preview-wrapper">
+
                             <img id="slIconPreview"
-                                 src=""
-                                 style="width:100%; height:100%; object-fit:contain; display:none;">
-                            <div id="slIconEmpty" class="mut" style="font-size:12px; text-align:center; padding:10px;">
+                                 class="sl-icon-preview"
+                                 src="">
+
+                            <div id="slIconEmpty" class="sl-icon-empty">
                                 SVG
                             </div>
+
                         </div>
 
+                        {{-- UPLOAD --}}
                         <div style="flex:1 1 auto; min-width:240px;">
-                            <input type="file"
-                                   name="icon"
-                                   id="slIconFile"
-                                   accept=".svg,image/svg+xml">
 
-                            <div style="margin-top:10px;">
-                                <button type="button"
-                                        class="btn small secondary"
-                                        id="slRemoveIconBtn"
-                                        style="display:none;">
-                                    {{ __('admin.common.remove') }}
-                                </button>
-                            </div>
+                            <label class="sl-file-btn">
+                                {{ __('admin.common.choose_file')}}
+
+                                <input type="file"
+                                       name="icon"
+                                       id="slIconFile"
+                                       accept=".svg,image/svg+xml"
+                                       hidden>
+                            </label>
 
                             <div class="mut" style="font-size:12px; margin-top:8px;">
                                 SVG, max 256KB.
                             </div>
+
                         </div>
 
                     </div>

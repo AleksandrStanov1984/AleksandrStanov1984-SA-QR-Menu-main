@@ -1,3 +1,5 @@
+{{-- resources/views/public/author/author.blade.php --}}
+{{-- public/author/author --}}
 @extends('public.layouts.base')
 
 @section('content')

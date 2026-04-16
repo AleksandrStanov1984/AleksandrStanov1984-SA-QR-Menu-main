@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/banners/_scripts.blade.php --}}
+{{-- public/templates/united/blocks/banners/_scripts --}}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 

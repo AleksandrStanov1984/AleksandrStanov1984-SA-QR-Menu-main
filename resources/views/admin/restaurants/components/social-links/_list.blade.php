@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/social-links/_list.blade.php --}}
 @php
     $links = $links ?? collect();
 

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/_styles.blade.php --}}
+{{-- admin/restaurants/_styles --}}
 <style>
 
     /* ===============================

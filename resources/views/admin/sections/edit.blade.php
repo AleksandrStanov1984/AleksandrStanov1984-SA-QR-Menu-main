@@ -1,3 +1,5 @@
+{{-- resources/views/admin/sections/edit.blade.php --}}
+{{-- admin/sections/edit --}}
 @extends('admin.layout')
 
 @section('title', __('admin.restaurant.edit_title'))

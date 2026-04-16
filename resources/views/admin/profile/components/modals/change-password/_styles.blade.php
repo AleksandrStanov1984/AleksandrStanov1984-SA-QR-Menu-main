@@ -1,3 +1,5 @@
+{{-- resources/views/admin/profile/components/modals/change-password/_styles.blade.php --}}
+{{-- admin/profile/components/modals/change-password/_styles --}}
 <style>
     .modal__panel--sm{
         width: min(760px, calc(100vw - 32px));

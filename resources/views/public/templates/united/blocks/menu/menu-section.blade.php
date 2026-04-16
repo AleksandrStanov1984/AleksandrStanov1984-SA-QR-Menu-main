@@ -1,3 +1,5 @@
+{{-- resources/views/public/templates/united/blocks/menu/menu-section.blade.php --}}
+{{-- public/templates/united/blocks/menu/menu-section --}}
 
 @include('public.templates.united.blocks.categories.category-nav')
 

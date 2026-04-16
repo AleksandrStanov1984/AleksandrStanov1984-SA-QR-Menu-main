@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/social-links/_item.blade.php --}}
+{{-- admin/restaurants/components/social-links/_item --}}
 @inject('img', 'App\Services\ImageService')
 
 @php
@@ -64,11 +66,27 @@
             {{-- LEFT: ICON + TEXT --}}
             <div style="display:flex; gap:12px; align-items:center; min-width:260px; flex:1 1 auto;">
 
-                <div class="sl-icon-box">
+                <div class="sl-icon-box" style="position:relative;">
+
                     <img
                         src="{{ $iconUrl }}"
                         alt="icon"
+                        data-sl-icon
+                        data-fallback="{{ $img->socialIcon(null, $link->title) }}"
                         style="width:100%; height:100%; object-fit:contain; display:block;">
+
+                    {{-- DELETE ICON --}}
+                    @if($link->icon_path)
+                        <button type="button"
+                                class="sl-icon-delete"
+                                data-sl-icon-delete
+                                data-id="{{ $link->id }}"
+                                data-url="{{ route('admin.restaurants.social_links.remove_icon', [$restaurant, $link]) }}"
+                                data-delete-text="{{ __('social.socials.confirm_delete_icon') }}">
+                            ✕
+                        </button>
+                    @endif
+
                 </div>
 
                 <div style="min-width:0; flex:1 1 auto;">
@@ -109,7 +127,7 @@
                             class="btn small danger"
                             data-sl-delete
                             data-delete-url="{{ route('admin.restaurants.social_links.destroy', [$restaurant, $link]) }}"
-                            data-delete-text="{{ __('admin.socials.confirm_delete') }}"
+                            data-delete-text="{{ __('social.socials.confirm_delete_socials') }}"
                             data-delete-hint="{{ $link->title }}"
                         {{ $inactive ? 'disabled aria-disabled=true' : '' }}>
                         {{ __('admin.socials.delete') }}
@@ -121,15 +139,3 @@
     </div>
 </details>
 <br>
-
-<style>
-    .sl-acc.is-inactive .btn[disabled] {
-        opacity: .5;
-        pointer-events: none;
-        filter: grayscale(1);
-    }
-
-    .drag-handle:active {
-        cursor: grabbing;
-    }
-</style>

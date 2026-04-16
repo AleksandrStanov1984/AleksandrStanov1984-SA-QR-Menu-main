@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/index.blade.php --}}
+{{-- admin/restaurants/index --}}
 @extends('admin.layout')
 
 @include('admin.restaurants._styles')

@@ -1,3 +1,4 @@
+// resources/js/public/templates/united/footer/footer-carousel.js
 export function initFooterCarousel() {
     const track = document.querySelector('.footer-gallery__track');
     if (!track) return;

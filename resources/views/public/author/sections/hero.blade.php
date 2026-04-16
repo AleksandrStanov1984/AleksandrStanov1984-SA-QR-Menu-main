@@ -1,3 +1,5 @@
+{{-- resources/views/public/author/sections/hero.blade.php --}}
+{{-- public/author/sections/hero --}}
 @php
     $tPrefix = 'author';
     $profileImage = $profileImage ?? null;

@@ -326,4 +326,22 @@ class SocialLinkController extends Controller
 
         return response()->json(['ok' => true]);
     }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function removeIcon(Restaurant $restaurant, RestaurantSocialLink $link)
+    {
+        $this->assertRestaurantAccess(request(), $restaurant);
+
+        if ($link->icon_path) {
+            app(\App\Services\ImageService::class)->delete($link->icon_path);
+        }
+
+        $link->update([
+            'icon_path' => null
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
 }

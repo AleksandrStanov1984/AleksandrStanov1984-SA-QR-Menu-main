@@ -1,3 +1,4 @@
+{{-- admin/restaurants/components/carousel/index --}}
 {{-- resources/views/admin/restaurants/components/carousel/index.blade.php --}}
 
 @php

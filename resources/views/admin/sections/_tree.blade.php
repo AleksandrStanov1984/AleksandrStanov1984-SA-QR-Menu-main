@@ -1,3 +1,5 @@
+{{-- resources/views/admin/sections/_tree.blade.php --}}
+{{-- admin/sections/_tree --}}
 @php
     $indent = ($level ?? 0) * 18;
 

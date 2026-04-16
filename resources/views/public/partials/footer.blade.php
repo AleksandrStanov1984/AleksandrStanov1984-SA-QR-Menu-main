@@ -1,3 +1,5 @@
+{{-- resources/views/public/partials/footer.blade.php --}}
+{{-- public/partials/footer --}}
 <footer class="united-footer">
 
     @if(!empty($vm->footer['links'] ?? []))

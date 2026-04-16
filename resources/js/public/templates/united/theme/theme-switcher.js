@@ -1,6 +1,7 @@
+// resources/js/public/templates/united/theme/theme-switcher.js
 /*
 |--------------------------------------------------------------------------
-| THEME SWITCHER (FINAL + BACKGROUND)
+| THEME SWITCHER
 |--------------------------------------------------------------------------
 */
 
@@ -14,19 +15,43 @@ document.addEventListener("DOMContentLoaded", () => {
     const bgLight = body.dataset.bgLight || "";
     const bgDark  = body.dataset.bgDark || "";
 
+    // ----------------------------
+    // APPLY THEME
+    // ----------------------------
     const applyTheme = (theme) => {
+
         body.classList.remove("theme-light", "theme-dark");
         body.classList.add(`theme-${theme}`);
 
-        let bg = theme === "dark"
-            ? (bgDark || bgLight)
-            : (bgLight || bgDark);
-
-        if (bg) {
-            body.style.setProperty("--menu-bg-image", `url('${bg}')`);
-        }
+        applyBackground(theme);
     };
 
+    // ----------------------------
+    // APPLY BACKGROUND
+    // ----------------------------
+    const applyBackground = (theme) => {
+
+        let bg = null;
+
+        if (theme === "light") {
+            bg = bgLight || null;
+        }
+
+        if (theme === "dark") {
+            bg = bgDark || null;
+        }
+
+        if (!bg) {
+            body.style.setProperty("--menu-bg-image", "none");
+            return;
+        }
+
+        body.style.setProperty("--menu-bg-image", `url('${bg}')`);
+    };
+
+    // ----------------------------
+    // SYSTEM THEME
+    // ----------------------------
     const getSystemTheme = () => {
         return window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
@@ -36,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ----------------------------
     // INIT
     // ----------------------------
-
     if (mode === "auto") {
         applyTheme(getSystemTheme());
     } else {
@@ -46,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ----------------------------
     // AUTO REACT
     // ----------------------------
-
     if (mode === "auto") {
         window.matchMedia("(prefers-color-scheme: dark)")
             .addEventListener("change", (e) => {
@@ -57,13 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // ----------------------------
     // MANUAL TOGGLE
     // ----------------------------
-
     if (btn) {
         btn.addEventListener("click", () => {
-
             const isDark = body.classList.contains("theme-dark");
             applyTheme(isDark ? "light" : "dark");
-
         });
     }
 

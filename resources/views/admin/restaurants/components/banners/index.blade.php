@@ -1,3 +1,5 @@
+{{-- resources/views/admin/restaurants/components/banners/index.blade.php --}}
+
 @extends('admin.layout')
 
 @include('admin.restaurants.components.banners._styles')
@@ -46,9 +48,16 @@
                     </div>
 
                     {{-- INPUT --}}
-                    <input type="file"
-                           class="banner-input"
-                           data-slot="{{ $slot }}">
+                    <label class="banner-file-btn">
+
+                        {{ __('admin.common.choose_file') ?? 'Datei wählen' }}
+
+                        <input type="file"
+                               class="banner-input banner-file-input"
+                               data-slot="{{ $slot }}"
+                               accept=".jpg,.jpeg,.png,.webp">
+
+                    </label>
 
                     {{-- ACTIONS --}}
                     <div class="banner-actions">

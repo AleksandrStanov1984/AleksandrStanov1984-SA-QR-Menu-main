@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/sidebar/_user.blade.php --}}
 @php
 
     $user = auth()->user();
@@ -18,9 +19,14 @@
                 <img
                     src="{{ $logoUrl }}"
                     alt="logo"
+                    data-sidebar-logo
                     style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;">
             @else
-                {{ __('admin.sidebar.logo') }}
+                <img
+                    src="{{ app(\App\Services\ImageService::class)->logo($restaurant->logo_path ?? null) }}"
+                    alt="logo"
+                    data-sidebar-logo
+                    style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;">
             @endif
         </div>
     </div>

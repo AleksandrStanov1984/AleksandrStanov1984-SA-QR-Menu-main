@@ -1,17 +1,13 @@
 {{-- resources/views/admin/layout/_styles_topbar.blade.php --}}
-{{-- admin/layout/_styles_topbar --}}
 <style>
+
     /* ======================================
-    MOBILE (все телефоны)
-====================================== */
+       MOBILE (включая iPad Mini)
+    ====================================== */
     @media (max-width: 768px){
 
         .layout-with-sidebar{
             display:block;
-        }
-
-        .sb-burger{
-            display:inline-flex;
         }
 
         .admin-sidebar{
@@ -50,23 +46,21 @@
             overflow:hidden;
         }
 
+        /* ===== TOPBAR ===== */
+
         .topbar{
             display:flex;
             flex-direction:column;
             align-items:stretch;
+            gap:8px;
         }
 
         .topbar__left{
             display:flex;
-            flex-direction: row-reverse;
             align-items:center;
-            gap:20%;
-        }
-
-        .topbar__left > div{
-            display:flex;
-            align-items:center;
-            gap:6px;
+            width:100%;
+            gap:10px;
+            flex-direction:row-reverse;
         }
 
         .topbar__left > div{
@@ -74,34 +68,36 @@
             flex-direction:column;
             align-items:flex-start;
             text-align:left;
+            flex:1;
+            min-width:0;
         }
 
         .brand{
-            text-align:left;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
         }
 
         .mut{
             text-align:left;
         }
 
-        .topbar__right{
-            display:flex;
-            gap:8px;
-            flex-wrap:nowrap;
-            overflow-x:auto;
+        .sb-burger{
+            display:inline-flex;
+            flex-shrink:0;
         }
 
-        .topbar__right > *{
-            flex:0 0 auto;
+        .topbar__right{
+            display:flex;
+            justify-content:flex-end;
+            gap:8px;
+            flex-wrap:wrap;
+            width:100%;
         }
 
         .topbar__right .btn,
         .topbar__right select{
             font-size:12px;
-            white-space:nowrap;
-        }
-
-        .brand{
             white-space:nowrap;
         }
 
@@ -115,20 +111,12 @@
             grid-template-columns:1fr;
             grid-auto-flow:row;
         }
-
-        .sb-burger{
-            display:inline-flex;
-            margin:0;
-            flex-shrink:0;
-            position:static;
-        }
-
     }
 
     /* ======================================
-       TABLET (iPad, Galaxy Tab)
+       TABLET (с 769 и выше)
     ====================================== */
-    @media (min-width: 768px) and (max-width: 1200px){
+    @media (min-width: 769px) and (max-width: 1200px){
 
         .layout-with-sidebar{
             display:flex;
@@ -159,7 +147,6 @@
             max-width:100%;
             overflow-x:hidden;
         }
-
     }
 
     /* ======================================
@@ -174,6 +161,6 @@
         .wrap{
             max-width:1400px;
         }
-
     }
+
 </style>

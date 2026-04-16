@@ -10,72 +10,108 @@ class Breadcrumbs
     public static function make(Request $request): array
     {
         $route = $request->route()?->getName();
-
         $restaurant = $request->route('restaurant');
+        $user = auth()->user();
+        $isSuper = (bool)($user?->is_super_admin);
 
-        $base = [
-            [
-                'label' => __('admin.dashboard.home'),
-                'url' => route('admin.home'),
-            ],
-        ];
-
-        // список ресторанов
-        if ($route === 'admin.restaurants.index') {
+        // =============================
+        // SUPER ADMIN — БЕЗ РЕСТОРАНА
+        // =============================
+        if ($isSuper && !$restaurant) {
             return [
-                ...$base,
                 [
-                    'label' => __('admin.restaurants.index.h1'),
+                    'label' => __('admin.restaurants.index.h1'), // Объекты
+                    // БЕЗ url
                 ],
             ];
         }
 
-        // внутри ресторана
-        if ($restaurant instanceof Restaurant) {
+        // =============================
+        // НЕТ ресторана — обычный пользователь
+        // =============================
+        if (!$restaurant instanceof Restaurant) {
+            return [];
+        }
 
-            $crumbs = [
-                ...$base,
+        // =============================
+        // BASE
+        // =============================
+        if ($isSuper) {
+            $base = [
                 [
                     'label' => __('admin.restaurants.index.h1'),
-                    'url' => route('admin.restaurants.index'),
+                    'url'   => route('admin.restaurants.index'),
                 ],
                 [
                     'label' => $restaurant->name,
-                    'url' => route('admin.restaurants.edit', $restaurant),
+                    'url'   => route('admin.restaurants.profile', $restaurant),
                 ],
             ];
-
-            return match ($route) {
-
-                'admin.restaurants.hours' => [
-                    ...$crumbs,
-                    ['label' => __('admin.sidebar.hours')],
+        } else {
+            $base = [
+                [
+                    'label' => $restaurant->name,
+                    'url'   => route('admin.restaurants.profile', $restaurant),
                 ],
-
-                'admin.restaurants.branding' => [
-                    ...$crumbs,
-                    ['label' => __('admin.sidebar.branding')],
-                ],
-
-                'admin.restaurants.qr' => [
-                    ...$crumbs,
-                    ['label' => 'QR-код'],
-                ],
-
-                'admin.restaurants.socials' => [
-                    ...$crumbs,
-                    ['label' => __('admin.sidebar.socials')],
-                ],
-
-                'admin.restaurants.import' => [
-                    ...$crumbs,
-                    ['label' => __('admin.sidebar.import_menu')],
-                ],
-
-                default => $crumbs,
-            };
+            ];
         }
 
-        return $base;
+        // =============================
+        // ROUTES
+        // =============================
+        return match (true) {
+
+            str_starts_with($route, 'admin.restaurants.profile') => [
+                ...$base,
+                ['label' => __('admin.sidebar.profile')],
+            ],
+
+            $route === 'admin.restaurants.hours' => [
+                ...$base,
+                ['label' => __('admin.sidebar.hours')],
+            ],
+
+            str_starts_with($route, 'admin.restaurants.menu') => [
+                ...$base,
+                ['label' => __('admin.sidebar.menu')],
+            ],
+
+            $route === 'admin.restaurants.branding' => [
+                ...$base,
+                ['label' => __('admin.sidebar.branding')],
+            ],
+
+            $route === 'admin.restaurants.qr' => [
+                ...$base,
+                ['label' => __('admin.sidebar.qr')],
+            ],
+
+            $route === 'admin.restaurants.socials' => [
+                ...$base,
+                ['label' => __('admin.sidebar.socials')],
+            ],
+
+            str_starts_with($route, 'admin.restaurants.banners') => [
+                ...$base,
+                ['label' => __('admin.sidebar.banners')],
+            ],
+
+            str_starts_with($route, 'admin.restaurants.carousel') => [
+                ...$base,
+                ['label' => __('admin.sidebar.carousel')],
+            ],
+
+            $route === 'admin.restaurants.credentials' => [
+                ...$base,
+                ['label' => __('admin.sidebar.password')],
+            ],
+
+            $route === 'admin.restaurants.permissions' => [
+                ...$base,
+                ['label' => __('admin.sidebar.permissions')],
+            ],
+
+            default => $base,
+        };
     }
 }

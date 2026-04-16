@@ -1,5 +1,4 @@
 {{-- resources/views/admin/layout/breadcrumbs.blade.php --}}
-{{-- admin/layout/breadcrumbs --}}
 @if(!empty($breadcrumbs))
     <div class="crumbs-wrap">
         <div class="crumbs">

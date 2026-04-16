@@ -1,5 +1,4 @@
 {{-- resources/views/admin/layout/_styles.blade.php --}}
-{{-- admin/layout/_styles --}}
 <style>
 
     .crumbs a {
@@ -25,17 +24,12 @@
         align-items: center;
         justify-content: space-between;
         gap: 6px;
-
         min-width: 60px;
-
         padding: 6px 10px;
-
         border-radius: 8px;
         border: 1px solid var(--line);
-
         background: var(--card);
         color: var(--text-primary);
-
         font-size: 13px;
         cursor: pointer;
     }
@@ -48,15 +42,11 @@
         position: absolute;
         top: calc(100% + 6px);
         left: 0;
-
         min-width: 100%;
-
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: 8px;
-
         box-shadow: 0 10px 30px rgba(0,0,0,.4);
-
         overflow: hidden;
         display: none;
         z-index: 100;

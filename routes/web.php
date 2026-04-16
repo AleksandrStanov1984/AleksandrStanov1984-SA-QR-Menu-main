@@ -322,6 +322,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/qr', [RestaurantQrController::class, 'index'])
             ->name('restaurants.qr');
 
+        Route::delete('restaurants/{restaurant}/qr/logo', [RestaurantQrController::class, 'deleteLogo'])
+            ->name('restaurants.qr.deleteLogo');
+
+        Route::delete('restaurants/{restaurant}/qr/background', [RestaurantQrController::class, 'deleteBackground'])
+            ->name('restaurants.qr.deleteBackground');
+
 
     });
 

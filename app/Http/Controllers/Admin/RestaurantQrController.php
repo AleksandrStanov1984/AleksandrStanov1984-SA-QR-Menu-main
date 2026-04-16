@@ -46,6 +46,9 @@ class RestaurantQrController extends Controller
             return $resp;
         }
 
+        $restaurant->unsetRelation('qr');
+        $restaurant->load('qr');
+
         $path = app(QrService::class)->generate(
             $restaurant,
             $request->file('logo'),
@@ -54,7 +57,7 @@ class RestaurantQrController extends Controller
 
         return response()->json([
             'status' => true,
-            'image' => app(ImageService::class)->qr($path),
+            'image'  => app(ImageService::class)->qr($path),
         ]);
     }
 
@@ -89,16 +92,12 @@ class RestaurantQrController extends Controller
 
         $filename = 'qr-' . $restaurant->slug;
 
-        // =========================
         // SVG
-        // =========================
         if ($format === 'svg') {
             return response()->download($svgPath, $filename . '.svg');
         }
 
-        // =========================
         // PDF
-        // =========================
         $tmpDir = storage_path('app/tmp');
 
         if (!file_exists($tmpDir)) {
@@ -141,5 +140,61 @@ class RestaurantQrController extends Controller
                 @unlink($pngPath);
             }
         }
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function deleteLogo(Request $request, Restaurant $restaurant)
+    {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        $qr = $restaurant->qr;
+
+        if ($qr?->logo_path) {
+
+            $fullPath = public_path($qr->logo_path);
+
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+            }
+
+            $qr->update(['logo_path' => null]);
+        }
+
+        $restaurant->unsetRelation('qr');
+        $restaurant->load('qr');
+
+        app(QrService::class)->generate($restaurant, null, null);
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    public function deleteBackground(Request $request, Restaurant $restaurant)
+    {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        $qr = $restaurant->qr;
+
+        if ($qr?->background_path) {
+
+            $fullPath = public_path($qr->background_path);
+
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+            }
+
+            $qr->update(['background_path' => null]);
+        }
+
+        $restaurant->unsetRelation('qr');
+        $restaurant->load('qr');
+
+        app(QrService::class)->generate($restaurant, null, null);
+
+        return response()->json(['success' => true]);
     }
 }

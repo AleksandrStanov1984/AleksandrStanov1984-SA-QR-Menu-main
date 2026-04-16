@@ -1,5 +1,4 @@
 {{-- resources/views/admin/restaurants/components/qr/_qr.blade.php --}}
-{{-- admin/restaurants/components/qr/_qr --}}
 
 @php
     $qrPath = optional($restaurant->qr)->qr_path;
@@ -26,9 +25,7 @@
 
         </div>
 
-        {{-- ===================== --}}
         {{-- MENU URL --}}
-        {{-- ===================== --}}
         @if(!empty($qrPath) && !empty($menuUrl))
             <div style="margin-top:14px; display:flex; justify-content:center;">
 

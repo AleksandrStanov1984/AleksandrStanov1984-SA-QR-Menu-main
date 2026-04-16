@@ -1,18 +1,23 @@
 {{-- resources/views/admin/restaurants/components/qr/_scripts.blade.php --}}
-{{-- admin/restaurants/components/qr/_scripts --}}
+
 <script>
 
-    // =========================
-    // FORCE RENDER FRAME
-    // =========================
     function nextFrame() {
         return new Promise(resolve => requestAnimationFrame(resolve));
     }
 
+    function setLoading(state) {
+        document.body.classList.toggle('is-loading', state);
 
-    // =========================
-    // GENERATE QR (FETCH)
-    // =========================
+        if (state) {
+            window.showLoader?.();
+        } else {
+            window.hideLoader?.();
+        }
+    }
+
+
+    // GENERATE QR
     document.addEventListener('click', async (e) => {
 
         const btn = e.target.closest('[data-generate-qr]');
@@ -41,7 +46,7 @@
         btn.innerText = '...';
 
         try {
-            showQrLoader();
+            setLoading(true);
 
             await nextFrame();
             await nextFrame();
@@ -57,27 +62,23 @@
 
             const data = await res.json();
 
-            if (data.success) {
+            if (data.success || data.status) {
                 location.reload();
                 return;
             }
 
             console.error('QR generate failed', data);
-            hideQrLoader();
 
         } catch (err) {
             console.error(err);
-            hideQrLoader();
         } finally {
+            setLoading(false);
             btn.disabled = false;
             btn.innerText = originalText;
         }
     });
 
-
-    // =========================
-    // DOWNLOAD WITH LOADER (FINAL WORKING)
-    // =========================
+    // DOWNLOAD
     document.addEventListener('click', async (e) => {
 
         const link = e.target.closest('[data-qr-download]');
@@ -87,9 +88,8 @@
 
         const url = link.getAttribute('href');
 
-        showQrLoader();
+        setLoading(true);
 
-        // 🔥 создаём скрытый iframe
         let iframe = document.getElementById('qrDownloadFrame');
 
         if (!iframe) {
@@ -99,20 +99,15 @@
             document.body.appendChild(iframe);
         }
 
-        // 🔥 запускаем download через iframe
         iframe.src = url;
 
-        // 🔥 авто-hide loader (fallback)
         setTimeout(() => {
-            hideQrLoader();
+            setLoading(false);
         }, 2000);
 
     });
 
-
-    // =========================
-    // DOWNLOAD DROPDOWN
-    // =========================
+    // DROPDOWN
     (function(){
 
         const btn = document.getElementById('qrDownloadBtn');
@@ -135,10 +130,7 @@
 
     })();
 
-
-    // =========================
     // MODAL ENGINE
-    // =========================
     document.addEventListener('click', (e) => {
 
         const open = e.target.closest('[data-mb-open]');
@@ -170,10 +162,7 @@
 
     });
 
-
-    // =========================
-    // ESC CLOSE
-    // =========================
+    // ESC
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
 
@@ -184,6 +173,7 @@
         });
     });
 
+    // COPY
     document.querySelectorAll('[data-copy-url]').forEach(btn => {
         btn.addEventListener('click', () => {
             const url = btn.dataset.copyUrl;
@@ -198,34 +188,137 @@
         });
     });
 
+    // UPLOAD + REMOVE
+    function bindQrUpload({
+       inputId,
+       previewId,
+       pickBtnId,
+       removeBtnId,
+       type
+       }) {
 
-    // =========================
-    // ENABLE QR BUTTON
-    // =========================
-    (function(){
+        const modal = document.getElementById('mbModalQrUpload');
+        const restaurantId = modal?.dataset.restaurantId;
 
-        const logoInput = document.getElementById('qrLogoInput');
-        const bgInput   = document.getElementById('qrBgInput');
-        const btn       = document.getElementById('qrGenerateBtn');
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const pick = document.getElementById(pickBtnId);
+        const remove = document.getElementById(removeBtnId);
 
-        if (!logoInput || !bgInput || !btn) return;
+        if (!input || !restaurantId) return;
 
-        const updateState = () => {
-            const hasLogo = logoInput.files.length > 0;
-            const hasBg   = bgInput.files.length > 0;
+        pick.addEventListener('click', () => input.click());
 
-            if (hasLogo || hasBg) {
-                btn.disabled = false;
-                btn.style.opacity = '1';
-            } else {
-                btn.disabled = true;
-                btn.style.opacity = '0.5';
+        input.addEventListener('change', () => {
+            const file = input.files?.[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+
+            preview.src = url;
+            preview.hidden = false;
+
+            preview.dataset.existing = '0';
+
+            remove.hidden = false;
+        });
+
+        // REMOVE
+        remove.addEventListener('click', async () => {
+
+            const isExisting = preview.dataset.existing === '1';
+
+            if (!isExisting) {
+                input.value = '';
+                preview.src = '';
+                preview.hidden = true;
+                remove.hidden = true;
+                return;
             }
-        };
 
-        logoInput.addEventListener('change', updateState);
-        bgInput.addEventListener('change', updateState);
+            try {
+                setLoading(true);
 
-    })();
+                const endpoint = type === 'logo'
+                    ? `/admin/restaurants/${restaurantId}/qr/logo`
+                    : `/admin/restaurants/${restaurantId}/qr/background`;
+
+                const res = await fetch(endpoint, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    preview.src = '';
+                    preview.hidden = true;
+                    remove.hidden = true;
+
+                    preview.dataset.existing = '0';
+
+                    location.reload();
+                }
+
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setLoading(false);
+            }
+        });
+    }
+
+    bindQrUpload({
+        inputId: 'qrLogoInput',
+        previewId: 'qrLogoPreview',
+        pickBtnId: 'qrLogoPick',
+        removeBtnId: 'qrLogoRemove',
+        type: 'logo'
+    });
+
+    bindQrUpload({
+        inputId: 'qrBgInput',
+        previewId: 'qrBgPreview',
+        pickBtnId: 'qrBgPick',
+        removeBtnId: 'qrBgRemove',
+        type: 'background'
+    });
+
+    // ENABLE BUTTON
+    document.addEventListener('click', (e) => {
+
+        const open = e.target.closest('[data-mb-open]');
+        if (!open) return;
+
+        const id = open.getAttribute('data-mb-open');
+        const modal = document.getElementById(id);
+
+        if (!modal) return;
+
+        setTimeout(() => {
+            const logoInput = document.getElementById('qrLogoInput');
+            const bgInput   = document.getElementById('qrBgInput');
+            const btn       = document.getElementById('qrGenerateBtn');
+
+            if (!logoInput || !bgInput || !btn) return;
+
+            const updateState = () => {
+                const hasLogo = logoInput.files.length > 0;
+                const hasBg   = bgInput.files.length > 0;
+
+                btn.disabled = !(hasLogo || hasBg);
+                btn.style.opacity = btn.disabled ? '0.5' : '1';
+            };
+
+            logoInput.addEventListener('change', updateState);
+            bgInput.addEventListener('change', updateState);
+
+            updateState();
+
+        }, 50);
+    });
 
 </script>

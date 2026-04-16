@@ -16,9 +16,7 @@ class QrService
         ?UploadedFile $background = null
     ): string {
 
-        // =========================
         // TOKEN
-        // =========================
         $token = $restaurant->token()->firstOrCreate(
             ['restaurant_id' => $restaurant->id],
             ['token' => Str::random(10)]
@@ -28,9 +26,7 @@ class QrService
 
         $base = "restaurants/{$restaurant->id}/qr";
 
-        // =========================
         // QR RECORD
-        // =========================
         $qrRecord = $restaurant->qr()->firstOrCreate(
             ['restaurant_id' => $restaurant->id],
             [
@@ -43,9 +39,6 @@ class QrService
 
         $settings = is_array($qrRecord->settings) ? $qrRecord->settings : [];
 
-        // =========================
-        // INVALIDATE IF URL CHANGED
-        // =========================
         $oldUrl = $settings['qr_url'] ?? null;
 
         if ($oldUrl !== $url) {
@@ -54,9 +47,7 @@ class QrService
             $settings['raw_path'] = null;
         }
 
-        // =========================
         // RAW
-        // =========================
         $rawPath = $settings['raw_path'] ?? null;
 
         if (!$rawPath || !File::exists(public_path('assets/'.$rawPath))) {
@@ -79,47 +70,25 @@ class QrService
 
         $rawFullPath = public_path('assets/'.$rawPath);
 
-        // =========================
         // LOGO
-        // =========================
         if ($logo) {
-
             $this->deleteQrFile($qrRecord->logo_path, $restaurant->id);
             $logoPath = $this->storePublicAsset($logo, "{$base}/logo");
-
-        } elseif (!empty($restaurant->logo_path)) {
-
-            $this->deleteQrFile($qrRecord->logo_path, $restaurant->id);
-            $logoPath = $this->normalizeRelative($restaurant->logo_path);
-
         } else {
-
             $this->deleteQrFile($qrRecord->logo_path, $restaurant->id);
             $logoPath = null;
         }
 
-        // =========================
         // BACKGROUND
-        // =========================
         if ($background) {
-
             $this->deleteQrFile($qrRecord->background_path, $restaurant->id);
             $backgroundPath = $this->storePublicAsset($background, "{$base}/background");
-
-        } elseif (!empty($restaurant->background_path)) {
-
-            $this->deleteQrFile($qrRecord->background_path, $restaurant->id);
-            $backgroundPath = $this->normalizeRelative($restaurant->background_path);
-
         } else {
-
             $this->deleteQrFile($qrRecord->background_path, $restaurant->id);
             $backgroundPath = null;
         }
 
-        // =========================
         // FINAL
-        // =========================
         $this->deleteQrFile($qrRecord->qr_path, $restaurant->id);
 
         $finalSvg = $this->buildFinalSvg(
@@ -159,9 +128,7 @@ class QrService
         return $finalPath;
     }
 
-    // =========================
     // SVG BUILDER
-    // =========================
     private function buildFinalSvg(
         Restaurant $restaurant,
         string $rawSvgAbsolutePath,
@@ -281,9 +248,7 @@ SVG;
 SVG;
     }
 
-    // =========================
     // HELPERS
-    // =========================
 
     private function deleteQrFile(?string $path, int $restaurantId): void
     {

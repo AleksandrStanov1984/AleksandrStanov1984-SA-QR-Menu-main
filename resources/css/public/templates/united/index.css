@@ -38,6 +38,7 @@
 /* menu */
 @import "./menu/menu-grid.css";
 @import "./menu/item-card.css";
+@import "./menu/search.css";
 
 /* modal */
 @import "./modal/modal.css";

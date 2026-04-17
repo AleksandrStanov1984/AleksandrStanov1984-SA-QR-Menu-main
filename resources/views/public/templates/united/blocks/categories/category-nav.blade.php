@@ -1,5 +1,4 @@
 {{-- resources/views/public/templates/united/blocks/categories/category-nav.blade.php --}}
-{{-- public/templates/united/blocks/categories/category-nav --}}
 <nav
     id="categoryNav"
     class="category-nav"

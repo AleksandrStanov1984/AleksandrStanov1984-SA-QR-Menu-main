@@ -1,0 +1,374 @@
+/* resources/css/public/templates/united/menu/search.css */
+
+/* =========================
+   STICKY GROUP
+========================= */
+
+.menu-sticky-group {
+    position: sticky;
+    top: 0;
+    z-index: 300;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding-top: 6px;
+    padding-bottom: 8px;
+
+    background: linear-gradient(
+        to bottom,
+        var(--page-bg) 0%,
+        var(--page-bg) 82%,
+        rgba(255,255,255,0) 100%
+    );
+}
+
+/* =========================
+   MENU SEARCH
+========================= */
+
+.menu-search-wrap {
+    padding: 6px;
+    border-radius: 999px;
+
+    background: var(--card-bg);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.35),
+        0 8px 20px rgba(0,0,0,0.25),
+        inset 0 6px 0 rgba(255,255,255,0.25);
+
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+
+    border: 1px solid rgba(255,255,255,0.15);
+    overflow: visible;
+
+    transition: all 0.25s ease;
+}
+
+.menu-search-wrap:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.45),
+        0 10px 30px rgba(0,0,0,0.3);
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+.menu-search {
+    position: relative;
+    z-index: 99;
+}
+
+.menu-search input {
+    width: 100%;
+    padding: 10px 14px;
+
+    box-sizing: border-box;
+    border-radius: 999px;
+
+    border: none;
+
+    background: rgba(255,255,255,0.18);
+
+    color: var(--text-muted);
+    font-size: 15px;
+
+    outline: none;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.25),
+        0 4px 12px rgba(0,0,0,0.15); /* мягко */
+
+    transition: all .25s ease;
+}
+
+.menu-search input::placeholder {
+    color: var(--search-placeholder);
+}
+
+.menu-search input:focus {
+    background: var(--search-input-focus-bg);
+    border-color: var(--search-border-strong);
+    box-shadow: 0 0 0 2px var(--search-ring);
+}
+
+
+/* =========================
+   DROPDOWN
+========================= */
+
+.menu-search-results {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    right: 0;
+
+    border-radius: 20px;
+
+    background: rgba(15, 25, 45, 0.85);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(35px) saturate(180%);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+
+    overflow: hidden;
+    pointer-events: auto;
+    display: none;
+    z-index: 999;
+}
+
+.menu-search-results:empty {
+    display: none !important;
+}
+
+/* ===== SEARCH ITEM LAYOUT ===== */
+
+.menu-search-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-search-icon {
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+.menu-search-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* CATEGORY */
+.menu-search-line.category {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* SUBCATEGORY */
+.menu-search-line.subcategory {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+}
+
+/* ITEM */
+.menu-search-line.item {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+}
+
+
+/* =========================
+   ITEM
+========================= */
+
+.menu-search-item {
+    padding: 14px 18px;
+    cursor: pointer;
+
+    font-size: 15px;
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+
+    transition: all 0.15s ease;
+}
+
+.menu-search-item:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.menu-search-item.is-category {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--search-text);
+}
+
+.menu-search-item + .menu-search-item {
+    border-top: 1px solid var(--search-divider);
+}
+
+.menu-search-line.category {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.menu-search-line.item {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+}
+
+
+/* =========================
+   HIGHLIGHT
+========================= */
+
+.menu-highlight {
+    animation: menuFlash 1.2s ease;
+}
+
+.menu-search-item.active {
+    background: var(--search-active);
+}
+
+.menu-search-line.category .menu-search-svg {
+    color: #4da3ff;
+}
+
+.menu-search-line.subcategory .menu-search-svg {
+    color: #9aa4b2;
+}
+
+.menu-search-line.item .menu-search-svg {
+    color: #ff7a00;
+}
+
+.menu-search-svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    opacity: 0.85;
+    flex-shrink: 0;
+    color: #ff7a00;
+}
+
+.menu-search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-search input.is-active {
+    background: rgba(255,255,255,0.25);
+    box-shadow:
+        0 0 0 2px rgba(255,122,0,0.25),
+        0 10px 25px rgba(0,0,0,0.2);
+}
+
+@keyframes menuFlash {
+    0% {
+        background: var(--search-flash);
+    }
+    100% {
+        background: transparent;
+    }
+}
+
+
+/* =====================================
+   THEME VARIABLES
+===================================== */
+
+/* ===== DARK ===== */
+body[data-theme="dark"] {
+    --search-bg: rgba(15, 25, 45, 0.65);
+    --search-input-bg: rgba(255,255,255,0.08);
+    --search-input-focus-bg: rgba(255,255,255,0.12);
+
+    --search-dropdown-bg: rgba(25, 35, 55, 0.55);
+
+    --search-text: #ffffff;
+    --search-text-muted: rgba(255,255,255,0.85);
+    --search-placeholder: rgba(255,255,255,0.5);
+
+    --search-border: rgba(255,255,255,0.08);
+    --search-border-strong: rgba(255,255,255,0.25);
+
+    --search-divider: rgba(255,255,255,0.04);
+
+    --search-hover: rgba(255,255,255,0.12);
+    --search-active: rgba(255,255,255,0.18);
+
+    --search-ring: rgba(255,255,255,0.06);
+    --search-flash: rgba(255,255,255,0.25);
+}
+
+
+/* ===== LIGHT ===== */
+body[data-theme="light"] {
+    --search-bg: rgba(255, 255, 255, 0.75);
+    --search-input-bg: rgba(255,255,255,0.9);
+    --search-input-focus-bg: #ffffff;
+
+    --search-dropdown-bg: rgba(255,255,255,0.85);
+
+    --search-text: #1a1a1a;
+    --search-text-muted: #444;
+    --search-placeholder: #888;
+
+    --search-border: rgba(0,0,0,0.08);
+    --search-border-strong: rgba(0,0,0,0.2);
+
+    --search-divider: rgba(0,0,0,0.05);
+
+    --search-hover: rgba(0,0,0,0.05);
+    --search-active: rgba(0,0,0,0.08);
+
+    --search-ring: rgba(0,0,0,0.05);
+    --search-flash: rgba(0,0,0,0.08);
+}
+
+
+/* =========================
+   MOBILE FIX
+========================= */
+
+/* =========================
+   SEARCH RESPONSIVE FIX
+========================= */
+
+/* 📱 MOBILE */
+@media (max-width: 480px) {
+
+    .menu-search-wrap {
+        padding: 3px 6px;
+    }
+
+    .menu-search input {
+        padding: 10px 14px; /* было 14px+ */
+        font-size: 14px;
+
+        border-radius: 999px;
+    }
+
+}
+
+/* 📱 TABLET */
+@media (min-width: 481px) and (max-width: 768px) {
+
+    .menu-search-wrap {
+        padding: 4px 10px;
+    }
+
+    .menu-search input {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+}
+
+/* 💻 DESKTOP (оставляем как есть, но можно чуть лучше) */
+@media (min-width: 769px) {
+
+    .menu-search input {
+        margin: 0 auto;
+        display: block;
+    }
+
+}

@@ -1,5 +1,5 @@
 {{-- resources/views/public/templates/united/blocks/menu/item-card.blade.php --}}
-{{-- public/templates/united/blocks/menu/item-card --}}
+
 @php
     $short = $item['description'] ?? '';
     $long  = $item['details'] ?? '';
@@ -26,6 +26,11 @@
 
 <div
     class="{{ implode(' ', $classes) }}"
+    id="item-{{ $item['id'] }}"
+    class="{{ implode(' ', $classes) }}"
+    data-search="{{ mb_strtolower(($item['title'] ?? '') . ' ' . ($item['description'] ?? '')) }}"
+    data-type="item"
+    data-id="{{ $item['id'] }}"
 
     @if($vm->showItemModal)
         data-open-modal="item"

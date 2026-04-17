@@ -1,14 +1,12 @@
 // resources/js/public/templates/united/menu/scrollspy.js
-/*
-|--------------------------------------------------------------------------
-| SCROLLSPY (FINAL - FIXED + CENTER ACTIVE)
-|--------------------------------------------------------------------------
-*/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const nav = document.getElementById('categoryNav');
-    if (!nav) return;
+    const group = document.getElementById('menuStickyGroup');
+    const anchor = document.getElementById('menuStickyAnchor');
+
+    if (!nav || !group || !anchor) return;
 
     const header = document.querySelector('.site-header');
 
@@ -18,71 +16,26 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!sections.length || !navLinks.length) return;
 
     /*
-    |--------------------------------------------------------------------------
-    | PLACEHOLDER (prevents jump)
-    |--------------------------------------------------------------------------
+    |------------------------------------------------------------------
+    | HELPERS
+    |------------------------------------------------------------------
     */
-
-    const placeholder = document.createElement('div');
-    placeholder.className = 'category-nav-placeholder';
-
-    nav.parentNode.insertBefore(placeholder, nav);
-
-    let navTop = nav.offsetTop;
 
     function getHeaderHeight() {
-        return header ? header.offsetHeight : 80;
+        return header ? header.offsetHeight : 0;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | STICKY CONTROL (FIXED)
-    |--------------------------------------------------------------------------
-    */
-
-    function handleSticky() {
-
-        const scrollY = window.scrollY;
+    function getStickyOffset() {
         const headerHeight = getHeaderHeight();
+        const navHeight = nav.offsetHeight;
 
-        if (scrollY + headerHeight >= navTop) {
+        const search = document.querySelector('.menu-search-wrap');
+        const searchHeight = search ? search.offsetHeight : 0;
 
-            if (!nav.classList.contains('is-fixed')) {
-
-                nav.classList.add('is-fixed');
-
-                nav.style.top = '0px';
-
-                placeholder.style.height = nav.offsetHeight + 'px';
-            }
-
-        } else {
-
-            if (nav.classList.contains('is-fixed')) {
-
-                nav.classList.remove('is-fixed');
-
-                nav.style.top = '';
-
-                placeholder.style.height = '0px';
-            }
-        }
+        return headerHeight + navHeight + searchHeight + 8;
     }
-
-    window.addEventListener('scroll', handleSticky);
-
-    window.addEventListener('resize', () => {
-        navTop = placeholder.offsetTop || nav.offsetTop;
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | CENTER ACTIVE LINK
-    |--------------------------------------------------------------------------
-    */
 
     function centerActive(link) {
-
         const linkRect = link.getBoundingClientRect();
         const navRect = nav.getBoundingClientRect();
 
@@ -99,49 +52,108 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | INTERSECTION OBSERVER
-    |--------------------------------------------------------------------------
+    |------------------------------------------------------------------
+    | 🔥 STICKY GROUP (ДВИЖЕНИЕ)
+    |------------------------------------------------------------------
     */
 
-    const observer = new IntersectionObserver(
-        (entries) => {
+    function updateStickyGroup() {
 
-            entries.forEach(entry => {
+        const headerHeight = getHeaderHeight();
+        const anchorTop = anchor.getBoundingClientRect().top;
 
-                if (!entry.isIntersecting) return;
+        if (anchorTop <= headerHeight) {
 
-                const id = entry.target.getAttribute("id");
+            if (!group.classList.contains('is-fixed')) {
 
-                navLinks.forEach(link => {
+                anchor.style.height = group.offsetHeight + 'px';
 
-                    const isMatch = link.getAttribute("href") === "#" + id;
+                group.classList.add('is-fixed');
 
-                    link.classList.toggle("active", isMatch);
+                group.style.top = '0px';
+            }
 
-                    if (isMatch) {
-                        centerActive(link);
-                    }
+        } else {
+
+            if (group.classList.contains('is-fixed')) {
+
+                group.classList.remove('is-fixed');
+
+                group.style.top = '';
+
+                anchor.style.height = '0px';
+            }
+        }
+    }
+
+    window.addEventListener('scroll', updateStickyGroup, { passive: true });
+    window.addEventListener('resize', updateStickyGroup);
+
+    updateStickyGroup();
+
+    /*
+    |------------------------------------------------------------------
+    | 🔥 INTERSECTION OBSERVER
+    |------------------------------------------------------------------
+    */
+
+    let observer;
+
+    function createObserver() {
+
+        if (observer) observer.disconnect();
+
+        const offset = getStickyOffset();
+
+        observer = new IntersectionObserver(
+            (entries) => {
+
+                entries.forEach(entry => {
+
+                    if (!entry.isIntersecting) return;
+
+                    const id = entry.target.getAttribute("id");
+
+                    navLinks.forEach(link => {
+
+                        const isMatch = link.getAttribute("href") === "#" + id;
+
+                        link.classList.toggle("active", isMatch);
+
+                        if (isMatch) {
+                            centerActive(link);
+                        }
+
+                    });
 
                 });
 
-            });
+            },
+            {
+                rootMargin: `-${offset}px 0px -55% 0px`,
+                threshold: 0.01
+            }
+        );
 
-        },
-        {
-            rootMargin: "-30% 0px -60% 0px",
-            threshold: 0
-        }
-    );
+        sections.forEach(section => observer.observe(section));
+    }
 
-    sections.forEach(section => {
-        observer.observe(section);
+    createObserver();
+
+    /*
+    |------------------------------------------------------------------
+    | RESIZE
+    |------------------------------------------------------------------
+    */
+
+    window.addEventListener('resize', () => {
+        createObserver();
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | CLICK SCROLL (OFFSET FIX)
-    |--------------------------------------------------------------------------
+    |------------------------------------------------------------------
+    | CLICK SCROLL
+    |------------------------------------------------------------------
     */
 
     navLinks.forEach(link => {
@@ -153,10 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const target = document.querySelector(link.getAttribute('href'));
             if (!target) return;
 
-            const headerHeight = getHeaderHeight();
-            const navHeight = nav.offsetHeight;
-
-            const OFFSET = navHeight;
+            const OFFSET = getStickyOffset();
 
             const y =
                 target.getBoundingClientRect().top +

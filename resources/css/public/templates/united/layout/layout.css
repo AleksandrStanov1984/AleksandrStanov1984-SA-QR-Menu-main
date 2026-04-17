@@ -16,7 +16,7 @@
 | MAIN CONTENT
 |--------------------------------------------------------------------------
 */
-main{
+#menuContainer .container {
     flex:1;
     padding:20px;
 }
@@ -101,4 +101,12 @@ main{
     height:1px;
     background:var(--border-color);
     margin:12px 0;
+}
+
+.menu-sticky-group {
+    position: sticky;
+    top: 0;
+    z-index: 300;
+
+    will-change: transform;
 }

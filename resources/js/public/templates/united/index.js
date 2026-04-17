@@ -9,6 +9,7 @@ import "./drawer/drawer-controller.js";
 
 /* menu */
 import "./menu/scrollspy.js";
+import "./menu/search.js";
 
 /* modal */
 import "./modal/modal-controller.js";

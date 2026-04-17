@@ -2,6 +2,7 @@
 
 return [
 
+    'search' => 'Поиск по меню',
     'opening_hours' => 'Часы работы',
 
     'open' => 'Открыто',

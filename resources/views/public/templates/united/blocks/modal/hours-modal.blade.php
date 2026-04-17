@@ -1,14 +1,23 @@
 {{-- resources/views/public/templates/united/blocks/modal/hours-modal.blade.php --}}
-{{-- public/templates/united/blocks/modal/hours-modal --}}
+
 <div id="hoursModal" class="modal">
 
     <div class="modal-box">
 
         <div class="hours-header">
 
+            <div style="width:36px;"></div>
+
             <h3>
                 {{ __('menu.opening_hours') }}
             </h3>
+
+            <button type="button"
+                    class="hours-close"
+                    data-close-modal="hoursModal">
+                ✕
+            </button>
+
         </div>
 
         <div class="hours-list">
@@ -23,8 +32,8 @@
 
                         @if($day['today'])
                             <span class="hours-today-label">
-({{ __('menu.today') }})
-</span>
+                                ({{ __('menu.today') }})
+                            </span>
                         @endif
 
                     </div>

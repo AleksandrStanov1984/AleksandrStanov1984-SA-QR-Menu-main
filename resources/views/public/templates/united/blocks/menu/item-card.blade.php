@@ -67,12 +67,10 @@
                           title="{{ __('menu.bestseller') }}">
 
         <svg class="badge-icon" viewBox="0 0 24 24" aria-hidden="true">
-    <!-- внешняя форма -->
     <path
         d="M12 2C9.5 6 6 8 6 12a6 6 0 0 0 12 0c0-3-2-5.5-6-10Z"
         fill="currentColor"
     />
-            <!-- внутренняя «жилка» -->
     <path
         d="M12 9c-1.5 2-2.5 3-2.5 4.5a2.5 2.5 0 0 0 5 0C14.5 12 13.5 11 12 9Z"
         fill="#fff"

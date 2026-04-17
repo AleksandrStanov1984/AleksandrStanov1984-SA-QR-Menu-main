@@ -1,11 +1,7 @@
 {{-- resources/views/public/templates/united/blocks/menu/menu-section.blade.php --}}
 
-{{-- resources/views/public/templates/united/blocks/menu/menu-section.blade.php --}}
-
-{{-- 🔥 АНКОР (для фиксации) --}}
 <div id="menuStickyAnchor" class="menu-sticky-anchor"></div>
 
-{{-- 🔥 STICKY GROUP --}}
 <div id="menuStickyGroup" class="menu-sticky-group">
     <div class="menu-sticky-group__inner">
 

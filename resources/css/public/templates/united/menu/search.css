@@ -3,19 +3,15 @@
 /* =========================
    STICKY GROUP
 ========================= */
-
 .menu-sticky-group {
     position: sticky;
     top: 0;
     z-index: 300;
-
     display: flex;
     flex-direction: column;
     gap: 8px;
-
     padding-top: 6px;
     padding-bottom: 8px;
-
     background: linear-gradient(
         to bottom,
         var(--page-bg) 0%,
@@ -27,24 +23,18 @@
 /* =========================
    MENU SEARCH
 ========================= */
-
 .menu-search-wrap {
     padding: 6px;
     border-radius: 999px;
-
     background: var(--card-bg);
-
     box-shadow:
         0 20px 60px rgba(0,0,0,0.35),
         0 8px 20px rgba(0,0,0,0.25),
         inset 0 6px 0 rgba(255,255,255,0.25);
-
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-
     border: 1px solid rgba(255,255,255,0.15);
     overflow: visible;
-
     transition: all 0.25s ease;
 }
 
@@ -55,11 +45,9 @@
         0 10px 30px rgba(0,0,0,0.3);
 }
 
-
 /* =========================
    INPUT
 ========================= */
-
 .menu-search {
     position: relative;
     z-index: 99;
@@ -68,23 +56,16 @@
 .menu-search input {
     width: 100%;
     padding: 10px 14px;
-
     box-sizing: border-box;
     border-radius: 999px;
-
     border: none;
-
     background: rgba(255,255,255,0.18);
-
     color: var(--text-muted);
     font-size: 15px;
-
     outline: none;
-
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.25),
-        0 4px 12px rgba(0,0,0,0.15); /* мягко */
-
+        0 4px 12px rgba(0,0,0,0.15);
     transition: all .25s ease;
 }
 
@@ -98,29 +79,22 @@
     box-shadow: 0 0 0 2px var(--search-ring);
 }
 
-
 /* =========================
    DROPDOWN
 ========================= */
-
 .menu-search-results {
     position: absolute;
     top: 110%;
     left: 0;
     right: 0;
-
     border-radius: 20px;
-
     background: rgba(15, 25, 45, 0.85);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(35px) saturate(180%);
-
     border: 1px solid rgba(255,255,255,0.08);
-
     box-shadow:
         0 40px 100px rgba(0,0,0,0.6),
         inset 0 1px 0 rgba(255,255,255,0.05);
-
     overflow: hidden;
     pointer-events: auto;
     display: none;
@@ -132,7 +106,6 @@
 }
 
 /* ===== SEARCH ITEM LAYOUT ===== */
-
 .menu-search-line {
     display: flex;
     align-items: center;
@@ -175,17 +148,13 @@
 /* =========================
    ITEM
 ========================= */
-
 .menu-search-item {
     padding: 14px 18px;
     cursor: pointer;
-
     font-size: 15px;
     color: #fff;
-
     display: flex;
     align-items: center;
-
     transition: all 0.15s ease;
 }
 
@@ -326,14 +295,9 @@ body[data-theme="light"] {
 
 
 /* =========================
-   MOBILE FIX
+   MOBILE
 ========================= */
-
-/* =========================
-   SEARCH RESPONSIVE FIX
-========================= */
-
-/* 📱 MOBILE */
+/* MOBILE */
 @media (max-width: 480px) {
 
     .menu-search-wrap {
@@ -341,7 +305,7 @@ body[data-theme="light"] {
     }
 
     .menu-search input {
-        padding: 10px 14px; /* было 14px+ */
+        padding: 10px 14px;
         font-size: 14px;
 
         border-radius: 999px;
@@ -349,7 +313,7 @@ body[data-theme="light"] {
 
 }
 
-/* 📱 TABLET */
+/* TABLET */
 @media (min-width: 481px) and (max-width: 768px) {
 
     .menu-search-wrap {
@@ -363,7 +327,6 @@ body[data-theme="light"] {
 
 }
 
-/* 💻 DESKTOP (оставляем как есть, но можно чуть лучше) */
 @media (min-width: 769px) {
 
     .menu-search input {

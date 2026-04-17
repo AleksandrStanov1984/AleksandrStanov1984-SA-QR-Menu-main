@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/sidebar/_nav.blade.php --}}
-{{-- admin/restaurants/components/sidebar/_nav --}}
+
 @php
     $user = auth()->user();
     $isSuper = (bool)($user?->is_super_admin);
@@ -18,6 +18,13 @@
                 <a href="{{ route('admin.restaurants.profile', $ctxRestaurant) }}"
                    class="{{ request()->routeIs('admin.restaurants.profile') ? 'is-active' : '' }}">
                     👤 {{ __('admin.sidebar.profile') }}
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.restaurants.languages', $ctxRestaurant) }}"
+                   class="{{ request()->routeIs('admin.restaurants.languages') ? 'is-active' : '' }}">
+                    🌐 {{ __('admin.sidebar.languages') }}
                 </a>
             </li>
         @endif

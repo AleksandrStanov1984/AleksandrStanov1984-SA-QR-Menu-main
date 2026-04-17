@@ -29,7 +29,7 @@ return [
         'carousel_advanced' => false,
 
         // ===== LOCALES =====
-        'locales' => ['de'],
+        'locales_limit' => 1,
 
         // ===== BRANDING =====
         'og_images' => true,
@@ -63,7 +63,7 @@ return [
         'carousel_advanced' => false,
 
         // ===== LOCALES =====
-        'locales' => ['de', 'en'],
+        'locales_limit' => 2,
 
         // ===== BRANDING =====
         'og_images' => true,
@@ -97,11 +97,11 @@ return [
         'carousel_advanced' => true,
 
         // ===== LOCALES =====
-        'locales' => ['de', 'en', 'ru'],
+        'locales_limit' => null,
 
         // ===== BRANDING =====
         'og_images' => true,
-        'og_limit' => null, // unlimited
+        'og_limit' => null,
     ],
 
 ];

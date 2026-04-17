@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/profile.blade.php --}}
-{{-- admin/restaurants/profile --}}
+
 @extends('admin.layout')
 
 @section('title', __('admin.profile.restaurant.h2'))

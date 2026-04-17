@@ -1,5 +1,4 @@
 {{-- resources/views/admin/restaurants/permissions.blade.php --}}
-{{-- admin/restaurants/permissions --}}
 @extends('admin.layout')
 
 @section('content')

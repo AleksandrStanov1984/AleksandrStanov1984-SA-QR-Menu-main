@@ -1,5 +1,4 @@
 {{-- resources/views/admin/restaurants/menu.blade.php --}}
-{{-- admin/restaurants/menu --}}
 
 @extends('admin.layout')
 

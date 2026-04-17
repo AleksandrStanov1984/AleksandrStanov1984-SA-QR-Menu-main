@@ -9,11 +9,11 @@ use App\Models\MenuPlan;
 use App\Models\Restaurant;
 use App\Models\User;
 use App\Models\Section;
-use App\Models\RestaurantSocialLink;
 use App\Models\MenuTemplate;
 
 use App\Support\Guards\AccessGuardTrait;
 use App\Support\Permissions;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -50,6 +50,9 @@ class RestaurantController extends Controller
         return $digits ? ('+' . $digits) : null;
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function index(Request $request): View
     {
         $this->assertSuperAdmin($request);
@@ -155,9 +158,15 @@ class RestaurantController extends Controller
 
         $request->session()->put('admin.restaurant_id', $restaurant->id);
 
+        if ($restaurant->feature('locales_limit') === 1) {
+            return redirect()
+                ->route('admin.restaurants.edit', $restaurant)
+                ->with('status', 'Restaurant created.');
+        }
+
         return redirect()
-            ->route('admin.restaurants.edit', $restaurant)
-            ->with('status', 'Restaurant created.');
+            ->route('admin.restaurants.languages', $restaurant)
+            ->with('status', __('profile.languages.setup_after_create'));
     }
 
     /**

@@ -315,6 +315,7 @@ return [
         // ===== PROFILE =====
         'profile_group' => 'Профиль',
         'profile' => 'Профиль',
+        'languages' => 'Языки',
 
         // ===== RESTAURANT =====
         'restaurant_group' => 'Ресторан',

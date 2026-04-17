@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 class LanguageImportController extends Controller
 {
     use AccessGuardTrait;
+
     /**
      * Upload JSON with new language content and optionally set as default.
      * For now we accept a simple, explicit structure:
@@ -41,6 +42,7 @@ class LanguageImportController extends Controller
      *    }
      *  ]
      * }
+     * @throws TenantAccessException
      */
     public function import(Request $request, Restaurant $restaurant): RedirectResponse
     {
@@ -101,6 +103,9 @@ class LanguageImportController extends Controller
         return back()->with('status', 'Language added and imported.');
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function setDefault(Request $request, Restaurant $restaurant): RedirectResponse
     {
         $user = $request->user();

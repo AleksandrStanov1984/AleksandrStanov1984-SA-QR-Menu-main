@@ -1,12 +1,11 @@
 {{-- resources/views/admin/layout/topbar.blade.php --}}
-{{-- admin/layout/topbar --}}
+
 @php
     use App\Support\AdminContext;
 
     $u = auth()->user();
     $restaurant = AdminContext::actingRestaurant();
 
-    // BRAND URL
     if (!$u) {
         $brandUrl = route('admin.login');
     } elseif ($u->is_super_admin) {
@@ -15,19 +14,23 @@
         $brandUrl = route('admin.menu.profile');
     }
 
-    if ($restaurant) {
-        $planLocales = $restaurant->feature('locales', ['de']);
-        $enabledLocales = $restaurant->enabled_locales;
+    if ($u?->is_super_admin) {
 
-        $locales = !empty($enabledLocales)
-            ? array_values(array_intersect($planLocales, $enabledLocales))
-            : $planLocales;
+        $locales = config('locales.all', ['de']);
 
-        if (empty($locales)) {
-            $locales = ['de']; // fallback
-        }
+    } elseif ($restaurant) {
+
+        $enabledLocales = $restaurant->enabled_locales ?? [];
+
+        $locales = collect($enabledLocales)
+            ->push($restaurant->default_locale)
+            ->unique()
+            ->sortByDesc(fn ($l) => $l === $restaurant->default_locale)
+            ->values()
+            ->all();
+
     } else {
-        $locales = ['de','en','ru'];
+        $locales = ['de'];
     }
 @endphp
 

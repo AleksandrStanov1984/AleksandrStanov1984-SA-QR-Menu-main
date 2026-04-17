@@ -78,4 +78,9 @@ class User extends Authenticatable
         $this->meta = $meta;
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return (bool) $this->is_super_admin;
+    }
+
 }

@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/permissions/index.blade.php --}}
-{{-- admin/restaurants/components/permissions/index --}}
+
 @php
 
     $allPerms = \App\Support\Permissions::registry();

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\PromoBannerController;
 use App\Http\Controllers\Admin\RestaurantHoursController;
+use App\Http\Controllers\Admin\RestaurantLanguageController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -327,6 +328,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::delete('restaurants/{restaurant}/qr/background', [RestaurantQrController::class, 'deleteBackground'])
             ->name('restaurants.qr.deleteBackground');
+
+        // languages
+        Route::get('restaurants/{restaurant}/languages', [RestaurantLanguageController::class, 'index']
+        )->name('restaurants.languages');
+
+        Route::post('restaurants/{restaurant}/languages', [RestaurantLanguageController::class, 'update']
+        )->name('restaurants.languages.update');
 
 
     });

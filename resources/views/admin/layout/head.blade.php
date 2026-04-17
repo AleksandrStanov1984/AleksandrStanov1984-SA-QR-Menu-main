@@ -1,5 +1,4 @@
 {{-- resources/views/admin/layout/head.blade.php --}}
-{{-- admin/layout/head --}}
 
 
 <meta charset="utf-8">

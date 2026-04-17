@@ -2,10 +2,21 @@
 
 <div id="mobileDrawer" class="mobile-drawer">
 
-    <div id="drawerClose" class="drawer-close">
-        ✕
+    {{-- HEADER --}}
+    <div class="drawer-header">
+
+        <button
+            id="drawerClose"
+            class="drawer-close"
+            type="button"
+            aria-label="Close menu"
+        >
+            ✕
+        </button>
+
     </div>
 
+    {{-- NAV --}}
     <nav class="drawer-nav">
 
         @foreach($vm->categories as $cat)

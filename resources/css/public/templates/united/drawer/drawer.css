@@ -1,4 +1,5 @@
 /* resources/css/public/templates/united/drawer/drawer.css */
+
 /*
 |--------------------------------------------------------------------------
 | MOBILE DRAWER
@@ -10,15 +11,16 @@
     left: -260px;
     width: 260px;
     height: 100vh;
-    background: color-mix(in srgb, var(--card-bg) 96%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: left .28s cubic-bezier(.25,.8,.25,1);
-    z-index: 200;
-    box-shadow: 0 10px 30px rgba(0,0,0,.18);
     display: flex;
     flex-direction: column;
+    transition: left .28s cubic-bezier(.25,.8,.25,1);
+    z-index: 9999;
     border-right: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    overflow: hidden;
 }
 
 .mobile-drawer.drawer-open {
@@ -27,20 +29,55 @@
 
 /*
 |--------------------------------------------------------------------------
+| HEADER
+|--------------------------------------------------------------------------
+*/
+.drawer-header{
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/*
+|--------------------------------------------------------------------------
 | CLOSE BUTTON
 |--------------------------------------------------------------------------
 */
-.drawer-close {
-    padding: 16px 18px;
-    font-size: 20px;
-    cursor: pointer;
+.drawer-close{
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.12);
     color: var(--text-primary);
-    border-bottom: 1px solid var(--border-color);
-    transition: background .15s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.35);
+
+    cursor: pointer;
+    transition:
+        background .15s ease,
+        transform .08s ease,
+        box-shadow .15s ease;
 }
 
-.drawer-close:hover {
-    background: color-mix(in srgb, var(--card-bg) 85%, black);
+.drawer-close:hover{
+    background: rgba(255,255,255,0.22);
+}
+
+.drawer-close:active{
+    transform: scale(.92);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
 
 /*
@@ -49,9 +86,26 @@
 |--------------------------------------------------------------------------
 */
 .drawer-nav {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding-top: 6px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.drawer-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.drawer-nav::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+
+.drawer-nav::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .drawer-link {
@@ -97,7 +151,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity .2s ease;
-    z-index: 150;
+    z-index: 9998;
 }
 
 .drawer-overlay.active {

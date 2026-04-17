@@ -1,4 +1,5 @@
 {{-- resources/views/public/templates/united/index.blade.php --}}
+
 <!DOCTYPE html>
 <html lang="{{ $vm->locale }}">
 
@@ -32,10 +33,6 @@
 @include('public.templates.united.blocks.header.header')
 
 <div class="container">
-    @include('public.templates.united.blocks.drawer.mobile-drawer')
-</div>
-
-<div class="container">
     @include('public.templates.united.blocks.header.restaurant-info', [
         'showFeaturedItems' => true,
     ])
@@ -64,6 +61,9 @@
 
 @include('public.templates.united.blocks.modal.item-modal')
 @include('public.templates.united.blocks.modal.hours-modal')
+
+@include('public.templates.united.blocks.drawer.mobile-drawer')
+<div id="drawerOverlay" class="drawer-overlay"></div>
 
 @include('public.templates.united.layout.scripts')
 

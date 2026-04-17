@@ -1,4 +1,5 @@
 // resources/js/public/templates/united/header/header-carousel.js
+
 export function initHeaderCarousel() {
     const carousels = document.querySelectorAll('[data-header-carousel]');
     if (!carousels.length) return;
@@ -50,7 +51,6 @@ export function initHeaderCarousel() {
 
         track.addEventListener('mousedown', (e) => {
             if (e.target.closest('[data-open-modal]')) {
-                // всё равно разрешаем drag, но не ломаем клик потом
             }
 
             isDown = true;

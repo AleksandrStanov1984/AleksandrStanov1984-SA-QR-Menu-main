@@ -1,5 +1,5 @@
 {{-- resources/views/public/layouts/menu.blade.php --}}
-{{-- public/layouts/menu --}}
+
 @extends('public.layouts.base')
 
 @section('styles')

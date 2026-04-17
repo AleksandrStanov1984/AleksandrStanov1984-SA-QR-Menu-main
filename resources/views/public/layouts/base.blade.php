@@ -1,5 +1,5 @@
 {{-- resources/views/public/layouts/base.blade.php --}}
-{{-- public/layouts/base --}}
+
 <!DOCTYPE html>
 <html lang="{{ $vm->locale ?? app()->getLocale() }}">
 <head>

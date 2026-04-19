@@ -9,20 +9,19 @@ class MakeMenuTemplate extends Command
 {
     protected $signature = 'make:menu-template {name}';
 
-    protected $description = 'Create QR menu template structure';
+    protected $description = 'Create QR menu template structure (production-ready)';
 
     public function handle()
     {
         $name = $this->argument('name');
 
-        $base = resource_path("views/public/templates/$name");
+        $base = resource_path("views/public/templates/{$name}");
 
         /*
-        |--------------------------------------------------------------------------
-        | Folders
-        |--------------------------------------------------------------------------
+        |------------------------------------------------------------------
+        | FOLDERS
+        |------------------------------------------------------------------
         */
-
         $folders = [
 
             "",
@@ -33,24 +32,27 @@ class MakeMenuTemplate extends Command
             "blocks/categories",
             "blocks/drawer",
             "blocks/modal",
-            "blocks/menu"
+            "blocks/menu",
+            "blocks/banners",
 
         ];
 
         foreach ($folders as $folder) {
-
-            File::ensureDirectoryExists("$base/$folder");
-
+            File::ensureDirectoryExists("{$base}/{$folder}");
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | Files with default content
-        |--------------------------------------------------------------------------
+        |------------------------------------------------------------------
+        | FILES
+        |------------------------------------------------------------------
         */
-
         $files = [
 
+            /*
+            |--------------------------------------------------------------
+            | INDEX
+            |--------------------------------------------------------------
+            */
             "index.blade.php" => <<<BLADE
 <!DOCTYPE html>
 <html lang="{{ \$vm->locale }}">
@@ -60,33 +62,43 @@ class MakeMenuTemplate extends Command
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>{{ \$vm->restaurant['name'] }}</title>
+<title>{{ \$vm->merchant->name }}</title>
 
-@include('public.templates.$name.layout.styles')
+@include('public.templates.{$name}.layout.styles')
 
 </head>
 
-<body class="theme-light">
+<body>
 
-@include('public.templates.$name.blocks.header.header')
+@include('public.templates.{$name}.blocks.header.header')
 
-@include('public.templates.$name.blocks.categories.category-nav')
+@include('public.templates.{$name}.blocks.drawer.mobile-drawer')
+
+@include('public.templates.{$name}.blocks.categories.category-nav')
+
+@include('public.templates.{$name}.blocks.banners.index')
 
 <main id="menuContainer">
-
-@include('public.templates.$name.blocks.menu.menu-section')
-
+@include('public.templates.{$name}.blocks.menu.menu-section')
 </main>
 
-@include('public.templates.$name.blocks.footer.footer')
+@include('public.templates.{$name}.blocks.footer.footer')
 
-@include('public.templates.$name.layout.scripts')
+@include('public.templates.{$name}.blocks.modal.item-modal')
+@include('public.templates.{$name}.blocks.modal.hours-modal')
+
+@include('public.templates.{$name}.layout.scripts')
 
 </body>
 </html>
 BLADE
             ,
 
+            /*
+            |--------------------------------------------------------------
+            | LAYOUT
+            |--------------------------------------------------------------
+            */
             "layout/styles.blade.php" => <<<BLADE
 @vite('resources/css/app.css')
 <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
@@ -98,13 +110,18 @@ BLADE
 BLADE
             ,
 
+            /*
+            |--------------------------------------------------------------
+            | HEADER
+            |--------------------------------------------------------------
+            */
             "blocks/header/header.blade.php" => <<<BLADE
 <header class="site-header">
 
 <div class="header-inner">
 
 <div class="header-logo">
-{{ \$vm->restaurant['name'] }}
+{{ \$vm->merchant->name }}
 </div>
 
 <button id="drawerOpen" class="drawer-btn">
@@ -117,26 +134,39 @@ BLADE
 BLADE
             ,
 
+            "blocks/header/courusel-header.blade.php" => <<<BLADE
+<div class="header-carousel">
+{{-- carousel placeholder --}}
+</div>
+BLADE
+            ,
+
+            /*
+            |--------------------------------------------------------------
+            | FOOTER
+            |--------------------------------------------------------------
+            */
             "blocks/footer/footer.blade.php" => <<<BLADE
 <footer class="site-footer">
-
 <div class="container">
-
 SA Digital Menus
-
 </div>
-
 </footer>
 BLADE
             ,
 
+            /*
+            |--------------------------------------------------------------
+            | CATEGORIES
+            |--------------------------------------------------------------
+            */
             "blocks/categories/category-nav.blade.php" => <<<BLADE
 <nav id="categoryNav" class="category-nav">
 
-@foreach(\$vm->sections as \$section)
+@foreach(\$vm->categories as \$cat)
 
-<a href="#section-{{ \$section['id'] }}" class="category-link">
-{{ \$section['title'] }}
+<a href="#section-{{ \$cat['id'] }}" class="category-link">
+{{ \$cat['title'] }}
 </a>
 
 @endforeach
@@ -145,116 +175,126 @@ BLADE
 BLADE
             ,
 
+            /*
+            |--------------------------------------------------------------
+            | DRAWER
+            |--------------------------------------------------------------
+            */
             "blocks/drawer/mobile-drawer.blade.php" => <<<BLADE
 <div id="mobileDrawer" class="mobile-drawer">
 
-<div class="drawer-close" id="drawerClose">
-✕
+<div class="drawer-header">
+    <div id="drawerClose" class="drawer-close">✕</div>
 </div>
+
+<nav class="drawer-nav">
+
+@foreach(\$vm->categories as \$cat)
+    <a href="#section-{{ \$cat['id'] }}" class="drawer-link">
+        {{ \$cat['title'] }}
+    </a>
+@endforeach
+
+</nav>
 
 </div>
 BLADE
             ,
 
+            /*
+            |--------------------------------------------------------------
+            | BANNERS
+            |--------------------------------------------------------------
+            */
+            "blocks/banners/index.blade.php" => <<<BLADE
+<div class="banners">
+{{-- banners placeholder --}}
+</div>
+BLADE
+            ,
+
+            /*
+            |--------------------------------------------------------------
+            | MODALS
+            |--------------------------------------------------------------
+            */
             "blocks/modal/item-modal.blade.php" => <<<BLADE
 <div id="itemModal" class="modal">
-
 <div class="modal-box">
-
 <button data-close-modal>Close</button>
-
-<div id="modalContent">
-
+<div id="modalContent"></div>
 </div>
-
-</div>
-
 </div>
 BLADE
             ,
 
+            "blocks/modal/hours-modal.blade.php" => <<<BLADE
+<div id="hoursModal" class="modal">
+<div class="modal-box">
+<button data-close-modal>Close</button>
+<div class="hours-content"></div>
+</div>
+</div>
+BLADE
+            ,
+
+            /*
+            |--------------------------------------------------------------
+            | MENU
+            |--------------------------------------------------------------
+            */
             "blocks/menu/item-card.blade.php" => <<<BLADE
 <div class="menu-item">
 
 @if(\$item['image'])
-<img
-class="menu-item-image"
-src="{{ \$item['image'] }}"
-alt="{{ \$item['title'] }}"
->
+<img src="{{ \$item['image'] }}" alt="{{ \$item['title'] }}">
 @endif
 
-<div class="menu-item-content">
-
-<h3 class="menu-item-title">
-{{ \$item['title'] }}
-</h3>
-
-@if(\$item['description'])
-<p class="menu-item-description">
-{{ \$item['description'] }}
-</p>
-@endif
+<h3>{{ \$item['title'] }}</h3>
 
 @if(\$item['price'])
-<span class="menu-item-price">
-{{ number_format(\$item['price'],2) }} €
-</span>
+<span>{{ number_format(\$item['price'], 2) }} €</span>
 @endif
-
-</div>
 
 </div>
 BLADE
             ,
 
             "blocks/menu/menu-section.blade.php" => <<<BLADE
-@foreach(\$vm->sections as \$section)
+@foreach(\$vm->categories as \$section)
 
-<section
-id="section-{{ \$section['id'] }}"
-class="menu-section"
->
+<section id="section-{{ \$section['id'] }}">
 
-<h2 class="menu-section-title">
-{{ \$section['title'] }}
-</h2>
-
-<div class="menu-grid">
+<h2>{{ \$section['title'] }}</h2>
 
 @foreach(\$section['items'] as \$item)
 
-@include('public.templates.$name.blocks.menu.item-card')
+@include('public.templates.{$name}.blocks.menu.item-card')
 
 @endforeach
-
-</div>
 
 </section>
 
 @endforeach
 BLADE
-
         ];
 
         /*
-        |--------------------------------------------------------------------------
-        | Create files
-        |--------------------------------------------------------------------------
+        |------------------------------------------------------------------
+        | CREATE FILES
+        |------------------------------------------------------------------
         */
-
         foreach ($files as $file => $content) {
 
-            $path = "$base/$file";
+            $path = "{$base}/{$file}";
 
             if (!File::exists($path)) {
-
                 File::put($path, $content);
-
             }
-
         }
 
-        $this->info("Template [$name] created successfully.");
+        $this->info("Template [{$name}] created successfully.");
+
+        return Command::SUCCESS;
     }
 }

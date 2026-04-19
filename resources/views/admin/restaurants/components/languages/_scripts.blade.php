@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/languages/_scripts.blade.php --}}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -31,11 +32,17 @@
             })
                 .then(res => res.json())
                 .then(data => {
+
                     document.querySelectorAll('.lang-switch input').forEach(i => {
                         i.checked = data.enabled_locales.includes(i.value);
                     });
 
+                    updateTopbarLocales(data.enabled_locales, data.default_locale);
+
                     showFlash(window.UI_LANG.saved, 'success');
+                })
+                .catch(() => {
+                    showFlash('Error', 'error');
                 })
                 .finally(() => {
                     isSaving = false;
@@ -67,8 +74,7 @@
                         enabled = checked;
                     }
 
-                }
-                else {
+                } else {
                     enabled = checked;
                 }
 
@@ -76,6 +82,30 @@
             });
 
         });
+
+        function updateTopbarLocales(locales, defaultLocale) {
+
+            const select = document.querySelector('#topbarLocaleForm select');
+            if (!select) return;
+
+            select.innerHTML = '';
+
+            locales.sort((a, b) => (a === defaultLocale ? -1 : 1));
+
+            locales.forEach(locale => {
+
+                const option = document.createElement('option');
+
+                option.value = locale;
+                option.textContent = locale.toUpperCase();
+
+                if (locale === defaultLocale) {
+                    option.selected = true;
+                }
+
+                select.appendChild(option);
+            });
+        }
 
     });
 </script>

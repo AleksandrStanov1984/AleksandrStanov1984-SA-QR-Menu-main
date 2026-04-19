@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/languages/index.blade.php --}}
 @include('admin.restaurants.components.languages._styles')
 
 @php

@@ -10,6 +10,8 @@ class RestaurantAssetsService
     {
         if ($restaurantId <= 0) return;
 
+        $locales = config('locales.all', ['de']);
+
         // =============================
         // STORAGE (image-inbox)
         // =============================
@@ -22,6 +24,7 @@ class RestaurantAssetsService
             'branding/logo',
             'branding/backgrounds/light',
             'branding/backgrounds/dark',
+            'branding/og',
 
             // MENU
             'menu/items',
@@ -41,6 +44,10 @@ class RestaurantAssetsService
             }
         }
 
+        foreach ($locales as $locale) {
+            File::ensureDirectoryExists("{$storageBase}/branding/og/{$locale}", 0755, true);
+        }
+
         // =============================
         // PUBLIC (runtime)
         // =============================
@@ -53,6 +60,7 @@ class RestaurantAssetsService
             'branding/logo',
             'branding/backgrounds/light',
             'branding/backgrounds/dark',
+            'branding/og',
 
             // MENU
             'menu/items',
@@ -70,6 +78,10 @@ class RestaurantAssetsService
             } catch (\Throwable $e) {
                 report($e);
             }
+        }
+
+        foreach ($locales as $locale) {
+            File::ensureDirectoryExists("{$publicBase}/branding/og/{$locale}", 0755, true);
         }
     }
 

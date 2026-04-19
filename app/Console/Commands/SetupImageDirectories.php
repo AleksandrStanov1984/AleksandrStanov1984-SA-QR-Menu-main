@@ -15,17 +15,30 @@ class SetupImageDirectories extends Command
     {
         $directories = [
 
+            // =========================
+            // STORAGE (INBOX)
+            // =========================
             storage_path('app/image-inbox/assets/restaurants'),
             storage_path('app/image-inbox/assets/system'),
-
+            storage_path('app/image-inbox/assets/system/banners'),
+            storage_path('app/image-inbox/assets/system/icons'),
+            storage_path('app/image-inbox/assets/system/fallback'),
+            storage_path('app/image-inbox/assets/system/author'),
+            storage_path('app/image-inbox/assets/system/og'),
+            storage_path('app/image-inbox/assets/system/qr'),
             storage_path('app/reports'),
 
+            // =========================
+            // PUBLIC (RUNTIME)
+            // =========================
             public_path('assets/restaurants'),
-
-            public_path('assets/system/social'),
-            public_path('assets/system/author'),
+            public_path('assets/system'),
+            public_path('assets/system/banners'),
             public_path('assets/system/icons'),
             public_path('assets/system/fallback'),
+            public_path('assets/system/author'),
+            public_path('assets/system/og'),
+            public_path('assets/system/qr'),
         ];
 
         foreach ($directories as $dir) {

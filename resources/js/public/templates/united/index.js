@@ -7,6 +7,9 @@ import "./core/restaurant-status.js";
 /* drawer */
 import "./drawer/drawer-controller.js";
 
+/* drawer */
+import "./banners/banners.js";
+
 /* menu */
 import "./menu/scrollspy.js";
 import "./menu/search.js";

@@ -9,9 +9,12 @@ class SetAdminLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        $loc = $request->session()->get('admin_locale', 'de');
-        if (!in_array($loc, ['de', 'en', 'ru'], true)) {
-            $loc = 'de';
+        $availableLocales = config('locales.all', ['de']);
+
+        $loc = $request->session()->get('admin_locale', $availableLocales[0]);
+
+        if (!in_array($loc, $availableLocales, true)) {
+            $loc = $availableLocales[0];
         }
 
         app()->setLocale($loc);

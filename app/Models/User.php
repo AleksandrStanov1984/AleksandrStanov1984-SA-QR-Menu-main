@@ -2,20 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Mass assignable
      */
     protected $fillable = [
         'name',
@@ -26,9 +22,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Hidden attributes
      */
     protected $hidden = [
         'password',
@@ -36,9 +30,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Casts
      */
     protected function casts(): array
     {
@@ -50,19 +42,23 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relations
+     */
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class);
     }
 
+    /**
+     * Permissions (temporary always true)
+     */
     public function hasPerm(string $key): bool
     {
-        if ($this->is_super_admin)
+        if ($this->is_super_admin) {
             return true;
+        }
 
-        $perms = $this->meta['permissions'] ?? [];
-
-       // return (bool)($perms[$key] ?? false);
         return true;
     }
 
@@ -78,9 +74,25 @@ class User extends Authenticatable
         $this->meta = $meta;
     }
 
+    /**
+     * Helpers
+     */
     public function isSuperAdmin(): bool
     {
         return (bool) $this->is_super_admin;
     }
 
+    /**
+     * Get user name (без всякой логики)
+     */
+    public function getName(): string
+    {
+        if (!is_null($this->name)) {
+            return (string) $this->name;
+        }
+
+        return (string) static::query()
+            ->whereKey($this->getKey())
+            ->value('name');
+    }
 }

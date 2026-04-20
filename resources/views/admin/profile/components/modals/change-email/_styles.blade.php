@@ -1,5 +1,5 @@
 {{-- resources/views/admin/profile/components/modals/change-email/_styles.blade.php --}}
-{{-- admin/profile/components/modals/change-email/_styles --}}
+
 <style>
     .modal__panel--sm{
         width: min(560px, calc(100vw - 32px));

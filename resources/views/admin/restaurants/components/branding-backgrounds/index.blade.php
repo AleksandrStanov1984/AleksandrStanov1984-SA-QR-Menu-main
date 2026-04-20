@@ -1,4 +1,3 @@
-{{-- admin/restaurants/components/branding-backgrounds/index --}}
 {{-- resources/views/admin/restaurants/components/branding-backgrounds/index.blade.php --}}
 
 

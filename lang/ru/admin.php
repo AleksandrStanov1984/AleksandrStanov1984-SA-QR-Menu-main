@@ -248,20 +248,21 @@ return [
             'no_permissions' => 'Права не назначены.',
         ],
 
-        'change_email' => [
-            'h2' => 'Смена Логина',
-            'current_email' => 'Текущий Логин',
-            'current_password' => 'Текущий пароль',
-            'new_email' => 'Новый Логин',
-        ],
 
-        'change_password' => [
-            'h2' => 'Смена пароля',
-            'current_email' => 'Текущий Логин',
-            'current_password' => 'Текущий пароль',
-            'new_password' => 'Новый пароль',
-            'confirm_new_password' => 'Повторите новый пароль',
-        ],
+            'change_email' => [
+                'h2' => 'Смена логина',
+                'current_email' => 'Текущий логин',
+                'new_email' => 'Новый логин',
+                'current_password' => 'Текущий пароль',
+            ],
+
+            'change_password' => [
+                'h2' => 'Смена пароля',
+                'current_password' => 'Текущий пароль',
+                'new_password' => 'Новый пароль',
+                'confirm_new_password' => 'Подтвердите пароль',
+            ],
+
     ],
 
     'items' => [
@@ -311,7 +312,6 @@ return [
     ],
 
     'sidebar' => [
-
         // ===== PROFILE =====
         'profile_group' => 'Профиль',
         'profile' => 'Профиль',
@@ -344,7 +344,6 @@ return [
         // ===== SECURITY =====
         'security_group' => 'Безопасность АДМИН',
         'security' => 'Безопасность',
-        'password' => 'Пароль',
         'permissions' => 'Права доступа',
 
         // ===== SYSTEM =====
@@ -354,6 +353,12 @@ return [
         'qr' => "QR Code",
 
         'system_group' => 'Системные настройки',
+
+        'login' => 'Логин',
+        'password' => 'Пароль',
+
+        'pro' => 'PRO',
+        'basic_pro' => 'BASIC / PRO',
     ],
 
     'branding' => [
@@ -381,6 +386,9 @@ return [
     ],
 
     'security' => [
+
+        'subtitle' => 'Безопасность',
+        // ================= VALIDATION (BACKEND) =================
         'validation' => [
             'current_email' => [
                 'required' => 'Укажите текущий логин.',
@@ -388,7 +396,7 @@ return [
             ],
             'new_email' => [
                 'required' => 'Укажите новый логин.',
-                'email' => 'Неверный формат нового догин.',
+                'email' => 'Неверный формат нового логина.',
                 'unique' => 'Этот логин уже используется.',
             ],
             'current_password' => [
@@ -405,20 +413,34 @@ return [
             ],
         ],
 
-        'password_hint' => 'Оставьте пароль пустым, если не хотите менять',
-        'h2' => 'Логин, Пароль',
+        // ================= HINTS =================
+        'hints' => [
+            'email_ok' => 'Логин можно использовать.',
+            'password_ok' => 'Пароль корректный.',
+        ],
 
+        // ================= ERRORS =================
         'errors' => [
             'current_email_wrong' => 'Текущий логин указан неверно.',
             'current_password_wrong' => 'Текущий пароль указан неверно.',
+
+            'email_same' => 'Новый логин совпадает с текущим.',
+            'password_mismatch' => 'Пароли не совпадают.',
+            'password_same' => 'Нельзя использовать старый пароль.',
+            'password_weak' => 'Пароль слишком простой.',
         ],
 
+        // ================= STATUS =================
         'status' => [
             'email_changed' => 'Логин изменён.',
             'password_changed' => 'Пароль изменён.',
         ],
 
-        'user_object' => 'Пользователь / Обьект'
+        // ================= UI =================
+        'password_hint' => 'Оставьте пароль пустым, если не хотите менять.',
+        'h2' => 'Логин, Пароль',
+
+        'user_object' => 'Пользователь / Объект',
     ],
 
     'socials' => [

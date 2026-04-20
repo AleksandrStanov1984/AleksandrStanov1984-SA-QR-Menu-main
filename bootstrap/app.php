@@ -2,6 +2,11 @@
 
 use App\Exceptions\Renderers\TenantAccessRenderer;
 use App\Exceptions\TenantAccessException;
+
+use App\Http\Middleware\EnsureAdminAccess;
+use App\Http\Middleware\ResolveAdminRestaurant;
+use App\Http\Middleware\SetAdminLocale;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,11 +18,22 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-                'admin.ensure'     => \App\Http\Middleware\EnsureAdminAccess::class,
-                'admin.restaurant' => \App\Http\Middleware\ResolveAdminRestaurant::class,
-                'admin.locale'     => \App\Http\Middleware\SetAdminLocale::class,
+
+        $middleware->web([
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
+
+        $middleware->alias([
+            'admin.ensure'     => EnsureAdminAccess::class,
+            'admin.restaurant' => ResolveAdminRestaurant::class,
+            'admin.locale'     => SetAdminLocale::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (TenantAccessException $e, $request) {

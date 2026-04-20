@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Support\Guards\AccessGuardTrait;
@@ -34,6 +35,9 @@ class DashboardController extends Controller
         ]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function selectRestaurant(Request $request): RedirectResponse
     {
         $this->assertSuperAdmin($request);

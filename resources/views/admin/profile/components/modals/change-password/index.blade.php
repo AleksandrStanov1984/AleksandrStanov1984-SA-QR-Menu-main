@@ -1,5 +1,4 @@
 {{-- resources/views/admin/profile/components/modals/change-password/index.blade.php --}}
-{{-- admin/profile/components/modals/change-password/index --}}
 
 @include('admin.profile.components.modals.change-password._styles')
 
@@ -18,31 +17,38 @@
               autocomplete="off">
             @csrf
 
-            <div class="modal-form__field">
-                <label>{{ __('admin.profile.change_password.current_email') }}</label>
-                <input name="current_email" type="email" autocomplete="email" required>
-            </div>
-
+            {{-- CURRENT PASSWORD --}}
             <div class="modal-form__field">
                 <label>{{ __('admin.profile.change_password.current_password') }}</label>
                 <div class="pw-field">
-                    <input name="current_password" type="password" autocomplete="new-password" required>
+                    <input name="current_password"
+                           type="password"
+                           autocomplete="current-password"
+                           required>
                     <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
                 </div>
             </div>
 
+            {{-- NEW PASSWORD --}}
             <div class="modal-form__field">
                 <label>{{ __('admin.profile.change_password.new_password') }}</label>
                 <div class="pw-field">
-                    <input name="new_password" type="password" autocomplete="new-password" required>
+                    <input name="new_password"
+                           type="password"
+                           autocomplete="new-password"
+                           required>
                     <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
                 </div>
             </div>
 
+            {{-- CONFIRM NEW PASSWORD --}}
             <div class="modal-form__field">
                 <label>{{ __('admin.profile.change_password.confirm_new_password') }}</label>
                 <div class="pw-field">
-                    <input name="new_password_confirm" type="password" autocomplete="new-password" required>
+                    <input name="new_password_confirm"
+                           type="password"
+                           autocomplete="new-password"
+                           required>
                     <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
                 </div>
             </div>

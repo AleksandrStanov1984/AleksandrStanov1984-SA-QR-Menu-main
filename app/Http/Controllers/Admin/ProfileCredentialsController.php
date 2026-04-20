@@ -17,14 +17,35 @@ class ProfileCredentialsController extends Controller
     {
         $user = $this->resolveUser($request);
 
-        $data = $this->validateEmail($request, $user);
+        $request->merge([
+            'new_email' => mb_strtolower(trim((string) $request->input('new_email')))
+        ]);
 
-        if (!$this->checkCredentials($user, $data)) {
-            return $this->credentialsError($user, $data);
+        $data = $request->validate([
+            'new_email' => [
+                'required',
+                'string',
+                'email:rfc',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'current_password' => ['required', 'string'],
+        ]);
+
+        if ($data['new_email'] === $user->email) {
+            return back()->withErrors([
+                'new_email' => __('admin.security.errors.email_same'),
+            ]);
+        }
+
+        if (!$this->checkPasswordAccess($user, $data['current_password'], $request)) {
+            return back()->withErrors([
+                'current_password' => __('admin.security.errors.current_password_wrong'),
+            ]);
         }
 
         $user->update([
-            'email' => mb_strtolower(trim($data['new_email']))
+            'email' => $data['new_email'],
         ]);
 
         return back()->with('status', __('admin.security.status.email_changed'));
@@ -34,125 +55,8 @@ class ProfileCredentialsController extends Controller
     {
         $user = $this->resolveUser($request);
 
-        $data = $this->validatePassword($request);
-
-        if (!$this->checkCredentials($user, $data)) {
-            return $this->credentialsError($user, $data);
-        }
-
-        $user->update([
-            'password' => Hash::make($data['new_password'])
-        ]);
-
-        return back()->with('status', __('admin.security.status.password_changed'));
-    }
-
-    public function showSecurity(Request $request): View
-    {
-        $user = $this->resolveUser($request);
-
-        return view('admin.security.index', compact('user'));
-    }
-
-    private function resolveUser(Request $request)
-    {
-        $auth = $request->user();
-
-        if (!$auth->is_super_admin) {
-            return $auth;
-        }
-
-        if ($request->filled('restaurant_id')) {
-            return User::where('restaurant_id', $request->restaurant_id)
-                ->select(['id', 'email', 'password'])
-                ->firstOrFail();
-        }
-
-        return $auth;
-    }
-
-    private function restaurantUser(Restaurant $restaurant)
-    {
-        return User::where('restaurant_id', $restaurant->id)
-            ->select(['id', 'email', 'password'])
-            ->firstOrFail();
-    }
-
-    public function showRestaurantCredentials(Restaurant $restaurant): View
-    {
-        $user = $this->restaurantUser($restaurant);
-
-        return view('admin.restaurants.credentials', [
-            'restaurant' => $restaurant,
-            'user' => $user,
-        ]);
-    }
-
-    public function changeRestaurantEmail(Request $request, Restaurant $restaurant): RedirectResponse
-    {
-        $user = $this->restaurantUser($restaurant);
-
-        $data = $this->validateEmail($request, $user);
-
-        if (!$this->checkCredentials($user, $data)) {
-            return $this->credentialsError($user, $data);
-        }
-
-        $user->update([
-            'email' => mb_strtolower(trim($data['new_email']))
-        ]);
-
-        return back()->with('status', __('admin.security.status.email_changed'));
-    }
-
-    public function changeRestaurantPassword(Request $request, Restaurant $restaurant): RedirectResponse
-    {
-        $user = $this->restaurantUser($restaurant);
-
-        $data = $this->validatePassword($request);
-
-        if (!$this->checkCredentials($user, $data)) {
-            return $this->credentialsError($user, $data);
-        }
-
-        $user->update([
-            'password' => Hash::make($data['new_password'])
-        ]);
-
-        return back()->with('status', __('admin.security.status.password_changed'));
-    }
-
-    // =========================
-    // 🔥 ВЫНЕСЕННЫЕ БЛОКИ
-    // =========================
-
-    private function validateEmail(Request $request, User $user): array
-    {
-        return $request->validate([
-            'current_email' => ['required', 'string', 'email:rfc,dns', 'max:255'],
-            'current_password' => ['required', 'string', 'max:255'],
-            'new_email' => [
-                'required',
-                'string',
-                'email:rfc,dns',
-                'max:255',
-                Rule::unique('users', 'email')->ignore($user->id),
-            ],
-        ], [
-            'current_email.required' => __('admin.security.validation.current_email.required'),
-            'current_email.email' => __('admin.security.validation.current_email.email'),
-            'new_email.required' => __('admin.security.validation.new_email.required'),
-            'new_email.email' => __('admin.security.validation.new_email.email'),
-            'new_email.unique' => __('admin.security.validation.new_email.unique'),
-            'current_password.required' => __('admin.security.validation.current_password.required'),
-        ]);
-    }
-
-    private function validatePassword(Request $request): array
-    {
-        return $request->validate([
-            'current_email' => ['required', 'string', 'email:rfc,dns', 'max:255'],
-            'current_password' => ['required', 'string', 'max:255'],
+        $data = $request->validate([
+            'current_password' => ['required', 'string'],
             'new_password' => [
                 'required',
                 'string',
@@ -164,41 +68,191 @@ class ProfileCredentialsController extends Controller
                 'regex:/[^A-Za-z0-9]/',
             ],
             'new_password_confirm' => ['required', 'same:new_password'],
-        ], [
-            'current_email.required' => __('admin.security.validation.current_email.required'),
-            'current_email.email' => __('admin.security.validation.current_email.email'),
-            'current_password.required' => __('admin.security.validation.current_password.required'),
-            'new_password.required' => __('admin.security.validation.new_password.required'),
-            'new_password.min' => __('admin.security.validation.new_password.min'),
-            'new_password.regex' => __('admin.security.validation.new_password.regex'),
-            'new_password_confirm.required' => __('admin.security.validation.new_password_confirm.required'),
-            'new_password_confirm.same' => __('admin.security.validation.new_password_confirm.same'),
         ]);
-    }
 
-    private function checkCredentials(User $user, array $data): bool
-    {
-        if (mb_strtolower(trim($data['current_email'])) !== mb_strtolower((string) $user->email)) {
-            return false;
-        }
-
-        if (!Hash::check($data['current_password'], (string) $user->password)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private function credentialsError(User $user, array $data)
-    {
-        if (mb_strtolower(trim($data['current_email'])) !== mb_strtolower((string) $user->email)) {
+        if (!$this->checkPasswordAccess($user, $data['current_password'], $request)) {
             return back()->withErrors([
-                'current_email' => __('admin.security.errors.current_email_wrong'),
+                'current_password' => __('admin.security.errors.current_password_wrong'),
             ]);
         }
 
-        return back()->withErrors([
-            'current_password' => __('admin.security.errors.current_password_wrong'),
+        $user->update([
+            'password' => Hash::make($data['new_password']),
         ]);
+
+        auth()->logoutOtherDevices($data['new_password']);
+
+        return back()->with('status', __('admin.security.status.password_changed'));
+    }
+
+    public function showAdminLogin(Request $request): View
+    {
+        return view('admin.security.login', [
+            'user' => $request->user(),
+            'mode' => 'admin',
+        ]);
+    }
+
+    public function showAdminPassword(Request $request): View
+    {
+        return view('admin.security.index', [
+            'user' => $request->user(),
+            'mode' => 'admin',
+        ]);
+    }
+
+    public function showRestaurantLogin(Request $request, Restaurant $restaurant): View
+    {
+        $this->authorizeRestaurant($restaurant, $request);
+
+        return view('admin.security.login', [
+            'restaurant' => $restaurant,
+            'user' => $this->restaurantUser($restaurant),
+            'mode' => 'restaurant',
+        ]);
+    }
+
+    public function showRestaurantCredentials(Request $request, Restaurant $restaurant): View
+    {
+        $this->authorizeRestaurant($restaurant, $request);
+
+        return view('admin.security.index', [
+            'restaurant' => $restaurant,
+            'user' => $this->restaurantUser($restaurant),
+            'mode' => 'restaurant',
+        ]);
+    }
+
+    public function changeRestaurantEmail(Request $request, Restaurant $restaurant): RedirectResponse
+    {
+        $this->authorizeRestaurant($restaurant, $request);
+
+        $user = $this->restaurantUser($restaurant);
+
+        $request->merge([
+            'new_email' => mb_strtolower(trim((string) $request->input('new_email')))
+        ]);
+
+        $data = $request->validate([
+            'new_email' => [
+                'required',
+                'string',
+                'email:rfc',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'current_password' => ['required', 'string'],
+        ]);
+
+        if ($data['new_email'] === $user->email) {
+            return back()->withErrors([
+                'new_email' => __('admin.security.errors.email_same'),
+            ]);
+        }
+
+        $exists = User::where('email', $data['new_email'])
+            ->where('id', '!=', $user->id)
+            ->exists();
+
+        if ($exists) {
+            return back()->withErrors([
+                'new_email' => __('admin.security.errors.email_exists'),
+            ]);
+        }
+
+        if (!$this->checkPasswordAccess($user, $data['current_password'], $request)) {
+            return back()->withErrors([
+                'current_password' => __('admin.security.errors.current_password_wrong'),
+            ]);
+        }
+
+        $user->update([
+            'email' => $data['new_email'],
+        ]);
+
+        return back()->with('status', __('admin.security.status.email_changed'));
+    }
+
+    public function changeRestaurantPassword(Request $request, Restaurant $restaurant): RedirectResponse
+    {
+        $this->authorizeRestaurant($restaurant, $request);
+
+        $user = $this->restaurantUser($restaurant);
+
+        $data = $request->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:255',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/\d/',
+                'regex:/[^A-Za-z0-9]/',
+            ],
+            'new_password_confirm' => ['required', 'same:new_password'],
+        ]);
+
+        if (!$this->checkPasswordAccess($user, $data['current_password'], $request)) {
+            return back()->withErrors([
+                'current_password' => __('admin.security.errors.current_password_wrong'),
+            ]);
+        }
+
+        $user->update([
+            'password' => Hash::make($data['new_password']),
+        ]);
+
+        return back()->with('status', __('admin.security.status.password_changed'));
+    }
+
+    private function resolveUser(Request $request)
+    {
+        $auth = $request->user();
+
+        if (!$auth->is_super_admin) {
+            return $auth;
+        }
+
+        if ($request->filled('restaurant_id')) {
+            return User::where('restaurant_id', (int) $request->restaurant_id)
+                ->firstOrFail();
+        }
+
+        return $auth;
+    }
+
+    private function restaurantUser(Restaurant $restaurant)
+    {
+        return User::where('restaurant_id', $restaurant->id)
+            ->firstOrFail();
+    }
+
+    private function checkPasswordAccess(User $targetUser, string $password, Request $request): bool
+    {
+        $auth = $request->user();
+
+        if (Hash::check($password, (string) $targetUser->password)) {
+            return true;
+        }
+
+        if ($auth->is_super_admin && Hash::check($password, (string) $auth->password)) {
+            return true;
+        }
+
+        return false;
+    }
+    private function authorizeRestaurant(Restaurant $restaurant, Request $request): void
+    {
+        $auth = $request->user();
+
+        if ($auth->is_super_admin) {
+            return;
+        }
+
+        if ((int)$auth->restaurant_id !== (int)$restaurant->id) {
+            abort(403);
+        }
     }
 }

@@ -1,5 +1,4 @@
 {{-- resources/views/admin/layout.blade.php --}}
-{{-- admin/layout --}}
 
 
 <!doctype html>
@@ -11,6 +10,8 @@
 @endif
 
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @include('admin.layout.head')
 
     {{-- CSS --}}
@@ -73,7 +74,7 @@
 @include('admin.layout.footer')
 @include('admin.layout._modals')
 
-{{-- AUTO HIDE FLASH --}}
+{{-- AUTO HIDE FLASH + BLUR --}}
 <script>
     setTimeout(() => {
         document.querySelectorAll('.flash').forEach(el => {
@@ -81,6 +82,46 @@
             setTimeout(() => el.remove(), 300);
         });
     }, 5000);
+
+    document.addEventListener('click', (e) => {
+        const active = document.activeElement;
+
+        if (!active) return;
+
+        const isInput =
+            active.tagName === 'INPUT' ||
+            active.tagName === 'TEXTAREA';
+
+        if (!isInput) return;
+
+        if (!e.target.closest('input, textarea, .pw-toggle')) {
+            active.blur();
+        }
+    });
+</script>
+
+{{-- UI LANG --}}
+<script>
+    window.UI_LANG = {
+        select_file: "{{ __('ui.toast.select_file') }}",
+
+        saved: "{{ __('ui.toast.saved') }}",
+        error: "{{ __('ui.toast.error') }}",
+
+        delete_error: "{{ __('ui.toast.delete_error') }}",
+        save_error: "{{ __('ui.toast.save_error') }}",
+
+        delete_banner: "{{ __('ui.confirm.delete_banner') }}",
+        delete_all: "{{ __('ui.confirm.delete_all_banners') }}"
+
+        email_same: "{{ __('admin.security.errors.email_same') }}",
+        email_ok: "{{ __('admin.security.hints.email_ok') }}",
+
+        password_mismatch: "{{ __('admin.security.errors.password_mismatch') }}",
+        password_same: "{{ __('admin.security.errors.password_same') }}",
+        password_weak: "{{ __('admin.security.errors.password_weak') }}",
+        password_ok: "{{ __('admin.security.hints.password_ok') }}"
+    };
 </script>
 
 {{-- JS --}}

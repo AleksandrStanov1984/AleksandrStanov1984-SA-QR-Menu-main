@@ -364,8 +364,6 @@ class RestaurantController extends Controller
     {
         $user = $request->user();
 
-        //abort_unless($user?->is_super_admin, 403);
-
         $restaurantUser = User::query()
             ->where('restaurant_id', $restaurant->id)
             ->where('is_super_admin', false)
@@ -459,7 +457,6 @@ class RestaurantController extends Controller
             'postal_code' => ['nullable', 'string', 'regex:/^\d{5}$/'],
         ]);
 
-        // Tenant users не могут менять plan/template
         if (!$isSuper) {
             unset($data['template_key'], $data['plan_key']);
         }

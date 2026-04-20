@@ -1,5 +1,3 @@
-{{-- resources/views/admin/security/index.blade.php --}}
-{{-- admin/security/index --}}
 @extends('admin.layout')
 
 @section('title', __('admin.security.title'))
@@ -11,97 +9,118 @@
         $mode = $mode ?? 'admin';
 
         if ($mode === 'restaurant') {
-            $emailRoute = route('admin.restaurants.credentials.email', $restaurant);
             $passwordRoute = route('admin.restaurants.credentials.password', $restaurant);
         } else {
-            $emailRoute = route('admin.profile.change_email');
             $passwordRoute = route('admin.profile.change_password');
         }
     @endphp
 
-    <div class="card">
-        <h2 style="margin-top:0;">{{ __('admin.security.h2') }}</h2>
+    {{-- СТИЛИ --}}
+    @include('admin.security._styles')
+    @include('admin.profile.components.modals.change-password._styles')
 
-        {{-- 🔥 КОГО РЕДАКТИРУЕМ --}}
-        @if($mode === 'restaurant')
-            <div class="mut" style="margin-bottom:10px;">
-                {{ __('admin.security.user_object') }}:
-                <strong>{{ $user->email }}</strong>
-            </div>
-        @endif
+    <div class="card security-card">
 
-        {{-- Смена email --}}
-        <div class="card" style="margin-top:14px;">
-            <h3 style="margin-top:0;">{{ __('admin.profile.change_email.h2') }}</h3>
-
-            <form method="POST" action="{{ $emailRoute }}" autocomplete="off">
-                @csrf
-
-                <input type="text" name="fake_user" autocomplete="username" style="position:absolute; left:-9999px;">
-                <input type="password" name="fake_pass" autocomplete="current-password" style="position:absolute; left:-9999px;">
-
-                <label>{{ __('admin.profile.change_email.current_email') }}</label>
-                <input name="current_email" type="email" required>
-
-                <label>{{ __('admin.profile.change_email.current_password') }}</label>
-                <div class="pw-field">
-                    <input name="current_password" type="password" required>
-                    <button type="button" class="pw-toggle">👁</button>
-                </div>
-
-                <label>{{ __('admin.profile.change_email.new_email') }}</label>
-                <input name="new_email" type="email" required>
-
-                <div style="margin-top:14px; display:flex; justify-content:flex-end;">
-                    <button class="btn ok" type="submit">
-                        {{ __('admin.common.change') }}
-                    </button>
-                </div>
-            </form>
+        <div class="security-card__header">
+            <h2>{{ __('admin.profile.change_password.h2') }}</h2>
         </div>
 
-        {{-- Смена пароля --}}
-        <div class="card" style="margin-top:14px;">
-            <h3 style="margin-top:0;">{{ __('admin.profile.change_password.h2') }}</h3>
+        <div class="card security-block">
 
-            <form method="POST" action="{{ $passwordRoute }}" autocomplete="off">
+            <form method="POST"
+                  action="{{ $passwordRoute }}"
+                  class="modal-form js-password-form"
+                  autocomplete="off">
+
                 @csrf
 
+                {{-- FAKE поля --}}
                 <input type="text" name="fake_user2" autocomplete="username" style="position:absolute; left:-9999px;">
                 <input type="password" name="fake_pass2" autocomplete="current-password" style="position:absolute; left:-9999px;">
 
-                <label>{{ __('admin.profile.change_password.current_email') }}</label>
-                <input name="current_email" type="email" required>
+                {{-- CURRENT PASSWORD --}}
+                <div class="modal-form__field">
+                    <label>{{ __('admin.profile.change_password.current_password') }}</label>
 
-                <label>{{ __('admin.profile.change_password.current_password') }}</label>
-                <div class="pw-field">
-                    <input name="current_password" type="password" required>
-                    <button type="button" class="pw-toggle">👁</button>
+                    <div class="pw-field">
+                        <input name="current_password"
+                               type="password"
+                               required
+                               class="js-password-current"
+                               autocomplete="current-password">
+
+                        <button type="button" class="pw-toggle">👁</button>
+                    </div>
+
+                    @error('current_password')
+                    <div class="input-error">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <label>{{ __('admin.profile.change_password.new_password') }}</label>
-                <div class="pw-field">
-                    <input name="new_password" type="password" required>
-                    <button type="button" class="pw-toggle">👁</button>
+                {{-- NEW PASSWORD --}}
+                <div class="modal-form__field">
+                    <label>{{ __('admin.profile.change_password.new_password') }}</label>
+
+                    <div class="pw-field">
+                        <input name="new_password"
+                               type="password"
+                               required
+                               class="js-password-new"
+                               autocomplete="new-password">
+
+                        <button type="button" class="pw-toggle">👁</button>
+                    </div>
+
+                    {{-- strength --}}
+                    <div class="password-strength">
+                        <span data-rule="upper">A-Z</span>
+                        <span data-rule="lower">a-z</span>
+                        <span data-rule="number">0-9</span>
+                        <span data-rule="symbol">@#!</span>
+                        <span data-rule="length">8+</span>
+                    </div>
+
+                    @error('new_password')
+                    <div class="input-error">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <label>{{ __('admin.profile.change_password.confirm_new_password') }}</label>
-                <div class="pw-field">
-                    <input name="new_password_confirm" type="password" required>
-                    <button type="button" class="pw-toggle">👁</button>
+                {{-- CONFIRM PASSWORD --}}
+                <div class="modal-form__field">
+                    <label>{{ __('admin.profile.change_password.confirm_new_password') }}</label>
+
+                    <div class="pw-field">
+                        <input name="new_password_confirm"
+                               type="password"
+                               required
+                               class="js-password-confirm"
+                               autocomplete="new-password">
+
+                        <button type="button" class="pw-toggle">👁</button>
+                    </div>
+
+                    @error('new_password_confirm')
+                    <div class="input-error">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <div style="margin-top:14px; display:flex; justify-content:flex-end;">
-                    <button class="btn ok" type="submit">
+                {{-- ACTIONS --}}
+                <div class="modal-form__actions">
+                    <button class="btn ok js-submit" type="submit" disabled>
                         {{ __('admin.common.change') }}
                     </button>
                 </div>
+
             </form>
 
-            <div class="mut" style="margin-top:10px; font-size:12px;">
+            <div class="mut security-hint">
                 {{ __('admin.security.password_hint') }}
             </div>
+
         </div>
+
     </div>
+
+    @include('admin.security._scripts')
 
 @endsection

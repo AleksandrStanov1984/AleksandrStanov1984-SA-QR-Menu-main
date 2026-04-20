@@ -1,5 +1,4 @@
 {{-- resources/views/admin/profile/components/modals/change-email/index.blade.php --}}
-{{-- admin/profile/components/modals/change-email/index --}}
 
 @include('admin.profile.components.modals.change-email._styles')
 
@@ -18,28 +17,42 @@
               autocomplete="off">
             @csrf
 
+            {{-- CURRENT EMAIL (readonly) --}}
             <div class="modal-form__field">
                 <label>{{ __('admin.profile.change_email.current_email') }}</label>
-                <input name="current_email" type="email" autocomplete="email" required>
-            </div>
 
-            <div class="modal-form__field">
-                <label>{{ __('admin.profile.change_email.current_password') }}</label>
-                <div class="pw-field">
-                    <input name="current_password" type="password" autocomplete="current-password" required>
-                    <button type="button" class="pw-toggle">👁</button>
+                <div class="input-readonly">
+                    {{ auth()->user()->email }}
                 </div>
             </div>
 
+            {{-- NEW EMAIL --}}
             <div class="modal-form__field">
                 <label>{{ __('admin.profile.change_email.new_email') }}</label>
-                <input name="new_email" type="email" autocomplete="email" required>
+                <input name="new_email"
+                       type="email"
+                       required
+                       autocomplete="email">
+            </div>
+
+            {{-- CURRENT PASSWORD --}}
+            <div class="modal-form__field">
+                <label>{{ __('admin.profile.change_email.current_password') }}</label>
+
+                <div class="pw-field">
+                    <input name="current_password"
+                           type="password"
+                           required
+                           autocomplete="current-password">
+                    <button type="button" class="pw-toggle">👁</button>
+                </div>
             </div>
 
             <div class="modal-form__actions">
                 <button class="btn secondary" type="button" onclick="closeModal('emailModal')">
                     {{ __('admin.common.cancel') }}
                 </button>
+
                 <button class="btn ok" type="submit">
                     {{ __('admin.common.change') }}
                 </button>

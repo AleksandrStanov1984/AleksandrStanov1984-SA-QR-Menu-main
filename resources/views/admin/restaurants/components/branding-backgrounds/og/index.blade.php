@@ -1,8 +1,9 @@
 {{-- resources/views/admin/restaurants/components/branding-backgrounds/og/index.blade.php --}}
+
 @include('admin.restaurants.components.branding-backgrounds.og._styles')
 
 @php
-    $locales = $restaurant->feature('locales');
+    $locales = config('locales.all', ['de']);
     $limit = $restaurant->feature('og_limit');
 
     $meta = is_array($restaurant->meta ?? null) ? $restaurant->meta : [];

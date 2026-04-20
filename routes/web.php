@@ -29,7 +29,17 @@ use App\Http\Controllers\Admin\RestaurantQrController;
 
 use App\Http\Controllers\Public\AuthorController;
 
+//Route::post('/debug-csrf', function () {
+//    return [
+//        'session_id' => session()->getId(),
+//        'session_token' => session()->token(),
+//        'csrf_token()' => csrf_token(),
+//        'request__token' => request()->input('_token'),
+//    ];
+//});
+
 Route::get('/', fn () => redirect()->route('admin.home'));
+
 Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])->name('restaurant.show');
 
 Route::get('/author', [AuthorController::class, 'index'])
@@ -58,24 +68,29 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         $loc = strtolower(trim((string) $request->input('locale')));
 
-        if (!in_array($loc, ['de', 'en', 'ru'], true)) {
-            $loc = 'de';
+        $available = config('locales.all', ['de']);
+
+        if (!in_array($loc, $available, true)) {
+            $loc = config('app.locale', 'de');
         }
 
         session(['admin_locale' => $loc]);
 
         app()->setLocale($loc);
 
-        return redirect()->back();
+        return back();
 
     })->middleware('auth')->name('locale.set');
 
-    Route::middleware(['auth', 'admin.locale', 'admin.ensure', 'admin.restaurant'])->group(function () {
+    Route::middleware([
+        'auth',
+        'admin.locale',
+        'admin.ensure',
+        'admin.restaurant'
+    ])->group(function () {
 
         Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-
-        // Restaurant
         Route::resource('restaurants', RestaurantController::class)->except(['show']);
 
         Route::post('/select-restaurant', [DashboardController::class, 'selectRestaurant'])
@@ -100,7 +115,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/languages/default', [LanguageImportController::class, 'setDefault'])
             ->name('restaurants.languages.default');
 
-
         // PROFILE
         Route::get('restaurants/{restaurant}/profile', [RestaurantController::class, 'profile'])
             ->name('restaurants.profile');
@@ -114,35 +128,34 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('restaurants/{restaurant}/profile', [ProfileController::class, 'updateRestaurant'])
             ->name('restaurants.profile.update');
 
-        // restaurant contact/address
         Route::post('/profile/restaurant', [ProfileController::class, 'updateRestaurant'])
             ->name('profile.restaurant.update');
 
+        // SECURITY ADMIN
+        Route::get('/security/login', [ProfileCredentialsController::class, 'showAdminLogin'])
+            ->name('security.login');
 
-        // Security Admin
+        Route::get('/security/password', [ProfileCredentialsController::class, 'showAdminPassword'])
+            ->name('security.password');
+
         Route::post('/profile/change-email', [ProfileCredentialsController::class, 'changeEmail'])
             ->name('profile.change_email');
 
         Route::post('/profile/change-password', [ProfileCredentialsController::class, 'changePassword'])
             ->name('profile.change_password');
 
-        Route::get('/security/password', function (\Illuminate\Http\Request $request) {
-            return view('admin.security.password', [
-                'user' => $request->user(),
-            ]);
-        })->name('security.password');
-
-
-        // Security User
+        //  SECURITY (USER)
         Route::get('restaurants/{restaurant}/credentials', [ProfileCredentialsController::class, 'showRestaurantCredentials'])
             ->name('restaurants.credentials');
+
+        Route::get('restaurants/{restaurant}/credentials/login', [ProfileCredentialsController::class, 'showRestaurantLogin'])
+            ->name('restaurants.credentials.login');
 
         Route::post('restaurants/{restaurant}/credentials/email', [ProfileCredentialsController::class, 'changeRestaurantEmail'])
             ->name('restaurants.credentials.email');
 
         Route::post('restaurants/{restaurant}/credentials/password', [ProfileCredentialsController::class, 'changeRestaurantPassword'])
             ->name('restaurants.credentials.password');
-
 
         // BRANDING
         Route::post('restaurants/{restaurant}/logo', [RestaurantBrandController::class, 'update'])
@@ -167,7 +180,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/restaurants/{restaurant}/branding/og/{locale}', [RestaurantBrandController::class, 'deleteOg']
         )->name('restaurants.og.delete');
 
-
         // SECTIONS
         Route::get('restaurants/{restaurant}/sections', [SectionController::class, 'index'])
             ->name('restaurants.sections.index');
@@ -187,7 +199,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('restaurants/{restaurant}/sections/{section}', [SectionController::class, 'destroy'])
             ->name('restaurants.sections.destroy');
 
-
         // CATEGORIES / SUBCATEGORIES
         Route::get('restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])
             ->name('restaurants.menu');
@@ -197,7 +208,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('restaurants/{restaurant}/subcategories', [SubcategoryController::class, 'store'])
             ->name('restaurants.subcategories.store');
-
 
         // Menu ITEMS
         Route::post('restaurants/{restaurant}/sections/{section}/items', [ItemController::class, 'store'])
@@ -221,11 +231,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('restaurants/{restaurant}/items/{item}/image', [ItemController::class, 'deleteImage']
         )->name('restaurants.items.image.delete');
 
-
         // Menu Profile
         Route::get('/menu/profile', [MenuProfileController::class, 'edit'])
             ->name('menu.profile');
-
 
         // SOCIALS
         Route::post('restaurants/{restaurant}/social-links', [SocialLinkController::class, 'store'])
@@ -249,11 +257,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('restaurants/{restaurant}/social-links/{link}/icon', [SocialLinkController::class, 'removeIcon'])
             ->name('restaurants.social_links.remove_icon');
 
-
         // Author
         Route::get('/about', [AboutController::class, 'index'])
             ->name('about');
-
 
         // MENU IMPORT / EXPORT
         Route::post('restaurants/{restaurant}/menu/import-json', [MenuImportController::class, 'importJson'])
@@ -274,14 +280,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/import/images', [MenuImportController::class, 'images'])
             ->name('restaurants.import.images');
 
-
         // HOURS
         Route::post('restaurants/{restaurant}/hours', [RestaurantHoursController::class, 'update'])
             ->name('restaurants.hours.update');
 
         Route::get('restaurants/{restaurant}/hours', [RestaurantHoursController::class, 'edit'])
             ->name('restaurants.hours');
-
 
         // BANNERS
         Route::get('restaurants/{restaurant}/banners', [PromoBannerController::class, 'index'])
@@ -304,14 +308,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('restaurants.banners.destroyAll')
             ->defaults('plan', 'pro');
 
-
         // Carousel
         Route::get('/admin/restaurants/{restaurant}/carousel', [CarouselController::class, 'index']
         )->name('restaurants.carousel');
 
         Route::post('/restaurants/{restaurant}/carousel', [CarouselController::class, 'update'])
             ->name('restaurants.carousel.update');
-
 
         // QR
         Route::post('restaurants/{restaurant}/qr/generate', [RestaurantQrController::class, 'generate'])

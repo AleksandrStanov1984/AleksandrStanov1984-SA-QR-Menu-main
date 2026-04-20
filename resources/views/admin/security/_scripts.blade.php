@@ -1,3 +1,4 @@
+{{-- resources/views/admin/security/_scripts.blade.php --}}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         console.log('SECURITY SCRIPT LOADED');

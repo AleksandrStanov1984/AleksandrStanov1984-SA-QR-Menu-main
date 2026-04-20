@@ -1,3 +1,4 @@
+{{-- resources/views/admin/security/_styles.blade.php --}}
 <style>
     .modal-form__field {
         display: flex;

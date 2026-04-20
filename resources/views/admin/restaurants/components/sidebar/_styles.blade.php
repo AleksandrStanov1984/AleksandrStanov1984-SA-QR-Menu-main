@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/sidebar/_styles.blade.php --}}
 <style>
     .admin-sidebar {
         height: 100vh;

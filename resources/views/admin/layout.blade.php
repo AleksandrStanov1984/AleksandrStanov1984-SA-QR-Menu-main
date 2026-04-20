@@ -112,7 +112,7 @@
         save_error: "{{ __('ui.toast.save_error') }}",
 
         delete_banner: "{{ __('ui.confirm.delete_banner') }}",
-        delete_all: "{{ __('ui.confirm.delete_all_banners') }}"
+        delete_all: "{{ __('ui.confirm.delete_all_banners') }}",
 
         email_same: "{{ __('admin.security.errors.email_same') }}",
         email_ok: "{{ __('admin.security.hints.email_ok') }}",

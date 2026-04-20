@@ -312,28 +312,24 @@ class MenuViewModel
 
     private function translateSection($section, string $field): ?string
     {
-        $tr = $section->translations->firstWhere('locale', $this->locale);
+        $tr = $this->resolveTranslation(
+            $section->translations,
+            $this->locale,
+            $this->restaurant
+        );
 
-        if ($tr && !empty($tr->{$field})) {
-            return $tr->{$field};
-        }
-
-        return $section->translations
-            ->firstWhere('locale', $this->restaurant->default_locale ?? 'de')
-            ?->{$field};
+        return $tr->{$field} ?? null;
     }
 
     private function translateItem($item, string $field): ?string
     {
-        $tr = $item->translations->firstWhere('locale', $this->locale);
+        $tr = $this->resolveTranslation(
+            $item->translations,
+            $this->locale,
+            $this->restaurant
+        );
 
-        if ($tr && !empty($tr->{$field})) {
-            return $tr->{$field};
-        }
-
-        return $item->translations
-            ->firstWhere('locale', $this->restaurant->default_locale ?? 'de')
-            ?->{$field};
+        return $tr->{$field} ?? null;
     }
 
     private function buildHours($hours): array
@@ -487,14 +483,13 @@ class MenuViewModel
             return ['de'];
         }
 
-        $planLocales = $restaurant->feature('locales', ['de']);
-        $enabledLocales = $restaurant->enabled_locales ?? [];
+        $enabled = $restaurant->enabled_locales ?? [];
 
-        $locales = !empty($enabledLocales)
-            ? array_values(array_intersect($planLocales, $enabledLocales))
-            : $planLocales;
+        if (empty($enabled)) {
+            return [$restaurant->default_locale ?? 'de'];
+        }
 
-        return !empty($locales) ? $locales : ['de'];
+        return array_values(array_unique($enabled));
     }
 
     private function buildOgDescription(Restaurant $restaurant): string
@@ -508,5 +503,30 @@ class MenuViewModel
         }
 
         return mb_strimwidth(strip_tags($desc), 0, 160, '...');
+    }
+
+    protected function resolveTranslation($translations, $locale, $restaurant)
+    {
+        $enabled = $restaurant->enabled_locales ?? [];
+
+        if (empty($enabled)) {
+            $enabled = [$restaurant->default_locale ?? 'de'];
+        }
+
+        if (in_array($locale, $enabled, true)) {
+            $t = $translations->firstWhere('locale', $locale);
+            if ($t && !empty($t)) {
+                return $t;
+            }
+        }
+
+        $default = $restaurant->default_locale ?? 'de';
+
+        $t = $translations->firstWhere('locale', $default);
+        if ($t && !empty($t)) {
+            return $t;
+        }
+
+        return $translations->first();
     }
 }

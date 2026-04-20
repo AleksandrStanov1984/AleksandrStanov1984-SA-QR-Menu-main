@@ -28,10 +28,13 @@ class PublicMenuViewModel
         return $restaurant->sections
             ->where('is_active', true)
             ->sortBy('sort_order')
-            ->map(function ($section) use ($locale) {
+            ->map(function ($section) use ($locale, $restaurant) {
 
-                $translation = $section->translations
-                    ->firstWhere('locale', $locale);
+                $translation = $this->resolveTranslation(
+                    $section->translations,
+                    $locale,
+                    $restaurant
+                );
 
                 return [
                     'id' => $section->id,
@@ -44,10 +47,13 @@ class PublicMenuViewModel
                         ->sortBy(function ($item) {
                             return $item->bestseller_rank ?? 9999;
                         })
-                        ->map(function ($item) use ($locale) {
+                        ->map(function ($item) use ($locale, $restaurant) {
 
-                            $translation = $item->translations
-                                ->firstWhere('locale', $locale);
+                            $translation = $this->resolveTranslation(
+                                $item->translations,
+                                $locale,
+                                $restaurant
+                            );
 
                             return [
                                 'id' => $item->id,
@@ -71,5 +77,37 @@ class PublicMenuViewModel
             })
             ->values()
             ->toArray();
+    }
+
+    protected function resolveTranslation($translations, $locale, $restaurant)
+    {
+        $enabled = $restaurant->enabled_locales ?? [];
+
+        if (empty($enabled)) {
+            $enabled = [$restaurant->default_locale ?? 'de'];
+        }
+
+        if (in_array($locale, $enabled, true)) {
+            $t = $translations->firstWhere('locale', $locale);
+            if ($t) return $t;
+        }
+
+        $default = $restaurant->default_locale ?? 'de';
+
+        $t = $translations->firstWhere('locale', $default);
+        if ($t) return $t;
+
+        return $translations->first();
+    }
+
+    public function locales(): array
+    {
+        $locales = $this->restaurant->enabled_locales ?? [];
+
+        if (empty($locales)) {
+            return [$this->restaurant->default_locale ?? 'de'];
+        }
+
+        return $locales;
     }
 }

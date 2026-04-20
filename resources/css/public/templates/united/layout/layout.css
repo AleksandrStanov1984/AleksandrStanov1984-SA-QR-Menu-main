@@ -110,3 +110,66 @@
 
     will-change: transform;
 }
+
+/* =========================
+   iOS INPUT FIX (NO ZOOM)
+========================= */
+
+input,
+textarea,
+select {
+    font-size: 16px; /* ключевой фикс для iOS */
+}
+
+/* =========================
+   FOCUS UX (вместо zoom)
+========================= */
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.12);
+    transition: box-shadow 0.2s ease;
+}
+
+/* =========================
+   SEARCH INPUT (если есть отдельный класс)
+========================= */
+
+.search-input {
+    font-size: 16px;
+}
+
+.search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.18);
+}
+
+/* =========================
+   MODAL INPUT FIX
+========================= */
+
+.modal input,
+.modal textarea,
+.modal select {
+    font-size: 16px;
+}
+
+/* =========================
+   iOS tap highlight fix
+========================= */
+
+input,
+textarea,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================
+   OPTIONAL: предотвращение дерганий при rotate
+========================= */
+
+html {
+    -webkit-text-size-adjust: 100%;
+}

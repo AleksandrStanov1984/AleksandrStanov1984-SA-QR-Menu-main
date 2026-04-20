@@ -119,7 +119,6 @@
                         return;
                     }
 
-                    // mismatch
                     if (newVal !== confirmVal) {
                         setInvalid(passNew);
                         setInvalid(passConfirm);
@@ -128,7 +127,6 @@
                         return;
                     }
 
-                    // same as old
                     if (currentVal && newVal === currentVal) {
                         setInvalid(passNew);
                         showMessage(passNew, t.password_same || 'Ошибка');
@@ -136,7 +134,6 @@
                         return;
                     }
 
-                    // strength rules
                     const rules = {
                         upper: /[A-Z]/.test(newVal),
                         lower: /[a-z]/.test(newVal),

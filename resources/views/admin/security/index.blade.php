@@ -15,7 +15,6 @@
         }
     @endphp
 
-    {{-- СТИЛИ --}}
     @include('admin.security._styles')
     @include('admin.profile.components.modals.change-password._styles')
 
@@ -71,7 +70,6 @@
                         <button type="button" class="pw-toggle">👁</button>
                     </div>
 
-                    {{-- strength --}}
                     <div class="password-strength">
                         <span data-rule="upper">A-Z</span>
                         <span data-rule="lower">a-z</span>
@@ -85,7 +83,6 @@
                     @enderror
                 </div>
 
-                {{-- CONFIRM PASSWORD --}}
                 <div class="modal-form__field">
                     <label>{{ __('admin.profile.change_password.confirm_new_password') }}</label>
 
@@ -104,7 +101,6 @@
                     @enderror
                 </div>
 
-                {{-- ACTIONS --}}
                 <div class="modal-form__actions">
                     <button class="btn ok js-submit" type="submit" disabled>
                         {{ __('admin.common.change') }}

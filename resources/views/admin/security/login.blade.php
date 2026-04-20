@@ -15,7 +15,6 @@
         }
     @endphp
 
-    {{-- СТИЛИ --}}
     @include('admin.security._styles')
 
     <div class="card security-card">
@@ -79,7 +78,6 @@
                     @enderror
                 </div><br>
 
-                {{-- ACTIONS --}}
                 <div class="modal-form__actions">
                     <button class="btn ok js-submit" type="submit" disabled>
                         {{ __('admin.common.change') }}

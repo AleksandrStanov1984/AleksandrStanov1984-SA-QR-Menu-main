@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\User;
+
+use App\Services\SecurityEventService;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -44,9 +47,24 @@ class ProfileCredentialsController extends Controller
             ]);
         }
 
+        $oldEmail = $user->email;
+
         $user->update([
             'email' => $data['new_email'],
         ]);
+
+        app(SecurityEventService::class)->log(
+            'email_changed',
+            $request->user(),
+            $user,
+            $user->restaurant_id,
+            [
+                'mode' => $request->user()->is_super_admin ? 'admin_override' : 'self',
+                'old_email' => $oldEmail,
+                'new_email' => $data['new_email'],
+            ],
+            $request
+        );
 
         return back()->with('status', __('admin.security.status.email_changed'));
     }
@@ -79,6 +97,17 @@ class ProfileCredentialsController extends Controller
         $user->update([
             'password' => Hash::make($data['new_password']),
         ]);
+
+        app(SecurityEventService::class)->log(
+            'password_changed',
+            $request->user(),
+            $user,
+            $user->restaurant_id,
+            [
+                'mode' => $request->user()->is_super_admin ? 'admin_override' : 'self',
+            ],
+            $request
+        );
 
         auth()->logoutOtherDevices($data['new_password']);
 
@@ -166,9 +195,25 @@ class ProfileCredentialsController extends Controller
             ]);
         }
 
+        $oldEmail = $user->email;
+
         $user->update([
             'email' => $data['new_email'],
         ]);
+
+        app(SecurityEventService::class)->log(
+            'email_changed',
+            $request->user(),
+            $user,
+            $restaurant->id,
+            [
+                'mode' => $request->user()->is_super_admin ? 'admin_override' : 'self',
+                'context' => 'restaurant',
+                'old_email' => $oldEmail,
+                'new_email' => $data['new_email'],
+            ],
+            $request
+        );
 
         return back()->with('status', __('admin.security.status.email_changed'));
     }
@@ -203,6 +248,18 @@ class ProfileCredentialsController extends Controller
         $user->update([
             'password' => Hash::make($data['new_password']),
         ]);
+
+        app(SecurityEventService::class)->log(
+            'password_changed',
+            $request->user(),
+            $user,
+            $restaurant->id,
+            [
+                'mode' => $request->user()->is_super_admin ? 'admin_override' : 'self',
+                'context' => 'restaurant',
+            ],
+            $request
+        );
 
         return back()->with('status', __('admin.security.status.password_changed'));
     }
@@ -243,6 +300,7 @@ class ProfileCredentialsController extends Controller
 
         return false;
     }
+
     private function authorizeRestaurant(Restaurant $restaurant, Request $request): void
     {
         $auth = $request->user();

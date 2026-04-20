@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
 
             RestaurantTokenSeeder::class,
 
+            SecurityEventSeeder::class,
+
         ]);
     }
 }

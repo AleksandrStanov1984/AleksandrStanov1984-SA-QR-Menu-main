@@ -19,22 +19,7 @@ class MenuPlanSeeder extends Seeder
                 'is_public' => true,
                 'sort_order' => 1,
 
-                'features' => [
-                    'status' => false,
-                    'hours_modal' => false,
-                    'search' => false,
-                    'bestsellers' => false,
-                    'images' => false,
-                    'item_modal' => false,
-                    'spicy' => false,
-                    'is_new' => false,
-                    'dish_of_day' => false,
-                    'long_description' => false,
-                    'socials_limit' => 1,
-                    'locales_limit' => 1,
-                    'banners' => false,
-                    'banner_carousel' => false,
-                ],
+                'features' => config('plan_features.starter'),
             ]
         );
 
@@ -42,28 +27,13 @@ class MenuPlanSeeder extends Seeder
             ['key' => 'basic'],
             [
                 'name' => 'Basic',
-                'price' => 19.99,
+                'price' => 24.99,
                 'description' => 'Standard features',
                 'is_active' => true,
                 'is_public' => true,
                 'sort_order' => 2,
 
-                'features' => [
-                    'status' => true,
-                    'hours_modal' => false,
-                    'search' => true,
-                    'bestsellers' => true,
-                    'images' => true,
-                    'item_modal' => true,
-                    'spicy' => true,
-                    'is_new' => false,
-                    'dish_of_day' => false,
-                    'long_description' => false,
-                    'socials_limit' => 3,
-                    'locales_limit' => 2,
-                    'banners' => false,
-                    'banner_carousel' => false,
-                ],
+                'features' => config('plan_features.basic'),
             ]
         );
 
@@ -71,28 +41,13 @@ class MenuPlanSeeder extends Seeder
             ['key' => 'pro'],
             [
                 'name' => 'Pro',
-                'price' => 29.99,
+                'price' => 34.99,
                 'description' => 'Full features',
                 'is_active' => true,
                 'is_public' => true,
                 'sort_order' => 3,
 
-                'features' => [
-                    'status' => true,
-                    'hours_modal' => true,
-                    'search' => true,
-                    'bestsellers' => true,
-                    'images' => true,
-                    'item_modal' => true,
-                    'spicy' => true,
-                    'is_new' => true,
-                    'dish_of_day' => true,
-                    'long_description' => true,
-                    'socials_limit' => 5,
-                    'locales_limit' => 5,
-                    'banners' => true,
-                    'banner_carousel' => true,
-                ],
+                'features' => config('plan_features.pro'),
             ]
         );
     }

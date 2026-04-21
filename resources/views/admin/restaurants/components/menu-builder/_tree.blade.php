@@ -1,5 +1,4 @@
 {{-- resources/views/admin/restaurants/components/menu-builder/_tree.blade.php --}}
-{{-- admin/restaurants/components/menu-builder/_tree --}}
 
 @php
   use App\Support\Permissions;

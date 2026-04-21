@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/edit/_permissions.blade.php --}}
-{{-- admin/restaurants/components/edit/_permissions --}}
+
 @php
     $authUser = auth()->user();
     $isSuper = $authUser?->is_super_admin;

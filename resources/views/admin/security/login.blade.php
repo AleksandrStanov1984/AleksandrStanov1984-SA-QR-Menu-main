@@ -1,4 +1,5 @@
 {{-- resources/views/admin/security/login.blade.php --}}
+
 @extends('admin.layout')
 
 @section('title', __('admin.security.title'))

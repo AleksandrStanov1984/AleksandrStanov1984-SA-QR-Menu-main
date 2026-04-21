@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/index.blade.php --}}
-{{-- admin/restaurants/index --}}
+
 @extends('admin.layout')
 
 @include('admin.restaurants._styles')
@@ -40,7 +40,6 @@
             @foreach($restaurants as $r)
                 <tr>
 
-                    {{-- 🔥 NAME + ID + SLUG (объединено) --}}
                     <td>
                         <div class="restaurant-name">
                             {{ $r->name }}
@@ -76,7 +75,6 @@
                         </span>
                     </td>
 
-                    {{-- ACTIONS --}}
                     <td class="right">
                         <div class="actions-inline">
                             <a class="btn small"

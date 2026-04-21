@@ -1,4 +1,5 @@
 {{-- resources/views/admin/restaurants/components/languages/index.blade.php --}}
+
 @include('admin.restaurants.components.languages._styles')
 
 @php
@@ -54,7 +55,6 @@
             </select>
         </div>
 
-        {{-- 🔥 STARTER: без переключателей --}}
         @if($limit !== 1)
 
             <div class="lang-list">

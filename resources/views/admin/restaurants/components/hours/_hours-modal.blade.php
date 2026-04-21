@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/hours/_hours-modal.blade.php --}}
-{{-- admin/restaurants/components/hours/_hours-modal --}}
+
 <div class="modal" id="mbModalHours" aria-hidden="true" style="display:none;">
 
     <div class="modal__backdrop" data-mb-close></div>

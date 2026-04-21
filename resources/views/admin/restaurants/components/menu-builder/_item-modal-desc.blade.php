@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/menu-builder/_item-modal-desc.blade.php --}}
-{{-- admin/restaurants/components/menu-builder/_item-modal-desc --}}
+
 <div class="modal" id="mbTextModal" aria-hidden="true">
   <div class="modal__backdrop" data-mb-close></div>
 

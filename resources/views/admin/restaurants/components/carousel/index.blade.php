@@ -31,16 +31,18 @@
 
             {{-- ENABLE --}}
             <div class="carousel-row">
-                <label class="switch">
+
+                <span>{{ __('menu.carousel') }}</span>
+
+                <label class="lang-switch">
                     <input type="checkbox"
                            name="carousel_enabled"
                            id="carouselToggle"
                            value="1"
                         @checked($enabled)>
-                    <span></span>
+                    <span class="lang-switch__ui"></span>
                 </label>
 
-                <span>{{ __('menu.carousel') }}</span>
             </div>
 
             {{-- BASIC (no advanced) --}}

@@ -1,120 +1,120 @@
 {{-- resources/views/admin/restaurants/components/permissions/_styles.blade.php --}}
-{{-- admin/restaurants/components/permissions/_styles --}}
+
 <style>
 
-    /* ===== MODAL ===== */
+    /*!* ===== MODAL ===== *!*/
 
-    #permModal{
-        display: none;
-    }
+    /*#permModal{*/
+    /*    display: none;*/
+    /*}*/
 
-    .modal__panel{
-        max-width: 860px;
-        width: calc(100% - 24px);
-    }
+    /*.modal__panel{*/
+    /*    max-width: 860px;*/
+    /*    width: calc(100% - 24px);*/
+    /*}*/
 
-    .modal__head{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-    }
+    /*.modal__head{*/
+    /*    display: flex;*/
+    /*    align-items: center;*/
+    /*    justify-content: space-between;*/
+    /*    gap: 12px;*/
+    /*}*/
 
-    #permModalTitle{
-        font-weight: 800;
-        font-size: 18px;
-    }
+    /*#permModalTitle{*/
+    /*    font-weight: 800;*/
+    /*    font-size: 18px;*/
+    /*}*/
 
-    .modal__body{
-        margin-top: 12px;
-    }
+    /*.modal__body{*/
+    /*    margin-top: 12px;*/
+    /*}*/
 
-    #permModalBody{
-        max-height: 60vh;
-        overflow: auto;
-        padding-right: 6px;
-    }
+    /*#permModalBody{*/
+    /*    max-height: 60vh;*/
+    /*    overflow: auto;*/
+    /*    padding-right: 6px;*/
+    /*}*/
 
-    .modal__foot{
-        margin-top: 14px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
+    /*.modal__foot{*/
+    /*    margin-top: 14px;*/
+    /*    display: flex;*/
+    /*    justify-content: flex-end;*/
+    /*    gap: 10px;*/
+    /*}*/
 
-    /* ===== PERMISSIONS GRID ===== */
+    /*!* ===== PERMISSIONS GRID ===== *!*/
 
-    .perm-grid--modal{
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-    }
+    /*.perm-grid--modal{*/
+    /*    display:flex;*/
+    /*    flex-wrap:wrap;*/
+    /*    gap:10px;*/
+    /*}*/
 
-    /* ===== ITEM ===== */
+    /*!* ===== ITEM ===== *!*/
 
-    .perm-item{
-        display:flex;
-        align-items:flex-start;
-        gap:10px;
+    /*.perm-item{*/
+    /*    display:flex;*/
+    /*    align-items:flex-start;*/
+    /*    gap:10px;*/
 
-        padding:10px 12px;
-        border:1px solid var(--line);
-        border-radius:12px;
+    /*    padding:10px 12px;*/
+    /*    border:1px solid var(--line);*/
+    /*    border-radius:12px;*/
 
-        width:auto;
-        max-width:320px;
-    }
+    /*    width:auto;*/
+    /*    max-width:320px;*/
+    /*}*/
 
-    /* ===== TEXT ===== */
+    /*!* ===== TEXT ===== *!*/
 
-    .perm-label{
-        flex:1;
-        min-width:0;
-        white-space:normal;
-        word-break:break-word;
-        line-height:1.3;
-    }
+    /*.perm-label{*/
+    /*    flex:1;*/
+    /*    min-width:0;*/
+    /*    white-space:normal;*/
+    /*    word-break:break-word;*/
+    /*    line-height:1.3;*/
+    /*}*/
 
-    /* ===== CHECKBOX ===== */
+    /*!* ===== CHECKBOX ===== *!*/
 
-    .perm-item input{
-        flex-shrink:0;
-        margin-top:2px;
-    }
+    /*.perm-item input{*/
+    /*    flex-shrink:0;*/
+    /*    margin-top:2px;*/
+    /*}*/
 
-    /* ===== VIEW MODE (pill) ===== */
+    /*!* ===== VIEW MODE (pill) ===== *!*/
 
-    .perm-item .pill{
-        flex-shrink:0;
-        white-space:nowrap;
-    }
+    /*.perm-item .pill{*/
+    /*    flex-shrink:0;*/
+    /*    white-space:nowrap;*/
+    /*}*/
 
-    /* ===== MOBILE ===== */
+    /*!* ===== MOBILE ===== *!*/
 
-    @media (max-width: 720px){
-        .perm-grid--modal{
-            gap:8px;
-        }
+    /*@media (max-width: 720px){*/
+    /*    .perm-grid--modal{*/
+    /*        gap:8px;*/
+    /*    }*/
 
-        .perm-item{
-            max-width:100%;
-            width:100%;
-        }
-    }
+    /*    .perm-item{*/
+    /*        max-width:100%;*/
+    /*        width:100%;*/
+    /*    }*/
+    /*}*/
 
-    @media (max-width: 600px){
-        .perm-item{
-            flex-direction:column;
-            align-items:flex-start;
-        }
+    /*@media (max-width: 600px){*/
+    /*    .perm-item{*/
+    /*        flex-direction:column;*/
+    /*        align-items:flex-start;*/
+    /*    }*/
 
-        .perm-item input{
-            align-self:flex-end;
-        }
+    /*    .perm-item input{*/
+    /*        align-self:flex-end;*/
+    /*    }*/
 
-        .perm-item .pill{
-            align-self:flex-end;
-        }
-    }
+    /*    .perm-item .pill{*/
+    /*        align-self:flex-end;*/
+    /*    }*/
+    /*}*/
 
 </style>

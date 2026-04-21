@@ -1,6 +1,5 @@
 {{-- resources/views/admin/restaurants/components/branding-backgrounds/index.blade.php --}}
 
-
 @php
     $meta = is_array($restaurant->meta ?? null) ? $restaurant->meta : [];
 
@@ -30,21 +29,35 @@
                         {{ __('admin.branding.mode_title') }}
                     </div>
 
-                    <div class="radio-row branding-theme-row">
+                    <div class="branding-theme-row">
+
                         <label class="branding-theme-option">
-                            <input type="radio" name="theme_mode" value="auto" @checked($themeMode === 'auto')>
                             <span>{{ __('admin.branding.mode_auto') }}</span>
+
+                            <span class="lang-switch">
+                    <input type="radio" name="theme_mode" value="auto" @checked($themeMode === 'auto')>
+                    <span class="lang-switch__ui"></span>
+                </span>
                         </label>
 
                         <label class="branding-theme-option">
-                            <input type="radio" name="theme_mode" value="light" @checked($themeMode === 'light')>
                             <span>{{ __('admin.branding.mode_light') }}</span>
+
+                            <span class="lang-switch">
+                    <input type="radio" name="theme_mode" value="light" @checked($themeMode === 'light')>
+                    <span class="lang-switch__ui"></span>
+                </span>
                         </label>
 
                         <label class="branding-theme-option">
-                            <input type="radio" name="theme_mode" value="dark" @checked($themeMode === 'dark')>
                             <span>{{ __('admin.branding.mode_dark') }}</span>
+
+                            <span class="lang-switch">
+                    <input type="radio" name="theme_mode" value="dark" @checked($themeMode === 'dark')>
+                    <span class="lang-switch__ui"></span>
+                </span>
                         </label>
+
                     </div>
                 </div>
             @endif

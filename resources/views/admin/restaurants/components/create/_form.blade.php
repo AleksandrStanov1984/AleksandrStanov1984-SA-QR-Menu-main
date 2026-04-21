@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/create/_form.blade.php --}}
-{{-- admin/restaurants/components/create/_form --}}
+
 <div class="card">
     <h2>{{ __('admin.restaurants.create.h2') }}</h2>
 

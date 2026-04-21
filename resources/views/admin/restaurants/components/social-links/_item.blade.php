@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/social-links/_item.blade.php --}}
-{{-- admin/restaurants/components/social-links/_item --}}
+
 @inject('img', 'App\Services\ImageService')
 
 @php

@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/menu-builder/_items-list.blade.php --}}
-{{-- admin/restaurants/components/menu-builder/_items-list --}}
+
 @php
     use App\Support\Permissions;
 
@@ -17,7 +17,6 @@
       return $val !== '' ? $val : ('Item #'.$it->id);
     };
 
-    // плановые фичи
     $canImagesFeature     = (bool) $restaurant->feature('images');
     $canSpicyFeature      = (bool) $restaurant->feature('spicy');
     $canIsNewFeature      = (bool) $restaurant->feature('is_new');
@@ -25,7 +24,6 @@
     $canLongDescFeature   = (bool) $restaurant->feature('long_description');
     $canCarouselFeature   = (bool) $restaurant->feature('carousel');
 
-    // права
     $canActive     = Permissions::can($user, 'items.toggle.active');
     $canShowImage  = Permissions::can($user, 'items.toggle.show_image');
     $canIsNew      = Permissions::can($user, 'items.flag.new');
@@ -34,11 +32,9 @@
     $canDelete     = Permissions::can($user, 'items.delete');
     $canEdit       = Permissions::can($user, 'items.edit');
 
-    // для текста: показывать description/details как кнопки
     $canViewDesc   = Permissions::can($user, 'items.view.description') || $canEdit;
     $canViewDetails= Permissions::can($user, 'items.view.details') || $canEdit;
 
-    // для загрузки/просмотра картинки в админке
     $canImageUpload = Permissions::can($user, 'items.image.upload') || $canEdit;
 
     $metaUrlBase = url('/admin/restaurants/'.$restaurant->id.'/items');
@@ -47,7 +43,6 @@
       return method_exists($m, 'trashed') ? (bool)$m->trashed() : false;
     };
 
-    // дефолтная картинка
     $fallbackImg = asset('assets/classic-menu/images/image-fallback.png');
 
     $itemImageUrl = function ($it) use ($fallbackImg) {
@@ -82,15 +77,12 @@
             $showImage  = array_key_exists('show_image', $m) ? (bool)$m['show_image'] : true;
             $spicy      = (int)($m['spicy'] ?? 0);
 
-            // carousel ui-prep only
             $carouselEnabled = !empty($m['carousel_enabled']);
             $carouselSource  = $m['carousel_source'] ?? 'bestseller';
 
-            // цена (берём item->price или meta.price)
             $priceVal = $it->price ?? ($m['price'] ?? null);
             $priceTxt = ($priceVal !== null && $priceVal !== '') ? (string)$priceVal : '';
 
-            // тексты для модалки
             $trs = $it->translations ?? collect();
             $tr  = $trs->firstWhere('locale', $defaultLocale) ?? $trs->first();
             $descTxt = trim((string)($tr?->description ?? ''));
@@ -109,10 +101,8 @@
               'price' => $priceVal,
             ];
 
-            // если родитель выключен — блокируем ВСЁ (включая is_active item)
             $rowLocked = $ancestorLocked;
 
-            // active для UI: активна только если item активен И родитель включен
             $rowActiveForUi = (!$inactive && !$ancestorLocked) ? '1' : '0';
 
             $getImage = function ($it) {
@@ -126,7 +116,6 @@
 
             $imgUrl = app(\App\Services\ImageService::class)->url($getImage($it));
 
-            // id аккордеона
             $accId = 'mbItemAcc_'.$it->id;
         @endphp
 
@@ -148,7 +137,6 @@
                     {{-- HEADER --}}
                     <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; width:100%;">
 
-                        {{-- LEFT: фиксированная зона под handle+checkbox --}}
                         <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1 1 auto;">
 
                             {{-- handle --}}
@@ -159,8 +147,6 @@
                                   style="display:inline-flex; align-items:center; justify-content:center;">
                 ≡
               </span>
-
-                            {{-- active checkbox --}}
                             @if($canActive)
                                 <input type="checkbox"
                                        data-no-accordion
@@ -179,14 +165,11 @@
                                        style="margin:0; transform:translateY(1px);">
                             @endif
 
-                            {{-- TITLE: без ellipsis--}}
                             <span class="mb-item-title"
                                   style="display:block; min-width:0; flex:1 1 auto; white-space:normal; overflow:visible;">
                 {{ $title($it) }}
               </span>
                         </div>
-
-                        {{-- RIGHT: price + caret --}}
                         <div style="display:flex; align-items:center; gap:10px; flex:0 0 auto;">
 
                             <div style="font-weight:700; color:var(--text); text-align:right; min-width:80px;">
@@ -197,19 +180,14 @@
                                 @endif
                             </div>
 
-                            {{-- caret  --}}
                             <span class="mb-acc-caret" aria-hidden="true"></span>
                         </div>
                     </div>
                 </summary>
 
-                {{-- BODY --}}
                 <div style="margin-top:10px; display:flex; gap:14px; align-items:stretch; justify-content:space-between;">
 
-                    {{-- LEFT block --}}
                     <div style="flex:1 1 auto; min-width:0;">
-
-                        {{-- IMAGE block  --}}
                         <div style="margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;">
                             <div style="position:relative; width:140px; height:90px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:rgba(255,255,255,.04); flex:0 0 auto;">
 
@@ -218,7 +196,6 @@
                                      data-item-image="{{ $it->id }}"
                                      style="width:100%; height:100%; object-fit:cover; display:block;">
 
-                                {{-- DELETE IMAGE --}}
                                 @if($canImagesFeature && $canImageUpload)
                                     <button type="button"
                                             class="mb-image-remove-btn"
@@ -232,7 +209,6 @@
 
                             </div>
 
-                            {{-- Кнопки текста (Description/Details) --}}
                             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; min-width:0;">
                                 @if($canViewDesc && $descTxt !== '')
                                     <button type="button"
@@ -262,7 +238,6 @@
                             </div>
                         </div>
 
-                        {{-- чекбоксы --}}
                         <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
                             @if($canImagesFeature && $canShowImage)
                                 <label class="perm-item" style="margin:0; display:flex; align-items:center; gap:8px;">
@@ -314,7 +289,6 @@
 
                         </div>
 
-                        {{-- Острота --}}
                         @if($canSpicyFeature && $canSpicy)
                             <div style="margin-top:12px;" >
                                 <div style="margin-bottom:6px;">{{ __('admin.menu_builder.spicy') }}</div>
@@ -333,7 +307,6 @@
 
                     </div>
 
-                    {{-- RIGHT block: кнопки снизу справа --}}
                     <div style="flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; justify-content:flex-end;">
                         <div class="mb-item-actions" style="display:flex; align-items:center; gap:10px; margin-top:auto;">
                             @if($canEdit)

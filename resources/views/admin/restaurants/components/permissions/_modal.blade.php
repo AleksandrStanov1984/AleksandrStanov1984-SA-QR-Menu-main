@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/permissions/_modal.blade.php --}}
-{{-- admin/restaurants/components/permissions/_modal --}}
+
 <div id="permModal" class="modal" aria-hidden="true">
 
     <div class="modal__backdrop" data-close-perm-modal></div>

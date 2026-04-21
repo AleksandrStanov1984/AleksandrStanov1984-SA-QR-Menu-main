@@ -1,0 +1,303 @@
+/* resources/css/admin/restaurants/components/hours/hours.css */
+
+
+
+/* =========================================
+       HOURS BLOCK
+       ========================================= */
+
+.wh-card{
+    margin-top: 16px;
+}
+
+.wh-card__header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom: 14px;
+}
+
+.wh-card__list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.wh-card__row{
+    display:grid;
+    grid-template-columns: minmax(140px, 180px) 1fr;
+    align-items:center;
+    gap:12px;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.02);
+}
+
+.wh-card__row.is-today{
+    border-color: rgba(34,197,94,.45);
+    box-shadow: inset 0 0 0 1px rgba(34,197,94,.15);
+}
+
+.wh-card__day{
+    font-weight:600;
+    color:var(--text);
+}
+
+.wh-card__value{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    min-width:0;
+    color:var(--text);
+}
+
+.wh-card__time{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+}
+
+.wh-card__dash{
+    opacity:.55;
+}
+
+.wh-card__closed{
+    color:var(--muted);
+    font-weight:600;
+}
+
+/* =========================================
+   HOURS MODAL
+   ========================================= */
+
+#mbModalHours{
+    display:none;
+}
+
+.wh-modal__panel{
+    width:min(860px, calc(100vw - 32px));
+    max-height:calc(100vh - 48px);
+    overflow:auto;
+}
+
+.wh-modal__header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.wh-modal__list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.wh-modal__row{
+    display:grid;
+    grid-template-columns: 180px 60px 1fr;
+    align-items:center;
+    gap:14px;
+
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.02);
+}
+
+.wh-modal__toggle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:60px;
+}
+
+.wh-modal__day{
+    font-weight:600;
+    color:var(--text);
+    min-width:0;
+    width:180px;
+}
+
+.wh-modal__toggle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.wh-modal__time{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.wh-modal__time input[type="time"]{
+    width:120px;
+    min-width:0;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.03);
+    color:var(--text);
+    outline:none;
+}
+
+.wh-modal__time input[type="time"]:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+.wh-modal__time input[type="time"]::-webkit-calendar-picker-indicator{
+    filter: invert(1);
+    opacity:.7;
+}
+
+.wh-modal__dash{
+    opacity:.55;
+    flex:0 0 auto;
+}
+
+.wh-modal__actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:16px;
+    padding-top:4px;
+}
+
+/* =========================================
+   SWITCH
+   ========================================= */
+
+.wh-switcher{
+    position:relative;
+    display:inline-flex;
+    width:42px;
+    height:24px;
+    cursor:pointer;
+}
+
+.wh-switcher input{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    pointer-events:none;
+}
+
+.wh-switcher__ui{
+    position:relative;
+    width:100%;
+    height:100%;
+    border-radius:999px;
+    background:rgba(255,255,255,.18);
+    transition:.2s ease;
+}
+
+.wh-switcher__ui::after{
+    content:"";
+    position:absolute;
+    top:3px;
+    left:3px;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#fff;
+    transition:.2s ease;
+}
+
+.wh-switcher input:checked + .wh-switcher__ui{
+    background:rgba(34,197,94,.85);
+}
+
+.wh-switcher input:checked + .wh-switcher__ui::after{
+    transform:translateX(18px);
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1024px){
+    .wh-modal__row{
+        grid-template-columns: minmax(120px, 160px) 60px 1fr;
+        gap:12px;
+    }
+
+    .wh-modal__time input[type="time"]{
+        width:110px;
+    }
+
+    .wh-card__row{
+        grid-template-columns: minmax(120px, 160px) 1fr;
+    }
+}
+
+@media (max-width: 768px){
+    .wh-card__row{
+        grid-template-columns: 1fr;
+        gap:6px;
+    }
+
+    .wh-card__value{
+        justify-content:flex-start;
+    }
+
+    .wh-modal__panel{
+        width:min(680px, calc(100vw - 20px));
+        max-height:calc(100vh - 20px);
+    }
+
+    .wh-modal__row{
+        grid-template-columns: 1fr;
+        gap:10px;
+    }
+
+    .wh-modal__toggle{
+        justify-content:flex-start;
+    }
+
+    .wh-modal__time{
+        width:100%;
+        flex-wrap:wrap;
+    }
+
+    .wh-modal__time input[type="time"]{
+        width:calc(50% - 16px);
+        flex:1 1 calc(50% - 16px);
+    }
+
+    .wh-modal__dash{
+        display:none;
+    }
+}
+
+@media (max-width: 480px){
+    .wh-card{
+        margin-top:12px;
+    }
+
+    .wh-card__header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .wh-modal__actions{
+        flex-direction:column-reverse;
+        align-items:stretch;
+    }
+
+    .wh-modal__time{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .wh-modal__time input[type="time"]{
+        width:100%;
+        flex:1 1 100%;
+    }
+}

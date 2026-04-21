@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/hours/_hours.blade.php --}}
-{{-- admin/restaurants/components/hours/_hours --}}
+
 @php
     $days = [
         1 => 'monday',

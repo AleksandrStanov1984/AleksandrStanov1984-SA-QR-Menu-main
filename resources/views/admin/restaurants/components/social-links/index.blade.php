@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/social-links/index.blade.php --}}
-{{-- admin/restaurants/components/social-links/index --}}
+
 @php
     use App\Support\Permissions;
 

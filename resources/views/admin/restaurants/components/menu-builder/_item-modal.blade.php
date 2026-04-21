@@ -1,12 +1,11 @@
 {{-- resources/views/admin/restaurants/components/menu-builder/_item-modal.blade.php --}}
-{{-- admin/restaurants/components/menu-builder/_item-modal --}}
+
 @php
     use App\Support\Permissions;
 
     $user = auth()->user();
     $isSuper = (bool)($user?->is_super_admin);
 
-    // feature flags
     $canImagesFeature   = (bool) $restaurant->feature('images');
     $canDetailsFeature  = (bool) $restaurant->feature('long_description');
 

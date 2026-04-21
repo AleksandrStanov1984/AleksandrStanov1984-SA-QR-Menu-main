@@ -1,5 +1,5 @@
 {{-- resources/views/admin/dashboard/index.blade.php --}}
-{{-- admin/dashboard/index --}}
+
 @extends('admin.layout')
 
 @section('title', 'Dashboard')

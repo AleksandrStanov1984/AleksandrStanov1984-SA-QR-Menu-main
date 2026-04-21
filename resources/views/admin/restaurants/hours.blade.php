@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/hours.blade.php --}}
-{{-- admin/restaurants/hours --}}
+
 @extends('admin.layout')
 
 @section('content')

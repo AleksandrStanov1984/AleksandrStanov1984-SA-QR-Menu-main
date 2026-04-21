@@ -1,5 +1,5 @@
 {{-- resources/views/admin/profile/components/permissions-card/index.blade.php --}}
-{{-- admin/profile/components/permissions-card/index --}}
+
 <div class="card" style="margin-top:16px;">
     <h2>{{ __('admin.profile.permissions.h2') }}</h2>
 

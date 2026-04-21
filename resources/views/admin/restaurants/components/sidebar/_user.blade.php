@@ -1,9 +1,8 @@
 {{-- resources/views/admin/restaurants/components/sidebar/_user.blade.php --}}
+
 @php
 
     $user = auth()->user();
-
-    // текущий ресторан (его обычно кладёт ResolveAdminRestaurant)
     $restaurant = $currentRestaurant ?? $restaurant ?? null;
 
     $logoUrl = !empty($restaurant?->logo_path)

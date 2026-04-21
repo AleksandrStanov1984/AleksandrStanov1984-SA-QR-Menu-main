@@ -1,0 +1,101 @@
+/* resources/css/admin/index.css */
+/* resources/css/index.css */
+
+@import 'tailwindcss';
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
+@import "./index/index.css";
+
+/*
+|--------------------------------------------------------------------------
+| BASE
+|--------------------------------------------------------------------------
+*/
+@import "./base/base.css";
+
+/*
+|--------------------------------------------------------------------------
+| LAYOUT
+|--------------------------------------------------------------------------
+*/
+@import "./layout/layout.css";
+@import "./layout/topbar.css";
+
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
+@import "./auth/auth.css";
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD
+|--------------------------------------------------------------------------
+*/
+@import "./dashboard/dashboard.css";
+
+/*
+|--------------------------------------------------------------------------
+| PROFILE
+|--------------------------------------------------------------------------
+*/
+@import "./profile/components/modals/change-email/change-email.css";
+@import "./profile/components/modals/change-password/change-password.css";
+@import "./profile/components/user-card/user-card.css";
+
+/*
+|--------------------------------------------------------------------------
+| RESTAURANTS
+|--------------------------------------------------------------------------
+*/
+@import "./restaurants/restaurants.css";
+
+/*
+|--------------------------------------------------------------------------
+| RESTAURANT COMPONENTS
+|--------------------------------------------------------------------------
+*/
+@import "./restaurants/components/components.css";
+
+@import "./restaurants/components/banners/banners.css";
+
+@import "./restaurants/components/branding-backgrounds/branding-backgrounds.css";
+@import "./restaurants/components/branding-backgrounds/og/og.css";
+
+@import "./restaurants/components/carousel/carousel.css";
+
+@import "./restaurants/components/hours/hours.css";
+@import "./restaurants/components/import/import.css";
+@import "./restaurants/components/languages/languages.css";
+@import "./restaurants/components/menu-builder/menu-builder.css";
+@import "./restaurants/components/permissions/permissions.css";
+@import "./restaurants/components/qr/qr.css";
+@import "./restaurants/components/sidebar/sidebar.css";
+@import "./restaurants/components/social-links/social-links.css";
+
+/*
+|--------------------------------------------------------------------------
+| UI
+|--------------------------------------------------------------------------
+*/
+@import "./restaurants/components/ui/confirm/confirm.css";
+@import "./restaurants/components/ui/toast/toast.css";
+
+/*
+|--------------------------------------------------------------------------
+| SECURITY
+|--------------------------------------------------------------------------
+*/
+@import "./security/security.css";
+
+/*
+|--------------------------------------------------------------------------
+| ABOUT
+|--------------------------------------------------------------------------
+*/
+@import "./about/about.css";

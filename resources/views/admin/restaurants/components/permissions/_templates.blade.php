@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/permissions/_templates.blade.php --}}
-{{-- admin/restaurants/components/permissions/_templates --}}
+
 @php
     $mode = $mode ?? 'view';
 @endphp

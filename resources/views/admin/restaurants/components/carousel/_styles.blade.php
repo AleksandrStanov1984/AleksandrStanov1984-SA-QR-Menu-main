@@ -1,115 +1,94 @@
 {{-- resources/views/admin/restaurants/components/carousel/_styles.blade.php --}}
-{{-- admin/restaurants/components/carousel/_styles --}}
+
 <style>
-    /* =========================================
-      CAROUSEL
-      ========================================= */
+    /*!* =========================================*/
+    /*  CAROUSEL*/
+    /*  ========================================= *!*/
 
-    .carousel-card{
-        margin-top:16px;
-        width:100%;
-    }
+    /*.carousel-card{*/
+    /*    margin-top:16px;*/
+    /*    width:100%;*/
+    /*}*/
 
-    /* делаем нормальную ширину */
-    .carousel-card .card{
-        width:100%;
-    }
+    /*.carousel-card .card{*/
+    /*    width:100%;*/
+    /*}*/
 
-    /* ВНУТРЕННИЙ ОТСТУП КАК У ВСЕХ */
-    .carousel-card{
-        padding:16px;
-    }
+    /*.carousel-card{*/
+    /*    padding:16px;*/
+    /*}*/
 
-    /* ЗАГОЛОВОК */
-    .carousel-card h2{
-        margin-bottom:14px;
-    }
+    /*.carousel-card h2{*/
+    /*    margin-bottom:14px;*/
+    /*}*/
 
-    /* строки */
-    .carousel-row{
-        display:grid;
-        grid-template-columns: minmax(140px, 180px) 1fr;
-        align-items:center;
-        gap:12px;
+    /*.carousel-row{*/
+    /*    display:grid;*/
+    /*    grid-template-columns: minmax(140px, 180px) 1fr;*/
+    /*    align-items:center;*/
+    /*    gap:12px;*/
+    /*    padding:10px 12px;*/
+    /*    border-radius:12px;*/
+    /*    border:1px solid var(--line);*/
+    /*    background:rgba(255,255,255,.02);*/
+    /*    margin-bottom:8px;*/
+    /*}*/
 
-        padding:10px 12px;
-        border-radius:12px;
-        border:1px solid var(--line);
-        background:rgba(255,255,255,.02);
+    /*.carousel-source{*/
+    /*    margin-top:8px;*/
+    /*    padding:10px 12px;*/
+    /*    border-radius:12px;*/
+    /*    border:1px solid var(--line);*/
+    /*    background:rgba(255,255,255,.02);*/
+    /*}*/
 
-        margin-bottom:8px;
-    }
+    /*.carousel-locked{*/
+    /*    padding:12px 14px;*/
+    /*    border-radius:12px;*/
+    /*    border:1px dashed var(--line);*/
+    /*    background:rgba(255,255,255,.02);*/
+    /*    opacity:.7;*/
+    /*}*/
 
-    /* источник */
-    .carousel-source{
-        margin-top:8px;
-        padding:10px 12px;
-        border-radius:12px;
-        border:1px solid var(--line);
-        background:rgba(255,255,255,.02);
-    }
+    /*.carousel-actions{*/
+    /*    margin-top:16px;*/
+    /*    display:flex;*/
+    /*    justify-content:flex-end;*/
+    /*}*/
 
-    /* заблокированный */
-    .carousel-locked{
-        padding:12px 14px;
-        border-radius:12px;
-        border:1px dashed var(--line);
-        background:rgba(255,255,255,.02);
-        opacity:.7;
-    }
+    /*#carouselSourceBlock select {*/
+    /*    appearance: none;*/
+    /*    -webkit-appearance: none;*/
+    /*    -moz-appearance: none;*/
+    /*    height: 36px;*/
+    /*    padding: 0 34px 0 10px;*/
+    /*    border-radius: 10px;*/
+    /*    border: 1px solid var(--line);*/
+    /*    background: var(--card);*/
+    /*    color: var(--text-primary);*/
+    /*    font-weight: 500;*/
+    /*    cursor: pointer;*/
+    /*    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");*/
+    /*    background-repeat: no-repeat;*/
+    /*    background-position: right 10px center;*/
+    /*    background-size: 12px;*/
+    /*    box-shadow: 0 6px 16px rgba(0,0,0,.25);*/
+    /*    transition: all .15s ease;*/
+    /*    width: 50%;*/
+    /*    max-width: 50%;*/
+    /*    font-size: 16px;*/
+    /*}*/
 
-    /* кнопка */
-    .carousel-actions{
-        margin-top:16px;
-        display:flex;
-        justify-content:flex-end;
-    }
+    /*!* =========================================*/
+    /*   RESPONSIVE*/
+    /*   ========================================= *!*/
 
-    /* select внутри блока карусели */
-    #carouselSourceBlock select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-
-        height: 36px;
-        padding: 0 34px 0 10px;
-
-        border-radius: 10px;
-        border: 1px solid var(--line);
-
-        background: var(--card);
-        color: var(--text-primary);
-
-        font-weight: 500;
-
-        cursor: pointer;
-
-        /* стрелка */
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 12px;
-
-        box-shadow: 0 6px 16px rgba(0,0,0,.25);
-
-        transition: all .15s ease;
-
-        width: 50%;
-        max-width: 50%;
-        font-size: 16px;
-    }
-
-    /* =========================================
-       RESPONSIVE
-       ========================================= */
-
-    @media (max-width: 768px){
-        #carouselSourceBlock select {
-            appearance: auto;
-            -webkit-appearance: auto;
-            -moz-appearance: auto;
-
-            background-image: none;
-        }
-    }
+    /*@media (max-width: 768px){*/
+    /*    #carouselSourceBlock select {*/
+    /*        appearance: auto;*/
+    /*        -webkit-appearance: auto;*/
+    /*        -moz-appearance: auto;*/
+    /*        background-image: none;*/
+    /*    }*/
+    /*}*/
 </style>

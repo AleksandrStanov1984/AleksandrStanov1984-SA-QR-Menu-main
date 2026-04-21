@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/logo.blade.php --}}
-{{-- admin/restaurants/components/logo --}}
+
 @include('admin.restaurants.components._styles-logo')
 
 @php
@@ -20,14 +20,14 @@
           class="branding-logo-form">
         @csrf
 
-        <div class="branding-logo-item">
+        <div class="branding-item branding-logo-item">
 
             <div class="branding-item__title">
                 {{ __('admin.restaurants.brand.logo_label') }}
             </div>
 
             {{-- PREVIEW + DELETE --}}
-            <div class="branding-preview-wrapper" style="position:relative;">
+            <div class="branding-preview-wrapper">
 
                 <img
                     src="{{ $logoUrl ?? app(\App\Services\ImageService::class)->logo(null) }}"
@@ -50,7 +50,7 @@
             </div>
 
             {{-- FILE --}}
-            <label class="branding-file-btn">
+            <label class="branding-file-btn branding-file-btn--logo">
                 {{ __('admin.common.choose_file') ?? 'Datei wählen' }}
 
                 <input
@@ -63,7 +63,7 @@
             </label>
 
             {{-- SAVE --}}
-            <button class="btn ok" type="submit">
+            <button class="btn ok branding-logo-save" type="submit">
                 {{ __('admin.common.save') }}
             </button>
 
@@ -76,5 +76,3 @@
 @endif
 
 @include('admin.restaurants.components._scripts-logo')
-
-

@@ -394,7 +394,6 @@ label{
 }
 
 .modal__panel{
-    position:relative;
     width:min(860px, calc(100vw - 28px));
     margin-top:40px;
     background:var(--card);
@@ -543,7 +542,6 @@ label{
 }
 
 .modal__panel{
-    position:relative;
     margin: 6vh auto 0;
     width: min(920px, calc(100% - 24px));
     background: var(--panel);

@@ -1,87 +1,87 @@
 {{-- resources/views/admin/restaurants/components/languages/_styles.blade.php --}}
 
 <style>
-    .lang-list{
-        display:flex;
-        flex-direction:column;
-        gap:10px;
-        margin-top:8px;
-    }
+    /*.lang-list{*/
+    /*    display:flex;*/
+    /*    flex-direction:column;*/
+    /*    gap:10px;*/
+    /*    margin-top:8px;*/
+    /*}*/
 
-    .lang-row{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
+    /*.lang-row{*/
+    /*    display:flex;*/
+    /*    align-items:center;*/
+    /*    justify-content:space-between;*/
 
-        padding:12px 14px;
-        border-radius:12px;
+    /*    padding:12px 14px;*/
+    /*    border-radius:12px;*/
 
-        border:1px solid var(--line);
-        background:rgba(255,255,255,.02);
-    }
+    /*    border:1px solid var(--line);*/
+    /*    background:rgba(255,255,255,.02);*/
+    /*}*/
 
-    .lang-name{
-        font-weight:600;
-        color:var(--text);
-    }
+    /*.lang-name{*/
+    /*    font-weight:600;*/
+    /*    color:var(--text);*/
+    /*}*/
 
-    .lang-default{
-        margin-left:6px;
-        font-size:12px;
-        color:var(--muted);
-    }
+    /*.lang-default{*/
+    /*    margin-left:6px;*/
+    /*    font-size:12px;*/
+    /*    color:var(--muted);*/
+    /*}*/
 
-    .lang-control{
-        display:flex;
-        align-items:center;
-    }
+    /*.lang-control{*/
+    /*    display:flex;*/
+    /*    align-items:center;*/
+    /*}*/
 
-    /* SWITCH */
+    /*!* SWITCH *!*/
 
-    .lang-switch{
-        position:relative;
-        display:inline-flex;
-        width:42px;
-        height:24px;
-        cursor:pointer;
-    }
+    /*.lang-switch{*/
+    /*    position:relative;*/
+    /*    display:inline-flex;*/
+    /*    width:42px;*/
+    /*    height:24px;*/
+    /*    cursor:pointer;*/
+    /*}*/
 
-    .lang-switch input{
-        position:absolute;
-        inset:0;
-        opacity:0;
-    }
+    /*.lang-switch input{*/
+    /*    position:absolute;*/
+    /*    inset:0;*/
+    /*    opacity:0;*/
+    /*}*/
 
-    .lang-switch__ui{
-        width:100%;
-        height:100%;
-        border-radius:999px;
-        background:rgba(255,255,255,.18);
-        transition:.2s;
-    }
+    /*.lang-switch__ui{*/
+    /*    width:100%;*/
+    /*    height:100%;*/
+    /*    border-radius:999px;*/
+    /*    background:rgba(255,255,255,.18);*/
+    /*    transition:.2s;*/
+    /*}*/
 
-    .lang-switch__ui::after{
-        content:"";
-        position:absolute;
-        top:3px;
-        left:3px;
-        width:18px;
-        height:18px;
-        border-radius:50%;
-        background:#fff;
-        transition:.2s;
-    }
+    /*.lang-switch__ui::after{*/
+    /*    content:"";*/
+    /*    position:absolute;*/
+    /*    top:3px;*/
+    /*    left:3px;*/
+    /*    width:18px;*/
+    /*    height:18px;*/
+    /*    border-radius:50%;*/
+    /*    background:#fff;*/
+    /*    transition:.2s;*/
+    /*}*/
 
-    .lang-switch input:checked + .lang-switch__ui{
-        background:rgba(34,197,94,.85);
-    }
+    /*.lang-switch input:checked + .lang-switch__ui{*/
+    /*    background:rgba(34,197,94,.85);*/
+    /*}*/
 
-    .lang-switch input:checked + .lang-switch__ui::after{
-        transform:translateX(18px);
-    }
+    /*.lang-switch input:checked + .lang-switch__ui::after{*/
+    /*    transform:translateX(18px);*/
+    /*}*/
 
-    .lang-switch input:disabled + .lang-switch__ui{
-        opacity:.5;
-        cursor:not-allowed;
-    }
+    /*.lang-switch input:disabled + .lang-switch__ui{*/
+    /*    opacity:.5;*/
+    /*    cursor:not-allowed;*/
+    /*}*/
 </style>

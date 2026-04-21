@@ -6,7 +6,9 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
+                'resources/css/admin.css',
                 'resources/css/app.css',
+
                 'resources/js/app.js',
                 'resources/js/admin.js',
                 'resources/js/public/templates/united/modal/modal-hours.js',

@@ -1,5 +1,5 @@
 {{-- resources/views/admin/sections/index.blade.php --}}
-{{-- admin/sections/index --}}
+
 @extends('admin.layout')
 
 @section('title', __('admin.sections.manager.title'))

@@ -1,4 +1,5 @@
 {{-- resources/views/admin/restaurants/components/social-links/_modal.blade.php --}}
+
 @php
     $limit = (int) $restaurant->feature('social_limit', 1);
 @endphp

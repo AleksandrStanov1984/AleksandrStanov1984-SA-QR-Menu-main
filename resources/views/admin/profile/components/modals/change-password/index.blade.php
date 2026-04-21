@@ -1,7 +1,5 @@
 {{-- resources/views/admin/profile/components/modals/change-password/index.blade.php --}}
 
-@include('admin.profile.components.modals.change-password._styles')
-
 <div id="passModal" class="modal" aria-hidden="true">
     <div class="modal__backdrop" onclick="closeModal('passModal')"></div>
 

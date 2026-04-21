@@ -13,9 +13,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @include('admin.layout.head')
-
-    {{-- CSS --}}
-    @include('admin._styles')
 </head>
 <body>
 
@@ -131,9 +128,6 @@
 @include('admin.restaurants.components.ui.toast._view')
 @include('admin.restaurants.components.ui.confirm._view')
 
-@include('admin.restaurants.components.ui.toast._styles')
-@include('admin.restaurants.components.ui.confirm._styles')
-
 @include('admin.restaurants.components.ui.toast._scripts')
 @include('admin.restaurants.components.ui.confirm._scripts')
 
@@ -143,20 +137,5 @@
 
 </body>
 </html>
-
-<script>
-    window.UI_LANG = {
-        select_file: "{{ __('ui.toast.select_file') }}",
-
-        saved: "{{ __('ui.toast.saved') }}",
-        error: "{{ __('ui.toast.error') }}",
-
-        delete_error: "{{ __('ui.toast.delete_error') }}",
-        save_error: "{{ __('ui.toast.save_error') }}",
-
-        delete_banner: "{{ __('ui.confirm.delete_banner') }}",
-        delete_all: "{{ __('ui.confirm.delete_all_banners') }}"
-    };
-</script>
 
 

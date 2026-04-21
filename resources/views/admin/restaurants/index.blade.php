@@ -2,8 +2,6 @@
 
 @extends('admin.layout')
 
-@include('admin.restaurants._styles')
-
 @section('title', __('admin.restaurants.index.title'))
 @section('subtitle', __('admin.restaurants.index.subtitle'))
 

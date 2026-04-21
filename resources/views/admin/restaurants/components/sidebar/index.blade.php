@@ -1,7 +1,5 @@
 {{-- resources/views/admin/restaurants/components/sidebar/index.blade.php --}}
 
-@include('admin.restaurants.components.sidebar._styles')
-
 <aside class="admin-sidebar" id="adminSidebar" aria-hidden="false">
     <button type="button" class="sb-mobile-close" data-sidebar-close aria-label="Close menu">✕</button>
 

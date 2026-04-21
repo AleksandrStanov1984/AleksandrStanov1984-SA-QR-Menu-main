@@ -15,8 +15,6 @@
     $today = now()->dayOfWeek;
 @endphp
 
-@include('admin.restaurants.components.hours._styles')
-
 <div class="card wh-card">
 
     <div class="wh-card__header">

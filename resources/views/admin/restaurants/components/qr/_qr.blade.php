@@ -4,8 +4,6 @@
     $qrPath = optional($restaurant->qr)->qr_path;
 @endphp
 
-@include('admin.restaurants.components.qr._styles')
-
 <div class="card" style="margin-top:16px;">
 
     <div class="mb-row">

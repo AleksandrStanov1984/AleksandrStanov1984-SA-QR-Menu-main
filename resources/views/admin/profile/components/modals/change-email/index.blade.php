@@ -1,7 +1,5 @@
 {{-- resources/views/admin/profile/components/modals/change-email/index.blade.php --}}
 
-@include('admin.profile.components.modals.change-email._styles')
-
 <div id="emailModal" class="modal" aria-hidden="true">
     <div class="modal__backdrop" onclick="closeModal('emailModal')"></div>
 

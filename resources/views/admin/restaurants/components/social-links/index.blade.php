@@ -78,7 +78,6 @@
     'canIcon' => $canIcon,
 ])
 
-@include('admin.restaurants.components.social-links._styles')
 @include('admin.restaurants.components.social-links._scripts', [
     'restaurant' => $restaurant,
 ])

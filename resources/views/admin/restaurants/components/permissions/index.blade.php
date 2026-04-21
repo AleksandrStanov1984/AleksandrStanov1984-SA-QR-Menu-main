@@ -23,8 +23,6 @@
     $mode = $isSuper ? 'edit' : 'view';
 @endphp
 
-@include('admin.restaurants.components.permissions._styles')
-
 @if($mode === 'edit')
 
     @if(!$targetUser)

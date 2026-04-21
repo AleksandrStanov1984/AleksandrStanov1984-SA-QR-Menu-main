@@ -127,7 +127,6 @@
             </div>
         </div>
 
-        {{-- ACTIONS --}}
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
 
             <button class="btn"

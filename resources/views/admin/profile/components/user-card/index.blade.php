@@ -1,7 +1,5 @@
 {{-- resources/views/admin/profile/components/user-card/index.blade.php --}}
 
-@include('admin.profile.components.user-card._styles')
-
 <div class="card profile-card">
     <h2>{{ __('admin.profile.h2') }}</h2>
 
@@ -19,7 +17,7 @@
                        autocomplete="name">
             </div>
 
-            {{-- EMAIL (readonly) --}}
+            {{-- EMAIL --}}
             <div class="profile-field">
                 <label>{{ __('admin.fields.email') }}</label>
                 <input value="{{ $user->email }}"

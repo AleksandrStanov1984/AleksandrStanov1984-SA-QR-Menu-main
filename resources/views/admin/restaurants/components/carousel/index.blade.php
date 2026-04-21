@@ -10,8 +10,6 @@
     $hasAdvanced = $restaurant->feature('carousel_advanced');
 @endphp
 
-@include('admin.restaurants.components.carousel._styles')
-
 <div class="card carousel-card">
 
     <h2>{{ __('admin.carousel_settings') }}</h2>

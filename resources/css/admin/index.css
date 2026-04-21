@@ -60,7 +60,7 @@
 | RESTAURANT COMPONENTS
 |--------------------------------------------------------------------------
 */
-@import "./restaurants/components/components.css";
+@import "./restaurants/components/logo/logo.css";
 
 @import "./restaurants/components/banners/banners.css";
 

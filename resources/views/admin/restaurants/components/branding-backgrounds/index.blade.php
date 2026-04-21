@@ -9,8 +9,6 @@
     $themeMode = $meta['theme_mode'] ?? 'light';
 @endphp
 
-@include('admin.restaurants.components.branding-backgrounds._styles')
-
 @if($canBgUpload || $canThemeMode)
     <div class="card branding-card" style="margin-top:16px;">
         <h2>{{ __('admin.branding.title') }}</h2>

@@ -1,7 +1,5 @@
 {{-- resources/views/admin/restaurants/components/logo.blade.php --}}
 
-@include('admin.restaurants.components._styles-logo')
-
 @php
     use App\Support\Permissions;
 

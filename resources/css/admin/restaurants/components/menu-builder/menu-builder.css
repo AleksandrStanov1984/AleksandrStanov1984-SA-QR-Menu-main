@@ -424,3 +424,32 @@ select[data-item-meta="spicy"]:focus {
     opacity: .4;
     cursor: not-allowed;
 }
+
+/* =========================
+   MODAL SCROLL
+========================= */
+
+.modal__panel {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.25) transparent;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+}
+
+.modal__panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal__panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal__panel::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    transition: .2s;
+}
+
+.modal__panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.35);
+}

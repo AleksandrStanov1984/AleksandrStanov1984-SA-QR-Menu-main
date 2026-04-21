@@ -2,8 +2,6 @@
 
 @extends('admin.layout')
 
-@include('admin.restaurants.components.banners._styles')
-
 @section('content')
 
     <div class="card wh-card">

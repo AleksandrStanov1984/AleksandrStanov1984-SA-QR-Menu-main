@@ -17,9 +17,6 @@
         }
     @endphp
 
-    @include('admin.security._styles')
-    @include('admin.profile.components.modals.change-password._styles')
-
     <div class="card security-card">
 
         <div class="security-card__header">

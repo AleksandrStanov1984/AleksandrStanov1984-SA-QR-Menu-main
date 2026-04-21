@@ -7,6 +7,7 @@
 
 <title>@yield('title', __('admin.common.admin')) — {{ __('admin.brand') }}</title>
 
-<link rel="stylesheet" href="{{ asset('admin/css/admin.css') }}">
-
-@vite(['resources/js/admin.js'])
+@vite([
+    'resources/css/admin.css',
+    'resources/js/admin.js'
+])

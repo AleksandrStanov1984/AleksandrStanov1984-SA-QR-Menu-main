@@ -1,7 +1,5 @@
 {{-- resources/views/admin/restaurants/components/languages/index.blade.php --}}
 
-@include('admin.restaurants.components.languages._styles')
-
 @php
     $allLocales = config('locales.all', ['de']);
     $enabledLocales = $restaurant->enabled_locales ?? [];

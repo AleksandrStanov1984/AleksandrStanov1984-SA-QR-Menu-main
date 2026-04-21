@@ -1,8 +1,5 @@
 {{-- resources/views/admin/auth/login.blade.php --}}
-{{-- admin/auth/login --}}
 @extends('admin.layout')
-
-@include('admin.auth._styles')
 
 @section('title', __('admin.auth.login.title'))
 @section('subtitle', __('admin.auth.login.subtitle'))

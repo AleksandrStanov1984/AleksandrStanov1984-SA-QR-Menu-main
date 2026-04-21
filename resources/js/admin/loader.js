@@ -45,25 +45,6 @@ function initLoader() {
     window.showLoader = show;
     window.hideLoader = hide;
 
-    // checkbox / switch (change)
-    document.addEventListener('click', function (e) {
-        const switchEl = e.target.closest('.mb-switch');
-
-        if (!switchEl) return;
-
-        const input = switchEl.querySelector('input[type="checkbox"]');
-
-        if (!input || input.disabled) return;
-
-        show();
-    });
-
-    document.addEventListener('change', function (e) {
-        if (e.target.matches('[data-item-meta]')) {
-            show();
-        }
-    });
-
     // submit
     document.addEventListener('submit', function (e) {
         const form = e.target;

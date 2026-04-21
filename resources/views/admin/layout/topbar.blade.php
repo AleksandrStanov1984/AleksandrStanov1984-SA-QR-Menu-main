@@ -34,8 +34,6 @@
     }
 @endphp
 
-@include('admin.layout._styles_topbar')
-
 <div class="topbar">
 
     <div class="topbar__left">

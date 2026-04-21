@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/menu-builder/_scripts.blade.php --}}
-{{-- admin/restaurants/components/menu-builder/_scripts --}}
+
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <script>

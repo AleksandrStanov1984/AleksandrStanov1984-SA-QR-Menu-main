@@ -17,8 +17,6 @@
         }
     @endphp
 
-    @include('admin.security._styles')
-
     <div class="card security-card">
 
         <div class="security-card__header">

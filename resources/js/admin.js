@@ -1,6 +1,6 @@
 /* resources/js/admin.js */
 
-import '../css/admin.css';
+//import '../css/admin.css';
 
 /*
 |--------------------------------------------------------------------------

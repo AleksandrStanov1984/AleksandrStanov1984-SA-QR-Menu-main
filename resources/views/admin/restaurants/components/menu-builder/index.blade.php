@@ -7,8 +7,6 @@
   $defaultLocale = $restaurant->default_locale ?: 'de';
 @endphp
 
-@include('admin.restaurants.components.menu-builder._styles')
-
 <div class="mb-search">
 
     <input

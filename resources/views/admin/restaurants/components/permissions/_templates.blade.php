@@ -13,14 +13,20 @@
 
                 @if($mode === 'edit')
 
-                    <label class="perm-item">
+                    <div class="perm-item">
+
                         <span class="perm-label">{{ $label }}</span>
 
-                        <input type="checkbox"
-                               data-perm-key="{{ $permKey }}"
-                               value="1"
-                            @checked(!empty($p[$permKey]))>
-                    </label>
+                        <label class="mb-switch">
+                            <input type="checkbox"
+                                   data-perm-key="{{ $permKey }}"
+                                   value="1"
+                                @checked(!empty($p[$permKey]))>
+
+                            <span class="mb-switch__ui"></span>
+                        </label>
+
+                    </div>
 
                 @else
 
@@ -28,9 +34,9 @@
                         <div class="perm-item">
                             <span class="perm-label">{{ $label }}</span>
 
-                            <span class="pill green">
-                                {{ __('admin.permissions.enabled') }}
-                            </span>
+                            <span class="status">
+        <span class="status-dot on"></span>
+    </span>
                         </div>
                     @endif
 

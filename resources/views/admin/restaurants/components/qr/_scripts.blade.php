@@ -190,12 +190,12 @@
 
     // UPLOAD + REMOVE
     function bindQrUpload({
-       inputId,
-       previewId,
-       pickBtnId,
-       removeBtnId,
-       type
-       }) {
+                              inputId,
+                              previewId,
+                              pickBtnId,
+                              removeBtnId,
+                              type
+                          }) {
 
         const modal = document.getElementById('mbModalQrUpload');
         const restaurantId = modal?.dataset.restaurantId;

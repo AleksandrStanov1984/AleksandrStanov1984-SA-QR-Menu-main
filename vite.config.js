@@ -9,9 +9,8 @@ export default defineConfig({
                 'resources/css/admin.css',
                 'resources/css/app.css',
 
-                'resources/js/app.js',
                 'resources/js/admin.js',
-                'resources/js/public/templates/united/modal/modal-hours.js',
+                'resources/js/app.js',
             ],
             refresh: true,
         }),

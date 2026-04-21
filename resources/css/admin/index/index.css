@@ -2,36 +2,6 @@
 
 
 
-/* ===== LOADER ===== */
-
-.qr-loader {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    pointer-events: all;
-}
-
-.qr-loader__backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
-}
-
-.qr-loader__spinner {
-    position: relative;
-    z-index: 1;
-    width: 56px;
-    height: 56px;
-    border: 4px solid rgba(255,255,255,0.25);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: qr-spin 0.9s linear infinite;
-}
-
 @keyframes qr-spin {
     to { transform: rotate(360deg); }
 }

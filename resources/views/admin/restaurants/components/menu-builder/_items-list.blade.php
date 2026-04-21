@@ -148,21 +148,29 @@
                 ≡
               </span>
                             @if($canActive)
-                                <input type="checkbox"
+                                <label class="mb-switch"
                                        data-no-accordion
-                                       onclick="event.stopPropagation();"
-                                       data-item-meta="is_active"
-                                       data-item-id="{{ $it->id }}"
-                                       @checked($it->is_active)
-                                       {{ $rowLocked ? 'disabled' : '' }}
-                                       style="margin:0; transform:translateY(1px);">
+                                       onclick="event.stopPropagation();">
+                                    <input type="checkbox"
+                                           data-no-accordion
+                                           onclick="event.stopPropagation();"
+                                           data-item-meta="is_active"
+                                           data-item-id="{{ $it->id }}"
+                                        @checked($it->is_active)
+                                        {{ $rowLocked ? 'disabled' : '' }}>
+                                    <span class="mb-switch__ui"></span>
+                                </label>
                             @else
-                                <input type="checkbox"
+                                <label class="mb-switch"
                                        data-no-accordion
-                                       onclick="event.stopPropagation();"
-                                       disabled
-                                       @checked($it->is_active)
-                                       style="margin:0; transform:translateY(1px);">
+                                       onclick="event.stopPropagation();">
+                                    <input type="checkbox"
+                                           data-no-accordion
+                                           onclick="event.stopPropagation();"
+                                           disabled
+                                        @checked($it->is_active)>
+                                    <span class="mb-switch__ui"></span>
+                                </label>
                             @endif
 
                             <span class="mb-item-title"
@@ -240,50 +248,66 @@
 
                         <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
                             @if($canImagesFeature && $canShowImage)
-                                <label class="perm-item" style="margin:0; display:flex; align-items:center; gap:8px;">
-                                    <input type="checkbox"
-                                           data-item-meta="show_image"
-                                           data-item-id="{{ $it->id }}"
-                                           @checked($showImage)
-                                           data-disable-when-inactive
-                                        {{ $rowLocked ? 'disabled' : '' }}>
+                                <label class="perm-item">
                                     <span>{{ __('admin.menu_builder.show_image_modal') }}</span>
+
+                                    <label class="mb-switch">
+                                        <input type="checkbox"
+                                               data-item-meta="show_image"
+                                               data-item-id="{{ $it->id }}"
+                                               @checked($showImage)
+                                               data-disable-when-inactive
+                                            {{ $rowLocked ? 'disabled' : '' }}>
+                                        <span class="mb-switch__ui"></span>
+                                    </label>
                                 </label>
                             @endif
 
                             @if($canIsNewFeature && $canIsNew)
-                                <label class="perm-item" style="margin:0; display:flex; align-items:center; gap:8px;">
-                                    <input type="checkbox"
-                                           data-item-meta="is_new"
-                                           data-item-id="{{ $it->id }}"
-                                           @checked($isNew)
-                                           data-disable-when-inactive
-                                        {{ $rowLocked ? 'disabled' : '' }}>
+                                <label class="perm-item">
                                     <span>{{ __('admin.menu_builder.flag_new') }}</span>
+
+                                    <label class="mb-switch">
+                                        <input type="checkbox"
+                                               data-item-meta="is_new"
+                                               data-item-id="{{ $it->id }}"
+                                               @checked($isNew)
+                                               data-disable-when-inactive
+                                            {{ $rowLocked ? 'disabled' : '' }}>
+                                        <span class="mb-switch__ui"></span>
+                                    </label>
                                 </label>
                             @endif
 
                             @if($canDishOfDayFeature && $canDishOfDay)
-                                <label class="perm-item" style="margin:0; display:flex; align-items:center; gap:8px;">
-                                    <input type="checkbox"
-                                           data-item-meta="dish_of_day"
-                                           data-item-id="{{ $it->id }}"
-                                           @checked($isDay)
-                                           data-disable-when-inactive
-                                        {{ $rowLocked ? 'disabled' : '' }}>
+                                <label class="perm-item">
                                     <span>{{ __('admin.menu_builder.flag_dish_of_day') }}</span>
+
+                                    <label class="mb-switch">
+                                        <input type="checkbox"
+                                               data-item-meta="dish_of_day"
+                                               data-item-id="{{ $it->id }}"
+                                               @checked($isDay)
+                                               data-disable-when-inactive
+                                            {{ $rowLocked ? 'disabled' : '' }}>
+                                        <span class="mb-switch__ui"></span>
+                                    </label>
                                 </label>
                             @endif
 
                             @if($canCarouselFeature)
-                                <label class="perm-item" style="margin:0; display:flex; align-items:center; gap:8px;">
-                                    <input type="checkbox"
-                                           data-item-meta="bestseller"
-                                           data-item-id="{{ $it->id }}"
-                                           @checked($isBest)
-                                           data-disable-when-inactive
-                                        {{ $rowLocked ? 'disabled' : '' }}>
+                                <label class="perm-item">
                                     <span>{{ __('menu.bestseller') }}</span>
+
+                                    <label class="mb-switch">
+                                        <input type="checkbox"
+                                               data-item-meta="bestseller"
+                                               data-item-id="{{ $it->id }}"
+                                               @checked($isBest)
+                                               data-disable-when-inactive
+                                            {{ $rowLocked ? 'disabled' : '' }}>
+                                        <span class="mb-switch__ui"></span>
+                                    </label>
                                 </label>
                             @endif
 

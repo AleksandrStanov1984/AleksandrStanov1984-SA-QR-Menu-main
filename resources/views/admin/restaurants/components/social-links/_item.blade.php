@@ -49,10 +49,10 @@
 
                 @if($deleted)
                     <span class="pill red">{{ __('admin.socials.deleted') }}</span>
-                @elseif($inactive)
-                    <span class="pill red">{{ __('admin.socials.inactive') }}</span>
                 @else
-                    <span class="pill green">{{ __('admin.socials.active') }}</span>
+                    <span class="status">
+                        <span class="status-dot {{ $inactive ? 'off' : 'on' }}"></span>
+                    </span>
                 @endif
             </div>
 
@@ -106,12 +106,21 @@
             {{-- RIGHT: ACTIONS --}}
             <div style="display:flex; gap:10px; align-items:center; justify-content:flex-end; flex:0 0 auto; margin-left:auto;">
 
-                <form method="POST" action="{{ route('admin.restaurants.social_links.toggle_active', [$restaurant, $link]) }}">
+                <form method="POST"
+                      action="{{ route('admin.restaurants.social_links.toggle_active', [$restaurant, $link]) }}"
+                      style="margin:0;">
+
                     @csrf
                     @method('PATCH')
-                    <button class="btn small secondary" type="submit">
-                        {{ $inactive ? __('admin.common.enable') ?? 'Enable' : __('admin.common.disable') ?? 'Disable' }}
-                    </button>
+
+                    <label class="mb-switch" onclick="event.stopPropagation();">
+                        <input type="checkbox"
+                               onchange="this.form.submit()"
+                            @checked(!$inactive)>
+
+                        <span class="mb-switch__ui"></span>
+                    </label>
+
                 </form>
 
                 @if(!$deleted)

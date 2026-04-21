@@ -369,3 +369,58 @@ select[data-item-meta="spicy"]:focus {
 .mb-sub .mb-sub .mb-item {
     background: var(--layer-1);
 }
+
+/* =========================
+   SWITCH (MENU BUILDER)
+========================= */
+.mb-switch {
+    position: relative;
+    display: inline-flex;
+    width: 42px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.mb-switch input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.mb-switch__ui {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    background: rgba(255,255,255,.18);
+    transition: .2s;
+
+    pointer-events: none;
+}
+
+.mb-switch__ui::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: .2s;
+}
+
+.mb-switch input:checked + .mb-switch__ui {
+    background: rgba(34,197,94,.85);
+}
+
+.mb-switch input:checked + .mb-switch__ui::after {
+    transform: translateX(18px);
+}
+
+.mb-switch input:disabled + .mb-switch__ui {
+    opacity: .4;
+    cursor: not-allowed;
+}

@@ -43,7 +43,7 @@
 
             </div>
 
-            {{-- BASIC (no advanced) --}}
+            {{-- BASIC --}}
             @if(!$hasAdvanced)
                 <div class="carousel-hint">
                     {{ __('menu.carousel') }}: {{ __('menu.bestseller') }}

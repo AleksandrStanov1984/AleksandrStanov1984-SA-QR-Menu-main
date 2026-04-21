@@ -28,7 +28,7 @@
     class="{{ implode(' ', $classes) }}"
     id="item-{{ $item['id'] }}"
     class="{{ implode(' ', $classes) }}"
-    data-search="{{ mb_strtolower(($item['title'] ?? '') . ' ' . ($item['description'] ?? '')) }}"
+    data-search="{{ mb_strtolower(($item['title'] ?? '') ) }}"
     data-type="item"
     data-id="{{ $item['id'] }}"
 

@@ -19,6 +19,8 @@ class SetupImageDirectories extends Command
             // STORAGE (INBOX)
             // =========================
             storage_path('app/image-inbox/assets/restaurants'),
+            storage_path('app/image-inbox/assets/restaurants/favicon'),
+
             storage_path('app/image-inbox/assets/system'),
             storage_path('app/image-inbox/assets/system/banners'),
             storage_path('app/image-inbox/assets/system/icons'),
@@ -32,6 +34,8 @@ class SetupImageDirectories extends Command
             // PUBLIC (RUNTIME)
             // =========================
             public_path('assets/restaurants'),
+            public_path('assets/restaurants/favicon'),
+
             public_path('assets/system'),
             public_path('assets/system/banners'),
             public_path('assets/system/icons'),

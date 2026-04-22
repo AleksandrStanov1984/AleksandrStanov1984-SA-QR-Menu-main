@@ -1,7 +1,6 @@
 /* resources/css/admin/restaurants/restaurants.css */
 
 
-
 /* ===============================
 TABLE BASE
 ================================= */
@@ -10,6 +9,7 @@ TABLE BASE
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    table-layout: fixed;
 }
 
 .table thead th {
@@ -24,10 +24,13 @@ TABLE BASE
 .table tbody td {
     padding: 12px;
     vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+
 /* ===============================
-   ROW HOVER
+ROW HOVER
 ================================= */
 
 .table tbody tr {
@@ -38,8 +41,9 @@ TABLE BASE
     background: rgba(255,255,255,0.03);
 }
 
+
 /* ===============================
-   RESTAURANT NAME BLOCK
+NAME BLOCK
 ================================= */
 
 .restaurant-name {
@@ -53,8 +57,9 @@ TABLE BASE
     margin-top: 2px;
 }
 
+
 /* ===============================
-   MUTED TEXT
+TEXT
 ================================= */
 
 .mut {
@@ -62,8 +67,9 @@ TABLE BASE
     font-size: 13px;
 }
 
+
 /* ===============================
-   STATUS
+STATUS
 ================================= */
 
 .status {
@@ -87,8 +93,9 @@ TABLE BASE
     background: #ef4444;
 }
 
+
 /* ===============================
-   PILLS (BADGES)
+PILLS
 ================================= */
 
 .pill {
@@ -105,8 +112,9 @@ TABLE BASE
     font-size: 10px;
 }
 
+
 /* ===============================
-   ACTIONS
+ACTIONS
 ================================= */
 
 .actions-inline {
@@ -115,8 +123,9 @@ TABLE BASE
     justify-content: flex-end;
 }
 
+
 /* ===============================
-   BUTTONS
+BUTTONS
 ================================= */
 
 .btn.small {
@@ -141,8 +150,9 @@ TABLE BASE
     border: 1px solid rgba(255,255,255,0.08);
 }
 
+
 /* ===============================
-   CARD IMPROVEMENT
+CARD
 ================================= */
 
 .card {
@@ -152,16 +162,13 @@ TABLE BASE
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* ===============================
-   RIGHT ALIGN
-================================= */
-
 .right {
     text-align: right;
 }
 
+
 /* ===============================
-   TABLE SCROLL (MOBILE)
+SCROLL
 ================================= */
 
 .table-scroll {
@@ -169,15 +176,6 @@ TABLE BASE
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
-}
-
-.table {
-    min-width: 720px;
-}
-
-.table th,
-.table td {
-    white-space: nowrap;
 }
 
 .table-scroll::-webkit-scrollbar {
@@ -189,11 +187,101 @@ TABLE BASE
     border-radius: 999px;
 }
 
+.actions-row {
+    display: none;
+}
+
 /* ===============================
-   MOBILE TABLE → CARDS
+   TOGGLE SWITCH
 ================================= */
 
-@media (max-width: 768px) {
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: rgba(255,255,255,0.15);
+    border-radius: 999px;
+    transition: 0.25s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.25s;
+}
+
+.switch input:checked + .slider {
+    background: #22c55e;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+
+    .table th,
+    .table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .restaurant-sub {
+        display: none;
+    }
+
+    .actions-inline {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 4px;
+    }
+
+    .btn.small {
+        padding: 4px 8px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .table th:last-child,
+    .table td:last-child {
+        width: 140px;
+    }
+}
+
+
+/* ===============================
+MOBILE → CARDS
+================================= */
+
+@media (max-width: 640px) {
+
+    .table-scroll {
+        overflow: visible;
+    }
+
+    .table {
+        min-width: 100%;
+    }
 
     .table thead {
         display: none;
@@ -217,14 +305,16 @@ TABLE BASE
 
     .table td {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         padding: 6px 4px;
         font-size: 13px;
     }
 
     .table td::before {
         content: attr(data-label);
+        margin-left: 0;
         font-size: 12px;
         opacity: 0.6;
     }
@@ -234,5 +324,4 @@ TABLE BASE
         margin-top: 8px;
         flex-wrap: wrap;
     }
-
 }

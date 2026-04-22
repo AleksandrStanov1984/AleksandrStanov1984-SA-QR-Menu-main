@@ -59,7 +59,7 @@
                     >
 
                         {{-- NAME --}}
-                        <td>
+                        <td data-label="{{ __('admin.fields.name') }}">
                             <div class="restaurant-name js-name">
                                 {{ $r->name }}
                                 <div class="restaurant-sub js-slug">
@@ -69,14 +69,14 @@
                         </td>
 
                         {{-- TEMPLATE --}}
-                        <td>
+                        <td data-label="{{ __('admin.fields.template') }}">
                             <span class="pill">
                                 {{ __('admin.templates.'.$r->template_key) }}
                             </span>
                         </td>
 
                         {{-- LANGUAGES --}}
-                        <td class="mut">
+                        <td data-label="{{ __('admin.fields.languages') }}" class="mut">
                             {{ implode(', ', $r->enabled_locales ?: ['de']) }}
                             <span class="pill small">
                                 {{ $r->default_locale ?: 'de' }}
@@ -84,7 +84,7 @@
                         </td>
 
                         {{-- STATUS --}}
-                        <td>
+                        <td data-label="{{ __('admin.fields.status') }}">
                             <span class="status">
                                 <span class="status-dot {{ $r->is_active ? 'on' : 'off' }}"></span>
                                 {{ $r->is_active
@@ -95,7 +95,7 @@
                         </td>
 
                         {{-- ACTIONS --}}
-                        <td class="right">
+                        <td class="right actions-desktop" data-label="{{ __('admin.fields.actions') }}">
                             <div class="actions-inline">
 
                                 <a class="btn small"
@@ -104,16 +104,19 @@
                                 </a>
 
                                 <form method="POST"
-                                      action="{{ route('admin.restaurants.toggle', $r) }}">
+                                      action="{{ route('admin.restaurants.toggle', $r) }}"
+                                      class="toggle-form">
                                     @csrf
-                                    <button
-                                        class="btn small {{ $r->is_active ? 'danger' : 'ok' }}"
-                                        type="submit">
-                                        {{ $r->is_active
-                                            ? __('admin.actions.deactivate')
-                                            : __('admin.actions.activate')
-                                        }}
-                                    </button>
+
+                                    <label class="switch">
+                                        <input
+                                            type="checkbox"
+                                            {{ $r->is_active ? 'checked' : '' }}
+                                            onchange="this.form.submit()"
+                                        >
+                                        <span class="slider"></span>
+                                    </label>
+
                                 </form>
 
                             </div>

@@ -5,10 +5,9 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $vm->merchant->name ?? 'Stanov Oleksandr' }}</title>
+    <title>{{ $vm->merchant->name ?? 'Oleksandr Stanov' }}</title>
 
     @yield('styles')
 

@@ -159,3 +159,80 @@ TABLE BASE
 .right {
     text-align: right;
 }
+
+/* ===============================
+   TABLE SCROLL (MOBILE)
+================================= */
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.table {
+    min-width: 720px;
+}
+
+.table th,
+.table td {
+    white-space: nowrap;
+}
+
+.table-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 999px;
+}
+
+/* ===============================
+   MOBILE TABLE → CARDS
+================================= */
+
+@media (max-width: 768px) {
+
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        margin-bottom: 14px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        padding: 10px;
+    }
+
+    .table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 4px;
+        font-size: 13px;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        font-size: 12px;
+        opacity: 0.6;
+    }
+
+    .actions-inline {
+        justify-content: flex-start;
+        margin-top: 8px;
+        flex-wrap: wrap;
+    }
+
+}

@@ -1,4 +1,5 @@
 /* resources/css/public/author/author.css */
+
 /* ===========================
    AUTHOR PAGE (THEME READY)
 =========================== */
@@ -24,8 +25,6 @@
     position: relative;
     max-width: var(--container);
     margin: 0 auto;
-
-    /* 👇 фикс под header */
     padding: 100px 40px 46px;
 }
 
@@ -188,24 +187,30 @@
 }
 
 /* ===========================
-   BACK BUTTON
+   BACK BUTTON (FIXED)
 =========================== */
 
 .btn-back {
     position: fixed;
     top: 70px;
     left: max(16px, calc((100vw - var(--container)) / 2 + 16px));
-    z-index: 99;
+    z-index: 100;
+
     padding: 10px 16px;
+
     border-radius: 999px;
+
     font-size: 14px;
     font-weight: 500;
 
     color: var(--text-primary);
+
     background: var(--header-bg);
+
     border: 1px solid var(--border-color);
 
     backdrop-filter: blur(10px);
+
     box-shadow: 0 6px 16px rgba(0,0,0,0.25);
 
     text-decoration: none;
@@ -217,15 +222,18 @@
     transition: all 0.2s ease;
 }
 
+/* ✅ нормальный hover */
 .btn-back:hover {
     background: var(--card-bg);
-    transform: translateX(calc(-600px + 16px)) translateY(-1px);
+    transform: translateY(-1px);
 }
 
+/* ✅ нормальный active */
 .btn-back:active {
-    transform: translateX(calc(-600px + 16px)) scale(0.95);
+    transform: scale(0.95);
 }
 
+/* скрываем бургер */
 .page-author #drawerOpen {
     display: none !important;
 }
@@ -263,20 +271,5 @@
         left: 12px;
         padding: 8px 14px;
         font-size: 13px;
-    }
-}
-
-@media (max-width: 1200px) {
-    .btn-back {
-        left: 16px;
-        transform: none;
-    }
-
-    .btn-back:hover {
-        transform: translateY(-1px);
-    }
-
-    .btn-back:active {
-        transform: scale(0.95);
     }
 }

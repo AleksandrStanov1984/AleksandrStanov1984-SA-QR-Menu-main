@@ -12,6 +12,8 @@
 @endsection
 
 @section('content')
+
+    {{-- HEADER --}}
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
         <h1 style="margin:0; font-size:18px;">
             {{ __('admin.restaurants.index.h1') }}
@@ -22,86 +24,112 @@
         </a>
     </div>
 
-    <div class="card">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>{{ __('admin.fields.name') }}</th>
-                <th>{{ __('admin.fields.template') }}</th>
-                <th>{{ __('admin.fields.languages') }}</th>
-                <th>{{ __('admin.fields.status') }}</th>
-                <th class="right">{{ __('admin.fields.actions') }}</th>
-            </tr>
-            </thead>
+    {{-- 🔍 SEARCH PANEL --}}
+    <div style="margin-bottom: 12px;">
+        <input
+            type="text"
+            id="restaurantSearch"
+            class="input"
+            placeholder="Search by name, slug or ID..."
+            style="width:100%; max-width:360px;"
+        >
+    </div>
 
-            <tbody>
-            @foreach($restaurants as $r)
+    <div class="card" id="restaurantsTable">
+
+        <div class="table-scroll">
+            <table class="table">
+
+                <thead>
                 <tr>
-
-                    <td>
-                        <div class="restaurant-name">
-                            {{ $r->name }}
-                            <div class="restaurant-sub">
-                                #{{ $r->id }} · {{ $r->slug }}
-                            </div>
-                        </div>
-                    </td>
-
-                    {{-- TEMPLATE --}}
-                    <td>
-                        <span class="pill">
-                            {{ __('admin.templates.'.$r->template_key) }}
-                        </span>
-                    </td>
-
-                    {{-- LANGUAGES --}}
-                    <td class="mut">
-                        {{ implode(', ', $r->enabled_locales ?: ['de']) }}
-                        <span class="pill small">
-                            {{ $r->default_locale ?: 'de' }}
-                        </span>
-                    </td>
-
-                    {{-- STATUS --}}
-                    <td>
-                        <span class="status">
-                            <span class="status-dot {{ $r->is_active ? 'on' : 'off' }}"></span>
-                            {{ $r->is_active
-                                ? __('admin.status.active')
-                                : __('admin.status.inactive')
-                            }}
-                        </span>
-                    </td>
-
-                    <td class="right">
-                        <div class="actions-inline">
-                            <a class="btn small"
-                               href="{{ route('admin.restaurants.edit', $r) }}">
-                                {{ __('admin.actions.edit') }}
-                            </a>
-
-                            <form method="POST"
-                                  action="{{ route('admin.restaurants.toggle', $r) }}">
-                                @csrf
-                                <button
-                                    class="btn small {{ $r->is_active ? 'danger' : 'ok' }}"
-                                    type="submit">
-                                    {{ $r->is_active
-                                        ? __('admin.actions.deactivate')
-                                        : __('admin.actions.activate')
-                                    }}
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-
+                    <th>{{ __('admin.fields.name') }}</th>
+                    <th>{{ __('admin.fields.template') }}</th>
+                    <th>{{ __('admin.fields.languages') }}</th>
+                    <th>{{ __('admin.fields.status') }}</th>
+                    <th class="right">{{ __('admin.fields.actions') }}</th>
                 </tr>
-            @endforeach
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                @foreach($restaurants as $r)
+                    <tr
+                        data-id="{{ $r->id }}"
+                        data-name="{{ strtolower(e($r->name)) }}"
+                        data-slug="{{ strtolower(e($r->slug)) }}"
+                    >
+
+                        {{-- NAME --}}
+                        <td>
+                            <div class="restaurant-name js-name">
+                                {{ $r->name }}
+                                <div class="restaurant-sub js-slug">
+                                    #{{ $r->id }} · {{ $r->slug }}
+                                </div>
+                            </div>
+                        </td>
+
+                        {{-- TEMPLATE --}}
+                        <td>
+                            <span class="pill">
+                                {{ __('admin.templates.'.$r->template_key) }}
+                            </span>
+                        </td>
+
+                        {{-- LANGUAGES --}}
+                        <td class="mut">
+                            {{ implode(', ', $r->enabled_locales ?: ['de']) }}
+                            <span class="pill small">
+                                {{ $r->default_locale ?: 'de' }}
+                            </span>
+                        </td>
+
+                        {{-- STATUS --}}
+                        <td>
+                            <span class="status">
+                                <span class="status-dot {{ $r->is_active ? 'on' : 'off' }}"></span>
+                                {{ $r->is_active
+                                    ? __('admin.status.active')
+                                    : __('admin.status.inactive')
+                                }}
+                            </span>
+                        </td>
+
+                        {{-- ACTIONS --}}
+                        <td class="right">
+                            <div class="actions-inline">
+
+                                <a class="btn small"
+                                   href="{{ route('admin.restaurants.edit', $r) }}">
+                                    {{ __('admin.actions.edit') }}
+                                </a>
+
+                                <form method="POST"
+                                      action="{{ route('admin.restaurants.toggle', $r) }}">
+                                    @csrf
+                                    <button
+                                        class="btn small {{ $r->is_active ? 'danger' : 'ok' }}"
+                                        type="submit">
+                                        {{ $r->is_active
+                                            ? __('admin.actions.deactivate')
+                                            : __('admin.actions.activate')
+                                        }}
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                @endforeach
+                </tbody>
+
+            </table>
+        </div>
 
         <div style="margin-top: 12px;">
             {{ $restaurants->links() }}
         </div>
+
     </div>
+
 @endsection

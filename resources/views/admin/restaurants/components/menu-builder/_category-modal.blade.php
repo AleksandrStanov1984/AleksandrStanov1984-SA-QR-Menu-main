@@ -11,14 +11,24 @@
     <form method="POST" action="{{ route('admin.restaurants.categories.store', $restaurant) }}">
       @csrf
 
-      <div class="grid" style="margin-top:12px;">
-        @foreach($locales as $loc)
-          <div class="col6">
-            <label>{{ __('admin.sections.categories.title') }} ({{ strtoupper($loc) }})</label>
-            <input name="title[{{ $loc }}]" maxlength="50" required>
-          </div>
-        @endforeach
-      </div>
+        @php
+            $locale = $restaurant->default_locale ?? 'de';
+        @endphp
+
+        <div class="grid" style="margin-top:12px;">
+
+            <div class="col12">
+                <label>
+                    {{ __('admin.sections.categories.title') }}
+                    ({{ strtoupper($locale) }})
+                </label>
+
+                <input name="title[{{ $locale }}]"
+                       maxlength="50"
+                       required>
+            </div>
+
+        </div>
 
       <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:10px;">
         <button class="btn ok" type="submit">{{ __('admin.sections.categories.change') }}</button>

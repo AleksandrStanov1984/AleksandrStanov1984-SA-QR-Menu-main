@@ -46,6 +46,8 @@
     <div class="card" style="margin-top:16px;">
         <h2>{{ __('profile.restaurant.title') }}</h2>
 
+        <div class="sidebar-divider"></div>
+
         <form method="POST" action="{{ route('admin.restaurants.profile.update', $restaurant) }}">
             @csrf
 
@@ -70,17 +72,28 @@
             @endphp
 
             <div class="grid">
+
                 <div class="col6">
                     <label>{{ __('profile.restaurant.template') }}</label>
 
                     @if($isSuper)
-                        <select name="template_key">
-                            @foreach($templates as $tplItem)
-                                <option value="{{ $tplItem->key }}" @selected($template === $tplItem->key)>
-                                    {{ $tplItem->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="ui-select ui-select--button" data-name="template_key">
+
+                            <button type="button" class="ui-select-btn">
+                                {{ $templates->firstWhere('key', $template)->name ?? 'Select' }}
+                            </button>
+
+                            <div class="ui-select-menu">
+                                @foreach($templates as $tplItem)
+                                    <div class="ui-select-option {{ $template === $tplItem->key ? 'active' : '' }}"
+                                         data-value="{{ $tplItem->key }}">
+                                        {{ $tplItem->name }}
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <input type="hidden" name="template_key" value="{{ $template }}">
+                        </div>
                     @else
                         <input value="{{ __('admin.templates.' . ($restaurant->template_key ?? 'classic')) }}" disabled>
                     @endif
@@ -90,17 +103,28 @@
                     <label>{{ __('profile.restaurant.plan') }}</label>
 
                     @if($isSuper)
-                        <select name="plan_key">
-                            @foreach($plans as $plan)
-                                <option value="{{ $plan->key }}" @selected($planKey === $plan->key)>
-                                    {{ $plan->name }} (€{{ $plan->price }})
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="ui-select ui-select--button" data-name="plan_key">
+
+                            <button type="button" class="ui-select-btn">
+                                {{ $plans->firstWhere('key', $planKey)->name ?? 'Select' }}
+                            </button>
+
+                            <div class="ui-select-menu">
+                                @foreach($plans as $plan)
+                                    <div class="ui-select-option {{ $planKey === $plan->key ? 'active' : '' }}"
+                                         data-value="{{ $plan->key }}">
+                                        {{ $plan->name }} (€{{ $plan->price }})
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <input type="hidden" name="plan_key" value="{{ $planKey }}">
+                        </div>
                     @else
                         <input value="{{ __('admin.plans.' . ($restaurant->plan_key ?? 'starter')) }}" disabled>
                     @endif
                 </div>
+
             </div>
 
             <div class="grid">
@@ -114,6 +138,8 @@
                     <input name="contact_email" type="email" value="{{ old('contact_email', $restaurant->contact_email) }}">
                 </div>
             </div>
+
+            <div class="sidebar-divider"></div>
 
             <h3 style="margin:14px 0 8px; font-size:14px;">
                 {{ __('profile.restaurant.address_title') }}

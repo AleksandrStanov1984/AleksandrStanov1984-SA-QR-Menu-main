@@ -1,0 +1,13 @@
+/* resources/css/admin/profile/components/restaurant-card/restaurant-card.css */
+
+.ui-select--button {
+    max-width: 220px;
+}
+
+.ui-select--button .ui-select-btn {
+    width: 100%;
+}
+
+.ui-select--button .ui-select-btn::after {
+    right: 10px;
+}

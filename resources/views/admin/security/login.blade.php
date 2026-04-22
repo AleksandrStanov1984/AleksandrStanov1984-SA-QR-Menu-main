@@ -45,6 +45,8 @@
                     </div>
                 </div>
 
+                <div class="sidebar-divider"></div>
+
                 {{-- NEW EMAIL --}}
                 <div class="modal-form__field">
                     <label>{{ __('admin.profile.change_email.new_email') }}</label>

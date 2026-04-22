@@ -1,5 +1,4 @@
 /* resources/css/admin/index.css */
-/* resources/css/index.css */
 
 @import 'tailwindcss';
 
@@ -46,6 +45,9 @@
 */
 @import "./profile/components/modals/change-email/change-email.css";
 @import "./profile/components/modals/change-password/change-password.css";
+
+@import "./profile/components/restaurant-card/restaurant-card.css";
+
 @import "./profile/components/user-card/user-card.css";
 
 /*
@@ -70,12 +72,19 @@
 @import "./restaurants/components/carousel/carousel.css";
 
 @import "./restaurants/components/hours/hours.css";
+
 @import "./restaurants/components/import/import.css";
+
 @import "./restaurants/components/languages/languages.css";
+
 @import "./restaurants/components/menu-builder/menu-builder.css";
+
 @import "./restaurants/components/permissions/permissions.css";
+
 @import "./restaurants/components/qr/qr.css";
+
 @import "./restaurants/components/sidebar/sidebar.css";
+
 @import "./restaurants/components/social-links/social-links.css";
 
 /*
@@ -84,7 +93,10 @@
 |--------------------------------------------------------------------------
 */
 @import "./restaurants/components/ui/confirm/confirm.css";
+
 @import "./restaurants/components/ui/toast/toast.css";
+
+@import "./restaurants/components/ui/select/select.css";
 
 /*
 |--------------------------------------------------------------------------

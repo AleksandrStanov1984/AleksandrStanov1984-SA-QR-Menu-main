@@ -43,21 +43,70 @@
                         </div>
 
                         <div class="wh-modal__time">
-                            <input type="time"
-                                   step="1800"
-                                   name="hours[{{ $day }}][open_time]"
-                                   value="{{ $row?->open_time?->format('H:i') }}"
-                                   data-hours-open
-                                {{ $isClosed ? 'disabled' : '' }}>
+
+                            {{-- OPEN TIME --}}
+                            <div class="ui-select ui-select--time"
+                                 data-name="hours[{{ $day }}][open_time]">
+
+                                <button type="button"
+                                        class="ui-select-btn"
+                                    {{ $isClosed ? 'disabled' : '' }}>
+                                    {{ $row?->open_time?->format('H:i') ?? '--:--' }}
+                                </button>
+
+                                <div class="ui-select-menu">
+                                    @foreach(range(0, 23) as $h)
+                                        @foreach(['00','30'] as $m)
+                                            @php $time = sprintf('%02d:%s', $h, $m); @endphp
+
+                                            <div class="ui-select-option
+                        {{ $row?->open_time?->format('H:i') === $time ? 'active' : '' }}"
+                                                 data-value="{{ $time }}">
+                                                {{ $time }}
+                                            </div>
+                                        @endforeach
+                                    @endforeach
+                                </div>
+
+                                <input type="hidden"
+                                       name="hours[{{ $day }}][open_time]"
+                                       value="{{ $row?->open_time?->format('H:i') }}"
+                                       data-hours-open
+                                    {{ $isClosed ? 'disabled' : '' }}>
+                            </div>
 
                             <span class="wh-modal__dash">—</span>
 
-                            <input type="time"
-                                   step="1800"
-                                   name="hours[{{ $day }}][close_time]"
-                                   value="{{ $row?->close_time?->format('H:i') }}"
-                                   data-hours-close
-                                {{ $isClosed ? 'disabled' : '' }}>
+                            <div class="ui-select ui-select--time"
+                                 data-name="hours[{{ $day }}][close_time]">
+
+                                <button type="button"
+                                        class="ui-select-btn"
+                                    {{ $isClosed ? 'disabled' : '' }}>
+                                    {{ $row?->close_time?->format('H:i') ?? '--:--' }}
+                                </button>
+
+                                <div class="ui-select-menu">
+                                    @foreach(range(0, 23) as $h)
+                                        @foreach(['00','30'] as $m)
+                                            @php $time = sprintf('%02d:%s', $h, $m); @endphp
+
+                                            <div class="ui-select-option
+                        {{ $row?->close_time?->format('H:i') === $time ? 'active' : '' }}"
+                                                 data-value="{{ $time }}">
+                                                {{ $time }}
+                                            </div>
+                                        @endforeach
+                                    @endforeach
+                                </div>
+
+                                <input type="hidden"
+                                       name="hours[{{ $day }}][close_time]"
+                                       value="{{ $row?->close_time?->format('H:i') }}"
+                                       data-hours-close
+                                    {{ $isClosed ? 'disabled' : '' }}>
+                            </div>
+
                         </div>
                     </div>
                 @endforeach

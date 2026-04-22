@@ -1,11 +1,5 @@
 /* resources/css/admin/restaurants/components/hours/hours.css */
 
-
-
-/* =========================================
-       HOURS BLOCK
-       ========================================= */
-
 .wh-card{
     margin-top: 16px;
 }
@@ -218,9 +212,26 @@
     transform:translateX(18px);
 }
 
-/* =========================================
-   RESPONSIVE
-   ========================================= */
+.ui-select--time {
+    display: inline-block;
+}
+
+.ui-select--time .ui-select-btn {
+    height: 36px;
+    min-width: 90px;
+    justify-content: center;
+    padding: 0 28px 0 10px;
+}
+
+.ui-select--time .ui-select-menu {
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.ui-select.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
 
 @media (max-width: 1024px){
     .wh-modal__row{

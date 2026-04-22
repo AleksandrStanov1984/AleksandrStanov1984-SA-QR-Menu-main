@@ -55,6 +55,7 @@
                     </div>
                 </div>
 
+                <div class="sidebar-divider"></div>
                 {{-- ICON --}}
                 <div style="margin-top:12px;">
                     <label>{{ __('admin.socials.fields.icon') }}</label>

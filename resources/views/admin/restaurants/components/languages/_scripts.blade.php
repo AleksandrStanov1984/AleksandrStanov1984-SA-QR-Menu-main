@@ -78,33 +78,47 @@
         });
 
         function updateDefaultLocaleSelect(locales, currentDefaultLocale) {
-            const select = form.querySelector('select[name="default_locale"]');
+
+            const select = form.querySelector('[data-name="default_locale"]');
             if (!select) return;
+
+            const btn   = select.querySelector('.ui-select-btn');
+            const menu  = select.querySelector('.ui-select-menu');
+            const input = select.querySelector('input');
 
             const currentValue = locales.includes(currentDefaultLocale)
                 ? currentDefaultLocale
                 : (locales[0] || 'de');
 
-            select.innerHTML = '';
+            input.value = currentValue;
+            btn.innerText = currentValue.toUpperCase();
+
+            menu.innerHTML = '';
 
             locales.forEach(locale => {
-                const option = document.createElement('option');
-                option.value = locale;
-                option.textContent = locale.toUpperCase();
+                const div = document.createElement('div');
 
-                if (locale === currentValue) {
-                    option.selected = true;
-                }
+                div.className = 'ui-select-option';
+                if (locale === currentValue) div.classList.add('active');
 
-                select.appendChild(option);
+                div.dataset.value = locale;
+                div.textContent = locale.toUpperCase();
+
+                menu.appendChild(div);
             });
         }
 
         function updateTopbarLocales(locales, currentDefaultLocale) {
-            const select = document.querySelector('#topbarLocaleForm select');
+
+            const select = document.querySelector('#topbarLocaleForm .ui-select');
             if (!select) return;
 
-            select.innerHTML = '';
+            const btn   = select.querySelector('.ui-select-btn');
+            const menu  = select.querySelector('.ui-select-menu');
+            const input = select.querySelector('input');
+
+            btn.innerText = currentDefaultLocale.toUpperCase();
+            input.value   = currentDefaultLocale;
 
             locales = [...locales].sort((a, b) => {
                 if (a === currentDefaultLocale) return -1;
@@ -112,16 +126,20 @@
                 return a.localeCompare(b);
             });
 
-            locales.forEach(locale => {
-                const option = document.createElement('option');
-                option.value = locale;
-                option.textContent = locale.toUpperCase();
+            menu.innerHTML = '';
 
+            locales.forEach(locale => {
+                const div = document.createElement('div');
+
+                div.className = 'ui-select-option';
                 if (locale === currentDefaultLocale) {
-                    option.selected = true;
+                    div.classList.add('active');
                 }
 
-                select.appendChild(option);
+                div.dataset.value = locale;
+                div.textContent = locale.toUpperCase();
+
+                menu.appendChild(div);
             });
         }
 

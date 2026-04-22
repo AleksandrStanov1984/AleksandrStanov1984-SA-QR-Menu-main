@@ -65,7 +65,7 @@
 
         } finally {
             if (window.resetLoader) {
-                window.resetLoader(); // 🔥 ЖЁСТКИЙ СБРОС
+                window.resetLoader();
             }
         }
 
@@ -101,7 +101,7 @@
 
   const isDisabledEl = (el) => {
     if(!el) return true;
-    // covers: <button disabled>, <input disabled>, disabled via attribute, aria-disabled
+
     return !!(el.disabled || el.getAttribute('disabled') !== null || el.getAttribute('aria-disabled') === 'true');
   };
 
@@ -162,9 +162,6 @@
     openModal('mbConfirmDelete');
   };
 
-  // ----------------------------
-  // Word-like preview
-  // ----------------------------
   const fontMap = {
     inter: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif',
     poppins: 'Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif',
@@ -213,9 +210,6 @@
   document.addEventListener('input', onStyleChange);
   document.addEventListener('change', onStyleChange);
 
-  // ----------------------------
-  // Inline item meta updates (checkbox/select) + pills + disable-on-inactive
-  // ----------------------------
   const getMetaBase = (el) => {
     const list = el.closest('[data-sortable-items]');
     const base = list?.getAttribute('data-item-meta-base');
@@ -248,7 +242,6 @@
     row.classList.toggle('mb-inactive', !!inactive);
     row.setAttribute('data-item-active', inactive ? '0' : '1');
 
-    // disable all except keep-enabled
     row.querySelectorAll('[data-disable-when-inactive]').forEach(el => {
       if(el.hasAttribute('data-keep-enabled')) return;
       el.disabled = !!inactive;
@@ -263,72 +256,70 @@
     pill.style.display = show ? '' : 'none';
   };
 
-  // store prev for select rollback
   document.addEventListener('focusin', (e) => {
     const sel = e.target?.closest('select[data-item-meta]');
     if(!sel || isDisabledEl(sel)) return;
     sel.dataset.prev = sel.value;
   });
 
-  document.addEventListener('change', async (e) => {
-    const el = e.target?.closest('[data-item-meta]');
-    if(!el) return;
-    if(isDisabledEl(el)) return;
+    document.addEventListener('change', async (e) => {
 
-    const itemId = el.getAttribute('data-item-id');
-    const key = el.getAttribute('data-item-meta');
-    if(!itemId || !key) return;
+        let el = e.target?.closest('[data-item-meta]');
 
-    const row = el.closest('[data-item-row]');
-    const base = getMetaBase(el);
+        if (!el) {
+            const hidden = e.target.closest('.ui-select input[type="hidden"]');
+            if (hidden) {
+                el = hidden.closest('.ui-select');
+            }
+        }
 
-    // если строка inactive и это не is_active — откат и выход (на случай если кто-то снял disabled руками)
-    const rowActive = row ? (row.getAttribute('data-item-active') !== '0') : true;
-    if(!rowActive && key !== 'is_active'){
-      if(el.tagName === 'SELECT'){
-        const prev = el.dataset.prev;
-        if(typeof prev !== 'undefined') el.value = prev;
-      } else {
-        el.checked = !el.checked;
-      }
-      return;
-    }
+        if(!el) return;
+        if(isDisabledEl(el)) return;
 
-    let payload = {};
-    if(el.tagName === 'SELECT'){
-      payload[key] = Number(el.value);
-    } else {
-      payload[key] = !!el.checked;
-    }
+        const itemId = el.getAttribute('data-item-id');
+        const key = el.getAttribute('data-item-meta');
+        if(!itemId || !key) return;
 
-    // optimistic UI
-    if(key === 'is_new') setPill(row, 'new', payload.is_new);
-    if(key === 'dish_of_day') setPill(row, 'day', payload.dish_of_day);
-    if(key === 'is_active') setRowInactiveUI(row, !payload.is_active);
+        const row = el.closest('[data-item-row]');
+        const base = getMetaBase(el);
 
-    try{
-      await patchItemMeta(base, itemId, payload);
-    }catch(err){
-      console.error(err);
+        const rowActive = row ? (row.getAttribute('data-item-active') !== '0') : true;
 
-      // rollback UI
-      if(key === 'is_new') setPill(row, 'new', !payload.is_new);
-      if(key === 'dish_of_day') setPill(row, 'day', !payload.dish_of_day);
-      if(key === 'is_active') setRowInactiveUI(row, !!payload.is_active);
+        if(!rowActive && key !== 'is_active'){
+            return;
+        }
 
-      if(el.tagName === 'SELECT'){
-        const prev = el.dataset.prev;
-        if(typeof prev !== 'undefined') el.value = prev;
-      } else {
-        el.checked = !el.checked;
-      }
+        let payload = {};
 
-        showFlash(
-            window.UI_LANG.delete_error || 'Error',
-            'error'
-        );
-    }
-  });
+        if (el.classList.contains('ui-select')) {
+
+            const input = el.querySelector('input[type="hidden"]');
+            payload[key] = Number(input.value);
+
+        } else if (el.tagName === 'SELECT') {
+
+            payload[key] = Number(el.value);
+
+        } else {
+
+            payload[key] = !!el.checked;
+        }
+
+        if(key === 'is_new') setPill(row, 'new', payload.is_new);
+        if(key === 'dish_of_day') setPill(row, 'day', payload.dish_of_day);
+        if(key === 'is_active') setRowInactiveUI(row, !payload.is_active);
+
+        try{
+            await patchItemMeta(base, itemId, payload);
+        }catch(err){
+            console.error(err);
+
+            showFlash(
+                window.UI_LANG.delete_error || 'Error',
+                'error'
+            );
+        }
+    });
 
   document.querySelectorAll('[data-item-row]').forEach(row => {
     const active = row.getAttribute('data-item-active');

@@ -13,6 +13,7 @@
         {{-- ================= PROFILE ================= --}}
         <li class="sb-group-title">👤 {{ __('admin.sidebar.profile_group') }}</li>
 
+        <div class="navbar-divider"></div>
         @if($ctxRestaurant)
             <li>
                 <a href="{{ route('admin.restaurants.profile', $ctxRestaurant) }}"
@@ -33,6 +34,8 @@
         {{-- ================= RESTAURANT ================= --}}
         <li class="sb-group-title">🏪 {{ __('admin.sidebar.restaurant_group') }}</li>
 
+        <div class="navbar-divider"></div>
+
         @if($ctxRestaurant)
             <li>
                 <a href="{{ route('admin.restaurants.hours', $ctxRestaurant) }}"
@@ -46,6 +49,8 @@
         {{-- ================= MENU ================= --}}
         <li class="sb-group-title">📋 {{ __('admin.sidebar.menu_group') }}</li>
 
+        <div class="navbar-divider"></div>
+
         <li>
             <a href="{{ $ctxRestaurant
                 ? route('admin.restaurants.menu', $ctxRestaurant)
@@ -58,6 +63,8 @@
 
         {{-- ================= CONTENT ================= --}}
         <li class="sb-group-title">🎨 {{ __('admin.sidebar.content_group') }}</li>
+
+        <div class="navbar-divider"></div>
 
         @if($ctxRestaurant)
             <li>
@@ -85,6 +92,8 @@
 
         {{-- ================= MARKETING ================= --}}
         <li class="sb-group-title">📢 {{ __('admin.sidebar.banners_group') }}</li>
+
+        <div class="navbar-divider"></div>
 
         <li>
             @if($ctxRestaurant && $ctxRestaurant->feature('banners'))
@@ -117,6 +126,8 @@
 
         {{-- ================= SECURITY ================= --}}
         <li class="sb-group-title">🔒 {{ __('admin.sidebar.security') }}</li>
+
+        <div class="navbar-divider"></div>
 
         @if($ctxRestaurant)
 
@@ -159,9 +170,12 @@
 
         {{-- ================= SYSTEM ================= --}}
         @if($isSuper)
-            <li class="sb-sep"></li>
+            <div class="sidebar-divider"></div>
 
             <li class="sb-group-title">⚙️ {{ __('admin.sidebar.system_group') }}</li>
+
+            <div class="sidebar-divider"></div>
+
 
             <li>
                 <a href="{{ route('admin.restaurants.index') }}"
@@ -171,6 +185,8 @@
             </li>
 
             <li class="sb-group-title">🔒 {{ __('admin.sidebar.security_group') }}</li>
+
+            <div class="navbar-divider"></div>
 
             @php
                 $adminSecurityOpen = request()->routeIs('admin.security.*');

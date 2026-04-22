@@ -21,6 +21,8 @@
               data-branding-form>
             @csrf
 
+            <div class="sidebar-divider"></div>
+
             @if($canThemeMode)
                 <div class="block branding-theme-block">
                     <div class="block-title">
@@ -59,6 +61,8 @@
                     </div>
                 </div>
             @endif
+
+            <div class="sidebar-divider"></div>
 
             @if($canBgUpload)
                 <div class="branding-grid">

@@ -1,12 +1,9 @@
 /* resources/css/admin/restaurants/components/sidebar/sidebar.css */
 
-
-
 .admin-sidebar {
     height: 100vh;
     max-height: 100vh;
     overflow: hidden;
-
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -23,9 +20,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 6px;
-
     scroll-behavior: smooth;
-
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.2) transparent;
 }
@@ -53,7 +48,6 @@
     opacity: .5;
     margin: 16px 0 6px 4px;
     letter-spacing: .5px;
-
     position: sticky;
     top: 0;
     z-index: 2;
@@ -86,4 +80,26 @@
 .sb-nav a.is-active {
     background: rgba(255,255,255,0.08);
     border-radius: 8px;
+}
+
+.sidebar-divider{
+    height: 2px;
+    margin: 14px 0;
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,0.05),
+        rgba(255, 255, 255, 0.66),
+        rgba(255,255,255,0.05)
+    );
+}
+
+.navbar-divider{
+    height: 1px;
+    margin: 14px 0;
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,0.05),
+        rgba(255, 255, 255, 0.38),
+        rgba(255,255,255,0.05)
+    );
 }

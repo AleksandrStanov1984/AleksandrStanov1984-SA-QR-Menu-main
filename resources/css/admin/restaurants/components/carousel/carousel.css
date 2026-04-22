@@ -1,7 +1,4 @@
 /* resources/css/admin/restaurants/components/carousel/carousel.css */
-/* =========================================
-      CAROUSEL
-      ========================================= */
 
 .carousel-card{
     margin-top:16px;
@@ -77,9 +74,39 @@
     font-size: 16px;
 }
 
-/* =========================================
-   RESPONSIVE
-   ========================================= */
+.ui-select {
+    display: inline-block;
+}
+
+.ui-select-menu {
+    width: 100% !important;
+    min-width: 100%;
+    max-width: 240px;
+}
+
+.ui-select--button {
+    display: inline-block !important;
+    width: auto !important;
+}
+
+.ui-select--button .ui-select-btn {
+    width: auto !important;
+    min-width: 140px;
+}
+
+.ui-select--button .ui-select-menu {
+    width: 100% !important;
+    min-width: 100%;
+}
+
+.col6 .ui-select--button {
+    width: auto !important;
+}
+
+#carouselSourceBlock .ui-select {
+    display: inline-block !important;
+    width: auto !important;
+}
 
 @media (max-width: 768px){
     #carouselSourceBlock select {

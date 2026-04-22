@@ -56,17 +56,26 @@
 
     <div class="topbar__right">
 
-        {{-- LANGUAGE --}}
         <form method="POST" action="{{ route('admin.locale.set') }}" id="topbarLocaleForm">
             @csrf
-            <select name="locale" onchange="this.form.submit()">
-                @foreach($locales as $locale)
-                    <option value="{{ $locale }}"
-                        @selected(app()->getLocale() === $locale)>
-                        {{ strtoupper($locale) }}
-                    </option>
-                @endforeach
-            </select>
+
+            <div class="ui-select ui-select--button" data-name="locale">
+
+                <button type="button" class="ui-select-btn">
+                    {{ strtoupper(app()->getLocale()) }}
+                </button>
+
+                <div class="ui-select-menu">
+                    @foreach($locales as $locale)
+                        <div class="ui-select-option {{ app()->getLocale() === $locale ? 'active' : '' }}"
+                             data-value="{{ $locale }}">
+                            {{ strtoupper($locale) }}
+                        </div>
+                    @endforeach
+                </div>
+
+                <input type="hidden" name="locale" value="{{ app()->getLocale() }}">
+            </div>
         </form>
 
         @auth
@@ -79,7 +88,6 @@
                 {{ $u->name }}
             </a>
 
-            {{-- LOGOUT --}}
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
                 <button type="submit" class="btn secondary">

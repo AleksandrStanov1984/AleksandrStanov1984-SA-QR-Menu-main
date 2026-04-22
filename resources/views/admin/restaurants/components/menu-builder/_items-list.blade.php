@@ -314,18 +314,35 @@
                         </div>
 
                         @if($canSpicyFeature && $canSpicy)
-                            <div style="margin-top:12px;" >
-                                <div style="margin-bottom:6px;">{{ __('admin.menu_builder.spicy') }}</div>
-                                <select data-item-meta="spicy"
-                                        data-item-id="{{ $it->id }}"
-                                        data-disable-when-inactive
-                                        {{ $rowLocked ? 'disabled' : '' }}
-                                        class="ui-select-native"
-                                        style="width:120px; color: var(--text); background: rgba(255,255,255,.08); border:1px solid var(--line); border-radius:10px; padding:6px 10px;">
-                                    @for($i=0;$i<=5;$i++)
-                                        <option value="{{ $i }}" @selected($spicy === $i)>{{ $i }}</option>
-                                    @endfor
-                                </select>
+                            <div style="margin-top:12px;">
+                                <div style="margin-bottom:6px;">
+                                    {{ __('admin.menu_builder.spicy') }}
+                                </div>
+
+                                <div class="ui-select ui-select--compact"
+                                     data-item-meta="spicy"
+                                     data-item-id="{{ $it->id }}">
+
+                                    <button type="button"
+                                            class="ui-select-btn"
+                                        {{ $rowLocked ? 'disabled' : '' }}>
+                                        {{ $spicy }}
+                                    </button>
+
+                                    <div class="ui-select-menu">
+                                        @for($i=0;$i<=5;$i++)
+                                            <div class="ui-select-option {{ $spicy === $i ? 'active' : '' }}"
+                                                 data-value="{{ $i }}">
+                                                {{ $i }}
+                                            </div>
+                                        @endfor
+                                    </div>
+
+                                    <input type="hidden"
+                                           value="{{ $spicy }}"
+                                           data-disable-when-inactive
+                                        {{ $rowLocked ? 'disabled' : '' }}>
+                                </div>
                             </div>
                         @endif
 

@@ -1,4 +1,3 @@
-{{-- admin/restaurants/components/carousel/_scripts --}}
 {{-- resources/views/admin/restaurants/components/carousel/_scripts.blade.php --}}
 
 <script>

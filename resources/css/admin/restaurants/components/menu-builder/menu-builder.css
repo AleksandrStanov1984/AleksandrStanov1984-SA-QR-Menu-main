@@ -44,7 +44,6 @@
     box-shadow: 0 20px 80px rgba(0,0,0,.45);
 }
 
-/* Backdrop */
 .modal__backdrop {
     position: absolute;
     inset: 0;
@@ -52,7 +51,6 @@
     backdrop-filter: blur(2px);
 }
 
-/* Panel centered */
 .modal__panel {
     position: absolute;
     left: 50%;
@@ -70,7 +68,6 @@
     padding: 16px;
 }
 
-/* accordion header layout */
 .mb-acc-summary {
     cursor: pointer;
     padding: 6px 8px;
@@ -109,7 +106,6 @@
     text-align:right;
 }
 
-/* caret справа */
 .mb-acc-caret{
     width:18px;
     height:18px;
@@ -133,7 +129,6 @@ details[open] .mb-acc-caret::before{
     transform: rotate(180deg);
 }
 
-/* hide default marker */
 details > summary::-webkit-details-marker { display:none; }
 details > summary::marker { content:""; }
 
@@ -186,9 +181,7 @@ select[data-item-meta="spicy"]:focus {
     flex: 1 1 auto;
 }
 
-
-
-/* ===== ITEM IMAGE UPLOAD (MENU BUILDER) ===== */
+/* ===== ITEM IMAGE UPLOAD ===== */
 .mb-image-block {
     display: flex;
     align-items: flex-start;
@@ -291,7 +284,7 @@ select[data-item-meta="spicy"]:focus {
 .mb-search {
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 10;
     background: var(--panel);
     padding: 10px;
     border-radius: 12px;
@@ -371,7 +364,7 @@ select[data-item-meta="spicy"]:focus {
 }
 
 /* =========================
-   SWITCH (MENU BUILDER)
+   SWITCH
 ========================= */
 .mb-switch {
     position: relative;
@@ -396,7 +389,6 @@ select[data-item-meta="spicy"]:focus {
     border-radius: 999px;
     background: rgba(255,255,255,.18);
     transition: .2s;
-
     pointer-events: none;
 }
 
@@ -428,7 +420,6 @@ select[data-item-meta="spicy"]:focus {
 /* =========================
    MODAL SCROLL
 ========================= */
-
 .modal__panel {
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,.25) transparent;
@@ -452,4 +443,181 @@ select[data-item-meta="spicy"]:focus {
 
 .modal__panel::-webkit-scrollbar-thumb:hover {
     background: rgba(255,255,255,0.35);
+}
+
+/* =========================
+   COMPACT SELECT (GLOBAL)
+========================= */
+.ui-select--compact {
+    display: inline-block !important;
+    width: auto !important;
+}
+
+.ui-select--compact .ui-select-btn {
+    position: relative;
+    height: 28px;
+    min-width: 44px;
+    padding: 0 20px 0 8px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--layer-3);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+}
+
+.ui-select--compact .ui-select-btn::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 9px;
+    height: 9px;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20'%3E%3Cpath d='M6 8l4 4 4-4' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.ui-select--compact .ui-select-menu {
+    position: absolute !important;
+
+    width: auto !important;
+    min-width: 50px !important;
+    max-width: 60px !important;
+
+    left: 0 !important;
+    right: auto !important;
+
+    padding: 4px !important;
+}
+
+.ui-select--compact .ui-select-option {
+    padding: 5px 6px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.ui-select--compact .ui-select-option.active {
+    background: rgba(37,99,235,.35);
+}
+
+.ui-select--compact .ui-select-btn {
+    overflow: visible !important;
+}
+
+/* =========================
+   MOBILE FIX (<=768px)
+========================= */
+@media (max-width: 768px) {
+    .mb-acc-summary > div {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 6px !important;
+    }
+
+    .mb-acc-summary > div > div:first-child {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+    }
+
+    .mb-acc-summary .mb-mini {
+        order: 1;
+        font-size: 12px;
+        opacity: 0.6;
+    }
+
+    .mb-acc-summary .mb-item-title {
+        order: 2;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    .mb-acc-summary .mb-switch {
+        order: 3;
+        margin-top: 4px;
+    }
+
+    .mb-acc-right {
+        width: 100%;
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mb-acc-price {
+        min-width: auto;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    details > div {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .mb-item img,
+    .mb-image-preview {
+        width: 100% !important;
+        height: 160px !important;
+        border-radius: 12px;
+    }
+
+    .mb-item > details > div > div:first-child {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px;
+    }
+
+    .mb-item > details > div > div:first-child > div:first-child {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px;
+    }
+
+    .mb-item button.btn.small {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .perm-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    select[data-item-meta="spicy"] {
+        width: 100% !important;
+    }
+
+    .mb-item-actions {
+        width: 100%;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px;
+        align-items: stretch;
+    }
+
+    .mb-item-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mb-handle {
+        font-size: 18px;
+        padding: 4px 10px;
+        border-color: var(--layer-5);
+    }
+
 }

@@ -48,9 +48,6 @@
                 <div class="col6"></div>
             </div>
 
-            {{-- ===================== --}}
-            {{-- STYLE BLOCK (ADMIN ONLY) --}}
-            {{-- ===================== --}}
             @if($isSuper)
                 <hr style="border:0;border-top:1px solid var(--line); margin:12px 0;">
 
@@ -83,55 +80,59 @@
                     @endforeach
                 </div>
             @endif
+            @php
+                $locale = $restaurant->default_locale ?? 'de';
+            @endphp
 
-            {{-- ===================== --}}
-            {{-- TEXT FIELDS --}}
-            {{-- ===================== --}}
             <div class="grid" style="margin-top:8px;">
-                @foreach($locales as $loc)
-                    <div class="col12">
 
-                        {{-- TITLE --}}
-                        <label>{{ __('admin.menu_builder.title_locale', ['locale' => strtoupper($loc)]) }}</label>
-                        <input
-                            name="translations[{{ $loc }}][title]"
-                            maxlength="50"
-                            required
-                            style="width:100%;"
-                        >
+                <div class="col12">
 
-                        {{-- DESCRIPTION --}}
-                        <label>{{ __('admin.menu_builder.description_locale', ['locale' => strtoupper($loc)]) }}</label>
+                    {{-- TITLE --}}
+                    <label>
+                        {{ __('admin.menu_builder.title_locale', ['locale' => strtoupper($locale)]) }}
+                    </label>
+
+                    <input
+                        name="translations[{{ $locale }}][title]"
+                        maxlength="50"
+                        required
+                        style="width:100%;"
+                    >
+
+                    {{-- DESCRIPTION --}}
+                    <label>
+                        {{ __('admin.menu_builder.description_locale', ['locale' => strtoupper($locale)]) }}
+                    </label>
+
+                    <textarea
+                        name="translations[{{ $locale }}][description]"
+                        maxlength="100"
+                        style="width:100%; min-height:90px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--text);"
+                    ></textarea>
+
+                    {{-- DETAILS (PRO ONLY) --}}
+                    @if($canDetailsFeature)
+                        <label>
+                            {{ __('admin.menu_builder.details_locale', ['locale' => strtoupper($locale)]) }}
+                        </label>
+
                         <textarea
-                            name="translations[{{ $loc }}][description]"
-                            maxlength="100"
+                            name="translations[{{ $locale }}][details]"
+                            maxlength="255"
                             style="width:100%; min-height:90px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--text);"
                         ></textarea>
+                    @endif
 
-                        {{-- DETAILS (PRO ONLY) --}}
-                        @if($canDetailsFeature)
-                            <label>{{ __('admin.menu_builder.details_locale', ['locale' => strtoupper($loc)]) }}</label>
-                            <textarea
-                                name="translations[{{ $loc }}][details]"
-                                maxlength="255"
-                                style="width:100%; min-height:90px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--text);"
-                            ></textarea>
-                        @endif
+                </div>
 
-                    </div>
-                @endforeach
             </div>
 
-            {{-- ===================== --}}
-            {{-- IMAGE (BASIC + PRO) --}}
-            {{-- ===================== --}}
-
             @if($canImagesFeature)
-                <hr style="border:0;border-top:1px solid var(--line); margin:12px 0;">
+                <div class="sidebar-divider"></div>
 
                 <div class="mb-image-block">
 
-                    {{-- PREVIEW --}}
                     <div class="mb-image-preview">
                         <img id="mbItemImagePreview"
                              src="{{ $fallbackFood }}"
@@ -145,7 +146,6 @@
                         </button>
                     </div>
 
-                    {{-- CONTROLS --}}
                     <div class="mb-image-controls">
 
                         <label class="mb-file-btn">

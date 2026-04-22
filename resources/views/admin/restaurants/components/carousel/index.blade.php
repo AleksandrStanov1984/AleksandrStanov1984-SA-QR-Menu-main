@@ -57,19 +57,37 @@
 
                     <label>{{ __('menu.carousel_source') }}</label>
 
-                    <select name="carousel_source">
-                        <option value="bestseller" @selected($source === 'bestseller')>
-                            {{ __('menu.bestseller') }}
-                        </option>
+                    <div class="ui-select" data-name="carousel_source">
 
-                        <option value="is_new" @selected($source === 'is_new')>
-                            {{ __('menu.new') }}
-                        </option>
+                        <button type="button" class="ui-select-btn">
+                            {{
+                                $source === 'bestseller' ? __('menu.bestseller') :
+                                ($source === 'is_new' ? __('menu.new') : __('menu.dish_of_day'))
+                            }}
+                        </button>
 
-                        <option value="dish_of_day" @selected($source === 'dish_of_day')>
-                            {{ __('menu.dish_of_day') }}
-                        </option>
-                    </select>
+                        <div class="ui-select-menu">
+
+                            <div class="ui-select-option {{ $source === 'bestseller' ? 'active' : '' }}"
+                                 data-value="bestseller">
+                                {{ __('menu.bestseller') }}
+                            </div>
+
+                            <div class="ui-select-option {{ $source === 'is_new' ? 'active' : '' }}"
+                                 data-value="is_new">
+                                {{ __('menu.new') }}
+                            </div>
+
+                            <div class="ui-select-option {{ $source === 'dish_of_day' ? 'active' : '' }}"
+                                 data-value="dish_of_day">
+                                {{ __('menu.dish_of_day') }}
+                            </div>
+
+                        </div>
+
+                        <input type="hidden" name="carousel_source" value="{{ $source }}">
+
+                    </div>
 
                 </div>
             @endif

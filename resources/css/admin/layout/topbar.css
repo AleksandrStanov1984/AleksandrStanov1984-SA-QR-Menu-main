@@ -1,7 +1,43 @@
 /* resources/css/admin/layout/topbar.css */
-/* ======================================
-       MOBILE (включая iPad Mini)
-    ====================================== */
+
+.topbar .ui-select--button {
+    width: auto;
+}
+
+.topbar .ui-select--button .ui-select-btn {
+    height: 30px;
+    padding: 0 28px 0 10px;
+
+    font-size: 12px;
+    min-width: 60px;
+
+    border-radius: 8px;
+}
+
+.topbar .ui-select--button .ui-select-btn::after {
+    right: 8px;
+    width: 9px;
+    height: 9px;
+}
+
+.topbar {
+    position: relative;
+    z-index: 5000;
+}
+
+.ui-select-menu {
+    z-index: 9999 !important;
+}
+
+.topbar,
+.topbar__right {
+    overflow: visible !important;
+}
+
+.mb-search {
+    z-index: 50;
+}
+
 @media (max-width: 768px){
 
     .layout-with-sidebar{
@@ -45,7 +81,6 @@
     }
 
     /* ===== TOPBAR ===== */
-
     .topbar{
         display:flex;
         flex-direction:column;
@@ -83,6 +118,7 @@
     .sb-burger{
         display:inline-flex;
         flex-shrink:0;
+        color: #0B1220FF;
     }
 
     .topbar__right{
@@ -144,6 +180,22 @@
     .wrap{
         max-width:100%;
         overflow-x:hidden;
+    }
+
+    .mb-search {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .main-content,
+    .wrap,
+    .layout-with-sidebar {
+        overflow: visible !important;
+    }
+
+    .sb-burger{
+        color: #0B1220FF;
     }
 }
 

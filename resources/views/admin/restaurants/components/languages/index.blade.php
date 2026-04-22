@@ -5,14 +5,12 @@
     $enabledLocales = $restaurant->enabled_locales ?? [];
     $limit = $restaurant->feature('locales_limit', 1);
 
-    // default всегда в enabled
     $enabledLocales = collect($enabledLocales)
         ->push($restaurant->default_locale)
         ->unique()
         ->values()
         ->all();
 
-    // select только из включённых
     $defaultOptions = !empty($enabledLocales)
         ? $enabledLocales
         : [$restaurant->default_locale ?? 'de'];
@@ -20,7 +18,6 @@
 
 <div class="card lang-card">
 
-    {{-- HEADER --}}
     <div class="lang-card__header">
         <h2>{{ __('profile.languages.title') }}</h2>
 
@@ -37,20 +34,28 @@
           action="{{ route('admin.restaurants.languages.update', $restaurant) }}">
         @csrf
 
-        {{-- DEFAULT --}}
         <div class="lang-block">
             <label class="lang-label">
                 {{ __('profile.languages.default') }}
             </label>
 
-            <select name="default_locale" class="lang-select">
-                @foreach($defaultOptions as $locale)
-                    <option value="{{ $locale }}"
-                        @selected($restaurant->default_locale === $locale)>
-                        {{ strtoupper($locale) }}
-                    </option>
-                @endforeach
-            </select>
+            <div class="ui-select ui-select--button lang-select" data-name="default_locale">
+
+                <button type="button" class="ui-select-btn">
+                    {{ strtoupper($restaurant->default_locale ?? 'de') }}
+                </button>
+
+                <div class="ui-select-menu">
+                    @foreach($defaultOptions as $locale)
+                        <div class="ui-select-option {{ $restaurant->default_locale === $locale ? 'active' : '' }}"
+                             data-value="{{ $locale }}">
+                            {{ strtoupper($locale) }}
+                        </div>
+                    @endforeach
+                </div>
+
+                <input type="hidden" name="default_locale" value="{{ $restaurant->default_locale }}">
+            </div>
         </div>
 
         @if($limit !== 1)

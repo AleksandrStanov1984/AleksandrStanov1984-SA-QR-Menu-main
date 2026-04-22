@@ -58,7 +58,10 @@
 
                 <span>{{ __('footer.crafted_by') }}</span>
 
-                <a href="{{ route('author') }}" class="footer-author-badge">
+                <a href="{{ route('author', [
+                    'restaurant' => $vm->restaurant,
+                    'locale' => app()->getLocale() ]) }}"
+                   class="footer-author-badge">
                     {{ __('footer.author') }}
                 </a>
 

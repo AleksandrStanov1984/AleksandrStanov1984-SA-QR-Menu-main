@@ -42,13 +42,22 @@ Route::get('/', fn () => redirect()->route('admin.home'));
 
 Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])->name('restaurant.show');
 
-Route::get('/author', [AuthorController::class, 'index'])
+Route::get('/author/{restaurant}', [AuthorController::class, 'index'])
     ->name('author');
 
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
 
 Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
 
+Route::post('/locale', function () {
+    $locale = request('locale');
+    $available = config('locales.all');
+
+    if (in_array($locale, $available)) {
+        session(['locale' => $locale]);
+    }
+    return back();
+})->name('locale.set');
 
 Route::prefix('admin')->name('admin.')->group(function () {
 

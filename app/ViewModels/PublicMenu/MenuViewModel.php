@@ -15,6 +15,8 @@ class MenuViewModel
 {
     public string $templateKey;
 
+    public Restaurant $restaurant;
+
     public string $locale = 'de';
 
     public string $status = 'open';
@@ -56,7 +58,7 @@ class MenuViewModel
     public string $ogUrl;
 
     public function __construct(
-        protected Restaurant $restaurant,
+        Restaurant $restaurant,
         string $locale
     ) {
         $this->locale = $locale ?: ($restaurant->default_locale ?? 'de');
@@ -528,5 +530,10 @@ class MenuViewModel
         }
 
         return $translations->first();
+    }
+
+    public function restaurant(): Restaurant
+    {
+        return $this->restaurant;
     }
 }

@@ -15,7 +15,7 @@
 
 <section class="section section--full author-hero">
 
-    <a href="{{ route('restaurant.show', $vm->restaurant->slug) }}" class="btn-back">
+    <a href="{{ route('restaurant.show', $vm->restaurant->slug) }}?lang={{ request('lang', app()->getLocale()) }}" class="btn-back">
         ← {{ __('author.back') }}
     </a>
 

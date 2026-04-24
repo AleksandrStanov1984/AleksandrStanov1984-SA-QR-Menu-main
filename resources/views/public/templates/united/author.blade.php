@@ -18,18 +18,17 @@
     class="page-author theme-{{ $vm->branding['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
 >
 
-{{-- HEADER (как в меню) --}}
 @include('public.templates.united.blocks.header.header')
 
 <main class="container">
 
-    {{-- 👉 ВОТ ТВОЙ БЛОК --}}
     @include('public.templates.united.blocks.author.index')
 
 </main>
 
-{{-- FOOTER (как в меню) --}}
-@include('public.templates.united.blocks.footer.footer')
+@include('public.templates.united.blocks.footer.footer', [
+    'showFeaturedItems' => false,
+])
 
 @include('public.templates.united.layout.scripts')
 

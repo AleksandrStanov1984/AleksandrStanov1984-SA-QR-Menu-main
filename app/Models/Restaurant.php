@@ -134,4 +134,12 @@ class Restaurant extends Model
     {
         return $this->meta['og'] ?? [];
     }
+
+    public function publicSocialLinks()
+    {
+        return $this->socialLinks()
+            ->whereNull('deleted_at')
+            ->where('is_active', true)
+            ->orderBy('sort_order');
+    }
 }

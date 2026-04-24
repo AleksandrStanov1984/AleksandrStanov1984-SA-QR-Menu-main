@@ -264,7 +264,13 @@ class MenuViewModel
 
     private function buildFooter(): array
     {
-        $links = $this->restaurant->socialLinks
+        $limit = (int) $this->restaurant->feature('social_limit', 1);
+
+        $links = $this->restaurant->socialLinks()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->limit($limit)
+            ->get()
             ->map(function ($link) {
                 return [
                     'title' => $link->title,

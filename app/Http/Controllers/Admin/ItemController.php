@@ -163,11 +163,17 @@ class ItemController extends Controller
                         $existingTranslations->put($locale, $tr);
                     }
 
-                    $tr->update([
+                    $updateData = [
                         'title'       => $this->sanitizeText($t['title'] ?? ''),
                         'description' => $this->sanitizeText($t['description'] ?? null),
-                        'details'     => $this->sanitizeText($t['details'] ?? null),
-                    ]);
+                    ];
+
+                    if (array_key_exists('details', $t)) {
+                        $updateData['details'] = $this->sanitizeText($t['details']);
+                    }
+
+                    $tr->update($updateData);
+
                 }
             }
 

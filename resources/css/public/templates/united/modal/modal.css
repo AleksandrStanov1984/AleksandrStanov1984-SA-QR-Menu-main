@@ -86,7 +86,7 @@
 |--------------------------------------------------------------------------
 */
 .modal-body{
-    padding:10px 18px 18px;
+    padding:0 18px 18px;
     color:var(--text-primary);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -100,10 +100,16 @@
 |--------------------------------------------------------------------------
 */
 .modal-image{
-    width:100%;
-    border-radius:14px;
-    margin-bottom:10px;
+    width: 100%;
+    height: 55vh;
+    object-fit: cover;
+    border-radius: 14px;
 }
+/*.modal-image{*/
+/*    width:100%;*/
+/*    border-radius:14px;*/
+/*    margin-bottom:10px;*/
+/*}*/
 
 /*
 |--------------------------------------------------------------------------
@@ -199,6 +205,51 @@
     transform:scale(.98);
 }
 
+/* ===============================
+   MODAL SCROLLBAR (CUSTOM)
+================================= */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb, rgba(0,0,0,0.25));
+    border-radius: 999px;
+    transition: background .2s ease;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover, rgba(0,0,0,0.4));
+}
+
+.modal-body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb, rgba(0,0,0,0.25)) transparent;
+}
+
+html[data-theme="dark"]{
+    --scrollbar-thumb: rgba(255, 255, 255, 0.61);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.71);
+}
+
+html[data-theme="light"]{
+    --scrollbar-thumb: rgba(0,0,0,0.25);
+    --scrollbar-thumb-hover: rgba(0,0,0,0.45);
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-clip: content-box;
+    border: 2px solid transparent;
+}
+
 /*
 |--------------------------------------------------------------------------
 | MOBILE
@@ -228,10 +279,10 @@
         min-height:0;
     }
 
-    .modal-image{
-        max-height:200px;
-        object-fit:cover;
-    }
+    /*.modal-image{*/
+    /*    max-height:200px;*/
+    /*    object-fit:cover;*/
+    /*}*/
 
     .modal-back-btn{
         position:sticky;
@@ -282,10 +333,10 @@
         min-height:0;
     }
 
-    .modal-image{
-        height:auto;
-        object-fit:cover;
-    }
+    /*.modal-image{*/
+    /*    height:auto;*/
+    /*    object-fit:cover;*/
+    /*}*/
 
     .modal-title{
         font-size:16px;

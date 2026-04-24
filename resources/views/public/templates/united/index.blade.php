@@ -45,6 +45,7 @@
     @if($marketingBanners->isNotEmpty() || $marketingItems->isNotEmpty())
         @include('public.templates.united.blocks.header.courusel-header', [
             'items' => $marketingItems,
+            'carouselSource' => $vm->restaurant->meta['carousel_source'] ?? null
         ])
     @endif
 </div>

@@ -41,7 +41,7 @@
                         required
                     >
                     <div class="mb-muted" style="margin-top:6px;">
-                        {{ __('admin.menu_builder.price_hint') ?? 'Only numbers and one dot/comma.' }}
+                        {{ __('admin.menu_builder.price_hint') }}
                     </div>
                 </div>
 

@@ -1,8 +1,11 @@
 {{-- resources/views/public/templates/united/blocks/header/courusel-header.blade.php --}}
-{{-- public/templates/united/blocks/header/courusel-header --}}
-@inject('img', 'App\Services\ImageService')
 
 @php
+    $img = app(\App\Services\ImageService::class);
+
+    $source = $carouselSource;
+    $sourceConfig = config("carousel_sources.$carouselSource");
+
     $banners = $vm->promoBanners ?? [];
     $items = $items ?? collect();
 @endphp
@@ -57,17 +60,9 @@
                                     </div>
 
                                     {{-- BADGE PRIORITY --}}
-                                    @if(!empty($it['meta']['bestseller']))
-                                        <div class="header-carousel__badge">
-                                            {{ __('menu.bestseller') }}
-                                        </div>
-                                    @elseif(!empty($it['meta']['dish_of_day']))
-                                        <div class="header-carousel__badge">
-                                            {{ __('menu.dish_of_day') }}
-                                        </div>
-                                    @elseif(!empty($it['meta']['is_new']))
-                                        <div class="header-carousel__badge">
-                                            {{ __('menu.new') }}
+                                    @if($sourceConfig)
+                                        <div class="header-carousel__badge {{ $sourceConfig['badge_class'] ?? '' }}">
+                                            {{ __($sourceConfig['label']) }}
                                         </div>
                                     @endif
                                 </div>

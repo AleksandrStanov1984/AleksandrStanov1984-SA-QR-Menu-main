@@ -412,12 +412,10 @@ class MenuViewModel
             ? $this->restaurant->meta
             : [];
 
-        // выключено
         if (!($meta['carousel_enabled'] ?? false)) {
             return [];
         }
 
-        // feature check
         if (!$this->restaurant->feature('carousel')) {
             return [];
         }

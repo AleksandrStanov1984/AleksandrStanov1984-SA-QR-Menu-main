@@ -635,3 +635,40 @@ select[data-item-meta="spicy"]:focus {
     }
 
 }
+
+@media (max-width: 768px) {
+    .modal__panel {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: 100vh !important;
+
+        margin: 0 auto;
+        border-radius: 12px;
+    }
+
+    .modal {
+        align-items: flex-start !important;
+        padding: 10px !important;
+        overflow-y: auto;
+    }
+
+    .mb-image-block {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .mb-image-controls {
+        width: 100%;
+    }
+
+    .mb-file-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

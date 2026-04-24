@@ -10,6 +10,7 @@
         <h2>{{ __('qr.title') }}</h2>
     </div>
 
+    <div class="qr-block" style="margin-top:20px;"><br>
     <div class="qr-block">
 
         {{-- LEFT / QR --}}

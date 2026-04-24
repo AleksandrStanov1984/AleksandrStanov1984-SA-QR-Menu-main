@@ -4,6 +4,22 @@
 
 details > summary::-webkit-details-marker { display:none; }
 details > summary::marker { content:""; }
+summary {
+    list-style: none !important;
+}
+
+.sl-acc-summary {
+    list-style: none;
+}
+
+.sl-acc-summary::-webkit-details-marker {
+    display: none;
+}
+
+.sl-acc-summary::marker {
+    display: none;
+    content: "";
+}
 
 .sl-acc { border:1px solid var(--line); border-radius:16px; padding:10px; background:rgba(255,255,255,.03); }
 .sl-acc + .sl-acc { margin-top:10px; }

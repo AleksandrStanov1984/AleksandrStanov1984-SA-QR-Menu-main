@@ -62,6 +62,12 @@
             </div>
         @endif
 
+        @if(session('flash'))
+            <div class="flash flash-{{ session('flash.type') }}">
+                {{ session('flash.message') }}
+            </div>
+        @endif
+
         @yield('content')
 
     </div>
@@ -70,6 +76,18 @@
 
 @include('admin.layout.footer')
 @include('admin.layout._modals')
+
+@if(session('scroll_to_section'))
+    <script>
+        window.__SCROLL_TO_SECTION__ = '{{ session('scroll_to_section') }}';
+    </script>
+@endif
+
+@if(session('scroll_to_item'))
+    <script>
+        window.__SCROLL_TO_ITEM__ = '{{ session('scroll_to_item') }}';
+    </script>
+@endif
 
 {{-- AUTO HIDE FLASH + BLUR --}}
 <script>
@@ -117,7 +135,8 @@
         password_mismatch: "{{ __('admin.security.errors.password_mismatch') }}",
         password_same: "{{ __('admin.security.errors.password_same') }}",
         password_weak: "{{ __('admin.security.errors.password_weak') }}",
-        password_ok: "{{ __('admin.security.hints.password_ok') }}"
+        password_ok: "{{ __('admin.security.hints.password_ok') }}",
+        form_invalid: "{{ __('validation.invalid_form') }}"
     };
 </script>
 

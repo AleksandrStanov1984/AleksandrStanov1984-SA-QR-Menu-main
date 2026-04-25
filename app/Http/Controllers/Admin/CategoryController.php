@@ -70,6 +70,9 @@ class CategoryController extends Controller
 
         SectionTranslation::insert($translations);
 
-        return back()->with('status', __('admin.sections.categories.created'));
+        return redirect()
+            ->back()
+            ->with('status', __('admin.sections.categories.created'))
+            ->with('scroll_to_section', $section->id);
     }
 }

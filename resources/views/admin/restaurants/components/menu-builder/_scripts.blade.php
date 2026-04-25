@@ -44,24 +44,56 @@
                 document.querySelector(`[data-section-id="${data.deleted_id}"]`);
 
             if (row) {
-                row.remove();
+
+                if (row.hasAttribute('data-item-id')) {
+                    row.remove();
+                }
+
+                if (row.hasAttribute('data-section-id')) {
+
+                    const wrapper = row.closest('[data-section-id]');
+
+                    if (wrapper) {
+                        wrapper.remove();
+                    } else {
+                        row.remove();
+                    }
+                }
             }
 
             const modal = document.getElementById('mbConfirmDelete');
+            const formEl = document.getElementById('mbConfirmDeleteForm');
+
+            if (formEl) {
+                formEl.reset();
+                formEl.action = '';
+
+                const btn = formEl.querySelector('button[type="submit"]');
+                if (btn) btn.disabled = false;
+            }
+
             if (modal) modal.setAttribute('aria-hidden', 'true');
 
-            showFlash(
-                data.message || window.UI_LANG.saved || 'Done',
-                'success'
-            );
+            if (data.flash) {
+                showFlash(data.flash.message, data.flash.type);
+            } else {
+                showFlash(
+                    data.message || window.UI_LANG.saved || 'Done',
+                    'success'
+                );
+            }
 
         } catch (err) {
             console.error(err);
 
-            showFlash(
-                window.UI_LANG.delete_error || 'Error',
-                'error'
-            );
+            if (data.flash) {
+                showFlash(data.flash.message, data.flash.type);
+            } else {
+                showFlash(
+                    window.UI_LANG.delete_error || 'Error',
+                    'error'
+                );
+            }
 
         } finally {
             if (window.resetLoader) {
@@ -131,36 +163,44 @@
     if(submit) submit.textContent = "{{ __('admin.actions.create') }}";
   };
 
-  // ----------------------------
-  // Confirm Delete modal
-  // ----------------------------
-  const openDeleteConfirm = (btn) => {
-    if(isDisabledEl(btn)) return;
+    // ----------------------------
+    // Confirm Delete modal
+    // ----------------------------
+    const openDeleteConfirm = (btn) => {
+        if(isDisabledEl(btn)) return;
 
-    const url  = (btn.getAttribute('data-delete-url')  || '').trim();
-    const text = (btn.getAttribute('data-delete-text') || '').trim();
-    const hint = (btn.getAttribute('data-delete-hint') || '').trim();
+        const url  = (btn.getAttribute('data-delete-url')  || '').trim();
+        const text = (btn.getAttribute('data-delete-text') || '').trim();
+        const hint = (btn.getAttribute('data-delete-hint') || '').trim();
 
-    const modal = document.getElementById('mbConfirmDelete');
-    const form  = document.getElementById('mbConfirmDeleteForm');
-    const txtEl = document.getElementById('mbConfirmDeleteText');
-    const hEl   = document.getElementById('mbConfirmDeleteHint');
+        const modal = document.getElementById('mbConfirmDelete');
+        const form  = document.getElementById('mbConfirmDeleteForm');
+        const txtEl = document.getElementById('mbConfirmDeleteText');
+        const hEl   = document.getElementById('mbConfirmDeleteHint');
 
-    if(!modal || !form) return;
+        if(!modal || !form) return;
 
-    form.method = 'POST';
-    if(url) form.action = url;
-    ensureMethod(form, 'DELETE');
+        form.reset();
 
-    if(txtEl) txtEl.textContent = text;
+        form.method = 'POST';
+        if(url) form.action = url;
+        ensureMethod(form, 'DELETE');
 
-    if(hEl){
-      hEl.textContent = hint || '';
-      hEl.style.display = hint ? '' : 'none';
-    }
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute('disabled');
+        }
 
-    openModal('mbConfirmDelete');
-  };
+        if(txtEl) txtEl.textContent = text;
+
+        if(hEl){
+            hEl.textContent = hint || '';
+            hEl.style.display = hint ? '' : 'none';
+        }
+
+        openModal('mbConfirmDelete');
+    };
 
   const fontMap = {
     inter: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif',
@@ -314,10 +354,14 @@
         }catch(err){
             console.error(err);
 
-            showFlash(
-                window.UI_LANG.delete_error || 'Error',
-                'error'
-            );
+            if (data.flash) {
+                showFlash(data.flash.message, data.flash.type);
+            } else {
+                showFlash(
+                    window.UI_LANG.delete_error || 'Error',
+                    'error'
+                );
+            }
         }
     });
 
@@ -681,18 +725,25 @@
             if (img) {
                 img.src = "{{ app(\App\Services\ImageService::class)->food(null) }}";
             }
-
-            showFlash(
-                window.UI_LANG.saved || 'Saved',
-                'success'
-            );
+            if (data.flash) {
+                showFlash(data.flash.message, data.flash.type);
+            } else {
+                showFlash(
+                    window.UI_LANG.saved || 'Saved',
+                    'success'
+                );
+            }
 
         } catch (err) {
             console.error(err);
-            showFlash(
-                window.UI_LANG.delete_error || 'Error',
-                'error'
-            );
+            if (data.flash) {
+                showFlash(data.flash.message, data.flash.type);
+            } else {
+                showFlash(
+                    window.UI_LANG.delete_error || 'Error',
+                    'error'
+                );
+            }
         } finally {
             window.hideLoader?.();
         }
@@ -736,7 +787,6 @@
                 const type = el.dataset.type;
                 const text = el.dataset.search;
 
-                // 🔥 ВАЖНО — новый вывод
                 div.innerHTML = `
                 <div class="mb-search-line ${type}">
                     ${text}
@@ -771,6 +821,50 @@
             }
         });
     }
+
+    window.addEventListener('load', () => {
+
+        let sectionId = window.__SCROLL_TO_SECTION__;
+        let itemId = window.__SCROLL_TO_ITEM__;
+
+        let attempts = 0;
+
+        const interval = setInterval(() => {
+
+            if (sectionId) {
+                const el = document.querySelector(`[data-section-id="${sectionId}"]`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('mb-highlight');
+
+                    setTimeout(() => el.classList.remove('mb-highlight'), 2000);
+                    clearInterval(interval);
+                    return;
+                }
+            }
+
+            if (itemId) {
+                const el = document.querySelector(`[data-item-id="${itemId}"]`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('mb-highlight');
+
+                    setTimeout(() => el.classList.remove('mb-highlight'), 2000);
+                    clearInterval(interval);
+                    return;
+                }
+            }
+
+            if (attempts > 20) {
+                console.warn('Scroll target not found');
+                clearInterval(interval);
+            }
+
+            attempts++;
+
+        }, 100);
+
+    });
 
 
 })();

@@ -511,6 +511,15 @@ select[data-item-meta="spicy"]:focus {
     overflow: visible !important;
 }
 
+.mb-highlight {
+    animation: highlightFade 2s ease;
+}
+
+@keyframes highlightFade {
+    0% { background: rgba(34,197,94,0.4); }
+    100% { background: transparent; }
+}
+
 /* =========================
    MOBILE FIX (<=768px)
 ========================= */

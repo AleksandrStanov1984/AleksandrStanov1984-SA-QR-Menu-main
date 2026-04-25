@@ -36,4 +36,15 @@ class Item extends Model
     {
        return $this->hasMany(ItemTranslation::class);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($item) {
+
+            if ($item->isForceDeleting()) {
+
+                $item->translations()->delete();
+            }
+        });
+    }
 }

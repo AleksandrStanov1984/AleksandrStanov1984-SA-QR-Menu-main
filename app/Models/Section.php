@@ -59,4 +59,23 @@ class Section extends Model
     {
         return !is_null($this->parent_id);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($section) {
+
+            if ($section->isForceDeleting()) {
+
+                $section->items()->each(function ($item) {
+                    $item->forceDelete();
+                });
+
+                $section->children()->each(function ($child) {
+                    $child->forceDelete();
+                });
+
+                $section->translations()->delete();
+            }
+        });
+    }
 }

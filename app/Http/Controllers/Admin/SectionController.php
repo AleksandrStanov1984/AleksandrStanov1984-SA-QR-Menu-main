@@ -47,7 +47,10 @@ class SectionController extends Controller
             'title' => $data['title'],
         ]);
 
-        return back()->with('status', 'Section created');
+        return redirect()
+            ->back()
+            ->with('status', 'Section created')
+            ->with('scroll_to_section', $section->id);
     }
 
     public function index(Restaurant $restaurant)
@@ -169,45 +172,7 @@ class SectionController extends Controller
             return $resp;
         }
 
-        DB::transaction(function () use ($section, $restaurant, $request) {
-
-            $userId = $request->user()?->id;
-
-            // CATEGORY
-            if (is_null($section->parent_id)) {
-
-                $childIds = Section::query()
-                    ->where('restaurant_id', $restaurant->id)
-                    ->where('parent_id', $section->id)
-                    ->pluck('id');
-
-                $ids = $childIds->push($section->id);
-
-                Item::whereIn('section_id', $ids)
-                    ->update(['deleted_by_user_id' => $userId]);
-
-                Item::whereIn('section_id', $ids)->delete();
-
-                Section::whereIn('id', $childIds)
-                    ->update(['deleted_by_user_id' => $userId]);
-
-                Section::whereIn('id', $childIds)->delete();
-
-                $section->update(['deleted_by_user_id' => $userId]);
-                $section->delete();
-
-                return;
-            }
-
-            // SUBCATEGORY
-            Item::where('section_id', $section->id)
-                ->update(['deleted_by_user_id' => $userId]);
-
-            Item::where('section_id', $section->id)->delete();
-
-            $section->update(['deleted_by_user_id' => $userId]);
-            $section->delete();
-        });
+        $section->forceDelete();
 
         return response()->json([
             'deleted_id' => $section->id,

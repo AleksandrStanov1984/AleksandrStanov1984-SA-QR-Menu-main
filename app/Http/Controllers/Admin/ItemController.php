@@ -117,7 +117,10 @@ class ItemController extends Controller
                 }
             }
 
-            return back()->with('status', __('admin.items.created'));
+            return redirect()
+                ->back()
+                ->with('status', __('admin.items.created'))
+                ->with('scroll_to_item', $item->id);
         });
     }
 
@@ -262,12 +265,11 @@ class ItemController extends Controller
 
         $item->loadMissing('section');
 
-
         if ($item->image_path) {
-            app(\App\Services\ImageService::class)->delete($item->image_path);
+            app(ImageService::class)->delete($item->image_path);
         }
 
-        $item->delete();
+        $item->forceDelete();
 
         return response()->json([
             'status' => true,

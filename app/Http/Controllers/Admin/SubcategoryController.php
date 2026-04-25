@@ -77,6 +77,9 @@ class SubcategoryController extends Controller
             ]);
         }
 
-        return back()->with('status', __('admin.sections.subcategories.created'));
+        return redirect()
+            ->back()
+            ->with('status', __('admin.sections.subcategories.created'))
+            ->with('scroll_to_section', $section->id);
     }
 }

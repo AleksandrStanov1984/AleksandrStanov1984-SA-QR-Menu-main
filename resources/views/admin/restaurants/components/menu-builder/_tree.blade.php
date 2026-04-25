@@ -37,6 +37,7 @@
 
         <div class="card {{ $catInactive ? 'mb-inactive' : '' }} {{ $catDeleted ? 'mb-deleted' : '' }}"
              data-section-id="{{ $cat->id }}"
+             data-section-wrapper="1"
              data-type="category"
              style="padding:12px;">
 
@@ -131,7 +132,10 @@
                         $subLocked   = $catLocked;
                     @endphp
 
-                    <div class="{{ $subInactive ? 'mb-inactive' : '' }}" style="padding:12px; margin-top:10px;">
+                    <div class="{{ $subInactive ? 'mb-inactive' : '' }}"
+                         data-section-id="{{ $sub->id }}"
+                         data-type="subcategory"
+                         style="padding:12px; margin-top:10px;">
 
                         <div class="mb-row">
 

@@ -18,7 +18,7 @@
         @endif
     </h2>
 
-    <form method="POST" action="{{ route('admin.profile.update') }}">
+    <form novalidate method="POST" action="{{ route('admin.profile.update') }}">
         @csrf
 
         <div class="grid">
@@ -48,7 +48,8 @@
 
         <div class="sidebar-divider"></div>
 
-        <form method="POST" action="{{ route('admin.restaurants.profile.update', $restaurant) }}">
+        {{-- ✅ ДОБАВИЛ ID --}}
+        <form id="restaurantForm" method="POST" action="{{ route('admin.restaurants.profile.update', $restaurant) }}">
             @csrf
 
             <div class="grid">
@@ -130,12 +131,23 @@
             <div class="grid">
                 <div class="col6">
                     <label>{{ __('profile.restaurant.phone') }}</label>
-                    <input name="phone" value="{{ old('phone', $restaurant->phone) }}">
+
+                    <input id="phone" name="phone"
+                           value="{{ old('phone', $restaurant->phone) }}"
+                           maxlength="16"
+                           inputmode="tel"
+                           placeholder="+49123456789">
+                    {{-- ✅ ошибка --}}
+                    <div class="form-error-hint" data-error-for="phone"></div>
                 </div>
 
                 <div class="col6">
                     <label>{{ __('profile.restaurant.email') }}</label>
-                    <input name="contact_email" type="email" value="{{ old('contact_email', $restaurant->contact_email) }}">
+
+                    <input id="contact_email" name="contact_email" type="email"
+                           value="{{ old('contact_email', $restaurant->contact_email) }}">
+                    {{-- ✅ ошибка --}}
+                    <div class="form-error-hint" data-error-for="contact_email"></div>
                 </div>
             </div>
 
@@ -148,24 +160,36 @@
             <div class="grid">
                 <div class="col6">
                     <label>{{ __('profile.restaurant.city') }}</label>
-                    <input name="city" value="{{ old('city', $restaurant->city) }}">
+
+                    <input id="city" name="city"
+                           value="{{ old('city', $restaurant->city) }}">
+                    <div class="form-error-hint" data-error-for="city"></div>
                 </div>
 
                 <div class="col6">
                     <label>{{ __('profile.restaurant.postal_code') }}</label>
-                    <input name="postal_code" value="{{ old('postal_code', $restaurant->postal_code) }}">
+
+                    <input id="postal_code" name="postal_code"
+                           value="{{ old('postal_code', $restaurant->postal_code) }}">
+                    <div class="form-error-hint" data-error-for="postal_code"></div>
                 </div>
             </div>
 
             <div class="grid">
                 <div class="col6">
                     <label>{{ __('profile.restaurant.street') }}</label>
-                    <input name="street" value="{{ old('street', $restaurant->street) }}">
+
+                    <input id="street" name="street"
+                           value="{{ old('street', $restaurant->street) }}">
+                    <div class="form-error-hint" data-error-for="street"></div>
                 </div>
 
                 <div class="col6">
                     <label>{{ __('profile.restaurant.house_number') }}</label>
-                    <input name="house_number" value="{{ old('house_number', $restaurant->house_number) }}">
+
+                    <input id="house_number" name="house_number"
+                           value="{{ old('house_number', $restaurant->house_number) }}">
+                    <div class="form-error-hint" data-error-for="house_number"></div>
                 </div>
             </div>
 
@@ -175,5 +199,9 @@
                 </button>
             </div>
         </form>
+
+        <div id="formErrorHint" class="form-error-hint"></div>
     </div>
 @endif
+
+@include('admin.profile.components.restaurant-card._scripts')

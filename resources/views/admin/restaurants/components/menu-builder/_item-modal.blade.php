@@ -142,7 +142,7 @@
                                 id="mbItemImageDelete"
                                 class="mb-image-delete"
                                 style="display:none;">
-                            {{ __('menu.image_delete') }}
+                            ✕
                         </button>
                     </div>
 

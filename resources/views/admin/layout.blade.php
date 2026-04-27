@@ -154,6 +154,25 @@
     <div class="spinner"></div>
 </div>
 
+<script>
+    window.showLoaderNow = function () {
+        const loader = document.getElementById('appLoader');
+        if (!loader) {
+            console.warn('Loader not found');
+            return;
+        }
+
+        loader.classList.remove('hidden');
+    };
+
+    window.hideLoaderNow = function () {
+        const loader = document.getElementById('appLoader');
+        if (!loader) return;
+
+        loader.classList.add('hidden');
+    };
+</script>
+
 </body>
 </html>
 

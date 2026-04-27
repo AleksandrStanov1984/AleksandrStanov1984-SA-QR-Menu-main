@@ -51,6 +51,29 @@
 
     });
 
+        // =========================
+        // SAVE BUTTON STATE (LOGO)
+        // =========================
+        document.addEventListener('DOMContentLoaded', () => {
+
+        const form = document.querySelector('.branding-logo-form');
+        if (!form) return;
+
+        const input = form.querySelector('[data-input="logo"]');
+        const btn   = form.querySelector('.branding-logo-save');
+
+        const updateState = () => {
+        if (!btn || !input) return;
+
+        const hasFile = input.files && input.files.length > 0;
+        btn.disabled = !hasFile;
+    };
+
+        updateState();
+
+        input.addEventListener('change', updateState);
+    });
+
 
     // =========================
     // PREVIEW (UPLOAD)

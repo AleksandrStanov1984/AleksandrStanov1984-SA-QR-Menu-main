@@ -1,7 +1,7 @@
 {{-- resources/views/admin/restaurants/components/qr/_scripts.blade.php --}}
 
 <script>
-
+    console.log('QR SCRIPT LOADED');
     function nextFrame() {
         return new Promise(resolve => requestAnimationFrame(resolve));
     }
@@ -79,31 +79,55 @@
     });
 
     // DOWNLOAD
-    document.addEventListener('click', async (e) => {
+    document.querySelectorAll('[data-qr-download]').forEach(link => {
 
-        const link = e.target.closest('[data-qr-download]');
-        if (!link) return;
+        link.addEventListener('click', function (e) {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        const url = link.getAttribute('href');
+            const url = this.getAttribute('href');
 
-        setLoading(true);
+            // сброс cookie
+            document.cookie = "fileDownload=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 
-        let iframe = document.getElementById('qrDownloadFrame');
+            window.showLoaderNow();
 
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.id = 'qrDownloadFrame';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-        }
+            let iframe = document.getElementById('qrDownloadFrame');
 
-        iframe.src = url;
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = 'qrDownloadFrame';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            }
 
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+            iframe.src = url;
+
+            // 👇 ключевая часть
+            const start = Date.now();
+
+            const check = setInterval(() => {
+
+                if (document.cookie.includes('fileDownload=1')) {
+
+                    clearInterval(check);
+
+                    window.hideLoader();
+
+                    // чистим cookie
+                    document.cookie = "fileDownload=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+
+                }
+
+                // fallback защита (на случай ошибки)
+                if (Date.now() - start > 20000) {
+                    clearInterval(check);
+                    window.hideLoader();
+                }
+
+            }, 300);
+
+        });
 
     });
 

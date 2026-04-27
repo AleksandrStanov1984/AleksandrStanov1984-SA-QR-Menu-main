@@ -133,7 +133,12 @@ class RestaurantQrController extends Controller
 
             $pdf = Pdf::loadHTML($html);
 
-            return $pdf->download($filename . '.pdf');
+            return response()->streamDownload(function () use ($pdf) {
+                echo $pdf->output();
+            }, $filename . '.pdf', [
+                'Content-Type' => 'application/pdf',
+                'Set-Cookie' => 'fileDownload=1; path=/'
+            ]);
 
         } finally {
             if (file_exists($pngPath)) {

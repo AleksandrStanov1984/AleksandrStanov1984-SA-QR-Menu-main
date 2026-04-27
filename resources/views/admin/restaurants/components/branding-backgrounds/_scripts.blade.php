@@ -1,4 +1,3 @@
-{{-- admin/restaurants/components/branding-backgrounds/_scripts --}}
 {{-- resources/views/admin/restaurants/components/branding-backgrounds/_scripts.blade.php --}}
 
 
@@ -29,7 +28,6 @@
 
                 reader.onload = function(ev){
 
-                    // ищем правильный контейнер
                     const col = input.closest('.branding-col');
                     if (!col) return;
 
@@ -38,11 +36,10 @@
 
                     let img = wrap.querySelector('img');
 
-                    // если нет картинки — создаём правильную
                     if (!img) {
                         img = document.createElement('img');
                         img.className = 'branding-preview';
-                        wrap.innerHTML = ''; // убираем "No image"
+                        wrap.innerHTML = '';
                         wrap.appendChild(img);
                     }
 
@@ -83,6 +80,28 @@
                 preview.src = URL.createObjectURL(file);
             }
 
+        });
+
+        // =========================
+        // SAVE BUTTON STATE (BG)
+        // =========================
+        const saveBtn = form.querySelector('button[type="submit"]');
+
+        const updateSaveState = () => {
+
+            const hasFile = Array.from(
+                form.querySelectorAll('input[type="file"]')
+            ).some(input => input.files && input.files.length > 0);
+
+            if (saveBtn) {
+                saveBtn.disabled = !hasFile;
+            }
+        };
+
+        updateSaveState();
+
+        form.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', updateSaveState);
         });
 
         // =========================

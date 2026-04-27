@@ -208,6 +208,30 @@
     background: rgba(255,255,255,.25);
 }
 
+/* ===== CUSTOM SCROLLBAR  ===== */
+
+.card .qr-block {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.2) transparent;
+}
+
+.card .qr-block::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card .qr-block::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.card .qr-block::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.15);
+    border-radius: 10px;
+}
+
+.card .qr-block::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,.35);
+}
+
 
 @media (max-width: 768px) {
     .card .qr-actions {
@@ -219,4 +243,29 @@
         width: 100% !important;
         min-width: unset !important;
     }
+}
+
+/* ===== FIX ONLY DESKTOP ===== */
+@media (min-width: 1024px) {
+
+    .main-content {
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    .qr-block {
+        max-width: 520px;
+        margin: 0 auto;
+    }
+
+    .qr-left,
+    .qr-right {
+        width: auto;
+    }
+
+    .qr-preview {
+        max-width: 320px;
+        width: 100%;
+    }
+
 }

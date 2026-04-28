@@ -1,6 +1,6 @@
 {{-- resources/views/public/templates/united/index.blade.php --}}
 
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="{{ $vm->locale }}">
 
 <head>
@@ -21,8 +21,19 @@
 
     @include('public.templates.united.layout.styles')
 
-    @if(!empty($vm->promoBanners))
-        <link rel="preload" as="image" href="{{ $vm->promoBanners[0]['image'] }}">
+    @php
+        $img = app(\App\Services\ImageService::class);
+        $banners = $vm->promoBanners ?? [];
+        $items = $vm->carouselItems ?? [];
+    @endphp
+
+    {{-- PRELOAD первого баннера --}}
+    @if(!empty($banners))
+        <link
+            rel="preload"
+            as="image"
+            href="{{ $img->banner($banners[0]['image'], 800) }}"
+        >
     @endif
 
 </head>
@@ -37,21 +48,26 @@
 @include('public.templates.united.blocks.header.header')
 
 <div class="container">
+
     @include('public.templates.united.blocks.header.restaurant-info', [
         'showFeaturedItems' => true,
     ])
 
-    @php
-        $marketingBanners = collect($vm->promoBanners ?? []);
-        $marketingItems = collect($vm->carouselItems ?? []);
-    @endphp
+    {{-- БАННЕРЫ --}}
+    @if(!empty($banners))
+        @include('public.templates.united.blocks.banners.index', [
+            'banners' => $banners
+        ])
+    @endif
 
-    @if($marketingBanners->isNotEmpty() || $marketingItems->isNotEmpty())
+    {{-- КАРУСЕЛЬ --}}
+    @if(!empty($items))
         @include('public.templates.united.blocks.header.courusel-header', [
-            'items' => $marketingItems,
+            'items' => collect($items),
             'carouselSource' => $vm->restaurant->meta['carousel_source'] ?? null
         ])
     @endif
+
 </div>
 
 <main id="menuContainer">

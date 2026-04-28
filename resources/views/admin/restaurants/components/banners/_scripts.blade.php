@@ -375,5 +375,23 @@
 
         updateButtonsState();
 
+        document.querySelectorAll('.banner-file-input').forEach(input => {
+            input.addEventListener('change', function (e) {
+
+                const file = e.target.files[0];
+                const card = this.closest('.banner-card');
+                const img = card.querySelector('.banner-preview img');
+
+                if (!img) return;
+
+                if (file) {
+                    img.src = URL.createObjectURL(file);
+                } else {
+                    img.src = img.dataset.default;
+                }
+
+            });
+        });
+
     });
 </script>

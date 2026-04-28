@@ -3,27 +3,38 @@
 
 @if(!empty($vm->promoBanners))
 
-    <div class="menu-banners" data-banner-carousel>
+    @php($img = app(\App\Services\ImageService::class))
 
+    <div class="menu-banners" data-banner-carousel>
         <div class="banner-carousel">
 
             <div class="banner-viewport">
                 <div class="banner-track">
 
                     @foreach($vm->promoBanners as $index => $banner)
+
                         <div class="banner-item" data-index="{{ $index }}">
                             <img
-                                src="{{ $banner['image'] }}"
-                                alt="banner"
+                                src="{{ $img->banner($banner['image'], 800) }}"
 
+                                srcset="
+                {{ $img->banner($banner['image'], 400) }} 400w,
+                {{ $img->banner($banner['image'], 800) }} 800w,
+                {{ $img->banner($banner['image'], 1200) }} 1200w
+            "
+
+                                sizes="(max-width: 768px) 100vw, 800px"
+
+                                alt="banner"
                                 width="1200"
                                 height="600"
 
-                                loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
                                 fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}"
+                                loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
                                 decoding="async"
                             >
                         </div>
+
                     @endforeach
 
                 </div>
@@ -38,7 +49,6 @@
             </div>
 
         </div>
-
     </div>
 
 @endif

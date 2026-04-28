@@ -278,6 +278,48 @@ final class ImageService
     {
         $sizes = $profile->sizes ?? [1600, 2400];
 
+        if (count($sizes) > 2) {
+
+            $out = [];
+
+            if ($opt->dryRun) {
+                foreach ($sizes as $size) {
+                    $outPath = $this->buildSizedPath($absFile, $size);
+
+                    $out[] = [
+                        'abs' => $outPath,
+                        'rel' => $this->relFromPublic($outPath),
+                    ];
+                }
+                return $out;
+            }
+
+            foreach ($sizes as $size) {
+
+                $outPath = $this->buildSizedPath($absFile, $size);
+
+                $img = $this->readImage($absFile);
+                $this->resizeLongEdge($img, (int)$size);
+                $this->saveWebp($img, $outPath, $profile->quality);
+
+                unset($img);
+                if (function_exists('gc_collect_cycles')) gc_collect_cycles();
+
+                if ($profile->maxKb) {
+                    $this->ensureMaxKb($outPath, $profile->maxKb, $profile->quality);
+                }
+
+                $this->cwebpReencode($outPath, $profile->quality);
+
+                $out[] = [
+                    'abs' => $outPath,
+                    'rel' => $this->relFromPublic($outPath),
+                ];
+            }
+
+            return $out;
+        }
+        
         $size1 = (int)($sizes[0] ?? 1600);
         $size2 = (int)($sizes[1] ?? ($size1 * 2));
 
@@ -328,6 +370,7 @@ final class ImageService
         if ($opt->retina) {
             $out[] = ['abs' => $out2, 'rel' => $this->relFromPublic($out2)];
         }
+
         return $out;
     }
 
@@ -518,4 +561,11 @@ final class ImageService
         return $this->manager->canvas($w, $h);
     }
 
+    private function buildSizedPath(string $absFile, int $size): string
+    {
+        $dir = dirname($absFile);
+        $name = pathinfo($absFile, PATHINFO_FILENAME);
+
+        return $dir . DIRECTORY_SEPARATOR . "{$name}-{$size}.webp";
+    }
 }

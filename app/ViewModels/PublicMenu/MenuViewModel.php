@@ -394,19 +394,13 @@ class MenuViewModel
                 ->limit(5)
                 ->get();
 
-        $filtered = $banners
-            ->filter(fn ($b) => $b->is_active && !empty($b->image_path));
-
-        if ($filtered->isEmpty()) {
-            return [];
-        }
-
-        return $filtered
+        return $banners
+            ->filter(fn ($b) => $b->is_active && !empty($b->image_path))
             ->sortBy('sort_order')
             ->take(5)
             ->map(fn ($b) => [
                 'id' => $b->id,
-                'image' => $this->images->banner($b->image_path),
+                'image' => $b->image_path,
             ])
             ->values()
             ->toArray();

@@ -173,6 +173,49 @@
     };
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // =========================
+        // SCROLL TO ITEM
+        // =========================
+        if (window.__SCROLL_TO_ITEM__) {
+            const id = 'item-' + window.__SCROLL_TO_ITEM__;
+            const el = document.getElementById(id);
+
+            if (el) {
+                el.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                el.style.transition = 'box-shadow 0.3s ease';
+                el.style.boxShadow = '0 0 0 2px #4ade80';
+
+                setTimeout(() => {
+                    el.style.boxShadow = 'none';
+                }, 1500);
+            }
+        }
+
+        // =========================
+        // SCROLL TO SECTION
+        // =========================
+        if (window.__SCROLL_TO_SECTION__) {
+            const id = 'section-' + window.__SCROLL_TO_SECTION__;
+            const el = document.getElementById(id);
+
+            if (el) {
+                el.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+    });
+</script>
+
 </body>
 </html>
 

@@ -42,7 +42,11 @@
 
                     {{-- PREVIEW --}}
                     <div class="banner-preview">
-                        <img src="{{ $image }}" alt="banner">
+                        <img
+                            src="{{ $images->banner($banner?->image_path, 800) }}"
+                            data-default="{{ $images->banner($banner?->image_path, 800) }}"
+                            alt="banner"
+                        >
                     </div>
 
                     {{-- INPUT --}}

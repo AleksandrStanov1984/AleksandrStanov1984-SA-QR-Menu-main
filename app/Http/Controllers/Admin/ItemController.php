@@ -195,7 +195,9 @@ class ItemController extends Controller
                 }
             }
 
-            return back()->with('status', __('admin.items.updated'));
+            return back()
+                ->with('status', __('admin.items.updated'))
+                ->with('scroll_to_item', $item->id);
         });
     }
 

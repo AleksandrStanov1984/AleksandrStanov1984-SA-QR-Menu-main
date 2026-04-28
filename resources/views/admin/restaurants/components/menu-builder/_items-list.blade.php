@@ -6,7 +6,6 @@
     $items = $section->items ?? collect();
     $user  = auth()->user();
 
-    // если родитель (категория/подкатегория) выключен — блокируем всё внутри списка
     $ancestorLocked = (bool)($ancestorLocked ?? false);
 
     $title = function($it) use ($defaultLocale) {

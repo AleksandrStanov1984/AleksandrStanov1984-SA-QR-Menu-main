@@ -128,7 +128,7 @@ class ImageService
         return asset($base . '/' . $fallback);
     }
 
-    public function banner(?string $path): string
+    public function banner(?string $path, ?int $preferredSize = null): string
     {
         $fallback = config('image.system.fallbacks.banner', 'system/banners/default.webp');
 
@@ -138,17 +138,77 @@ class ImageService
 
         $path = ltrim($path, '/');
 
-        if (File::exists(public_path($path))) {
+        // 🔥 1. если уже есть размер → не трогаем
+        if (preg_match('/-\d+\.webp$/', $path)) {
+            if (!str_starts_with($path, 'assets/')) {
+                $path = 'assets/' . $path;
+            }
             return '/' . $path;
         }
 
-        $assetPath = 'assets/' . $path;
-
-        if (File::exists(public_path($assetPath))) {
-            return '/' . $assetPath;
+        // 🔥 2. нормализуем путь
+        if (!str_starts_with($path, 'assets/')) {
+            $path = 'assets/' . $path;
         }
 
-        return '/assets/' . ltrim($fallback, '/');
+        $base = preg_replace('/\.webp$/', '', $path);
+        $dir = dirname($base);
+        $filename = basename($base);
+
+        // 🔥 3. ищем ВСЕ доступные размеры
+        $pattern = public_path($dir . '/' . $filename . '-*.webp');
+        $files = glob($pattern);
+
+        if (!$files) {
+            return '/assets/' . ltrim($fallback, '/');
+        }
+
+        // 🔥 4. вытаскиваем размеры
+        $variants = [];
+
+        foreach ($files as $file) {
+            if (preg_match('/-(\d+)\.webp$/', $file, $m)) {
+                $variants[(int)$m[1]] = $file;
+            }
+        }
+
+        if (empty($variants)) {
+            return '/assets/' . ltrim($fallback, '/');
+        }
+
+        ksort($variants); // сортировка по размеру
+
+        // 🔥 5. выбор размера
+
+        // если передан preferred → ищем ближайший
+        if ($preferredSize) {
+
+            $closest = null;
+            $closestDiff = PHP_INT_MAX;
+
+            foreach ($variants as $size => $file) {
+                $diff = abs($size - $preferredSize);
+
+                if ($diff < $closestDiff) {
+                    $closestDiff = $diff;
+                    $closest = $file;
+                }
+            }
+
+            return $this->toPublicUrl($closest);
+        }
+
+        // 🔥 6. если размер не задан → берём средний (оптимальный)
+        $sizes = array_keys($variants);
+        $middle = $sizes[(int) floor(count($sizes) / 2)];
+
+        return $this->toPublicUrl($variants[$middle]);
+    }
+
+    private function toPublicUrl(string $absPath): string
+    {
+        $relative = str_replace(public_path(), '', $absPath);
+        return str_replace('\\', '/', $relative);
     }
 
     public function ogForLocale(Restaurant $restaurant, string $locale): string

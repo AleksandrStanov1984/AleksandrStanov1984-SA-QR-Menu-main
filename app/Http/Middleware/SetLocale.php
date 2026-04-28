@@ -8,18 +8,8 @@ class SetLocale
 {
     public function handle($request, Closure $next)
     {
-        $available = config('locales.all', ['de']);
-        $default   = config('locales.default', 'de');
-
-        $locale = $request->get('lang');
-
-        // если язык из URL невалидный → игнорим
-        if (!in_array($locale, $available)) {
-            $locale = session('locale', $default);
-        }
-
-        app()->setLocale($locale);
-        session(['locale' => $locale]);
+        // ❗ НИЧЕГО НЕ ДЕЛАЕМ С LOCALE
+        // Locale полностью управляется через PublicMenuController (restaurant-aware)
 
         return $next($request);
     }

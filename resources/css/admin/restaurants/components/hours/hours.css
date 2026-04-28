@@ -233,6 +233,25 @@
     pointer-events: none;
 }
 
+/* УВЕЛИЧИВАЕМ КНОПКУ В МОДАЛКЕ HOURS */
+.wh-modal__header .btn.small{
+    font-size: 18px;
+    padding: 8px 14px;
+    height: auto;
+    min-width: 40px;
+}
+
+/* КНОПКИ ДЕЙСТВИЙ (Save / Cancel) */
+.wh-modal__actions .btn{
+    font-size: 14px;
+    padding: 10px 16px;
+}
+
+/* КНОПКА SAVE (ok) — делаем чуть выразительнее */
+.wh-modal__actions .btn.ok{
+    font-weight: 600;
+}
+
 @media (max-width: 1024px){
     .wh-modal__row{
         grid-template-columns: minmax(120px, 160px) 60px 1fr;

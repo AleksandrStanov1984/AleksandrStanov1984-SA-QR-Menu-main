@@ -29,7 +29,7 @@
                 <div class="header-carousel__viewport">
                     <div class="header-carousel__track">
 
-                        @foreach($items as $it)
+                        @foreach($items as $index => $it)
                             @php
                                 $image = $img->url($it['image']);
                             @endphp
@@ -49,7 +49,8 @@
                                 <img
                                     src="{{ $image }}"
                                     alt="{{ $it['title'] ?? '' }}"
-                                    loading="lazy"
+                                    loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                                    fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}"
                                     decoding="async"
                                     draggable="false"
                                 >
@@ -59,7 +60,6 @@
                                         {{ $it['title'] ?? '' }}
                                     </div>
 
-                                    {{-- BADGE PRIORITY --}}
                                     @if($sourceConfig)
                                         <div class="header-carousel__badge {{ $sourceConfig['badge_class'] ?? '' }}">
                                             {{ __($sourceConfig['label']) }}

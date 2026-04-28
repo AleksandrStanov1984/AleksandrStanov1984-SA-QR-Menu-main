@@ -283,12 +283,13 @@ select[data-item-meta="spicy"]:focus {
 
 .mb-search {
     position: sticky;
-    top: 0;
-    z-index: 10;
+    top: 10px;
+    z-index: 50;
     background: var(--panel);
     padding: 10px;
     border-radius: 12px;
     margin-bottom: 12px;
+    backdrop-filter: blur(10px);
 }
 
 .mb-search input {

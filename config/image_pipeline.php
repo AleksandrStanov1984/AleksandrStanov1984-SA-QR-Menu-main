@@ -117,7 +117,7 @@ return [
             'match' => 'restaurants/*/banners/*',
             'format' => 'webp',
             'quality' => 86,
-            'sizes' => [1200],
+            'sizes' => [400, 800, 1200],
             'hash_names' => false,
             'keep_source' => false,
         ],

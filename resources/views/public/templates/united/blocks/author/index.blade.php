@@ -15,7 +15,7 @@
 
 <section class="section section--full author-hero">
 
-    <a href="{{ route('restaurant.show', $vm->restaurant->slug) }}?lang={{ request('lang', app()->getLocale()) }}" class="btn-back">
+    <a href="{{ route('restaurant.show', $vm->restaurant->slug) }}?lang={{ $vm->locale }}" class="btn-back">
         ← {{ __('author.back') }}
     </a>
 
@@ -56,8 +56,14 @@
                            rel="noopener"
                            title="{{ ucfirst($social['key']) }}">
 
-                            <img src="{{ $social['icon'] }}"
-                                 alt="{{ ucfirst($social['key']) }}">
+                            <img
+                                src="{{ $social['icon'] }}"
+                                alt="{{ ucfirst($social['key']) }}"
+                                loading="lazy"
+                                decoding="async"
+                                width="24"
+                                height="24"
+                            >
 
                         </a>
 
@@ -77,6 +83,11 @@
                         class="author-hero__avatar"
                         src="{{ $profileSrc }}"
                         alt="{{ $profileAlt }}"
+                        loading="eager"
+                        fetchpriority="high"
+                        decoding="async"
+                        width="220"
+                        height="220"
                     >
                 @endif
 

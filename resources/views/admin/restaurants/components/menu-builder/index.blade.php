@@ -12,7 +12,7 @@
     <input
         type="text"
         id="mbSearchInput"
-        placeholder="Поиск..."
+        placeholder="{{ __('admin.search.placeholder') }}"
         autocomplete="off"
     >
 

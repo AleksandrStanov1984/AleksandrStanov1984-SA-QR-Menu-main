@@ -769,7 +769,9 @@
             let found = [];
 
             all.forEach(el => {
-                if (el.dataset.search.includes(val)) {
+                const searchText = (el.dataset.search || '').toLowerCase();
+
+                if (searchText.includes(val)) {
                     found.push(el);
                 }
             });

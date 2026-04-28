@@ -172,6 +172,49 @@ button[disabled]:hover {
     opacity: 1;
 }
 
+/* ===== STATUS MULTILINE ===== */
+
+.status-label{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    line-height:1.2;
+}
+
+.status-day{
+    font-weight:600;
+}
+
+.status-time{
+    font-size:13px;
+    opacity:0.9;
+}
+
+.status-state{
+    font-size:13px;
+    font-weight:600;
+}
+
+/* ===== STATUS BLOCK FULL WIDTH ===== */
+
+.restaurant-status{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    width:100%;
+    max-width:420px;   /* ← ключ: ограничение ширины */
+    margin:0 auto;     /* центр */
+
+    padding:10px 16px; /* ← больше воздуха */
+    border-radius:99px;
+
+    gap:4px;
+
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
 @media (max-width: 380px){
     .restaurant-status{
         flex-wrap: wrap;
@@ -196,4 +239,39 @@ button[disabled]:hover {
     .restaurant-address span{
         font-size:13px;
     }
+}
+
+@media (max-width: 768px){
+
+    .restaurant-status{
+        width:100%;
+        max-width:100%;
+    }
+
+    .status-label{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:2px;
+        line-height:1.2;
+    }
+
+}
+
+@media (min-width: 1024px){
+
+    .restaurant-status{
+        flex-direction:row;
+        gap:8px;
+        max-width:none;
+        width:auto;
+        padding:6px 12px;
+    }
+
+    .status-label{
+        flex-direction:row !important;
+        align-items:center;
+        gap:6px;
+    }
+
 }

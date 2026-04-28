@@ -21,6 +21,10 @@
 
     @include('public.templates.united.layout.styles')
 
+    @if(!empty($vm->promoBanners))
+        <link rel="preload" as="image" href="{{ $vm->promoBanners[0]['image'] }}">
+    @endif
+
 </head>
 
 <body

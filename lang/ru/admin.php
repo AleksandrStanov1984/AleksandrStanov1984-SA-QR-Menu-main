@@ -6,6 +6,10 @@ return [
     'carousel_saved' => 'Настройки карусели сохранены',
     'carousel_no_items_for_source' => 'К сожалению, нет блюд в категории ":source". Добавьте хотя бы 3 наименования.',
 
+    'search' => [
+        'placeholder' => 'Поиск...',
+    ],
+
     'brand' => 'SA QR Menu — Admin',
 
     'ui' => [

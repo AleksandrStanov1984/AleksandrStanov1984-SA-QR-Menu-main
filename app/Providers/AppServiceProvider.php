@@ -9,24 +9,23 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 
+use App\Models\Item;
+use App\Observers\ItemObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         if (request()->header('x-forwarded-proto') === 'https') {
             URL::forceScheme('https');
         }
+
+        Item::observe(ItemObserver::class);
 
         View::composer('*', function ($view) {
 

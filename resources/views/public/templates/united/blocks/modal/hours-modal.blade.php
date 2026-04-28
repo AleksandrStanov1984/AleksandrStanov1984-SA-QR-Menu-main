@@ -24,7 +24,10 @@
 
             @foreach($vm->hours as $day)
 
-                <div class="hours-row @if($day['today']) hours-today @endif">
+                <div class="hours-row
+    @if($day['today'] && !$day['closed']) hours-today-open @endif
+    @if($day['today'] && $day['closed']) hours-today-closed @endif
+">
 
                     <div class="hours-day">
 

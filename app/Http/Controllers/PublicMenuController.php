@@ -7,6 +7,7 @@ use App\Models\RestaurantToken;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 use App\Support\PublicMenu\TemplateResolver;
 use App\ViewModels\PublicMenu\MenuViewModel;
@@ -19,9 +20,6 @@ class PublicMenuController extends Controller
 
         $restaurant->load([
 
-            // =========================
-            // SECTIONS
-            // =========================
             'sections' => function ($q) {
                 $q->where('is_active', true)
                     ->orderBy('sort_order');
@@ -36,22 +34,13 @@ class PublicMenuController extends Controller
 
             'sections.items.translations',
 
-            // =========================
-            // SOCIAL
-            // =========================
             'socialLinks' => function ($q) {
                 $q->where('is_active', true)
                     ->orderBy('sort_order');
             },
 
-            // =========================
-            // HOURS
-            // =========================
             'hours',
 
-            // =========================
-            // BANNERS
-            // =========================
             'banners' => function ($q) {
                 $q->where('is_active', true)
                     ->orderBy('sort_order')
@@ -59,30 +48,52 @@ class PublicMenuController extends Controller
             },
         ]);
 
+        // LOCALE
         $locale = $this->resolveLocale($request, $restaurant);
 
-        app()->setLocale($locale);
+        // CACHE KEY
+        $cacheKey = "menu:{$restaurant->id}:{$locale}";
 
-        $vm = new MenuViewModel($restaurant, $locale);
+        // CACHE VIEWMODEL
+        $vm = Cache::remember($cacheKey, 300, function () use ($restaurant, $locale) {
+            return new MenuViewModel($restaurant, $locale);
+        });
 
         $view = app(TemplateResolver::class)->resolve($restaurant);
 
-        return view($view, compact('vm'));
+        // HTTP CACHE (30 сек)
+        return response()
+            ->view($view, compact('vm'))
+            ->header('Cache-Control', 'public, max-age=30');
     }
 
     private function resolveLocale(Request $request, Restaurant $restaurant): string
     {
-        $requested = $request->query('lang');
+        $enabled = $restaurant->enabled_locales ?: ['de'];
+        $default = $restaurant->default_locale ?: 'de';
 
-        $default = $restaurant->default_locale ?? 'de';
-
-        if (!$requested) {
-            return $default;
+        if (!in_array($default, $enabled, true)) {
+            $default = $enabled[0] ?? 'de';
         }
 
-        return in_array($requested, ['de', 'en', 'ru'], true)
-            ? $requested
-            : $default;
+        $locale = $request->query('lang')
+            ?? session('public_locale')
+            ?? $request->cookie('menu_locale')
+            ?? $default;
+
+        if (!in_array($locale, $enabled, true)) {
+            $locale = $default;
+
+            session()->forget('public_locale');
+            cookie()->queue(cookie()->forget('menu_locale'));
+        }
+
+        app()->setLocale($locale);
+
+        session(['public_locale' => $locale]);
+        cookie()->queue('menu_locale', $locale, 60 * 24 * 30);
+
+        return $locale;
     }
 
     public function qr(string $token): RedirectResponse

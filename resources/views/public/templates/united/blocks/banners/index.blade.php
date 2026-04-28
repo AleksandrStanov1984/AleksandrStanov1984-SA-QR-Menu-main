@@ -12,7 +12,17 @@
 
                     @foreach($vm->promoBanners as $index => $banner)
                         <div class="banner-item" data-index="{{ $index }}">
-                            <img src="{{ $banner['image'] }}" alt="banner">
+                            <img
+                                src="{{ $banner['image'] }}"
+                                alt="banner"
+
+                                width="1200"
+                                height="600"
+
+                                loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                                fetchpriority="{{ $index === 0 ? 'high' : 'auto' }}"
+                                decoding="async"
+                            >
                         </div>
                     @endforeach
 

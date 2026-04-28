@@ -4,7 +4,14 @@
 
     @if(!empty($vm->branding['logo']))
         <div class="menu-logo">
-            <img src="{{ $vm->branding['logo'] }}" alt="logo">
+            <img
+                src="{{ $vm->branding['logo'] }}"
+                alt="logo"
+                loading="eager"
+                fetchpriority="high"
+                width="120"
+                height="40"
+            >
         </div>
     @endif
 
@@ -50,34 +57,33 @@
                 data-open-modal="hours"
             @endif
         >
-            @if($vm->showStatus)
-                @if($vm->status === 'open')
-                    <i class="ri-checkbox-circle-line"></i>
-                @elseif($vm->status === 'closing_soon')
-                    <i class="ri-alarm-warning-line"></i>
-                @else
-                    <i class="ri-close-circle-line"></i>
-                @endif
-            @endif
 
-            <span id="statusLabel">
-                @if(!empty($today['closed']))
-                    {{ $today['label'] }}
-                @else
-                    {{ $today['label'] }} {{ $today['open'] }} – {{ $today['close'] }}
-                @endif
 
-                @if($vm->showStatus)
-                    •
-                    @if($vm->status === 'open')
-                        {{ __('public.open') }}
-                    @elseif($vm->status === 'closing_soon')
-                        {{ __('public.closing_soon') }}
-                    @else
-                        {{ __('public.closed') }}
+                <span id="statusLabel" class="status-label">
+
+    <span class="status-day">
+        {{ $today['label'] }}
+    </span>
+
+    @if(empty($today['closed']))
+                        <span class="status-time">
+            {{ $today['open'] }} – {{ $today['close'] }}
+        </span>
                     @endif
-                @endif
-            </span>
+
+                    @if($vm->showStatus)
+                        <span class="status-state">
+            @if($vm->status === 'open')
+                                {{ __('public.open') }}
+                            @elseif($vm->status === 'closing_soon')
+                                {{ __('public.closing_soon') }}
+                            @else
+                                {{ __('public.closed') }}
+                            @endif
+        </span>
+                    @endif
+
+</span>
         </button>
     @endif
 

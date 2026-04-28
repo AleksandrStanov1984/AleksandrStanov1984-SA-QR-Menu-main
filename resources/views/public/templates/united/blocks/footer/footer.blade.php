@@ -28,6 +28,8 @@
                             alt="{{ $social['title'] ?? '' }}"
                             loading="lazy"
                             decoding="async"
+                            width="24"
+                            height="24"
                         >
 
                     </a>

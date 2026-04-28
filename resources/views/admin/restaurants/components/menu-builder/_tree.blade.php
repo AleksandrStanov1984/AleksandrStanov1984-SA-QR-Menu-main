@@ -77,6 +77,7 @@
                             data-mb-edit="section"
                             data-mb-open="mbModalCategory"
                             data-section-id="{{ $cat->id }}"
+                            data-search="{{ mb_strtolower($tTitle($cat, $defaultLocale) ?: ('Category '.$cat->id)) }}"
                             data-section-update-url="{{ route('admin.restaurants.sections.update', [$restaurant, $cat]) }}"
                             data-section-titles='@json($cat->translations->pluck("title","locale"))'>
                         {{ __('admin.common.edit') }}
@@ -172,6 +173,7 @@
                                         data-mb-open="mbModalSubcategory"
                                         data-section-id="{{ $sub->id }}"
                                         data-parent-id="{{ $cat->id }}"
+                                        data-search="{{ mb_strtolower($tTitle($sub, $defaultLocale) ?: ('Subcategory '.$sub->id)) }}"
                                         data-section-update-url="{{ route('admin.restaurants.sections.update', [$restaurant, $sub]) }}"
                                         data-section-titles='@json($sub->translations->pluck("title","locale"))'>
                                     {{ __('admin.common.edit') }}

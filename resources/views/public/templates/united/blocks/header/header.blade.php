@@ -13,16 +13,27 @@
             <div class="lang-dropdown">
 
                 <button class="lang-toggle" id="langToggle">
-                    {{ strtoupper(app()->getLocale()) }}
+                    {{ strtoupper($vm->locale) }}
                     <span class="lang-arrow">▾</span>
                 </button>
 
                 <div class="lang-menu" id="langMenu">
 
                     @foreach($vm->locales() as $locale)
-                        <a href="?lang={{ $locale }}">
+
+                        @php
+                            $isActive = $locale === $vm->locale;
+
+                            $url = request()->fullUrlWithQuery([
+                                'lang' => $locale
+                            ]);
+                        @endphp
+
+                        <a href="{{ $url }}"
+                           class="lang-item {{ $isActive ? 'is-active' : '' }}">
                             {{ strtoupper($locale) }}
                         </a>
+
                     @endforeach
 
                 </div>

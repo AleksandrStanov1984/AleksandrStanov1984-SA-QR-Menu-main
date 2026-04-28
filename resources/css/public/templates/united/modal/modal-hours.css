@@ -126,27 +126,6 @@
         border-color .15s ease;
 }
 
-.hours-today{
-    background: rgba(76, 175, 80, 0.10);
-    border:1px solid rgba(76, 175, 80, 0.30);
-    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.12);
-}
-
-.hours-today .hours-day{
-    color: #2e7d32;
-    font-weight:600;
-}
-
-.hours-today .hours-time{
-    color: #388e3c;
-}
-
-.hours-today-label{
-    font-size:13px;
-    margin-left:6px;
-    color:#b6f5c8;
-}
-
 /*
 |--------------------------------------------------------------------------
 | DAY / TIME
@@ -175,4 +154,36 @@
     font-size:13px;
     color:var(--text-muted);
     margin-left:6px;
+}
+
+/* ===== TODAY OPEN ===== */
+.hours-today-open{
+    background: rgba(76, 175, 80, 0.10);
+    border:1px solid rgba(76, 175, 80, 0.30);
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.12);
+}
+
+.hours-today-open .hours-day{
+    color: #2e7d32;
+    font-weight:600;
+}
+
+.hours-today-open .hours-time{
+    color: #388e3c;
+}
+
+/* ===== TODAY CLOSED ===== */
+.hours-today-closed{
+    background: rgba(244, 67, 54, 0.10);
+    border:1px solid rgba(244, 67, 54, 0.35);
+    box-shadow: 0 4px 10px rgba(244, 67, 54, 0.12);
+}
+
+.hours-today-closed .hours-day{
+    color: #c62828;
+    font-weight:600;
+}
+
+.hours-today-closed .hours-time{
+    color: #d32f2f;
 }

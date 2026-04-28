@@ -27,7 +27,6 @@
 <div
     class="{{ implode(' ', $classes) }}"
     id="item-{{ $item['id'] }}"
-    class="{{ implode(' ', $classes) }}"
     data-search="{{ mb_strtolower(($item['title'] ?? '') ) }}"
     data-type="item"
     data-id="{{ $item['id'] }}"
@@ -50,10 +49,12 @@
         <div class="menu-item-media">
             <img
                 src="{{ $item['image'] }}"
-                alt="{{ $item['title'] ?? '' }}"
+                alt="{{ $item['title'] }}"
                 class="menu-item-image {{ !$hasImage ? 'is-fallback' : '' }}"
                 loading="lazy"
                 decoding="async"
+                width="300"
+                height="300"
             >
         </div>
     @endif

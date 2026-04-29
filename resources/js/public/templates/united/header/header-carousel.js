@@ -17,6 +17,7 @@ export function initHeaderCarousel() {
         let isDown = false;
         let startX = 0;
         let startScrollLeft = 0;
+        let moved = false;
 
         const step = () => Math.max(track.clientWidth * 0.82, 220);
 
@@ -43,12 +44,70 @@ export function initHeaderCarousel() {
         }
 
         track.addEventListener('wheel', (e) => {
-            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            const isVertical = Math.abs(e.deltaY) > Math.abs(e.deltaX);
+
+            if (isVertical) {
                 e.preventDefault();
-                track.scrollLeft += e.deltaY;
+
+                const horizontalDelta = e.deltaY;
+
+                track.scrollBy({
+                    left: horizontalDelta,
+                    behavior: 'auto'
+                });
             }
         }, { passive: false });
 
+        // =========================
+        // POINTER EVENTS (NEW)
+        // =========================
+        track.addEventListener('pointerdown', (e) => {
+            isDown = true;
+            moved = false;
+
+            startX = e.clientX;
+            startScrollLeft = track.scrollLeft;
+
+            try { track.setPointerCapture(e.pointerId); } catch {}
+            track.classList.add('is-dragging');
+        });
+
+        track.addEventListener('pointermove', (e) => {
+            if (!isDown) return;
+
+            const dx = e.clientX - startX;
+
+            if (Math.abs(dx) > 5) {
+                moved = true;
+            }
+
+            if (moved) {
+                track.scrollLeft = startScrollLeft - dx;
+            }
+        });
+
+        track.addEventListener('pointerup', (e) => {
+            isDown = false;
+            try { track.releasePointerCapture(e.pointerId); } catch {}
+            track.classList.remove('is-dragging');
+        });
+
+        track.addEventListener('pointercancel', () => {
+            isDown = false;
+            track.classList.remove('is-dragging');
+        });
+
+        // 🔥 не даём ложный клик после свайпа
+        track.addEventListener('click', (e) => {
+            if (moved) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+        // =========================
+        // OLD MOUSE (НЕ ТРОГАЕМ)
+        // =========================
         track.addEventListener('mousedown', (e) => {
             if (e.target.closest('[data-open-modal]')) {
             }

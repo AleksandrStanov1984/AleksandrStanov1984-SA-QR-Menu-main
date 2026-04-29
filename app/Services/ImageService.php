@@ -47,7 +47,7 @@ class ImageService
 
         $full = public_path('assets/' . $path);
 
-        // SVG — удаляем напрямую
+        // SVG
         if (str_ends_with($full, '.svg')) {
             if (File::exists($full)) {
                 File::delete($full);
@@ -65,6 +65,33 @@ class ImageService
 
         if (File::exists($retina)) {
             File::delete($retina);
+        }
+
+        $this->deleteVariants($full);
+    }
+
+    protected function deleteVariants(string $fullPath): void
+    {
+        $dir  = dirname($fullPath);
+        $name = pathinfo($fullPath, PATHINFO_FILENAME);
+
+        $base = preg_replace('/(@2x|\-\d+)$/', '', $name);
+
+        $variants = glob($dir . '/' . $base . '-*.webp');
+
+        if (!$variants) return;
+
+        foreach ($variants as $file) {
+
+            if (File::exists($file)) {
+                File::delete($file);
+            }
+
+            $retina = str_replace('.webp', '@2x.webp', $file);
+
+            if (File::exists($retina)) {
+                File::delete($retina);
+            }
         }
     }
 

@@ -1,6 +1,9 @@
 <?php
 
 return [
+
+    'impressum' => 'Impressum',
+    'datenschutz' => 'Datenschutz',
     'brand' => 'SA QR Menu — Admin',
 
     'ui' => [

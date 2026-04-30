@@ -1,3 +1,4 @@
+{{-- resources/views/public/templates/united/layout/app.blade.php --}}
 @include('public.templates.united.layout.styles')
 
 @php

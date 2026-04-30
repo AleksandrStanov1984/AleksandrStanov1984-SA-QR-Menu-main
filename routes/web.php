@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\MenuBuilderController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\MenuImportController;
 use App\Http\Controllers\Admin\RestaurantQrController;
+use App\Http\Controllers\PlatformLegalController;
 
 use App\Http\Controllers\Public\AuthorController;
 
@@ -51,6 +52,12 @@ Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve'
 
 Route::get('/author/{restaurant}', [AuthorController::class, 'index'])
     ->name('author');
+
+Route::get('/legal/impressum', [PlatformLegalController::class, 'impressum'])
+    ->name('platform.legal.impressum');
+
+Route::get('/legal/datenschutz', [PlatformLegalController::class, 'datenschutz'])
+    ->name('platform.legal.datenschutz');
 
 Route::get('/r/{restaurant:slug}/impressum', [PublicMenuController::class, 'impressum'])
     ->name('legal.impressum');

@@ -99,8 +99,10 @@ class PublicMenuController extends Controller
     {
         $vm = $this->buildVm($request, $restaurant);
 
+        $legal = $this->buildLegal('impressum', $restaurant);
+
         return response()
-            ->view('legal.impressum', compact('vm'))
+            ->view('legal.impressum', compact('vm', 'legal'))
             ->header('Cache-Control', 'public, max-age=30');
     }
 
@@ -108,8 +110,53 @@ class PublicMenuController extends Controller
     {
         $vm = $this->buildVm($request, $restaurant);
 
+        $legal = $this->buildLegal('datenschutz', $restaurant);
+
         return response()
-            ->view('legal.datenschutz', compact('vm'))
+            ->view('legal.datenschutz', compact('vm', 'legal'))
             ->header('Cache-Control', 'public, max-age=30');
+    }
+
+    private function buildLegal(string $type, Restaurant $restaurant): array
+    {
+        $data = trans("legal.{$type}");
+
+        $search = [
+            ':owner_name',
+            ':owner_address_line_1',
+            ':owner_address_line_2',
+            ':owner_country',
+            ':owner_email',
+            ':owner_phone',
+        ];
+
+        $replace = [
+            e($restaurant->contact_name),
+            e($restaurant->street . ' ' . $restaurant->house_number),
+            e($restaurant->postal_code . ' ' . $restaurant->city),
+            'Germany',
+            e($restaurant->contact_email),
+            e($restaurant->phone),
+        ];
+
+        array_walk_recursive($data, function (&$value) use ($search, $replace) {
+            $value = str_replace($search, $replace, $value);
+
+            // mailto fix
+            $value = str_replace(
+                'mailto::owner_email',
+                'mailto:' . e($replace[4]),
+                $value
+            );
+
+            // tel fix
+            $value = str_replace(
+                'tel::owner_phone',
+                'tel:' . preg_replace('/\s+/', '', $replace[5]),
+                $value
+            );
+        });
+
+        return $data;
     }
 }

@@ -1,6 +1,10 @@
 <?php
 
 return [
+
+    'impressum' => 'Импрессум',
+    'datenschutz' => 'Конфиденциальность',
+
     'choose_file' => 'Выбрать файл',
     'carousel_settings' => 'Настройки карусели',
     'carousel_saved' => 'Настройки карусели сохранены',

@@ -165,7 +165,6 @@ class ImageService
 
         $path = ltrim($path, '/');
 
-        // 🔥 1. если уже есть размер → не трогаем
         if (preg_match('/-\d+\.webp$/', $path)) {
             if (!str_starts_with($path, 'assets/')) {
                 $path = 'assets/' . $path;
@@ -173,7 +172,6 @@ class ImageService
             return '/' . $path;
         }
 
-        // 🔥 2. нормализуем путь
         if (!str_starts_with($path, 'assets/')) {
             $path = 'assets/' . $path;
         }
@@ -182,7 +180,6 @@ class ImageService
         $dir = dirname($base);
         $filename = basename($base);
 
-        // 🔥 3. ищем ВСЕ доступные размеры
         $pattern = public_path($dir . '/' . $filename . '-*.webp');
         $files = glob($pattern);
 
@@ -190,7 +187,6 @@ class ImageService
             return '/assets/' . ltrim($fallback, '/');
         }
 
-        // 🔥 4. вытаскиваем размеры
         $variants = [];
 
         foreach ($files as $file) {
@@ -203,11 +199,8 @@ class ImageService
             return '/assets/' . ltrim($fallback, '/');
         }
 
-        ksort($variants); // сортировка по размеру
+        ksort($variants);
 
-        // 🔥 5. выбор размера
-
-        // если передан preferred → ищем ближайший
         if ($preferredSize) {
 
             $closest = null;
@@ -225,7 +218,6 @@ class ImageService
             return $this->toPublicUrl($closest);
         }
 
-        // 🔥 6. если размер не задан → берём средний (оптимальный)
         $sizes = array_keys($variants);
         $middle = $sizes[(int) floor(count($sizes) / 2)];
 
@@ -331,5 +323,12 @@ class ImageService
         }
 
         return '/assets/' . ltrim($fallback, '/');
+    }
+
+    public function authorProfile(): string
+    {
+        $path = config('author.profile_image');
+
+        return $this->logo($path);
     }
 }

@@ -16,52 +16,10 @@ class PublicMenuController extends Controller
 {
     public function show(Request $request, Restaurant $restaurant)
     {
-        abort_unless($restaurant->is_active, 404);
-
-        $restaurant->load([
-
-            'sections' => function ($q) {
-                $q->where('is_active', true)
-                    ->orderBy('sort_order');
-            },
-
-            'sections.translations',
-
-            'sections.items' => function ($q) {
-                $q->where('is_active', true)
-                    ->orderBy('sort_order');
-            },
-
-            'sections.items.translations',
-
-            'socialLinks' => function ($q) {
-                $q->where('is_active', true)
-                    ->orderBy('sort_order');
-            },
-
-            'hours',
-
-            'banners' => function ($q) {
-                $q->where('is_active', true)
-                    ->orderBy('sort_order')
-                    ->limit(5);
-            },
-        ]);
-
-        // LOCALE
-        $locale = $this->resolveLocale($request, $restaurant);
-
-        // CACHE KEY
-        $cacheKey = "menu:{$restaurant->id}:{$locale}";
-
-        // CACHE VIEWMODEL
-        $vm = Cache::remember($cacheKey, 300, function () use ($restaurant, $locale) {
-            return new MenuViewModel($restaurant, $locale);
-        });
+        $vm = $this->buildVm($request, $restaurant);
 
         $view = app(TemplateResolver::class)->resolve($restaurant);
 
-        // HTTP CACHE (30 сек)
         return response()
             ->view($view, compact('vm'))
             ->header('Cache-Control', 'public, max-age=30');
@@ -107,5 +65,51 @@ class PublicMenuController extends Controller
         return redirect()->to(
             route('restaurant.show', $restaurant->slug, false)
         );
+    }
+
+    protected function buildVm(Request $request, Restaurant $restaurant): MenuViewModel
+    {
+        abort_unless($restaurant->is_active, 404);
+
+        $restaurant->load([
+
+            'sections' => fn($q) => $q->where('is_active', true)->orderBy('sort_order'),
+            'sections.translations',
+
+            'sections.items' => fn($q) => $q->where('is_active', true)->orderBy('sort_order'),
+            'sections.items.translations',
+
+            'socialLinks' => fn($q) => $q->where('is_active', true)->orderBy('sort_order'),
+
+            'hours',
+
+            'banners' => fn($q) => $q->where('is_active', true)->orderBy('sort_order')->limit(5),
+        ]);
+
+        $locale = $this->resolveLocale($request, $restaurant);
+
+        $cacheKey = "menu:{$restaurant->id}:{$locale}";
+
+        return Cache::remember($cacheKey, 300, function () use ($restaurant, $locale) {
+            return new MenuViewModel($restaurant, $locale);
+        });
+    }
+
+    public function impressum(Request $request, Restaurant $restaurant)
+    {
+        $vm = $this->buildVm($request, $restaurant);
+
+        return response()
+            ->view('legal.impressum', compact('vm'))
+            ->header('Cache-Control', 'public, max-age=30');
+    }
+
+    public function datenschutz(Request $request, Restaurant $restaurant)
+    {
+        $vm = $this->buildVm($request, $restaurant);
+
+        return response()
+            ->view('legal.datenschutz', compact('vm'))
+            ->header('Cache-Control', 'public, max-age=30');
     }
 }

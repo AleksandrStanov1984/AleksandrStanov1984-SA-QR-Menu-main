@@ -29,6 +29,8 @@ use App\Http\Controllers\Admin\RestaurantQrController;
 
 use App\Http\Controllers\Public\AuthorController;
 
+use App\ViewModels\PublicMenu\MenuViewModel;
+
 //Route::post('/debug-csrf', function () {
 //    return [
 //        'session_id' => session()->getId(),
@@ -40,14 +42,21 @@ use App\Http\Controllers\Public\AuthorController;
 
 Route::get('/', fn () => redirect()->route('admin.home'));
 
-Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])->name('restaurant.show');
-
-Route::get('/author/{restaurant}', [AuthorController::class, 'index'])
-    ->name('author');
+Route::get('/r/{restaurant:slug}', [PublicMenuController::class, 'show'])
+    ->name('restaurant.show');
 
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
 
 Route::get('/q/{token}', [PublicMenuController::class, 'qr'])->name('qr.resolve');
+
+Route::get('/author/{restaurant}', [AuthorController::class, 'index'])
+    ->name('author');
+
+Route::get('/r/{restaurant:slug}/impressum', [PublicMenuController::class, 'impressum'])
+    ->name('legal.impressum');
+
+Route::get('/r/{restaurant:slug}/datenschutz', [PublicMenuController::class, 'datenschutz'])
+    ->name('legal.datenschutz');
 
 Route::post('/locale', function () {
     $locale = request('locale');

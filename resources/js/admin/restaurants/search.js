@@ -1,3 +1,4 @@
+// resources/js/admin/restaurants/search.js
 document.addEventListener('DOMContentLoaded', () => {
 
     const input = document.getElementById('restaurantSearch');

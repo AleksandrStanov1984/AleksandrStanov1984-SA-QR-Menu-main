@@ -17,17 +17,30 @@ return [
 
         'location_label' => 'Standort:',
         'location' => '78628 Rottweil, Baden-Württemberg',
+
         'email_label' => 'E-Mail:',
         'email' => 'aleksstanov84@gmail.com',
+
         'phone_label' => 'Telefon:',
         'phone' => '+49 173 5141827',
         'phone_raw' => '+491735141827',
+
+        'whatsapp_label' => 'WhatsApp:',
+        'whatsapp' => '+380 68 884 2621',
+        'whatsapp_url' => 'https://wa.me/380688842621',
+
         'github_label' => 'GitHub:',
         'github' => 'github.com/AleksandrStanov1984',
         'github_url' => 'https://github.com/AleksandrStanov1984',
+
         'linkedin_label' => 'LinkedIn:',
         'linkedin' => 'LinkedIn-Profil',
-        'linkedin_url' => 'https://www.linkedin.com/',
+        'linkedin_url' => 'https://www.linkedin.com/in/oleksandr-stanov-b21ab8181/',
+
+        'telegram_label' => 'Telegram:',
+        'telegram' => '@aleksstanov',
+        'telegram_url' => 'https://t.me/aleksstanov',
+
         'langs_label' => 'Sprachen:',
         'langs' => 'Deutsch, Englisch, Russisch, Ukrainisch',
     ],

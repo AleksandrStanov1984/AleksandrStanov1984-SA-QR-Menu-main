@@ -9,6 +9,8 @@
 */
 @import "./admin/index.css";
 
+@import './common/legal.css';
+
 /*
 |--------------------------------------------------------------------------
 | TAILWIND SOURCES

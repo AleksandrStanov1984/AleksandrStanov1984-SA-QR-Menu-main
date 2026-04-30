@@ -142,4 +142,28 @@ class Restaurant extends Model
             ->where('is_active', true)
             ->orderBy('sort_order');
     }
+
+    public function merchant(): object
+    {
+        $streetLine = trim(implode(' ', array_filter([
+            $this->street,
+            $this->house_number,
+        ])));
+
+        $cityLine = trim(implode(' ', array_filter([
+            $this->postal_code,
+            $this->city,
+        ])));
+
+        $address = trim(implode(', ', array_filter([
+            $streetLine,
+            $cityLine,
+        ])));
+
+        return (object) [
+            'name' => $this->name,
+            'address' => $address,
+            'map_url' => 'https://maps.google.com/?q=' . urlencode($address),
+        ];
+    }
 }

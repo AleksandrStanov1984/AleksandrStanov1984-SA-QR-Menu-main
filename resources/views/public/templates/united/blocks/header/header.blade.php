@@ -40,9 +40,11 @@
 
             </div>
 
-            <button id="drawerOpen" class="drawer-btn">
-                <i class="ri-menu-line"></i>
-            </button>
+            @if(empty($isLegalPage))
+                <button id="drawerOpen" class="drawer-btn">
+                    <i class="ri-menu-line"></i>
+                </button>
+            @endif
 
         </div>
 

@@ -51,6 +51,7 @@
 
         <div class="footer-bottom__inner">
 
+            {{-- LEFT --}}
             <div class="footer-bottom__left">
 
                 <span>© {{ date('Y') }}</span>
@@ -60,10 +61,36 @@
                 <span>{{ __('footer.crafted_by') }}</span>
 
                 <a href="{{ route('author', [
-                    'restaurant' => $vm->restaurant,
-                    'locale' => app()->getLocale() ]) }}"
+            'restaurant' => $vm->restaurant,
+            'locale' => app()->getLocale()
+        ]) }}"
                    class="footer-author-badge">
                     {{ __('footer.author') }}
+                </a>
+
+            </div>
+
+            {{-- RIGHT (LEGAL) --}}
+            <div class="footer-bottom__right">
+
+                <a href="{{ route('legal.impressum', [
+                    'restaurant' => $vm->restaurant,
+                    'locale' => app()->getLocale()
+                    ]) }}"
+                   target="_blank"
+                   rel="noopener">
+                    {{ __('legal.nav.impressum') }}
+                </a>
+
+                <span class="dot">•</span>
+
+                <a href="{{ route('legal.datenschutz', [
+                    'restaurant' => $vm->restaurant,
+                    'locale' => app()->getLocale()
+                    ]) }}"
+                   target="_blank"
+                   rel="noopener">
+                    {{ __('legal.nav.datenschutz') }}
                 </a>
 
             </div>

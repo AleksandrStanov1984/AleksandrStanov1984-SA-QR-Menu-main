@@ -85,26 +85,7 @@ class MenuViewModel
 
         $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
 
-        $streetLine = trim(implode(' ', array_filter([
-            $restaurant->street,
-            $restaurant->house_number,
-        ])));
-
-        $cityLine = trim(implode(' ', array_filter([
-            $restaurant->postal_code,
-            $restaurant->city,
-        ])));
-
-        $address = trim(implode(', ', array_filter([
-            $streetLine,
-            $cityLine,
-        ])));
-
-        $this->merchant = (object) [
-            'name' => $restaurant->name,
-            'address' => $address,
-            'map_url' => 'https://maps.google.com/?q=' . urlencode($address),
-        ];
+        $this->merchant = $restaurant->merchant();
 
         $this->branding = [
             'logo' => !empty($restaurant->logo_path)

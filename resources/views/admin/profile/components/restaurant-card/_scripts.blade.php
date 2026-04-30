@@ -1,3 +1,4 @@
+{{-- resources/views/admin/profile/components/restaurant-card/_scripts.blade.php --}}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 

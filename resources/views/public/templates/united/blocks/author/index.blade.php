@@ -1,18 +1,5 @@
 {{-- resources/views/public/templates/united/blocks/author/index.blade.php --}}
 
-@php
-    $profileSrc = is_array($profileImage)
-        ? ($profileImage['src'] ?? null)
-        : $profileImage;
-
-    $profileAlt = is_array($profileImage)
-        ? ($profileImage['alt'] ?? __('author.hero.photo_alt'))
-        : __('author.hero.photo_alt');
-
-    $icons = $icons ?? [];
-    $links = $links ?? [];
-@endphp
-
 <section class="section section--full author-hero">
 
     <a href="{{ route('restaurant.show', $vm->restaurant->slug) }}?lang={{ $vm->locale }}" class="btn-back">
@@ -46,30 +33,33 @@
                 </div>
 
                 {{-- SOCIAL --}}
-                <div class="author-hero__socials">
+                @if(!empty($authorVm->socials))
+                    <div class="author-hero__socials">
 
-                    @foreach($socials ?? [] as $social)
+                        @foreach($authorVm->socials as $social)
 
-                        <a class="author-hero__social"
-                           href="{{ $social['url'] }}"
-                           target="_blank"
-                           rel="noopener"
-                           title="{{ ucfirst($social['key']) }}">
+                            <a class="author-hero__social"
+                               href="{{ $social['url'] }}"
+                               target="_blank"
+                               rel="noopener"
+                               title="{{ $social['key'] }}">
 
-                            <img
-                                src="{{ $social['icon'] }}"
-                                alt="{{ ucfirst($social['key']) }}"
-                                loading="lazy"
-                                decoding="async"
-                                width="24"
-                                height="24"
-                            >
+                                <img
+                                    class="author-hero__social-icon"
+                                    src="{{ $social['icon'] }}"
+                                    alt="{{ $social['key'] }}"
+                                    loading="lazy"
+                                    decoding="async"
+                                    width="24"
+                                    height="24"
+                                >
 
-                        </a>
+                            </a>
 
-                    @endforeach
+                        @endforeach
 
-                </div>
+                    </div>
+                @endif
 
             </div>
 
@@ -78,11 +68,11 @@
 
                 <div class="author-hero__ring"></div>
 
-                @if($profileSrc)
+                @if($authorVm->profileImage)
                     <img
                         class="author-hero__avatar"
-                        src="{{ $profileSrc }}"
-                        alt="{{ $profileAlt }}"
+                        src="{{ $authorVm->profileImage }}"
+                        alt="{{ $authorVm->profileAlt }}"
                         loading="eager"
                         fetchpriority="high"
                         decoding="async"

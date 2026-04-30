@@ -11,6 +11,8 @@
 
 @import "./public/author/author.css";
 
+@import './common/legal.css';
+
 /*
 |--------------------------------------------------------------------------
 | TAILWIND SOURCES

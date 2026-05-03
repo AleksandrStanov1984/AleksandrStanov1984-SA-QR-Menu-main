@@ -39,6 +39,10 @@ class StoreSubcategoryRequest extends FormRequest
 
             'title' => ['required', 'array'],
 
+            // POSITION
+            'position_mode' => ['nullable', 'in:start,end,before,after'],
+            'target_id' => ['nullable', 'integer', 'exists:sections,id'],
+
             'title.*' => [
                 'nullable',
                 'string',
@@ -53,6 +57,9 @@ class StoreSubcategoryRequest extends FormRequest
     {
         $validator->after(function ($v) {
 
+            // =========================
+            // VALIDATE PARENT
+            // =========================
             $parentId = (int) $this->input('parent_id');
             $parent = Section::query()->find($parentId);
 
@@ -60,6 +67,7 @@ class StoreSubcategoryRequest extends FormRequest
                 return;
             }
 
+            // parent должен быть CATEGORY
             if (!is_null($parent->parent_id)) {
                 $v->errors()->add(
                     'parent_id',
@@ -67,9 +75,14 @@ class StoreSubcategoryRequest extends FormRequest
                 );
             }
 
+            // =========================
+            // TITLE CHECK
+            // =========================
             $titles = $this->input('title', []);
 
-            $hasAny = collect($titles)->filter(fn($t) => !empty(trim($t)))->isNotEmpty();
+            $hasAny = collect($titles)
+                ->filter(fn($t) => !empty(trim($t)))
+                ->isNotEmpty();
 
             if (!$hasAny) {
                 $v->errors()->add(
@@ -77,6 +90,20 @@ class StoreSubcategoryRequest extends FormRequest
                     __('admin.validation.title_required')
                 );
             }
+
+            // =========================
+            // POSITION VALIDATION
+            // =========================
+            $mode = $this->input('position_mode');
+            $target = $this->input('target_id');
+
+            if (in_array($mode, ['before', 'after'], true) && !$target) {
+                $v->errors()->add(
+                    'target_id',
+                    __('admin.position.target_required')
+                );
+            }
+
         });
     }
 }

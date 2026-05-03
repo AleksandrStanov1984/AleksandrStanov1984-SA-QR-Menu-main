@@ -36,6 +36,9 @@ class StoreCategoryRequest extends FormRequest
         return [
             'title' => ['required', 'array'],
 
+            'position_mode' => ['nullable', 'in:start,end,before,after'],
+            'target_id' => ['nullable', 'integer', 'exists:sections,id'],
+
             'title.*' => [
                 'nullable',
                 'string',
@@ -50,6 +53,9 @@ class StoreCategoryRequest extends FormRequest
     {
         $validator->after(function ($v) {
 
+            // =========================
+            // TITLE CHECK
+            // =========================
             $titles = $this->input('title', []);
 
             $hasAny = collect($titles)
@@ -62,6 +68,20 @@ class StoreCategoryRequest extends FormRequest
                     __('admin.validation.title_required')
                 );
             }
+
+            // =========================
+            // POSITION VALIDATION
+            // =========================
+            $mode = $this->input('position_mode');
+            $target = $this->input('target_id');
+
+            if (in_array($mode, ['before', 'after'], true) && !$target) {
+                $v->errors()->add(
+                    'target_id',
+                    __('admin.position.target_required')
+                );
+            }
+
         });
     }
 }

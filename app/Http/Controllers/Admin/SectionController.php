@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\TenantAccessException;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\Item;
 
+use App\Services\SectionPositionService\SectionPositionService;
+
 use App\Support\Guards\AccessGuardTrait;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,21 +35,66 @@ class SectionController extends Controller
         }
 
         $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'parent_id' => ['nullable', 'exists:sections,id'],
+            'title'         => ['required', 'string', 'max:255'],
+            'parent_id'     => ['nullable', 'integer'],
+            'position_mode' => ['nullable', 'in:keep,start,end,before,after'],
+            'target_id'     => ['nullable', 'integer'],
         ]);
+
+        $parentId = $data['parent_id'] ?? null;
+
+        if ($parentId) {
+            $parent = Section::query()
+                ->where('restaurant_id', $restaurant->id)
+                ->whereKey($parentId)
+                ->first();
+
+            if (!$parent) {
+                throw new TenantAccessException(__('admin.errors.not_found'));
+            }
+        }
 
         $section = Section::create([
             'restaurant_id' => $restaurant->id,
-            'parent_id' => $data['parent_id'] ?? null,
-            'sort_order' => 0,
-            'is_active' => true,
+            'parent_id'     => $parentId,
+            'sort_order'    => 9999,
+            'is_active'     => true,
         ]);
 
         $section->translations()->create([
             'locale' => $restaurant->default_locale ?? 'de',
-            'title' => $data['title'],
+            'title'  => $data['title'],
         ]);
+
+        // =========================
+        // POSITION
+        // =========================
+        $mode = $data['position_mode'] ?? 'end';
+        $targetId = $data['target_id'] ?? null;
+
+        if (in_array($mode, ['before', 'after'], true) && !$targetId) {
+            return back()->withErrors([
+                'position' => __('admin.validation.target_required')
+            ]);
+        }
+
+        if ($targetId) {
+            $target = Section::query()
+                ->where('restaurant_id', $restaurant->id)
+                ->where('parent_id', $parentId)
+                ->whereKey($targetId)
+                ->first();
+
+            if (!$target) {
+                throw new TenantAccessException(__('admin.errors.not_found'));
+            }
+        }
+
+        app(SectionPositionService::class)->apply(
+            section: $section,
+            mode: $mode,
+            targetId: $targetId
+        );
 
         return redirect()
             ->back()
@@ -99,20 +148,34 @@ class SectionController extends Controller
         }
 
         $data = $request->validate([
-            'is_active'   => ['nullable', 'boolean'],
-            'title_font'  => ['nullable', 'string', 'max:50'],
-            'title_color' => ['nullable', 'regex:/^#([A-Fa-f0-9]{6})$/'],
-            'title'       => ['nullable', 'array'],
+            'is_active'     => ['nullable', 'boolean'],
+            'position_mode' => ['nullable', 'in:keep,start,end,before,after'],
+            'target_id'     => ['nullable', 'integer'],
+            'title_font'    => ['nullable', 'string', 'max:50'],
+            'title_color'   => ['nullable', 'regex:/^#([A-Fa-f0-9]{6})$/'],
+            'title'         => ['nullable', 'array'],
         ]);
 
+        // =========================
+        // SIMPLE FIELDS
+        // =========================
         if (array_key_exists('is_active', $data)) {
             $section->is_active = (bool)$data['is_active'];
         }
 
-        $section->title_font  = $data['title_font'] ?? $section->title_font;
-        $section->title_color = $data['title_color'] ?? $section->title_color;
+        if (array_key_exists('title_font', $data)) {
+            $section->title_font = $data['title_font'];
+        }
+
+        if (array_key_exists('title_color', $data)) {
+            $section->title_color = $data['title_color'];
+        }
+
         $section->save();
 
+        // =========================
+        // TRANSLATIONS
+        // =========================
         if (!empty($data['title']) && is_array($data['title'])) {
 
             $locales = $restaurant->enabled_locales ?: ['de'];
@@ -133,6 +196,40 @@ class SectionController extends Controller
                     ['title' => $title]
                 );
             }
+        }
+
+        // =========================
+        // POSITION SAFE
+        // =========================
+        $mode = $data['position_mode'] ?? null;
+
+        if ($mode && $mode !== 'keep') {
+
+            $targetId = $data['target_id'] ?? null;
+
+            if (in_array($mode, ['before', 'after'], true) && !$targetId) {
+                return back()->withErrors([
+                    'position' => __('admin.validation.target_required')
+                ]);
+            }
+
+            if ($targetId) {
+                $target = Section::query()
+                    ->where('restaurant_id', $restaurant->id)
+                    ->where('parent_id', $section->parent_id)
+                    ->whereKey($targetId)
+                    ->first();
+
+                if (!$target) {
+                    throw new TenantAccessException(__('admin.errors.not_found'));
+                }
+            }
+
+            app(SectionPositionService::class)->apply(
+                section: $section,
+                mode: $mode,
+                targetId: $targetId
+            );
         }
 
         return back()->with('status', __('admin.common.saving'));

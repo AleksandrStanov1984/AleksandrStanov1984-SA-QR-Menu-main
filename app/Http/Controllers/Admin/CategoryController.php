@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\TenantAccessException;
+
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreCategoryRequest;
+
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
-use App\Http\Requests\Admin\StoreCategoryRequest;
+
+use App\Services\SectionPositionService\SectionPositionService;
+
 use App\Support\Guards\AccessGuardTrait;
 use App\Support\Permissions;
 
@@ -26,6 +31,11 @@ class CategoryController extends Controller
             return $resp;
         }
 
+        $data = $request->validated();
+
+        // =========================
+        // LOCALES
+        // =========================
         $locales = $restaurant->enabled_locales ?: ['de'];
         $defaultLocale = $restaurant->default_locale ?: 'de';
 
@@ -33,25 +43,24 @@ class CategoryController extends Controller
             $defaultLocale = $locales[0] ?? 'de';
         }
 
-        $data = $request->validated();
         $titles = $data['title'] ?? [];
 
-        $lastSort = Section::where('restaurant_id', $restaurant->id)
-            ->whereNull('parent_id')
-            ->max('sort_order');
-
-        $nextSort = $lastSort ? $lastSort + 1 : 1;
-
+        // =========================
+        // CREATE
+        // =========================
         $section = Section::create([
             'restaurant_id' => $restaurant->id,
             'parent_id'     => null,
             'type'          => 'category',
-            'sort_order'    => $nextSort,
+            'sort_order'    => 9999, // важно для PositionService
             'is_active'     => (bool)($data['is_active'] ?? true),
             'title_font'    => $data['title_font'] ?? null,
             'title_color'   => $data['title_color'] ?? null,
         ]);
 
+        // =========================
+        // TRANSLATIONS
+        // =========================
         $translations = [];
 
         foreach ($locales as $loc) {
@@ -70,6 +79,21 @@ class CategoryController extends Controller
 
         SectionTranslation::insert($translations);
 
+        // =========================
+        // POSITION LOGIC
+        // =========================
+        $mode = $data['position_mode'] ?? 'end';
+        $targetId = $data['target_id'] ?? null;
+
+        app(SectionPositionService::class)->apply(
+            section: $section,
+            mode: $mode,
+            targetId: $targetId
+        );
+
+        // =========================
+        // RESPONSE
+        // =========================
         return redirect()
             ->back()
             ->with('status', __('admin.sections.categories.created'))

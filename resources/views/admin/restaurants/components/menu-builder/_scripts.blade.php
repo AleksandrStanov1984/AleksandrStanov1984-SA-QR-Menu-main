@@ -822,6 +822,8 @@
                 mbResults.style.display = 'none';
             }
         });
+
+
     }
 
     window.addEventListener('load', () => {
@@ -867,6 +869,168 @@
         }, 100);
 
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // =========================
+        // HELPERS
+        // =========================
+        function setUiSelectValue(select, value, label) {
+            if (!select) return;
+
+            const input = select.querySelector('input[type="hidden"]');
+            const btn = select.querySelector('.ui-select-btn');
+            const options = select.querySelectorAll('.ui-select-option');
+
+            if (input) input.value = value || '';
+            if (btn) btn.textContent = label || '—';
+
+            options.forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.value === value);
+            });
+        }
+
+        function updatePositionState(modal) {
+            if (!modal) return;
+
+            const positionSelect = modal.querySelector('[data-name="position_mode"]');
+            const positionInput = positionSelect?.querySelector('input[type="hidden"]');
+            const targetWrap = modal.querySelector('[id$="TargetWrap"]');
+            const targetInput = modal.querySelector('[data-name="target_id"] input[type="hidden"]');
+            const error = modal.querySelector('.mb-position-error');
+            const submit = modal.querySelector('button[type="submit"]');
+
+            if (!positionInput || !submit) return;
+
+            const mode = positionInput.value;
+            const needsTarget = mode === 'before' || mode === 'after';
+
+            if (targetWrap) {
+                targetWrap.style.display = needsTarget ? 'block' : 'none';
+            }
+
+            const invalid = needsTarget && !targetInput?.value;
+
+            submit.disabled = invalid;
+
+            if (error) {
+                error.style.display = invalid ? 'block' : 'none';
+            }
+        }
+
+        // =========================
+        // UI SELECT CLICK
+        // =========================
+        document.addEventListener('click', function (e) {
+
+            const opt = e.target.closest('.ui-select-option');
+            if (!opt) return;
+
+            const select = opt.closest('.ui-select');
+            if (!select) return;
+
+            const value = opt.dataset.value || '';
+            const label = opt.textContent.trim();
+
+            setUiSelectValue(select, value, label);
+
+            const modal = select.closest('.modal');
+            updatePositionState(modal);
+        });
+
+        // =========================
+        // SUBCATEGORY OPEN
+        // =========================
+        document.querySelectorAll('[data-mb-open="mbModalSubcategory"]').forEach(btn => {
+
+            btn.addEventListener('click', function () {
+
+                const parentId = this.dataset.parentId;
+
+                const modal = document.getElementById('mbModalSubcategory');
+                const positionWrap = document.getElementById('mbSubPositionWrap');
+                const positionSelect = document.getElementById('mbSubPosition');
+                const positionMenu = document.getElementById('mbSubPositionMenu');
+
+                const targetWrap = document.getElementById('mbSubTargetWrap');
+                const targetSelect = document.getElementById('mbSubTargetSelect');
+                const targetMenu = targetSelect?.querySelector('.ui-select-menu');
+
+                if (!modal || !positionWrap || !positionSelect || !positionMenu || !targetMenu) return;
+
+                // RESET
+                targetMenu.innerHTML = '';
+                setUiSelectValue(positionSelect, 'end', "{{ __('admin.position.end') }}");
+                setUiSelectValue(targetSelect, '', '—');
+
+                const subs = [];
+
+                document.querySelectorAll('[data-type="subcategory"]').forEach(el => {
+                    const parent = el.closest('[data-type="category"]');
+
+                    if (parent && parent.dataset.sectionId === parentId) {
+                        subs.push({
+                            id: el.dataset.sectionId,
+                            title: el.querySelector('.mb-item-title')?.innerText || ('ID ' + el.dataset.sectionId)
+                        });
+                    }
+                });
+
+                // -----------------------
+                // НЕТ ПОДКАТЕГОРИЙ
+                // -----------------------
+                if (subs.length === 0) {
+                    positionWrap.style.display = 'none';
+                    targetWrap.style.display = 'none';
+                    updatePositionState(modal);
+                    return;
+                }
+
+                // -----------------------
+                // 1 ПОДКАТЕГОРИЯ
+                // -----------------------
+                positionWrap.style.display = 'block';
+
+                positionMenu.innerHTML = `
+                <div class="ui-select-option active" data-value="end">
+                    {{ __('admin.position.end') }}
+                </div>
+                <div class="ui-select-option" data-value="start">
+                    {{ __('admin.position.start') }}
+                </div>
+            `;
+
+                // -----------------------
+                // 2+ ПОДКАТЕГОРИЙ
+                // -----------------------
+                if (subs.length > 1) {
+
+                    positionMenu.insertAdjacentHTML('beforeend', `
+                    <div class="ui-select-option" data-value="before">
+                        {{ __('admin.position.before') }}
+                    </div>
+                    <div class="ui-select-option" data-value="after">
+                        {{ __('admin.position.after') }}
+                    </div>
+                `);
+
+                    subs.forEach(sub => {
+                        const div = document.createElement('div');
+                        div.className = 'ui-select-option';
+                        div.dataset.value = sub.id;
+                        div.textContent = sub.title;
+                        targetMenu.appendChild(div);
+                    });
+                }
+
+                updatePositionState(modal);
+            });
+
+        });
+
+    });
+
+
 
 
 })();

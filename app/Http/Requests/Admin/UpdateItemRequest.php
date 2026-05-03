@@ -13,7 +13,6 @@ class UpdateItemRequest extends FormRequest
 
     public function rules(): array
     {
-        // те же правила, что store
         return (new StoreItemRequest())->rules();
     }
 }

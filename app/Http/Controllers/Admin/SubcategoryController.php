@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreSubcategoryRequest;
+
 use App\Models\Restaurant;
 use App\Models\Section;
 use App\Models\SectionTranslation;
-use App\Http\Requests\Admin\StoreSubcategoryRequest;
+
+use App\Services\SectionPositionService\SectionPositionService;
+
 use App\Support\Guards\AccessGuardTrait;
+
 use Illuminate\Support\Arr;
-use App\Support\Permissions;
 
 class SubcategoryController extends Controller
 {
@@ -23,6 +27,11 @@ class SubcategoryController extends Controller
     {
         $this->assertRestaurantAccess($request, $restaurant);
 
+        $data = $request->validated();
+
+        // =========================
+        // LOCALES
+        // =========================
         $locales = $restaurant->enabled_locales ?: ['de'];
         $defaultLocale = $restaurant->default_locale ?: 'de';
 
@@ -30,8 +39,9 @@ class SubcategoryController extends Controller
             $defaultLocale = $locales[0] ?? 'de';
         }
 
-        $data = $request->validated();
-
+        // =========================
+        // PARENT CHECK
+        // =========================
         $parent = Section::query()
             ->where('restaurant_id', $restaurant->id)
             ->whereKey((int)$data['parent_id'])
@@ -45,22 +55,22 @@ class SubcategoryController extends Controller
             throw new TenantAccessException(__('admin.validation.parent_must_be_category'));
         }
 
-        $nextSort = (int) Section::where('restaurant_id', $restaurant->id)
-            ->where('parent_id', $parent->id)
-            ->max('sort_order');
-
-        $nextSort = $nextSort ? $nextSort + 1 : 1;
-
+        // =========================
+        // CREATE
+        // =========================
         $section = Section::create([
             'restaurant_id' => $restaurant->id,
             'parent_id'     => $parent->id,
             'type'          => 'subcategory',
-            'sort_order'    => $nextSort,
+            'sort_order'    => 9999, // важно для PositionService
             'is_active'     => (bool)($data['is_active'] ?? true),
             'title_font'    => $data['title_font'] ?? null,
             'title_color'   => $data['title_color'] ?? null,
         ]);
 
+        // =========================
+        // TRANSLATIONS
+        // =========================
         $fallbackTitle = trim((string) Arr::get($data, "title.$defaultLocale", ''));
 
         foreach ($locales as $loc) {
@@ -77,6 +87,21 @@ class SubcategoryController extends Controller
             ]);
         }
 
+        // =========================
+        // POSITION LOGIC
+        // =========================
+        $mode = $data['position_mode'] ?? 'end';
+        $targetId = $data['target_id'] ?? null;
+
+        app(SectionPositionService::class)->apply(
+            section: $section,
+            mode: $mode,
+            targetId: $targetId
+        );
+
+        // =========================
+        // RESPONSE
+        // =========================
         return redirect()
             ->back()
             ->with('status', __('admin.sections.subcategories.created'))

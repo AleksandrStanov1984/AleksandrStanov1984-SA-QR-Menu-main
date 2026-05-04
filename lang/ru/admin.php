@@ -344,6 +344,7 @@ return [
         'socials' => 'Социальные сети',
 
         // ===== IMPORT =====
+        'import' => 'Импорт',
         'import_group' => 'Импорт',
         'import_menu' => 'Импорт меню',
         'import_images' => 'Импорт изображений',
@@ -502,122 +503,121 @@ return [
             'phone_value' => '+49 173 5141827',
     ],
 
-  /*  'import' => [
+    'import' => [
         'title' => 'Импорт меню',
         'json_label' => 'Загрузить JSON меню',
         'zip_label' => 'Загрузить ZIP ассетов (картинки/фоны/иконки)',
         'import_btn' => 'Импортировать',
-        'rules_btn' => 'Правила',
+
+        'rules' => 'Правила',
         'rules_title' => 'Правила импорта',
-        'rules_soon' => 'Спецификация формата будет добавлена следующим коммитом.',
 
         'success' => [
-            'json_uploaded' => 'JSON загружен. Импорт-пайплайн будет добавлен следующим шагом.',
+            'json_uploaded' => 'JSON загружен.',
             'zip_imported' => 'ZIP ассеты импортированы.',
+            'import_done' => 'Импорт выполнен успешно. Меню обновлено.',
+            'dry_run_done' => 'Проверка без применения: создать: :create, обновить: :update, удалить: :delete.',
+        ],
+
+        'json' => [
+            'title' => 'Импорт меню (JSON)',
+            'upload' => 'Загрузить JSON',
+            'hint' => 'Загрузите JSON-файл для импорта меню (patch или replace).',
+        ],
+
+        'zip' => [
+            'title' => 'Импорт ассетов (ZIP)',
+            'upload' => 'Загрузить ZIP',
+            'hint' => 'Загрузите ZIP-архив с изображениями (блюда, логотип, фоны).',
+        ],
+
+        'log' => [
+            'btn' => 'Лог',
+            'title' => 'Лог импорта',
+            'download' => 'Скачать лог',
+            'ok' => 'Ошибок нет.',
+            'has_errors' => 'Обнаружены ошибки',
         ],
 
         'errors' => [
-            'invalid_json' => 'Невалидный JSON.',
             'zip_open_failed' => 'Не удалось открыть ZIP архив.',
             'zip_too_many_files' => 'Слишком много файлов в ZIP архиве.',
             'zip_unsafe_path' => 'Найден небезопасный путь файла в ZIP (zip-slip).',
             'zip_type_not_allowed' => 'Запрещённый тип файла в ZIP',
             'zip_extract_failed' => 'Ошибка извлечения файла из ZIP',
+
+            // base schema
+            'mode_invalid' => 'Поле "mode" должно иметь значение "patch" или "replace".',
+            'operations_required' => 'Поле "operations" обязательно и должно быть непустым массивом.',
+            'operation_object' => 'Операция должна быть объектом.',
+
+            'required' => 'Обязательное поле ":field" отсутствует или пустое.',
+
+            'type_not_supported' => 'Тип операции ":type" не поддерживается.',
+            'op_invalid' => 'Недопустимое значение операции (op). Допустимо: update, delete, upsert.',
+
+            // item lookup
+            'item_key_ambiguous' => 'Ключ блюда ":key" найден несколько раз. Ключи должны быть уникальны.',
+            'item_not_found' => 'Блюдо с ключом ":key" не найдено или уже удалено.',
+
+            // set / parent
+            'set_object_required' => 'Поле "set" обязательно и должно быть объектом.',
+            'set_empty' => 'Поле "set" не может быть пустым.',
+
+            'parent_required' => 'Для создания нового блюда необходимо указать parent (category_key / subcategory_key).',
+            'parent_not_found' => 'Родительская категория не найдена (category: ":category_key", subcategory: ":subcategory_key").',
+            'subcategory_key_invalid' => 'Поле subcategory_key должно быть строкой.',
+
+            // values
+            'price_invalid' => 'Цена указана некорректно. Пример допустимого значения: 9.50',
+            'currency_invalid' => 'Недопустимая валюта. Сейчас поддерживается только EUR.',
+            'boolean_required' => 'Значение должно быть true или false.',
+            'spicy_invalid' => 'Острота должна быть целым числом от 0 до 3.',
+
+            // paths / images
+            'image_path_invalid' => 'Путь к изображению указан некорректно.',
+            'path_unsafe' => 'Небезопасный путь к файлу (запрещены "..", "\\" и абсолютные пути).',
+
+            // meta
+            'meta_object_required' => 'Поле meta должно быть объектом.',
+
+            // translations
+            'translations_object_required' => 'Поле translations должно быть объектом.',
+            'translation_object_required' => 'Перевод должен быть объектом.',
+            'translation_empty' => 'Перевод не содержит ни одного допустимого поля.',
+            'locale_not_supported' => 'Язык ":locale" не поддерживается.',
+
+            'invalid_json' => 'Невалидный JSON.',
+            'unknown' => 'Неизвестная ошибка.',
+            'import_failed_open_log' => 'Импорт не выполнен. Откройте «Лог» для деталей.',
         ],
-    ],*/
 
-    // ===== IMPORT =====
-        'import' => [
+        'rules_modal' => [
+            'title' => 'Правила импорта',
 
-            'json' => [
-                'title' => 'Импорт меню (JSON)',
-                'upload' => 'Загрузить JSON',
-              ],
+            'intro' => 'Загрузите JSON (patch или replace) для импорта меню и ZIP для ассетов. Все изменения применяются только при отсутствии ошибок.',
 
-              'zip' => [
-                'title' => 'Импорт ассетов (ZIP)',
-                'upload' => 'Загрузить ZIP',
-              ],
+            'patch_title' => 'Формат JSON',
+            'patch_desc' => 'Поддерживаются режимы patch (точечные изменения) и replace (полная замена меню).',
 
-              'rules' => 'Правила',
+            'patch_example' => "{\n  \"mode\": \"patch\",\n  \"dry_run\": false,\n  \"operations\": [\n    {\n      \"type\": \"item\",\n      \"op\": \"update\",\n      \"key\": \"cheeseburger\",\n      \"set\": {\n        \"price\": \"9.50\",\n        \"translations\": {\"ru\": {\"title\": \"Чизбургер\"}}\n      }\n    }\n  ]\n}\n",
 
-              'log' => [
-                  'btn' => 'Лог',
-                  'title' => 'Лог импорта',
-                  'download' => 'Скачать лог',
-                  'ok' => 'Ошибок нет.',
-                  'has_errors' => 'Обнаружены ошибки',
-              ],
+            'assets_title' => 'ZIP ассеты',
+            'assets_desc' => 'Архив должен содержать файлы по относительным путям. Разрешены: jpg/jpeg/png/webp/svg. SVG очищается.',
 
-            'success' => [
-                'import_done' => 'Импорт выполнен успешно.',
-                'dry_run_done' => 'Проверка без применения: создать: :create, обновить: :update, удалить: :delete.',
-            ],
+            'assets_example' => "branding/logo.png\nbackgrounds/light.jpg\nbackgrounds/dark.jpg\nitems/cheeseburger.jpg\nsocial/icons/instagram.svg\n",
 
-            'errors' => [
+            'export_title' => 'Экспорт меню',
+            'export_desc' => 'Вы можете скачать текущую структуру меню в формате JSON.',
 
-                // base schema
-                'mode_invalid' => 'Поле "mode" должно иметь значение "patch".',
-                'operations_required' => 'Поле "operations" обязательно и должно быть непустым массивом.',
-                'operation_object' => 'Операция должна быть объектом.',
+            'notes_title' => 'Важно',
+            'note_atomic' => 'Если файл содержит ошибки — ничего не импортируется.',
+            'note_permissions' => 'Некоторые поля могут быть недоступны в зависимости от тарифного плана и не будут отображаться.',
+            'note_paths' => 'Пути в ZIP и JSON должны быть безопасными: без "..", без абсолютных путей.',
 
-                'required' => 'Обязательное поле ":field" отсутствует или пустое.',
-
-                'type_not_supported' => 'Тип операции ":type" не поддерживается.',
-                'op_invalid' => 'Недопустимое значение операции (op). Допустимо: update, delete, upsert.',
-
-                // item lookup
-                'item_key_ambiguous' => 'Ключ блюда ":key" найден несколько раз. Ключи должны быть уникальны.',
-                'item_not_found' => 'Блюдо с ключом ":key" не найдено или уже удалено.',
-
-                // set / parent
-                'set_object_required' => 'Поле "set" обязательно и должно быть объектом.',
-                'set_empty' => 'Поле "set" не может быть пустым.',
-
-                'parent_required' => 'Для создания нового блюда необходимо указать parent (category_key / subcategory_key).',
-                'parent_not_found' => 'Родительская категория не найдена (category: ":category_key", subcategory: ":subcategory_key").',
-                'subcategory_key_invalid' => 'Поле subcategory_key должно быть строкой.',
-
-                // values
-                'price_invalid' => 'Цена указана некорректно. Пример допустимого значения: 9.50',
-                'currency_invalid' => 'Недопустимая валюта. Сейчас поддерживается только EUR.',
-                'boolean_required' => 'Значение должно быть true или false.',
-                'spicy_invalid' => 'Острота должна быть целым числом от 0 до 3.',
-
-                // paths / images
-                'image_path_invalid' => 'Путь к изображению указан некорректно.',
-                'path_unsafe' => 'Небезопасный путь к файлу (запрещены "..", "\\" и абсолютные пути).',
-
-                // meta
-                'meta_object_required' => 'Поле meta должно быть объектом.',
-
-                // translations
-                'translations_object_required' => 'Поле translations должно быть объектом.',
-                'translation_object_required' => 'Перевод должен быть объектом.',
-                'translation_empty' => 'Перевод не содержит ни одного допустимого поля.',
-                'locale_not_supported' => 'Язык ":locale" не поддерживается.',
-
-                'invalid_json' => 'Невалидный JSON.',
-                'unknown' => 'Неизвестная ошибка.',
-                'import_failed_open_log' => 'Импорт не выполнен. Откройте “Лог” для деталей.',
-            ],
-
-            'rules_modal' => [
-                'title' => 'Правила импорта',
-                'intro' => 'Загрузите JSON (patch) для изменений и ZIP для ассетов. Все изменения применяются только при отсутствии ошибок.',
-                'patch_title' => 'Формат JSON (patch)',
-                'patch_desc' => 'Файл должен содержать mode="patch" и operations[]. Поддерживаются item/category/subcategory/social + reorder.',
-                'patch_example' => "{\n  \"mode\": \"patch\",\n  \"dry_run\": false,\n  \"operations\": [\n    {\n      \"type\": \"item\",\n      \"op\": \"update\",\n      \"key\": \"cheeseburger\",\n      \"set\": {\n        \"price\": \"9.50\",\n        \"translations\": {\"ru\": {\"title\": \"Чизбургер\"}}\n      }\n    }\n  ]\n}\n",
-                'assets_title' => 'ZIP ассеты',
-                'assets_desc' => 'Архив должен содержать файлы по относительным путям. Разрешены: jpg/jpeg/png/webp/svg. SVG очищается.',
-                'assets_example' => "branding/logo.png\nbackgrounds/light.jpg\nbackgrounds/dark.jpg\nitems/cheeseburger.jpg\nsocial/icons/instagram.svg\n",
-                'notes_title' => 'Важно',
-                'note_atomic' => 'Если файл содержит ошибки — ничего не импортируется.',
-                'note_permissions' => 'Если у пользователя нет права на поле (например spicy) — импорт будет отклонён с ошибкой.',
-                'note_paths' => 'Пути в ZIP и JSON должны быть безопасными: без \"..\", без абсолютных путей.',
-                'copy' => 'Скопировать',
-              ],
+            'copy' => 'Скопировать',
         ],
+    ],
 
     'position' => [
         'label' => 'Позиция',

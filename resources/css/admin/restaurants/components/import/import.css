@@ -1,1 +1,130 @@
 /* resources/css/admin/restaurants/components/import/import.css */
+
+/* ===== IMPORT BLOCK ===== */
+.mb-import-block{
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(255,255,255,0.02);
+    margin-bottom: 10px;
+}
+
+.mb-import-header{
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.mb-import-title{
+    font-size: 14px;
+}
+
+
+/* ===== FORM LAYOUT ===== */
+.mb-import-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.mb-import-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:260px;
+    flex:1 1 auto;
+}
+
+.mb-import-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:0 0 auto;
+}
+
+
+/* ===== MODAL ===== */
+.modal[aria-hidden="true"] { display:none; }
+
+.modal{
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.modal__overlay{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 0;
+}
+
+.modal__panel{
+    position: relative;
+    z-index: 10;
+    width: min(920px, calc(100vw - 48px));
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    border-radius: 16px;
+    background: var(--card, rgba(20,28,44,.98));
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    padding: 16px;
+}
+
+.mb-input{
+    pointer-events: auto;
+    cursor: text;
+}
+
+
+/* ===== CODE / TEXT ===== */
+.mb-code{
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    font-size: 12px;
+}
+
+.mb-list{
+    padding-left: 18px;
+    margin: 8px 0 0 0;
+}
+
+@media (max-width: 768px){
+
+    .modal__panel{
+        width: 100%;
+        max-height: 100%;
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+    .mb-code{
+        font-size: 11px;
+        padding: 50px;
+    }
+
+    .mb-import-export-link input{
+        font-size: 11px;
+    }
+
+    .mb-h4{
+        font-size: 13px;
+    }
+
+    .mb-muted{
+        font-size: 12px;
+    }
+
+}

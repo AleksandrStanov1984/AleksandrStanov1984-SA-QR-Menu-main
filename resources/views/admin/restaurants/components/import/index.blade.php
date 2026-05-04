@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/import/index.blade.php --}}
-{{-- admin/restaurants/components/import/index --}}
+
 <div class="card mb-import-card">
     <div class="card__head">
         <div class="card__title">
@@ -8,14 +8,18 @@
     </div>
 
     <div class="card__body">
+
         @include('admin.restaurants.components.import._json')
-        @include('admin.restaurants.components.import._zip')
+
+        @if($restaurant->feature('images'))
+            @include('admin.restaurants.components.import._zip')
+        @endif
+
         @include('admin.restaurants.components.import._log')
+
     </div>
 
     @include('admin.restaurants.components.import._rules-modal')
 </div>
 
-@include('admin.restaurants.components.import._styles')
 @include('admin.restaurants.components.import._scripts')
-

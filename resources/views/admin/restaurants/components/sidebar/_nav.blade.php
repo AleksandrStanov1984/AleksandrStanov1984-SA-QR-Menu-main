@@ -1,6 +1,8 @@
 {{-- resources/views/admin/restaurants/components/sidebar/_nav.blade.php --}}
 
 @php
+    use App\Support\Permissions;
+
     $user = auth()->user();
     $isSuper = (bool)($user?->is_super_admin);
 
@@ -59,6 +61,16 @@
                 🧱 {{ __('admin.sidebar.menu') }}
             </a>
         </li>
+
+        {{-- IMPORT --}}
+        @if($ctxRestaurant && Permissions::can(auth()->user(), 'import.menu_json'))
+            <li>
+                <a href="{{ route('admin.restaurants.import', $ctxRestaurant) }}"
+                   class="{{ request()->routeIs('admin.restaurants.import*') ? 'is-active' : '' }}">
+                    📥 {{ __('admin.sidebar.import') }}
+                </a>
+            </li>
+        @endif
 
 
         {{-- ================= CONTENT ================= --}}

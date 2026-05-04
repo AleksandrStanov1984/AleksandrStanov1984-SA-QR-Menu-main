@@ -296,9 +296,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/menu/import-log/{token}', [MenuImportController::class, 'downloadLog'])
             ->name('restaurants.menu.import_log');
 
-        Route::get('restaurants/{restaurant}/menu/export.json', [MenuImportController::class, 'downloadMenuJson'])
+        Route::get('restaurants/{restaurant}/menu/export', [MenuImportController::class, 'downloadMenuJson'])
             ->name('restaurants.menu.export_json');
 
+        // IMPORT UI
         Route::get('restaurants/{restaurant}/import', [MenuImportController::class, 'index'])
             ->name('restaurants.import');
 

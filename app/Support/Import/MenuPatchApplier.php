@@ -17,6 +17,11 @@ class MenuPatchApplier
 
         DB::transaction(function () use ($restaurant, $plan, &$result) {
             foreach ($plan['ops'] as $op) {
+                if ($op['op'] === 'replace' && $op['type'] === 'category') {
+                    $this->applyReplaceCategory($restaurant, $op['data'], $result);
+                    continue;
+                }
+
                 if ($op['type'] === 'item') {
                     $this->applyItemOp($restaurant, $op, $result);
                 }
@@ -155,4 +160,93 @@ class MenuPatchApplier
     }
 
     private function applyReorder(Restaurant $restaurant, array $op): void {}
+
+    private function applyReplaceCategory(Restaurant $restaurant, array $cat, array &$result): void
+    {
+        // =========================
+        // CATEGORY
+        // =========================
+        $section = Section::firstOrCreate(
+            [
+                'restaurant_id' => $restaurant->id,
+                'key' => $cat['key'],
+                'parent_id' => null,
+            ],
+            [
+                'is_active' => $cat['is_active'] ?? true,
+                'type' => $cat['type'] ?? 'food',
+            ]
+        );
+
+        foreach ($cat['translations'] ?? [] as $loc => $tr) {
+            $t = SectionTranslation::firstOrNew([
+                'section_id' => $section->id,
+                'locale' => $loc
+            ]);
+            $t->title = $tr['title'] ?? '';
+            $t->description = $tr['description'] ?? '';
+            $t->save();
+        }
+
+        $result['created']++;
+
+        // =========================
+        // ITEMS
+        // =========================
+        foreach ($cat['items'] ?? [] as $itemData) {
+            $this->createItemFromReplace($section, $itemData, $result);
+        }
+
+        // =========================
+        // SUBCATEGORIES
+        // =========================
+        foreach ($cat['subcategories'] ?? [] as $sub) {
+
+            $subSection = Section::firstOrCreate(
+                [
+                    'restaurant_id' => $restaurant->id,
+                    'key' => $sub['key'],
+                    'parent_id' => $section->id,
+                ],
+                [
+                    'is_active' => $sub['is_active'] ?? true,
+                    'type' => $sub['type'] ?? 'food',
+                ]
+            );
+
+            foreach ($sub['translations'] ?? [] as $loc => $tr) {
+                $t = SectionTranslation::firstOrNew([
+                    'section_id' => $subSection->id,
+                    'locale' => $loc
+                ]);
+                $t->title = $tr['title'] ?? '';
+                $t->description = $tr['description'] ?? '';
+                $t->save();
+            }
+
+            $result['created']++;
+
+            foreach ($sub['items'] ?? [] as $itemData) {
+                $this->createItemFromReplace($subSection, $itemData, $result);
+            }
+        }
+    }
+
+    private function createItemFromReplace(Section $section, array $itemData, array &$result): void
+    {
+        $item = Item::firstOrCreate(
+            [
+                'section_id' => $section->id,
+                'key' => $itemData['key'],
+            ],
+            [
+                'currency' => $itemData['set']['currency'] ?? 'EUR',
+                'is_active' => $itemData['set']['is_active'] ?? true,
+            ]
+        );
+
+        $this->applyItemSet($item, $itemData['set'] ?? []);
+
+        $result['created']++;
+    }
 }

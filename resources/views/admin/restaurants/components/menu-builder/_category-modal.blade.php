@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/menu-builder/_category-modal.blade.php --}}
 
 @php
     $categoriesCount = collect($menuTree ?? [])->count();
@@ -36,20 +37,26 @@
                     >
                 </div>
 
+                {{-- POSITION --}}
                 @if($categoriesCount > 0)
-
-                    {{-- POSITION --}}
                     <div class="col12" style="margin-top:12px;">
                         <label>{{ __('admin.position.label') }}</label>
 
-                        <div class="ui-select ui-select--button" data-name="position_mode" id="mbCategoryPosition">
+                        <div class="ui-select ui-select--button"
+                             data-name="position_mode"
+                             id="mbCategoryPosition">
 
                             <button type="button" class="ui-select-btn">
-                                {{ __('admin.position.end') }}
+                                —
                             </button>
 
                             <div class="ui-select-menu">
-                                <div class="ui-select-option active" data-value="end">
+
+                                <div class="ui-select-option active" data-value="">
+                                    —
+                                </div>
+
+                                <div class="ui-select-option" data-value="end">
                                     {{ __('admin.position.end') }}
                                 </div>
 
@@ -66,18 +73,21 @@
                                         {{ __('admin.position.after') }}
                                     </div>
                                 @endif
+
                             </div>
 
-                            <input type="hidden" name="position_mode" value="end">
+                            <input type="hidden" name="position_mode" value="">
                         </div>
                     </div>
 
+                    {{-- TARGET --}}
                     @if($categoriesCount > 1)
-                        {{-- TARGET --}}
                         <div class="col12" id="mbCategoryTargetWrap" style="display:none;">
                             <label>{{ __('admin.position.target_category') }}</label>
 
-                            <div class="ui-select ui-select--button" data-name="target_id" id="mbCategoryTargetSelect">
+                            <div class="ui-select ui-select--button"
+                                 data-name="target_id"
+                                 id="mbCategoryTargetSelect">
 
                                 <button type="button" class="ui-select-btn">
                                     —
@@ -91,7 +101,7 @@
                                     @endforeach
                                 </div>
 
-                                <input type="hidden" name="target_id">
+                                <input type="hidden" name="target_id" value="">
                             </div>
 
                             <div class="mb-muted mb-position-error" style="display:none; margin-top:6px;">
@@ -115,11 +125,6 @@
 </div>
 
 <style>
-    /* =========================
-       FIX: dropdown inside modal
-       ONLY for this modal
-    ========================= */
-
     #mbModalCategory .modal__panel {
         overflow: visible;
     }

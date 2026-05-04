@@ -553,7 +553,6 @@
       return;
     }
 
-    // close
     if(target.matches('[data-mb-close]')){
       const m = target.closest('.modal');
       closeModal(m);
@@ -836,7 +835,11 @@
         const interval = setInterval(() => {
 
             if (sectionId) {
-                const el = document.querySelector(`[data-section-id="${sectionId}"]`);
+
+                const el =
+                    document.getElementById('section-' + sectionId) ||
+                    document.querySelector(`[data-section-id="${sectionId}"]`);
+
                 if (el) {
                     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     el.classList.add('mb-highlight');
@@ -860,7 +863,6 @@
             }
 
             if (attempts > 20) {
-                console.warn('Scroll target not found');
                 clearInterval(interval);
             }
 
@@ -872,9 +874,6 @@
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        // =========================
-        // HELPERS
-        // =========================
         function setUiSelectValue(select, value, label) {
             if (!select) return;
 
@@ -897,7 +896,6 @@
             const positionInput = positionSelect?.querySelector('input[type="hidden"]');
             const targetWrap = modal.querySelector('[id$="TargetWrap"]');
             const targetInput = modal.querySelector('[data-name="target_id"] input[type="hidden"]');
-            const error = modal.querySelector('.mb-position-error');
             const submit = modal.querySelector('button[type="submit"]');
 
             if (!positionInput || !submit) return;
@@ -909,43 +907,67 @@
                 targetWrap.style.display = needsTarget ? 'block' : 'none';
             }
 
-            const invalid = needsTarget && !targetInput?.value;
-
-            submit.disabled = invalid;
-
-            if (error) {
-                error.style.display = invalid ? 'block' : 'none';
-            }
+            submit.disabled = needsTarget && !targetInput?.value;
         }
 
-        // =========================
-        // UI SELECT CLICK
-        // =========================
         document.addEventListener('click', function (e) {
-
             const opt = e.target.closest('.ui-select-option');
             if (!opt) return;
 
             const select = opt.closest('.ui-select');
             if (!select) return;
 
-            const value = opt.dataset.value || '';
-            const label = opt.textContent.trim();
-
-            setUiSelectValue(select, value, label);
+            setUiSelectValue(select, opt.dataset.value || '', opt.textContent.trim());
 
             const modal = select.closest('.modal');
             updatePositionState(modal);
         });
 
-        // =========================
-        // SUBCATEGORY OPEN
-        // =========================
+        document.querySelectorAll('[data-mb-open="mbModalCategory"]').forEach(btn => {
+
+            btn.addEventListener('click', function () {
+
+                const modal = document.getElementById('mbModalCategory');
+                const editingId = this.dataset.sectionId || null;
+
+                const targetSelect = document.getElementById('mbCategoryTargetSelect');
+                const targetMenu = targetSelect?.querySelector('.ui-select-menu');
+
+                if (!modal || !targetMenu) return;
+
+                targetMenu.innerHTML = '';
+
+                const cats = [];
+
+                document.querySelectorAll('[data-type="category"]').forEach(el => {
+
+                    if (!editingId || el.dataset.sectionId !== editingId) {
+                        cats.push({
+                            id: el.dataset.sectionId,
+                            title: el.querySelector('.mb-item-title')?.innerText || ('ID ' + el.dataset.sectionId)
+                        });
+                    }
+                });
+
+                cats.forEach(cat => {
+                    const div = document.createElement('div');
+                    div.className = 'ui-select-option';
+                    div.dataset.value = cat.id;
+                    div.textContent = cat.title;
+                    targetMenu.appendChild(div);
+                });
+
+            });
+
+        });
+
         document.querySelectorAll('[data-mb-open="mbModalSubcategory"]').forEach(btn => {
 
             btn.addEventListener('click', function () {
 
                 const parentId = this.dataset.parentId;
+                const editingId = this.dataset.sectionId || null;
+                const isEdit = !!editingId;
 
                 const modal = document.getElementById('mbModalSubcategory');
                 const positionWrap = document.getElementById('mbSubPositionWrap');
@@ -958,9 +980,9 @@
 
                 if (!modal || !positionWrap || !positionSelect || !positionMenu || !targetMenu) return;
 
-                // RESET
                 targetMenu.innerHTML = '';
-                setUiSelectValue(positionSelect, 'end', "{{ __('admin.position.end') }}");
+
+                setUiSelectValue(positionSelect, '', '—');
                 setUiSelectValue(targetSelect, '', '—');
 
                 const subs = [];
@@ -968,7 +990,11 @@
                 document.querySelectorAll('[data-type="subcategory"]').forEach(el => {
                     const parent = el.closest('[data-type="category"]');
 
-                    if (parent && parent.dataset.sectionId === parentId) {
+                    if (
+                        parent &&
+                        parent.dataset.sectionId === parentId &&
+                        (!isEdit || el.dataset.sectionId !== editingId)
+                    ) {
                         subs.push({
                             id: el.dataset.sectionId,
                             title: el.querySelector('.mb-item-title')?.innerText || ('ID ' + el.dataset.sectionId)
@@ -976,54 +1002,44 @@
                     }
                 });
 
-                // -----------------------
-                // НЕТ ПОДКАТЕГОРИЙ
-                // -----------------------
-                if (subs.length === 0) {
+                const count = subs.length;
+
+                if (count === 0) {
                     positionWrap.style.display = 'none';
                     targetWrap.style.display = 'none';
-                    updatePositionState(modal);
                     return;
                 }
 
-                // -----------------------
-                // 1 ПОДКАТЕГОРИЯ
-                // -----------------------
+                if (count === 1) {
+                    positionWrap.style.display = 'block';
+                    targetWrap.style.display = 'none';
+
+                    positionMenu.innerHTML = `
+                    <div class="ui-select-option active" data-value="">—</div>
+                    <div class="ui-select-option" data-value="end">${window.UI_LANG?.position_end || 'End'}</div>
+                    <div class="ui-select-option" data-value="start">${window.UI_LANG?.position_start || 'Start'}</div>
+                `;
+                    return;
+                }
+
                 positionWrap.style.display = 'block';
 
                 positionMenu.innerHTML = `
-                <div class="ui-select-option active" data-value="end">
-                    {{ __('admin.position.end') }}
-                </div>
-                <div class="ui-select-option" data-value="start">
-                    {{ __('admin.position.start') }}
-                </div>
+                <div class="ui-select-option active" data-value="">—</div>
+                <div class="ui-select-option" data-value="end">${window.UI_LANG?.position_end || 'End'}</div>
+                <div class="ui-select-option" data-value="start">${window.UI_LANG?.position_start || 'Start'}</div>
+                <div class="ui-select-option" data-value="before">${window.UI_LANG?.position_before || 'Before'}</div>
+                <div class="ui-select-option" data-value="after">${window.UI_LANG?.position_after || 'After'}</div>
             `;
 
-                // -----------------------
-                // 2+ ПОДКАТЕГОРИЙ
-                // -----------------------
-                if (subs.length > 1) {
+                subs.forEach(sub => {
+                    const div = document.createElement('div');
+                    div.className = 'ui-select-option';
+                    div.dataset.value = sub.id;
+                    div.textContent = sub.title;
+                    targetMenu.appendChild(div);
+                });
 
-                    positionMenu.insertAdjacentHTML('beforeend', `
-                    <div class="ui-select-option" data-value="before">
-                        {{ __('admin.position.before') }}
-                    </div>
-                    <div class="ui-select-option" data-value="after">
-                        {{ __('admin.position.after') }}
-                    </div>
-                `);
-
-                    subs.forEach(sub => {
-                        const div = document.createElement('div');
-                        div.className = 'ui-select-option';
-                        div.dataset.value = sub.id;
-                        div.textContent = sub.title;
-                        targetMenu.appendChild(div);
-                    });
-                }
-
-                updatePositionState(modal);
             });
 
         });

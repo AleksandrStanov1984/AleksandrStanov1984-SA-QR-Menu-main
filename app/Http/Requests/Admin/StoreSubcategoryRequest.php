@@ -39,15 +39,13 @@ class StoreSubcategoryRequest extends FormRequest
 
             'title' => ['required', 'array'],
 
-            // POSITION
             'position_mode' => ['nullable', 'in:start,end,before,after'],
-            'target_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'target_id'     => ['nullable', 'integer', 'exists:sections,id'],
 
             'title.*' => [
                 'nullable',
                 'string',
                 'max:50',
-                'regex:/^[\p{L}][\p{L}\s\-]*$/u',
                 new FirstLetterUppercase(),
             ],
         ];
@@ -61,13 +59,13 @@ class StoreSubcategoryRequest extends FormRequest
             // VALIDATE PARENT
             // =========================
             $parentId = (int) $this->input('parent_id');
+
             $parent = Section::query()->find($parentId);
 
             if (!$parent) {
                 return;
             }
 
-            // parent должен быть CATEGORY
             if (!is_null($parent->parent_id)) {
                 $v->errors()->add(
                     'parent_id',
@@ -76,7 +74,7 @@ class StoreSubcategoryRequest extends FormRequest
             }
 
             // =========================
-            // TITLE CHECK
+            // TITLE REQUIRED
             // =========================
             $titles = $this->input('title', []);
 
@@ -92,9 +90,24 @@ class StoreSubcategoryRequest extends FormRequest
             }
 
             // =========================
+            // TITLE FORMAT
+            // =========================
+            foreach ($titles as $t) {
+                $t = trim((string) $t);
+
+                if ($t !== '' && !preg_match('/^[\p{L}\d]/u', $t)) {
+                    $v->errors()->add(
+                        'title',
+                        __('admin.validation.title_invalid')
+                    );
+                    break;
+                }
+            }
+
+            // =========================
             // POSITION VALIDATION
             // =========================
-            $mode = $this->input('position_mode');
+            $mode   = $this->input('position_mode');
             $target = $this->input('target_id');
 
             if (in_array($mode, ['before', 'after'], true) && !$target) {

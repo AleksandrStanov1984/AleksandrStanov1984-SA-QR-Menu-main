@@ -113,6 +113,8 @@
               return null;
             };
 
+            $hasRealImage = !empty($getImage($it));
+
             $imgUrl = app(\App\Services\ImageService::class)->url($getImage($it));
 
             $accId = 'mbItemAcc_'.$it->id;
@@ -203,7 +205,7 @@
                                      data-item-image="{{ $it->id }}"
                                      style="width:100%; height:100%; object-fit:cover; display:block;">
 
-                                @if($canImagesFeature && $canImageUpload)
+                                @if($canImagesFeature && $canImageUpload && $hasRealImage)
                                     <button type="button"
                                             class="mb-image-remove-btn"
                                             data-item-remove-image="{{ $it->id }}"

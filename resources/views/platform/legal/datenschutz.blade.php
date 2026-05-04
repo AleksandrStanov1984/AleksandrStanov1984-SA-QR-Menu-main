@@ -1,3 +1,4 @@
+{{-- resources/views/platform/legal/datenschutz.blade.php --}}
 @extends('platform.layouts.legal')
 
 @section('content')

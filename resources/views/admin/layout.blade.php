@@ -77,17 +77,10 @@
 @include('admin.layout.footer')
 @include('admin.layout._modals')
 
-@if(session('scroll_to_section'))
-    <script>
-        window.__SCROLL_TO_SECTION__ = '{{ session('scroll_to_section') }}';
-    </script>
-@endif
-
-@if(session('scroll_to_item'))
-    <script>
-        window.__SCROLL_TO_ITEM__ = '{{ session('scroll_to_item') }}';
-    </script>
-@endif
+<script>
+    window.__SCROLL_TO_SECTION__ = {!! json_encode(session('scroll_to_section')) !!};
+    window.__SCROLL_TO_ITEM__ = {!! json_encode(session('scroll_to_item')) !!};
+</script>
 
 {{-- AUTO HIDE FLASH + BLUR --}}
 <script>
@@ -136,7 +129,12 @@
         password_same: "{{ __('admin.security.errors.password_same') }}",
         password_weak: "{{ __('admin.security.errors.password_weak') }}",
         password_ok: "{{ __('admin.security.hints.password_ok') }}",
-        form_invalid: "{{ __('validation.invalid_form') }}"
+        form_invalid: "{{ __('validation.invalid_form') }}",
+
+        position_end: "{{ __('admin.position.end') }}",
+        position_start: "{{ __('admin.position.start') }}",
+        position_before: "{{ __('admin.position.before') }}",
+        position_after: "{{ __('admin.position.after') }}"
     };
 </script>
 
@@ -195,21 +193,6 @@
                 setTimeout(() => {
                     el.style.boxShadow = 'none';
                 }, 1500);
-            }
-        }
-
-        // =========================
-        // SCROLL TO SECTION
-        // =========================
-        if (window.__SCROLL_TO_SECTION__) {
-            const id = 'section-' + window.__SCROLL_TO_SECTION__;
-            const el = document.getElementById(id);
-
-            if (el) {
-                el.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
             }
         }
 

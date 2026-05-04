@@ -37,13 +37,12 @@ class StoreCategoryRequest extends FormRequest
             'title' => ['required', 'array'],
 
             'position_mode' => ['nullable', 'in:start,end,before,after'],
-            'target_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'target_id'     => ['nullable', 'integer', 'exists:sections,id'],
 
             'title.*' => [
                 'nullable',
                 'string',
                 'max:50',
-                'regex:/^[\p{L}][\p{L}\s\-]*$/u',
                 new FirstLetterUppercase(),
             ],
         ];
@@ -54,7 +53,7 @@ class StoreCategoryRequest extends FormRequest
         $validator->after(function ($v) {
 
             // =========================
-            // TITLE CHECK
+            // TITLE REQUIRED
             // =========================
             $titles = $this->input('title', []);
 
@@ -70,9 +69,30 @@ class StoreCategoryRequest extends FormRequest
             }
 
             // =========================
+            // TITLE FORMAT
+            // =========================
+            foreach ($titles as $t) {
+                $t = trim((string) $t);
+
+                if ($t !== '' && !preg_match('/^[\p{L}\d]/u', $t)) {
+                    $v->errors()->add(
+                        'title',
+                        __('admin.validation.title_invalid')
+                    );
+                    break;
+                }
+            }
+
+            // =========================
             // POSITION VALIDATION
             // =========================
-            $mode = $this->input('position_mode');
+            $hasPosition = $this->has('position_mode');
+
+            if (!$hasPosition) {
+                return;
+            }
+
+            $mode   = $this->input('position_mode');
             $target = $this->input('target_id');
 
             if (in_array($mode, ['before', 'after'], true) && !$target) {

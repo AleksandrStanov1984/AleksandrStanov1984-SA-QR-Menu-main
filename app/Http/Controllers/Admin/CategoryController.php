@@ -52,7 +52,7 @@ class CategoryController extends Controller
             'restaurant_id' => $restaurant->id,
             'parent_id'     => null,
             'type'          => 'category',
-            'sort_order'    => 9999, // важно для PositionService
+            'sort_order'    => 9999,
             'is_active'     => (bool)($data['is_active'] ?? true),
             'title_font'    => $data['title_font'] ?? null,
             'title_color'   => $data['title_color'] ?? null,
@@ -82,14 +82,26 @@ class CategoryController extends Controller
         // =========================
         // POSITION LOGIC
         // =========================
-        $mode = $data['position_mode'] ?? 'end';
-        $targetId = $data['target_id'] ?? null;
+        $hasPosition = $request->has('position_mode');
 
-        app(SectionPositionService::class)->apply(
-            section: $section,
-            mode: $mode,
-            targetId: $targetId
-        );
+        if ($hasPosition) {
+
+            $mode = $data['position_mode'] ?? 'end';
+            $targetId = $data['target_id'] ?? null;
+
+            app(SectionPositionService::class)->apply(
+                section: $section,
+                mode: $mode,
+                targetId: $targetId
+            );
+
+        } else {
+            app(SectionPositionService::class)->apply(
+                section: $section,
+                mode: 'end',
+                targetId: null
+            );
+        }
 
         // =========================
         // RESPONSE

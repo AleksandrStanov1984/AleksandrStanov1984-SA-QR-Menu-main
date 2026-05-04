@@ -1,3 +1,4 @@
+{{-- resources/views/platform/legal/impressum.blade.php --}}
 @extends('platform.layouts.legal')
 
 @section('content')

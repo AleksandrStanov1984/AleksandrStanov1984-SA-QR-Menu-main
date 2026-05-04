@@ -48,11 +48,16 @@
                          id="mbSubPosition">
 
                         <button type="button" class="ui-select-btn">
-                            {{ __('admin.position.end') }}
+                            —
                         </button>
 
                         <div class="ui-select-menu" id="mbSubPositionMenu">
-                            <div class="ui-select-option active" data-value="end">
+
+                            <div class="ui-select-option active" data-value="">
+                                —
+                            </div>
+
+                            <div class="ui-select-option" data-value="end">
                                 {{ __('admin.position.end') }}
                             </div>
 
@@ -60,10 +65,10 @@
                                 {{ __('admin.position.start') }}
                             </div>
 
-                            {{-- before/after добавим через JS только если подкатегорий больше 1 --}}
+                            {{-- before / after добавляются через JS --}}
                         </div>
 
-                        <input type="hidden" name="position_mode" value="end">
+                        <input type="hidden" name="position_mode" value="">
                     </div>
                 </div>
 
@@ -83,7 +88,7 @@
                             {{-- наполняется через JS --}}
                         </div>
 
-                        <input type="hidden" name="target_id">
+                        <input type="hidden" name="target_id" value="">
                     </div>
 
                     <div class="mb-muted mb-position-error" style="display:none; margin-top:6px;">
@@ -95,7 +100,7 @@
 
             <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn ok" type="submit">
-                    {{ __('admin.actions.create') ?? 'Create' }}
+                    {{ __('admin.actions.create') }}
                 </button>
             </div>
 
@@ -106,7 +111,6 @@
 <style>
     /* =========================
        FIX: dropdown inside modal
-       ONLY for subcategory modal
     ========================= */
 
     #mbModalSubcategory .modal__panel {
@@ -123,11 +127,14 @@
         left: 0;
         right: 0;
         z-index: 10000;
+
         max-height: 240px;
         overflow-y: auto;
+
         background: #0f1a2b;
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 8px;
+
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 </style>

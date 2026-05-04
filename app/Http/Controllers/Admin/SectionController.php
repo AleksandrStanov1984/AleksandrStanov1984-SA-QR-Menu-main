@@ -232,7 +232,9 @@ class SectionController extends Controller
             );
         }
 
-        return back()->with('status', __('admin.common.saving'));
+        return back()
+            ->with('status', __('admin.common.saving'))
+            ->with('scroll_to_section', $section->id);
     }
 
     /**

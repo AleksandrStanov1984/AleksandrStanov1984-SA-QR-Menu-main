@@ -1,3 +1,4 @@
+{{-- resources/views/platform/layouts/legal.blade.php --}}
 <!DOCTYPE html>
 <html lang="de">
 <head>

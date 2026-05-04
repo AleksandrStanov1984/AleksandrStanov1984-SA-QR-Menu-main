@@ -381,7 +381,9 @@ return [
 
     'validation' => [
         'first_letter_uppercase' => 'Первая буква должна быть заглавной.',
-        'parent_must_be_category' => 'Родитель должен быть категорией.',
+        'title_required' => 'Введите название',
+        'title_invalid'  => 'Название должно начинаться с буквы или цифры',
+        'parent_must_be_category' => 'Родитель должен быть категорией',
     ],
 
     'confirm' => [
@@ -395,7 +397,7 @@ return [
     'security' => [
 
         'subtitle' => 'Безопасность',
-        // ================= VALIDATION (BACKEND) =================
+        // ================= VALIDATION =================
         'validation' => [
             'current_email' => [
                 'required' => 'Укажите текущий логин.',

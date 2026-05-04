@@ -35,25 +35,27 @@
             $catLocked   = $catInactive;
         @endphp
 
-        <div class="card {{ $catInactive ? 'mb-inactive' : '' }} {{ $catDeleted ? 'mb-deleted' : '' }}"
-             data-section-id="{{ $cat->id }}"
-             data-section-wrapper="1"
-             data-type="category"
-             style="padding:12px;">
+        <div
+            id="section-{{ $cat->id }}"
+        class="card {{ $catInactive ? 'mb-inactive' : '' }} {{ $catDeleted ? 'mb-deleted' : '' }}"
+            data-section-id="{{ $cat->id }}"
+            data-section-wrapper="1"
+            data-type="category"
+            style="padding:12px;"
+        >
 
             <div class="mb-row">
 
                 <div class="mb-left">
 
-                    {{-- TOGGLE --}}
                     @if(Permissions::can($user, 'categories.toggle'))
                         <form method="POST" action="{{ route('admin.restaurants.sections.toggle', [$restaurant, $cat]) }}">
                             @csrf
 
                             <div style="display:flex; justify-content:space-between; width:100%;">
-                            <span class="mb-item-title">
-                                {{ $tTitle($cat, $defaultLocale) ?: ('Category #'.$cat->id) }}
-                            </span>
+                                <span class="mb-item-title">
+                                    {{ $tTitle($cat, $defaultLocale) ?: ('Category #'.$cat->id) }}
+                                </span>
 
                                 <label class="mb-switch">
                                     <input type="checkbox"
@@ -70,7 +72,6 @@
 
                 <div class="mb-right mb-actions">
 
-                    {{-- EDIT --}}
                     <button class="btn small secondary"
                             type="button"
                             {{ $catLocked ? 'disabled' : '' }}
@@ -83,7 +84,6 @@
                         {{ __('admin.common.edit') }}
                     </button>
 
-                    {{-- ADD SUB --}}
                     <button class="btn small secondary"
                             type="button"
                             {{ $catLocked ? 'disabled' : '' }}
@@ -92,7 +92,6 @@
                         + {{ __('admin.menu_builder.add_subcategory') }}
                     </button>
 
-                    {{-- ADD ITEM --}}
                     <button class="btn small"
                             type="button"
                             {{ $catLocked ? 'disabled' : '' }}
@@ -101,7 +100,6 @@
                         + {{ __('admin.menu_builder.add_item') }}
                     </button>
 
-                    {{-- DELETE --}}
                     <button class="btn small danger"
                             type="button"
                             {{ $catLocked ? 'disabled' : '' }}
@@ -116,7 +114,6 @@
 
             </div>
 
-            {{-- ITEMS --}}
             @include('admin.restaurants.components.menu-builder._items-list', [
                 'restaurant' => $restaurant,
                 'section' => $cat,
@@ -124,7 +121,6 @@
                 'ancestorLocked' => $catLocked,
             ])
 
-            {{-- SUBCATEGORIES --}}
             <div class="mb-sub" style="margin-top:12px;">
                 @foreach($cat->children as $sub)
 
@@ -133,23 +129,25 @@
                         $subLocked   = $catLocked;
                     @endphp
 
-                    <div class="{{ $subInactive ? 'mb-inactive' : '' }}"
-                         data-section-id="{{ $sub->id }}"
-                         data-type="subcategory"
-                         style="padding:12px; margin-top:10px;">
+                    <div
+                        id="section-{{ $sub->id }}"
+                    class="{{ $subInactive ? 'mb-inactive' : '' }}"
+                        data-section-id="{{ $sub->id }}"
+                        data-type="subcategory"
+                        style="padding:12px; margin-top:10px;"
+                    >
 
                         <div class="mb-row">
 
                             <div class="mb-left">
 
-                                {{-- TOGGLE --}}
                                 <form method="POST" action="{{ route('admin.restaurants.sections.toggle', [$restaurant, $sub]) }}">
                                     @csrf
 
                                     <div style="display:flex; justify-content:space-between; width:100%;">
-                                <span class="mb-item-title">
-                                    {{ $tTitle($sub, $defaultLocale) ?: ('Subcategory #'.$sub->id) }}
-                                </span>
+                                        <span class="mb-item-title">
+                                            {{ $tTitle($sub, $defaultLocale) ?: ('Subcategory #'.$sub->id) }}
+                                        </span>
 
                                         <label class="mb-switch">
                                             <input type="checkbox"

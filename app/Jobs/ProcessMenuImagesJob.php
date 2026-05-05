@@ -28,20 +28,29 @@ class ProcessMenuImagesJob implements ShouldQueue
         $resultKey = "import:result:{$this->restaurantId}";
 
         Cache::put($statusKey, 'processing', now()->addMinutes(30));
-
         Cache::forget($resultKey);
 
         try {
+            Log::info('JOB STARTED', [
+                'restaurant_id' => $this->restaurantId,
+            ]);
 
+            // =========================
+            // INBOX
+            // =========================
             $inbox = "image-inbox/assets/restaurants/{$this->restaurantId}/menu/items";
+            $inboxAbs = storage_path('app/' . $inbox);
 
-            if (!Storage::disk('local')->exists($inbox)) {
+            if (!is_dir($inboxAbs)) {
+                Log::error('INBOX NOT FOUND', ['path' => $inboxAbs]);
                 Cache::forget($statusKey);
                 return;
             }
 
+            // =========================
+            // MAPPING
+            // =========================
             $mappingPath = "tmp/import-mapping/{$this->restaurantId}.json";
-
             $mapping = [];
 
             if (Storage::disk('local')->exists($mappingPath)) {
@@ -51,32 +60,11 @@ class ProcessMenuImagesJob implements ShouldQueue
                 ) ?: [];
             }
 
-            Storage::disk('local')->delete(
-                "tmp/import-unmatched/{$this->restaurantId}.json"
-            );
+            Log::info('MAPPING LOADED', ['count' => count($mapping)]);
 
-            Artisan::call('images:cron', [
-                '--retina' => true,
-                '--delete-sources' => true,
-            ]);
-
-            $publicDir = public_path("assets/restaurants/{$this->restaurantId}/menu/items");
-
-            if (!is_dir($publicDir)) {
-                Cache::put($statusKey, 'error', now()->addMinutes(30));
-                return;
-            }
-
-            $files = array_filter(
-                glob($publicDir . '/*.webp'),
-                fn($file) => filemtime($file) >= now()->subMinutes(10)->timestamp
-            );
-
-            if (!$files) {
-                Cache::put($statusKey, 'done', now()->addMinutes(30));
-                return;
-            }
-
+            // =========================
+            // ITEMS
+            // =========================
             $items = Item::query()
                 ->whereHas('section', fn($q) =>
                 $q->where('restaurant_id', $this->restaurantId)
@@ -84,16 +72,121 @@ class ProcessMenuImagesJob implements ShouldQueue
                 ->get()
                 ->keyBy('key');
 
-            $unmatched = [];
+            // =========================
+            // FILTER INBOX (STRICT)
+            // =========================
+            $validFiles = [];
+            $ignored = [];
+
+            foreach (glob($inboxAbs . '/*') as $file) {
+
+                if (!is_file($file)) continue;
+
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+
+                $key = $mapping[$filename] ?? $filename;
+
+                if (!isset($items[$key])) {
+
+                    $ignored[] = $filename;
+                    @unlink($file);
+
+                    continue;
+                }
+
+                $validFiles[] = $file;
+            }
+
+            Log::info('INBOX FILTER RESULT', [
+                'valid' => count($validFiles),
+                'ignored' => count($ignored),
+                'ignored_files' => $ignored,
+            ]);
+
+            if (empty($validFiles)) {
+                Log::warning('NO VALID FILES TO PROCESS');
+                Cache::put($statusKey, 'done', now()->addMinutes(30));
+                return;
+            }
+
+            // =========================
+            // COLLECT OLD PATHS
+            // =========================
+            $oldPaths = [];
+
+            foreach ($validFiles as $file) {
+
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $key = $mapping[$filename] ?? $filename;
+
+                if (!isset($items[$key])) continue;
+
+                $item = $items[$key];
+
+                if (!empty($item->image_path)) {
+                    $oldPaths[] = $item->image_path;
+                }
+            }
+
+            $oldPaths = array_unique($oldPaths);
+
+            // =========================
+            // DELETE OLD FILES
+            // =========================
+            $deleted = 0;
+
+            foreach ($oldPaths as $path) {
+
+                $full = public_path('assets/' . ltrim($path, '/'));
+
+                $dir = dirname($full);
+                $name = pathinfo($full, PATHINFO_FILENAME);
+
+                $base = preg_replace('/(@2x|\-\d+)$/', '', $name);
+
+                foreach (glob($dir . '/' . $base . '*') ?: [] as $file) {
+                    if (is_file($file)) {
+                        @unlink($file);
+                        $deleted++;
+                    }
+                }
+            }
+
+            Log::info('OLD FILES DELETED', [
+                'count' => $deleted,
+            ]);
+
+            // =========================
+            // PIPELINE
+            // =========================
+            Artisan::call('images:cron', [
+                '--delete-sources' => true,
+            ]);
+
+            // =========================
+            // PUBLIC FILES
+            // =========================
+            $publicDir = public_path("assets/restaurants/{$this->restaurantId}/menu/items");
+
+            if (!is_dir($publicDir)) {
+                Cache::put($statusKey, 'error', now()->addMinutes(30));
+                return;
+            }
+
+            $files = glob($publicDir . '/*.webp');
+
+            // =========================
+            // MATCH
+            // =========================
             $updates = [];
+            $unmatched = [];
 
             foreach ($files as $file) {
 
                 $filename = pathinfo($file, PATHINFO_FILENAME);
-
                 $pipelineName = preg_replace('/(-\d+|@2x)$/', '', $filename);
 
-                $key = $mapping[$pipelineName] ?? null;
+                $key = $mapping[$pipelineName] ?? $pipelineName;
 
                 if (!$key || !isset($items[$key])) {
                     $unmatched[] = $filename;
@@ -106,19 +199,23 @@ class ProcessMenuImagesJob implements ShouldQueue
                 ];
             }
 
+            // =========================
+            // DB UPDATE
+            // =========================
             foreach ($updates as $u) {
                 Item::where('id', $u['id'])->update([
                     'image_path' => $u['path']
                 ]);
             }
 
-            if (!empty($unmatched)) {
-                Storage::disk('local')->put(
-                    "tmp/import-unmatched/{$this->restaurantId}.json",
-                    json_encode($unmatched, JSON_PRETTY_PRINT)
-                );
-            }
+            Log::info('DB UPDATED', [
+                'updated' => count($updates),
+                'unmatched' => count($unmatched),
+            ]);
 
+            // =========================
+            // RESULT
+            // =========================
             Cache::put($resultKey, [
                 'processed' => count($updates),
                 'unmatched' => count($unmatched),
@@ -127,6 +224,10 @@ class ProcessMenuImagesJob implements ShouldQueue
             Cache::put($statusKey, 'done', now()->addMinutes(30));
 
         } catch (\Throwable $e) {
+
+            Log::error('IMPORT ERROR', [
+                'message' => $e->getMessage(),
+            ]);
 
             Cache::put($statusKey, 'error', now()->addMinutes(30));
         }

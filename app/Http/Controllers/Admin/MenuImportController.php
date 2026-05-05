@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\TenantAccessException;
 use App\Http\Controllers\Controller;
 
+use App\Jobs\ProcessMenuImagesJob;
 use App\Models\Restaurant;
 use App\Models\Section;
 
@@ -16,6 +18,7 @@ use App\Support\Import\MenuPatchApplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class MenuImportController extends Controller
 {
@@ -121,14 +124,16 @@ class MenuImportController extends Controller
             ->withErrors(['menu_json' => __('admin.import.errors.import_failed_open_log')]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function importZip(Request $request, Restaurant $restaurant)
     {
         $this->assertRestaurantAccess($request, $restaurant);
 
-        if (!$restaurant->feature('images')) {
-            abort(403, __('admin.import.errors.feature_not_available'));
-        }
+        $this->assertFeature($request, $restaurant, 'images');
 
+        // (можно убрать позже)
         if ($resp = Permissions::denyRedirect($request->user(), 'import.images_zip')) {
             return $resp;
         }
@@ -138,12 +143,44 @@ class MenuImportController extends Controller
         ]);
 
         try {
-            (new SafeZipExtractor())->extract($request->file('assets_zip'), $restaurant->id);
+            $result = (new SafeZipExtractor())->extract(
+                $request->file('assets_zip'),
+                $restaurant->id
+            );
+
+            ProcessMenuImagesJob::dispatch($restaurant->id);
+
         } catch (\RuntimeException $e) {
             return back()->withErrors(['assets_zip' => __($e->getMessage())]);
         }
 
-        return back()->with('success', __('admin.import.success.zip_imported'));
+        return back()->with('success', 'ZIP загружен. Обработка началась.');
+    }
+
+    /**
+     * @throws TenantAccessException
+     */
+    protected function assertFeature(
+        Request $request,
+        Restaurant $restaurant,
+        string $feature
+    ): void {
+        $user = $request->user();
+
+        if (!$user) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
+
+        if (
+            !$user->is_super_admin &&
+            (int)$user->restaurant_id !== (int)$restaurant->id
+        ) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
+
+        if (!$restaurant->feature($feature)) {
+            throw new TenantAccessException(__('permissions.no_access'));
+        }
     }
 
     public function downloadMenuJson(Request $request, Restaurant $restaurant)
@@ -224,5 +261,30 @@ class MenuImportController extends Controller
         }, $filename, [
             'Content-Type' => 'application/json',
         ]);
+    }
+
+    public function status(Request $request, Restaurant $restaurant)
+    {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        return response()->json([
+            'status' => Cache::get("import:status:{$restaurant->id}"),
+            'result' => Cache::get("import:result:{$restaurant->id}"),
+        ]);
+    }
+
+    public function downloadUnmatched(Request $request, Restaurant $restaurant)
+    {
+        $this->assertRestaurantAccess($request, $restaurant);
+
+        $path = "tmp/import-unmatched/{$restaurant->id}.json";
+
+        if (!Storage::disk('local')->exists($path)) {
+            return back()->withErrors([
+                'import' => 'Файл unmatched не найден'
+            ]);
+        }
+
+        return Storage::disk('local')->download($path);
     }
 }

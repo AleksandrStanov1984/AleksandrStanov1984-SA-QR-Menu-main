@@ -35,6 +35,7 @@
                             accept=".zip,application/zip"
                             required
                         >
+                        <div id="zip-file-name" class="mb-file-name hidden"></div>
                     </label>
 
                 </span>
@@ -55,6 +56,21 @@
             </div>
 
         </form>
+
+        <div id="import-status-block" class="mb-import-result hidden">
+
+            <button type="button" class="mb-import-close" id="import-close-btn">
+                ×
+            </button>
+
+            <div class="mb-import-loader">
+                <span class="mb-spinner"></span>
+                <span id="import-status-text">
+            {{ __('admin.import.status.checking') }}
+        </span>
+            </div>
+
+        </div>
 
     </div>
 

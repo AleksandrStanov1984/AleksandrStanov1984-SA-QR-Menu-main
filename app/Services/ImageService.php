@@ -56,8 +56,14 @@ class ImageService
         }
 
         //  WEBP + RETINA
-        $webp = $full;
-        $retina = str_replace('.webp', '@2x.webp', $full);
+        $dir  = dirname($full);
+        $name = pathinfo($full, PATHINFO_FILENAME);
+
+        $base = preg_replace('/(@2x|\-\d+)$/', '', $name);
+
+        $webp = $dir . '/' . $base . '.webp';
+
+        $retina = $dir . '/' . $base . '@2x.webp';
 
         if (File::exists($webp)) {
             File::delete($webp);
@@ -256,7 +262,6 @@ class ImageService
     {
         $path = ltrim($path, '/');
 
-        // если уже начинается с assets → не дублируем
         if (str_starts_with($path, 'assets/')) {
             return '/' . $path;
         }

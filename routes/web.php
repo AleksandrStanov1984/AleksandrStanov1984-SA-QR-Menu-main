@@ -306,6 +306,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('restaurants/{restaurant}/import/images', [MenuImportController::class, 'images'])
             ->name('restaurants.import.images');
 
+        Route::get(
+            'restaurants/{restaurant}/menu/import-status',
+            [MenuImportController::class, 'status']
+        )->name('restaurants.menu.import_status');
+
+        Route::get(
+            'restaurants/{restaurant}/menu/import-unmatched',
+            [MenuImportController::class, 'downloadUnmatched']
+        )->name('restaurants.menu.import_unmatched');
+
         // HOURS
         Route::post('restaurants/{restaurant}/hours', [RestaurantHoursController::class, 'update'])
             ->name('restaurants.hours.update');

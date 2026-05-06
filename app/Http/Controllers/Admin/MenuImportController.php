@@ -16,6 +16,7 @@ use App\Support\Import\MenuPatchValidator;
 use App\Support\Import\MenuPatchApplier;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
@@ -34,6 +35,9 @@ class MenuImportController extends Controller
         return view('admin.restaurants.import', compact('restaurant'));
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function importJson(Request $request, Restaurant $restaurant)
     {
         $this->assertRestaurantAccess($request, $restaurant);
@@ -87,6 +91,9 @@ class MenuImportController extends Controller
             ->with('success', __('admin.import.success.import_done'));
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function downloadLog(Request $request, Restaurant $restaurant, string $token)
     {
         $this->assertRestaurantAccess($request, $restaurant);
@@ -133,28 +140,51 @@ class MenuImportController extends Controller
 
         $this->assertFeature($request, $restaurant, 'images');
 
-        // (можно убрать позже)
         if ($resp = Permissions::denyRedirect($request->user(), 'import.images_zip')) {
             return $resp;
         }
 
+        Cache::forget("import:status:{$restaurant->id}");
+        Cache::forget("import:result:{$restaurant->id}");
+
         $request->validate([
-            'assets_zip' => ['required', 'file', 'mimetypes:application/zip', 'max:256000'],
+            'assets_zip' => ['required', 'file', 'mimes:zip', 'max:256000'],
         ]);
 
         try {
+
             $result = (new SafeZipExtractor())->extract(
                 $request->file('assets_zip'),
                 $restaurant->id
             );
 
+            Cache::put(
+                "import:status:{$restaurant->id}",
+                'queued',
+                now()->addMinutes(30)
+            );
+
             ProcessMenuImagesJob::dispatch($restaurant->id);
 
-        } catch (\RuntimeException $e) {
-            return back()->withErrors(['assets_zip' => __($e->getMessage())]);
+        } catch (\Throwable $e) {
+
+            Log::error('ZIP IMPORT FAILED', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            Cache::put(
+                "import:status:{$restaurant->id}",
+                'error',
+                now()->addMinutes(30)
+            );
+
+            return back()->withErrors([
+                'assets_zip' => $e->getMessage()
+            ]);
         }
 
-        return back()->with('success', 'ZIP загружен. Обработка началась.');
+        return back()->with('success', __('admin.import.status.zip'));
     }
 
     /**
@@ -263,6 +293,9 @@ class MenuImportController extends Controller
         ]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function status(Request $request, Restaurant $restaurant)
     {
         $this->assertRestaurantAccess($request, $restaurant);
@@ -273,6 +306,9 @@ class MenuImportController extends Controller
         ]);
     }
 
+    /**
+     * @throws TenantAccessException
+     */
     public function downloadUnmatched(Request $request, Restaurant $restaurant)
     {
         $this->assertRestaurantAccess($request, $restaurant);
@@ -281,7 +317,7 @@ class MenuImportController extends Controller
 
         if (!Storage::disk('local')->exists($path)) {
             return back()->withErrors([
-                'import' => 'Файл unmatched не найден'
+                'import' => __('admin.import.status.unmatched')
             ]);
         }
 

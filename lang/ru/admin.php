@@ -508,7 +508,10 @@ return [
             'processing' => 'Обработка изображений...',
             'done'       => 'Результат импорта',
             'error'      => 'Ошибка обработки изображений',
+            'zip'      => 'ZIP загружен. Обработка началась.',
+            'unmatched' => 'Файл unmatched не найден',
         ],
+        'no_file_selected' => 'Файл не выбран',
         'processed' => 'Обработано',
         'unmatched' => 'Не найдено',
         'download_unmatched' => 'Скачать список',
@@ -531,13 +534,13 @@ return [
         'json' => [
             'title' => 'Импорт меню (JSON)',
             'upload' => 'Загрузить JSON',
-            'hint' => 'Загрузите JSON-файл для импорта меню (patch или replace).',
+            'hint' => 'Загрузите JSON-файл для импорта меню.',
         ],
 
         'zip' => [
             'title' => 'Импорт ассетов (ZIP)',
             'upload' => 'Загрузить ZIP',
-            'hint' => 'Загрузите ZIP-архив с изображениями (блюда, логотип, фоны).',
+            'hint' => 'Загрузите ZIP-архив с изображениями блюда, размер архива не более 100МБ.',
         ],
 
         'log' => [
@@ -582,20 +585,13 @@ return [
             'currency_invalid' => 'Недопустимая валюта. Сейчас поддерживается только EUR.',
             'boolean_required' => 'Значение должно быть true или false.',
             'spicy_invalid' => 'Острота должна быть целым числом от 0 до 3.',
-
-            // paths / images
             'image_path_invalid' => 'Путь к изображению указан некорректно.',
             'path_unsafe' => 'Небезопасный путь к файлу (запрещены "..", "\\" и абсолютные пути).',
-
-            // meta
             'meta_object_required' => 'Поле meta должно быть объектом.',
-
-            // translations
             'translations_object_required' => 'Поле translations должно быть объектом.',
             'translation_object_required' => 'Перевод должен быть объектом.',
             'translation_empty' => 'Перевод не содержит ни одного допустимого поля.',
             'locale_not_supported' => 'Язык ":locale" не поддерживается.',
-
             'invalid_json' => 'Невалидный JSON.',
             'unknown' => 'Неизвестная ошибка.',
             'import_failed_open_log' => 'Импорт не выполнен. Откройте «Лог» для деталей.',
@@ -604,25 +600,31 @@ return [
         'rules_modal' => [
             'title' => 'Правила импорта',
 
-            'intro' => 'Загрузите JSON (patch или replace) для импорта меню и ZIP для ассетов. Все изменения применяются только при отсутствии ошибок.',
+            'intro' => 'Импорт поддерживает JSON snapshot/replace для структуры меню и ZIP для изображений. Импорт выполняется только при успешной валидации.',
 
             'patch_title' => 'Формат JSON',
-            'patch_desc' => 'Поддерживаются режимы patch (точечные изменения) и replace (полная замена меню).',
 
-            'patch_example' => "{\n  \"mode\": \"patch\",\n  \"dry_run\": false,\n  \"operations\": [\n    {\n      \"type\": \"item\",\n      \"op\": \"update\",\n      \"key\": \"cheeseburger\",\n      \"set\": {\n        \"price\": \"9.50\",\n        \"translations\": {\"ru\": {\"title\": \"Чизбургер\"}}\n      }\n    }\n  ]\n}\n",
+            'patch_desc' => 'Текущая система использует mode=replace со структурой categories/items/subcategories. Все данные валидируются и санитизируются перед сохранением.',
 
-            'assets_title' => 'ZIP ассеты',
-            'assets_desc' => 'Архив должен содержать файлы по относительным путям. Разрешены: jpg/jpeg/png/webp/svg. SVG очищается.',
+            'patch_example' => "{\n  \"mode\": \"replace\",\n  \"categories\": [\n    {\n      \"key\": \"burgers\",\n      \"type\": \"food\",\n      \"is_active\": true,\n      \"translations\": {\n        \"de\": {\n          \"title\": \"Burger\",\n          \"description\": \"Unsere Burger\"\n        }\n      },\n      \"items\": [\n        {\n          \"key\": \"cheeseburger\",\n          \"price\": \"9.50\",\n          \"currency\": \"EUR\",\n          \"is_active\": true,\n          \"meta\": {\n            \"is_new\": true,\n            \"dish_of_day\": false,\n            \"bestseller\": true,\n            \"spicy\": 0,\n            \"show_image\": true\n          },\n          \"translations\": {\n            \"de\": {\n              \"title\": \"Cheeseburger\",\n              \"description\": \"Mit Käse\",\n              \"details\": \"200g Beef\"\n            }\n          }\n        }\n      ],\n      \"subcategories\": []\n    }\n  ]\n}\n",
 
-            'assets_example' => "branding/logo.png\nbackgrounds/light.jpg\nbackgrounds/dark.jpg\nitems/cheeseburger.jpg\nsocial/icons/instagram.svg\n",
+            'assets_title' => 'ZIP изображения',
+
+            'assets_desc' => 'ZIP должен содержать только изображения блюд. Разрешены: jpg/jpeg/png/webp/svg. SVG автоматически очищается от небезопасного содержимого.',
+
+            'assets_example' => "cheeseburger.jpg\nbig_tasty.webp\ncola.png\ninstagram.svg\n",
 
             'export_title' => 'Экспорт меню',
-            'export_desc' => 'Вы можете скачать текущую структуру меню в формате JSON.',
+
+            'export_desc' => 'Вы можете скачать текущую структуру меню в JSON и использовать её как основу для повторного импорта.',
 
             'notes_title' => 'Важно',
-            'note_atomic' => 'Если файл содержит ошибки — ничего не импортируется.',
-            'note_permissions' => 'Некоторые поля могут быть недоступны в зависимости от тарифного плана и не будут отображаться.',
-            'note_paths' => 'Пути в ZIP и JSON должны быть безопасными: без "..", без абсолютных путей.',
+
+            'note_atomic' => 'Если JSON содержит ошибки — импорт полностью отменяется.',
+
+            'note_permissions' => 'Некоторые функции и поля зависят от тарифного плана ресторана.',
+
+            'note_paths' => 'ZIP не должен содержать вложенные небезопасные пути, .php/.js файлы или исполняемые файлы.',
 
             'copy' => 'Скопировать',
         ],

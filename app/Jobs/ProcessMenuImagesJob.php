@@ -84,7 +84,9 @@ class ProcessMenuImagesJob implements ShouldQueue
 
                 $filename = pathinfo($file, PATHINFO_FILENAME);
 
-                $key = $mapping[$filename] ?? $filename;
+                $normalized = $this->normalizeImageKey($filename);
+
+                $key = $mapping[$normalized] ?? $normalized;
 
                 if (!isset($items[$key])) {
 
@@ -184,7 +186,7 @@ class ProcessMenuImagesJob implements ShouldQueue
             foreach ($files as $file) {
 
                 $filename = pathinfo($file, PATHINFO_FILENAME);
-                $pipelineName = preg_replace('/(-\d+|@2x)$/', '', $filename);
+                $pipelineName = $this->normalizeImageKey($filename);
 
                 $key = $mapping[$pipelineName] ?? $pipelineName;
 
@@ -231,5 +233,14 @@ class ProcessMenuImagesJob implements ShouldQueue
 
             Cache::put($statusKey, 'error', now()->addMinutes(30));
         }
+    }
+
+    private function normalizeImageKey(string $value): string
+    {
+        $value = strtolower(trim($value));
+
+        $value = preg_replace('/(@2x|-\\d+)$/', '', $value);
+
+        return trim($value);
     }
 }

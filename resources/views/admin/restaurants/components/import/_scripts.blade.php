@@ -38,6 +38,27 @@
             }
         });
 
+        document.querySelectorAll('[data-import-input]').forEach(input => {
+
+            input.addEventListener('change', () => {
+
+                const type = input.dataset.importInput;
+
+                const preview = document.querySelector(
+                    `[data-import-file-name="${type}"]`
+                );
+
+                if (!preview) return;
+
+                const file = input.files?.[0];
+
+                preview.textContent = file
+                    ? file.name
+                    : 'Файл не выбран';
+            });
+
+        });
+
         // =========================
 // IMPORT LOG TOGGLE
 // =========================

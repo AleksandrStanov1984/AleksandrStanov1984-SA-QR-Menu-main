@@ -4,30 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Section extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
-       'restaurant_id',
-       'parent_id',
-       'key',
-       'sort_order',
-       'type',
-       'is_active',
-       'title_font',
-       'title_color',
+        'restaurant_id',
+        'parent_id',
+        'key',
+        'sort_order',
+        'type',
+        'is_active',
+        'title_font',
+        'title_color',
     ];
 
     protected $casts = [
-       'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     public function restaurant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-       return $this->belongsTo(Restaurant::class);
+        return $this->belongsTo(Restaurant::class);
     }
 
     public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -42,12 +41,12 @@ class Section extends Model
 
     public function items()
     {
-       return $this->hasMany(Item::class);
+        return $this->hasMany(Item::class);
     }
 
     public function translations()
     {
-       return $this->hasMany(SectionTranslation::class);
+        return $this->hasMany(SectionTranslation::class);
     }
 
     public function isCategory(): bool
@@ -64,18 +63,15 @@ class Section extends Model
     {
         static::deleting(function ($section) {
 
-            if ($section->isForceDeleting()) {
+            $section->items()->each(function ($item) {
+                $item->delete();
+            });
 
-                $section->items()->each(function ($item) {
-                    $item->forceDelete();
-                });
+            $section->children()->each(function ($child) {
+                $child->delete();
+            });
 
-                $section->children()->each(function ($child) {
-                    $child->forceDelete();
-                });
-
-                $section->translations()->delete();
-            }
+            $section->translations()->delete();
         });
     }
 }

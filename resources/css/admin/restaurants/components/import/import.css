@@ -137,6 +137,13 @@
     font-weight: 500;
 }
 
+.mb-import-file-name{
+    margin-top:8px;
+    font-size:13px;
+    color:#9ca3af;
+    word-break:break-all;
+}
+
 /* =========================
    LOADING STATE
 ========================= */

@@ -176,14 +176,9 @@ class RestaurantController extends Controller
     {
         $this->assertRestaurantAccess($request, $restaurant);
 
-        $user = $request->user();
-        $isSuper = $user->is_super_admin;
-
-        $socialLinksQuery = $restaurant->socialLinks()->orderBy('sort_order');
-
-        $socialLinks = $isSuper
-            ? $socialLinksQuery->withTrashed()->get()
-            : $socialLinksQuery->whereNull('deleted_at')->get();
+        $socialLinks = $restaurant->socialLinks()
+            ->orderBy('sort_order')
+            ->get();
 
         $restaurantUser = User::where('restaurant_id', $restaurant->id)
             ->where('is_super_admin', false)
@@ -192,7 +187,6 @@ class RestaurantController extends Controller
         $categories = Section::where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
             ->orderBy('sort_order')
-            ->when($isSuper, fn($q) => $q->withTrashed())
             ->with([
                 'translations:id,section_id,locale,title',
                 'children.translations:id,section_id,locale,title',
@@ -208,8 +202,13 @@ class RestaurantController extends Controller
             'locales' => $restaurant->enabled_locales ?: ['de'],
             'adminLocale' => session('admin_locale', app()->getLocale()),
             'socialLinks' => $socialLinks,
-            'templates' => MenuTemplate::where('is_active', true)->orderBy('sort_order')->get(),
-            'plans' => MenuPlan::where('is_active', true)->orderBy('sort_order')->get(),
+            'templates' => MenuTemplate::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
+
+            'plans' => MenuPlan::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
         ]);
     }
 
@@ -267,9 +266,6 @@ class RestaurantController extends Controller
     {
         $this->assertRestaurantAccess($request, $restaurant);
 
-        $user = $request->user();
-        $isSuper = (bool) ($user->is_super_admin ?? false);
-
         $adminLocale = session('admin_locale', app()->getLocale());
         $locales = $restaurant->enabled_locales ?: ['de'];
 
@@ -278,23 +274,17 @@ class RestaurantController extends Controller
             ->whereNull('parent_id')
             ->orderBy('sort_order');
 
-        if ($isSuper) {
-            $catQuery->withTrashed();
-        }
-
         $categories = $catQuery
             ->with([
                 'translations:id,section_id,locale,title',
 
-                'children' => function ($q) use ($isSuper) {
-                    if ($isSuper) $q->withTrashed();
+                'children' => function ($q) {
 
                     $q->orderBy('sort_order')
                         ->with([
                             'translations:id,section_id,locale,title',
 
-                            'items' => function ($qi) use ($isSuper) {
-                                if ($isSuper) $qi->withTrashed();
+                            'items' => function ($qi) {
 
                                 $qi->orderBy('sort_order')
                                     ->with([
@@ -304,8 +294,7 @@ class RestaurantController extends Controller
                         ]);
                 },
 
-                'items' => function ($qi) use ($isSuper) {
-                    if ($isSuper) $qi->withTrashed();
+                'items' => function ($qi) {
 
                     $qi->orderBy('sort_order')
                         ->with([

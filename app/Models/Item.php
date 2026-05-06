@@ -4,47 +4,43 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
-       'section_id',
-       'key',
-       'sort_order',
-       'price',
-       'currency',
-       'image_path',
-       'meta',
-       'is_active'
+        'section_id',
+        'key',
+        'sort_order',
+        'price',
+        'currency',
+        'image_path',
+        'meta',
+        'is_active',
     ];
 
     protected $casts = [
-       'meta' => 'array',
-       'is_active' => 'boolean',
-       'price' => 'decimal:2'
+        'meta' => 'array',
+        'is_active' => 'boolean',
+        'price' => 'decimal:2',
     ];
 
     public function section()
     {
-       return $this->belongsTo(Section::class);
+        return $this->belongsTo(Section::class);
     }
 
     public function translations()
     {
-       return $this->hasMany(ItemTranslation::class);
+        return $this->hasMany(ItemTranslation::class);
     }
 
     protected static function booted()
     {
         static::deleting(function ($item) {
 
-            if ($item->isForceDeleting()) {
-
-                $item->translations()->delete();
-            }
+            $item->translations()->delete();
         });
     }
 }

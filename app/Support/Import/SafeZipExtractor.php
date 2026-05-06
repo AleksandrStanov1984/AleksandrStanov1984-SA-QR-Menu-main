@@ -3,15 +3,16 @@
 namespace App\Support\Import;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use ZipArchive;
 
 class SafeZipExtractor
 {
-    public const MAX_SIZE_MB = 50;
-    public const MAX_FILES = 300;
-    public const MAX_FILE_SIZE = 5_000_000;
+    public const MAX_SIZE_MB = 300;
+    public const MAX_FILES = 2000;
+    public const MAX_FILE_SIZE = 15_000_000;
 
     protected array $allowedExt = ['jpg','jpeg','png','webp','svg'];
     protected array $blockedExt = ['php','js','exe','bat','cmd','ps1','sh','dll','so','html'];
@@ -64,6 +65,10 @@ class SafeZipExtractor
             try {
                 copy("zip://{$zipPath}#{$stat['name']}", $target);
             } catch (\Throwable $e) {
+                Log::warning('ZIP FILE SKIPPED', [
+                    'name' => $name,
+                    'reason' => 'mime_invalid',
+                ]);
                 continue;
             }
 
@@ -149,9 +154,17 @@ class SafeZipExtractor
     private function normalizeKey(string $value): string
     {
         $value = Str::ascii(strtolower(trim($value)));
-        $value = preg_replace('/[^a-z0-9]+/', '_', $value);
 
-        return trim($value, '_');
+        // разрешаем:
+        // a-z
+        // 0-9
+        // .
+        // -
+        // _
+
+        $value = preg_replace('/[^a-z0-9\.\-_]+/', '-', $value);
+
+        return trim($value, '.-_');
     }
 
     private function cleanup(string $dir): void

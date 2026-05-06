@@ -35,8 +35,13 @@
                             accept=".json,application/json"
                             required
                         >
+                        <div
+                            class="branding-file-name"
+                            data-import-file-name="json"
+                        >
+                            {{ __('admin.import.no_file_selected') }}
+                        </div>
                     </label>
-                </span>
 
                 </div>
 

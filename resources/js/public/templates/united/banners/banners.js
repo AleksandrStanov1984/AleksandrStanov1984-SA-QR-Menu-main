@@ -214,6 +214,47 @@ document.addEventListener('DOMContentLoaded', () => {
         // =========================
         updateDots();
 
+        // =========================
+// iOS TOUCH SUPPORT
+// =========================
+        track.addEventListener('touchstart', (e) => {
+
+            isDown = true;
+            moved = false;
+
+            downTarget = e.target.closest('.banner-item');
+
+            startX = e.touches[0].clientX;
+            scrollLeft = track.scrollLeft;
+
+        }, { passive: true });
+
+        track.addEventListener('touchmove', (e) => {
+
+            if (!isDown) return;
+
+            const x = e.touches[0].clientX - startX;
+
+            if (Math.abs(x) > 12) {
+                moved = true;
+            }
+
+            track.scrollLeft = scrollLeft - x;
+
+        }, { passive: true });
+
+        track.addEventListener('touchend', () => {
+
+            isDown = false;
+
+            track.classList.remove('dragging');
+
+            downTarget = null;
+
+            snapToClosest();
+
+        }, { passive: true });
+
     });
 
     // =========================

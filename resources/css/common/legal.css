@@ -162,6 +162,13 @@
 
 
 @media (max-width: 768px){
-    font-size: clamp(20px, 4vw, 42px);
-    .legal-page__content{ font-size: 15px; }
+
+    .legal-page__title{
+        font-size: clamp(20px, 4vw, 42px);
+    }
+
+    .legal-page__content{
+        font-size: 15px;
+    }
+
 }

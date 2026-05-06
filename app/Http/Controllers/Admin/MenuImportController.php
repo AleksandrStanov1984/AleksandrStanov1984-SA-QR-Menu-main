@@ -139,7 +139,7 @@ class MenuImportController extends Controller
         }
 
         $request->validate([
-            'assets_zip' => ['required', 'file', 'mimetypes:application/zip', 'max:51200'],
+            'assets_zip' => ['required', 'file', 'mimetypes:application/zip', 'max:256000'],
         ]);
 
         try {

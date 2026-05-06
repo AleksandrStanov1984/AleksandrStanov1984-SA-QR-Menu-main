@@ -4,11 +4,7 @@
 | GRID
 |--------------------------------------------------------------------------
 */
-.menu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 14px;
-}
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +28,8 @@
         transform .18s ease,
         box-shadow .18s ease,
         border-color .18s ease;
+    width:100%;
+    min-width:0;
 }
 
 .menu-item:hover {
@@ -266,14 +264,6 @@
         padding: 10px;
         min-height: auto;
         height: auto;
-    }
-
-    .menu-item-media {
-        .menu-item-media{
-            flex: 0 0 64px;
-            width: 64px;
-            height: 64px;
-        }
     }
 
     .menu-item-title{

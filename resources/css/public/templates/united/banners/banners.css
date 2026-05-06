@@ -22,14 +22,10 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding: 6px 0;
-
-    /* ✅ ДОБАВЛЕНО: НАТИВНЫЙ SNAP */
     scroll-snap-type: x mandatory;
     scroll-padding-left: 12px;
-
-    /* уже было, оставляем */
     cursor: grab;
-    touch-action: pan-y;
+    touch-action: pan-x;
 }
 
 .banner-track::-webkit-scrollbar {

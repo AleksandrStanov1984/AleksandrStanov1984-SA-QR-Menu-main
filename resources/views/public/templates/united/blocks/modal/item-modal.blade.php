@@ -1,6 +1,3 @@
-{{-- resources/views/public/templates/united/blocks/modal/item-modal.blade.php --}}
-
-
 <div id="itemModal" class="modal" aria-hidden="true">
 
     <div class="modal-box" role="dialog" aria-modal="true">
@@ -17,7 +14,11 @@
                 decoding="async"
                 style="display:none"
             >
-            <button class="modal-back-btn" type="button" data-close-modal style="display:none">
+
+            <button class="modal-back-btn"
+                    type="button"
+                    data-close-modal
+                    style="display:none">
                 {{ __('public.back_to_menu', [], app()->getLocale()) }}
             </button>
 
@@ -32,6 +33,23 @@
             <div class="modal-spicy" style="display:none"></div>
 
             <div class="modal-price" style="display:none"></div>
+
+        </div>
+
+    </div>
+
+    {{-- IMAGE VIEWER --}}
+    <div class="modal-image-viewer" aria-hidden="true">
+
+        <div class="modal-image-backdrop"></div>
+
+        <div class="modal-image-stage">
+
+            <img
+                class="modal-image-full"
+                src=""
+                alt=""
+            >
 
         </div>
 

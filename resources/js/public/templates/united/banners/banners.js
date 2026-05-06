@@ -215,8 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDots();
 
         // =========================
-// iOS TOUCH SUPPORT
-// =========================
+        // iOS TOUCH SUPPORT
+        // =========================
         track.addEventListener('touchstart', (e) => {
 
             isDown = true;

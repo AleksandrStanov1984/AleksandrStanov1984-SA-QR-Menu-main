@@ -217,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================
-// OPEN
-// =========================
+    // OPEN
+    // =========================
     window.addEventListener('banner-modal:open', (e) => {
 
         if (!e.detail?.src) return;
@@ -247,8 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================
-// CLOSE ELEMENTS
-// =========================
+    // CLOSE ELEMENTS
+    // =========================
     const closeElements = modal.querySelectorAll('[data-banner-modal-close]');
 
     closeElements.forEach(el => {
@@ -262,9 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-// =========================
-// ESC CLOSE
-// =========================
+    // =========================
+    // ESC CLOSE
+    // =========================
     document.addEventListener('keydown', (e) => {
 
         if (e.key === 'Escape') {

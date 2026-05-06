@@ -1,3 +1,4 @@
+{{-- resources/views/admin/restaurants/components/import/_scripts.blade.php --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 

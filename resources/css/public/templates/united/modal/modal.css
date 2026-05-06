@@ -105,11 +105,6 @@
     object-fit: cover;
     border-radius: 14px;
 }
-/*.modal-image{*/
-/*    width:100%;*/
-/*    border-radius:14px;*/
-/*    margin-bottom:10px;*/
-/*}*/
 
 /*
 |--------------------------------------------------------------------------
@@ -149,7 +144,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| BADGES (inside modal)
+| BADGES
 |--------------------------------------------------------------------------
 */
 .menu-modal .menu-item-badge--new{
@@ -177,7 +172,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| BACK BUTTON (under image)
+| BACK BUTTON
 |--------------------------------------------------------------------------
 */
 .modal-back-btn{
@@ -206,7 +201,7 @@
 }
 
 /* ===============================
-   MODAL SCROLLBAR (CUSTOM)
+   MODAL SCROLLBAR
 ================================= */
 .modal-body::-webkit-scrollbar {
     width: 6px;
@@ -254,13 +249,10 @@ html[data-theme="light"]{
     position:fixed;
     inset:0;
     z-index:2000;
-
     display:none;
     align-items:center;
     justify-content:center;
-
     background:rgba(0,0,0,.92);
-
     touch-action:none;
 }
 
@@ -270,41 +262,29 @@ html[data-theme="light"]{
 
 .modal-image-stage{
     position:relative;
-
     width:min(92vw, 1100px);
     height:min(88vh, 900px);
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     overflow:hidden;
-
     border-radius:24px;
-
     background:rgba(20,20,20,.96);
-
     box-shadow:
         0 25px 80px rgba(0,0,0,.45),
         0 0 0 1px rgba(255,255,255,.06);
-
     backdrop-filter:blur(10px);
-
     z-index:2;
 }
 
 .modal-image-full{
     max-width:92%;
     max-height:92%;
-
     object-fit:contain;
-
     transform-origin:center center;
     will-change:transform;
-
     user-select:none;
     -webkit-user-drag:none;
-
     touch-action:none;
     cursor:grab;
 }
@@ -342,11 +322,6 @@ html[data-theme="light"]{
         min-height:0;
     }
 
-    /*.modal-image{*/
-    /*    max-height:200px;*/
-    /*    object-fit:cover;*/
-    /*}*/
-
     .modal-back-btn{
         position:sticky;
         bottom:0;
@@ -376,12 +351,9 @@ html[data-theme="light"]{
 @media (max-width:768px){
 
     .modal-image-stage{
-
         width:100vw;
         height:100vh;
-
         border-radius:0;
-
         background:#000;
     }
 
@@ -413,11 +385,6 @@ html[data-theme="light"]{
         flex:1;
         min-height:0;
     }
-
-    /*.modal-image{*/
-    /*    height:auto;*/
-    /*    object-fit:cover;*/
-    /*}*/
 
     .modal-title{
         font-size:16px;

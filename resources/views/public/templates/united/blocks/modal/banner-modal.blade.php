@@ -1,3 +1,4 @@
+{{-- resources/views/public/templates/united/blocks/modal/banner-modal.blade.php --}}
 <div class="banner-modal" id="bannerModal" aria-hidden="true">
     <div class="banner-modal-backdrop" data-banner-modal-close></div>
 

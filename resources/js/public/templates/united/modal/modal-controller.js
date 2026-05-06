@@ -389,7 +389,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // close button
         if (e.target.closest("[data-close-modal]")) {
 
             e.preventDefault();
@@ -398,7 +397,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // overlay click
         if (box && !box.contains(e.target)) {
             closeModal();
         }

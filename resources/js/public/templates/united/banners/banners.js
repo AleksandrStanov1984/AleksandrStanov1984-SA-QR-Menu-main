@@ -2,6 +2,10 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    console.log('BANNERS JS LOADED');
+
+    console.log('banner items:', document.querySelectorAll('[data-banner-src]').length);
+
     const carousels = document.querySelectorAll('[data-banner-carousel]');
     if (!carousels.length) return;
 
@@ -18,12 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let startX = 0;
         let scrollLeft = 0;
 
+        let moved = false;
+        let downTarget = null;
+
         const step = () => Math.max(track.clientWidth * 0.9, 300);
 
         // =========================
-        // SNAP HELPER (NEW)
+        // SNAP
         // =========================
         function snapToClosest() {
+
             const item = track.querySelector('.banner-item');
             if (!item) return;
 
@@ -39,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // =========================
-        // DOTS LOGIC (FIXED)
+        // DOTS
         // =========================
         function updateDots() {
 
@@ -61,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         dots.forEach(dot => {
+
             dot.addEventListener('click', () => {
 
                 const index = parseInt(dot.dataset.dot);
@@ -77,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
             });
+
         });
 
         // =========================
@@ -85,34 +95,54 @@ document.addEventListener('DOMContentLoaded', () => {
         let scrollTimeout;
 
         track.addEventListener('scroll', () => {
+
             requestAnimationFrame(updateDots);
 
             clearTimeout(scrollTimeout);
+
             scrollTimeout = setTimeout(() => {
-                snapToClosest(); // 🔥 авто-выравнивание
+                snapToClosest();
             }, 120);
+
         });
 
         // =========================
         // ARROWS
         // =========================
         if (prev) {
+
             prev.addEventListener('click', () => {
-                track.scrollBy({ left: -step(), behavior: 'smooth' });
+
+                track.scrollBy({
+                    left: -step(),
+                    behavior: 'smooth'
+                });
+
             });
         }
 
         if (next) {
+
             next.addEventListener('click', () => {
-                track.scrollBy({ left: step(), behavior: 'smooth' });
+
+                track.scrollBy({
+                    left: step(),
+                    behavior: 'smooth'
+                });
+
             });
         }
 
         // =========================
-        // POINTER DRAG (улучшен)
+        // POINTER DRAG + CLICK
         // =========================
         track.addEventListener('pointerdown', (e) => {
+
             isDown = true;
+            moved = false;
+
+            downTarget = e.target.closest('.banner-item');
+
             startX = e.clientX;
             scrollLeft = track.scrollLeft;
 
@@ -120,53 +150,63 @@ document.addEventListener('DOMContentLoaded', () => {
             track.classList.add('dragging');
         });
 
-        track.addEventListener('pointerup', (e) => {
-            isDown = false;
-            try { track.releasePointerCapture(e.pointerId); } catch {}
-            track.classList.remove('dragging');
-
-            snapToClosest(); // 🔥 фикс после drag
-        });
-
-        track.addEventListener('pointerleave', () => {
-            isDown = false;
-            track.classList.remove('dragging');
-        });
-
         track.addEventListener('pointermove', (e) => {
+
             if (!isDown) return;
 
             const x = e.clientX - startX;
+
+            if (Math.abs(x) > 12) {
+                moved = true;
+            }
+
             track.scrollLeft = scrollLeft - x;
         });
 
-        // =========================
-        // MOUSE DRAG (fallback)
-        // =========================
-        track.addEventListener('mousedown', (e) => {
-            isDown = true;
-            startX = e.pageX;
-            scrollLeft = track.scrollLeft;
-            track.classList.add('dragging');
+        track.addEventListener('pointerup', (e) => {
+
+            isDown = false;
+
+            try {
+                track.releasePointerCapture(e.pointerId);
+            } catch {}
+
+            track.classList.remove('dragging');
+
+            // =========================
+            // OPEN MODAL
+            // =========================
+            if (!moved && downTarget) {
+
+                const src = downTarget.dataset.bannerSrc;
+
+                if (src) {
+
+                    window.dispatchEvent(new CustomEvent('banner-modal:open', {
+                        detail: { src }
+                    }));
+
+                }
+            }
+
+            downTarget = null;
+
+            snapToClosest();
         });
 
-        track.addEventListener('mouseleave', () => {
+        track.addEventListener('pointerleave', () => {
+
             isDown = false;
+            downTarget = null;
+
             track.classList.remove('dragging');
         });
 
-        track.addEventListener('mouseup', () => {
-            isDown = false;
-            track.classList.remove('dragging');
-
-            snapToClosest(); // 🔥 фикс
-        });
-
-        track.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - startX;
-            track.scrollLeft = scrollLeft - x;
+        // =========================
+        // CURSOR
+        // =========================
+        carousel.querySelectorAll('.banner-item').forEach(item => {
+            item.style.cursor = 'pointer';
         });
 
         // =========================
@@ -174,6 +214,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // =========================
         updateDots();
 
+    });
+
+    // =========================
+    // MODAL OPEN / CLOSE
+    // =========================
+    const modal = document.getElementById('bannerModal');
+    const modalImg = document.getElementById('bannerModalImage');
+
+    document.querySelectorAll('[data-banner-src]').forEach(el => {
+        el.addEventListener('click', () => {
+
+            modalImg.src = el.dataset.bannerSrc;
+
+            modal.classList.add('active');
+        });
+    });
+
+    modal?.querySelectorAll('[data-close]').forEach(el => {
+        el.addEventListener('click', () => {
+            modal.classList.remove('active');
+            modalImg.src = '';
+        });
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            modal?.classList.remove('active');
+            modalImg.src = '';
+        }
     });
 
 });

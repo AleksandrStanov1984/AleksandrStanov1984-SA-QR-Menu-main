@@ -43,6 +43,7 @@
 /* modal */
 @import "./modal/modal.css";
 @import "./modal/modal-hours.css";
+@import "./modal/modal-banners.css";
 
 /* drawer */
 @import "./drawer/drawer.css";

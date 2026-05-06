@@ -82,6 +82,7 @@
 
 @include('public.templates.united.blocks.modal.item-modal')
 @include('public.templates.united.blocks.modal.hours-modal')
+@include('public.templates.united.blocks.modal.banner-modal')
 
 @include('public.templates.united.blocks.drawer.mobile-drawer')
 <div id="drawerOverlay" class="drawer-overlay"></div>

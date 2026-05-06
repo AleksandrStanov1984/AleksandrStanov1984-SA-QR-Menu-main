@@ -17,6 +17,7 @@ import "./menu/search.js";
 /* modal */
 import "./modal/modal-controller.js";
 import "./modal/modal-hours.js";
+import './modal/modal-banners.js';
 
 /* theme */
 import "./theme/theme-switcher.js";

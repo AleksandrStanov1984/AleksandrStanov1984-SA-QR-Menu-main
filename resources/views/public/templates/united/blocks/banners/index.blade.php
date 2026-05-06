@@ -12,7 +12,10 @@
 
                     @foreach($vm->promoBanners as $index => $banner)
 
-                        <div class="banner-item" data-index="{{ $index }}">
+                        <div class="banner-item"
+                             data-index="{{ $index }}"
+                             data-banner-src="{{ $img->banner($banner['image'], 1200) }}">
+
                             <img
                                 src="{{ $img->banner($banner['image'], 800) }}"
 
@@ -32,7 +35,7 @@
                                 loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
                                 decoding="async"
 
-                                draggable="false" {{-- 🔥 фикс дерганья drag --}}
+                                draggable="false"
                             >
                         </div>
 

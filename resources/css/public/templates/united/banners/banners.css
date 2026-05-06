@@ -63,13 +63,14 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.4);
+    background: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    opacity: 0.4;
+    transform: scale(0.9);
 }
 
 .banner-dot.active {
-    background: #fff;
+    background: var(--text-primary);
     transform: scale(1.2);
 }
 

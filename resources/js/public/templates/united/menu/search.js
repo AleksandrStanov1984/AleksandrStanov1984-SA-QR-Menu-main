@@ -1,26 +1,39 @@
 // resources/js/public/templates/united/menu/search.js
 
-(function initPublicSearch() {
+document.addEventListener('DOMContentLoaded', () => {
 
+    console.log('PUBLIC SEARCH LOADED');
     const input = document.getElementById('publicSearchInput');
     const results = document.getElementById('publicSearchResults');
+
+    console.log(
+        document.querySelectorAll('[data-search]')
+    );
 
     if (!input || !results) {
         return;
     }
 
-    const normalize = (value) => String(value || '').toLowerCase().trim();
+    const normalize = (value) => {
+        return String(value || '')
+            .toLowerCase()
+            .trim();
+    };
 
     let debounceTimer = null;
 
     const getSearchNodes = () => {
-        return Array.from(document.querySelectorAll('[data-search]')).filter(el => {
-            return normalize(el.dataset.search).length > 0;
-        });
+
+        return Array
+            .from(document.querySelectorAll('[data-search]'))
+            .filter(el => {
+                return normalize(el.dataset.search).length > 0;
+            });
     };
 
     input.addEventListener('input', () => {
 
+        console.log('INPUT', input.value);
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
@@ -44,10 +57,17 @@
             found.slice(0, 10).forEach(el => {
 
                 const div = document.createElement('div');
+
                 div.className = 'menu-search-item';
 
-                const label = el.dataset.label || el.dataset.search;
-                const type = el.dataset.type;
+                const label =
+                    el.dataset.label ||
+                    el.dataset.search ||
+                    '';
+
+                const type =
+                    el.dataset.type ||
+                    'item';
 
                 const typeIcon = {
                     category: `
@@ -63,17 +83,25 @@
                         </svg>
                     `,
                     item: `
-    <svg viewBox="0 0 24 24" class="menu-search-svg">
-        <path d="M3 7l9-4 9 4-9 4-9-4z" fill="currentColor"/>
-        <path d="M3 7v10l9 4 9-4V7" fill="none" stroke="currentColor" stroke-width="1.5"/>
-    </svg>
-`
+                        <svg viewBox="0 0 24 24" class="menu-search-svg">
+                            <path d="M3 7l9-4 9 4-9 4-9-4z" fill="currentColor"/>
+                            <path d="M3 7v10l9 4 9-4V7"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"/>
+                        </svg>
+                    `
                 }[type] || '';
 
                 div.innerHTML = `
                     <div class="menu-search-line ${type}">
-                        <span class="menu-search-icon">${typeIcon}</span>
-                        <span class="menu-search-text">${label}</span>
+                        <span class="menu-search-icon">
+                            ${typeIcon}
+                        </span>
+
+                        <span class="menu-search-text">
+                            ${label}
+                        </span>
                     </div>
                 `;
 
@@ -97,7 +125,10 @@
                 results.appendChild(div);
             });
 
-            results.style.display = found.length ? 'block' : 'none';
+            results.style.display =
+                found.length
+                    ? 'block'
+                    : 'none';
 
         }, 120);
 
@@ -105,21 +136,25 @@
 
     document.addEventListener('click', (e) => {
 
-        const isInside = e.target.closest('.menu-search');
+        const inside = e.target.closest('.menu-search');
 
-        if (!isInside) {
+        if (!inside) {
             results.style.display = 'none';
-            input.value = '';
         }
 
     });
 
     document.addEventListener('keydown', (e) => {
+
         if (e.key === 'Escape') {
+
             results.style.display = 'none';
+
             input.value = '';
+
             input.blur();
         }
+
     });
 
     input.addEventListener('focus', () => {
@@ -127,9 +162,11 @@
     });
 
     input.addEventListener('blur', () => {
+
         setTimeout(() => {
             input.classList.remove('is-active');
         }, 100);
+
     });
 
-})();
+});

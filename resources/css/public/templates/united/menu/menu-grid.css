@@ -79,19 +79,6 @@
     height: 0;
 }
 
-.menu-sticky-group {
-    position: relative;
-    z-index: 300;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-top: 6px;
-    padding-bottom: 10px;
-    background: transparent;
-    border-radius: 40px;
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
 .menu-sticky-group.is-fixed {
     position: fixed;
     inset-inline: 0;

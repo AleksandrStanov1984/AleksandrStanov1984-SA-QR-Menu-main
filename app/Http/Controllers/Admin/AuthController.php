@@ -33,14 +33,12 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // remember = false
         if (Auth::attempt($credentials, false)) {
 
             $request->session()->regenerate();
 
             $user = Auth::user();
 
-            // safety
             if (!$user) {
 
                 Auth::logout();

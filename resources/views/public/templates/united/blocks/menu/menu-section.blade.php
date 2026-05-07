@@ -3,29 +3,29 @@
 <div id="menuStickyAnchor" class="menu-sticky-anchor"></div>
 
 <div id="menuStickyGroup" class="menu-sticky-group">
-    <div class="menu-sticky-group__inner">
 
-        {{-- SCROLLSPY --}}
-        @include('public.templates.united.blocks.categories.category-nav')
+    @include('public.templates.united.blocks.categories.category-nav')
 
-        {{-- SEARCH --}}
-        <div class="menu-search-wrap">
-            <div class="menu-search">
-                <input
-                    type="text"
-                    id="publicSearchInput"
-                    placeholder="{{ __('menu.search') }}"
-                    autocomplete="off"
-                >
+    <div class="menu-search-wrap">
 
-                <div
-                    id="publicSearchResults"
-                    class="menu-search-results"
-                ></div>
-            </div>
+        <div class="menu-search">
+
+            <input
+                type="text"
+                id="publicSearchInput"
+                placeholder="{{ __('menu.search') }}"
+                autocomplete="off"
+            >
+
+            <div
+                id="publicSearchResults"
+                class="menu-search-results"
+            ></div>
+
         </div>
 
     </div>
+
 </div>
 
 @foreach($vm->categories as $category)
@@ -34,11 +34,12 @@
         id="section-{{ $category['id'] }}"
         class="menu-section"
         data-search="{{ mb_strtolower($category['title']) }}"
+        data-label="{{ $category['title'] }}"
         data-type="category"
         data-id="{{ $category['id'] }}"
     >
 
-        <h2 class="menu-section-title" >
+        <h2 class="menu-section-title">
             {{ $category['title'] }}
         </h2>
 
@@ -46,12 +47,13 @@
 
             @foreach($category['items'] as $item)
 
-                @include('public.templates.united.blocks.menu.item-card', ['item' => $item])
+                @include('public.templates.united.blocks.menu.item-card', [
+                    'item' => $item
+                ])
 
             @endforeach
 
         </div>
-
 
         @foreach($category['subcategories'] as $subcategory)
 
@@ -61,9 +63,10 @@
                     class="menu-subcategory-title"
                     id="subcategory-{{ $subcategory['id'] }}"
                     data-search="{{ mb_strtolower($subcategory['title']) }}"
+                    data-label="{{ $subcategory['title'] }}"
                     data-type="subcategory"
-                    data-id="{{ $subcategory['id'] }}">
-
+                    data-id="{{ $subcategory['id'] }}"
+                >
                     {{ $subcategory['title'] }}
                 </h3>
 
@@ -71,7 +74,9 @@
 
                     @foreach($subcategory['items'] as $item)
 
-                        @include('public.templates.united.blocks.menu.item-card', ['item' => $item])
+                        @include('public.templates.united.blocks.menu.item-card', [
+                            'item' => $item
+                        ])
 
                     @endforeach
 

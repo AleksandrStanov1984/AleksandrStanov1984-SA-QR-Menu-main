@@ -78,11 +78,9 @@ Route::post('/locale', function () {
 Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/login', [AuthController::class, 'showLogin'])
-        ->middleware('guest')
         ->name('login');
 
     Route::post('/login', [AuthController::class, 'login'])
-        ->middleware('guest')
         ->name('login.submit');
 
     Route::post('/logout', [AuthController::class, 'logout'])

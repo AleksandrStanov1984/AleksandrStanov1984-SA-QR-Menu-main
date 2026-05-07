@@ -47,4 +47,6 @@ return [
     'image_delete' => 'Удалить',
     'image_hint' => 'JPG / PNG / WEBP',
 
+    'default_og_description' => ':name - услуги, цены и информация — удобно в одном месте онлайн.',
+
 ];

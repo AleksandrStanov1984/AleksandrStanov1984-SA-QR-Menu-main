@@ -10,8 +10,19 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    public function showLogin(): View
+    public function showLogin(): View|RedirectResponse
     {
+        if (auth()->check()) {
+
+            $user = auth()->user();
+
+            if ($user?->is_super_admin) {
+                return redirect()->route('admin.restaurants.index');
+            }
+
+            return redirect()->route('admin.menu.profile');
+        }
+
         return view('admin.auth.login');
     }
 
@@ -22,26 +33,30 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (Auth::attempt($credentials, remember: true)) {
+        // remember = false
+        if (Auth::attempt($credentials, false)) {
+
             $request->session()->regenerate();
 
             $user = Auth::user();
 
-            // safety (на всякий)
+            // safety
             if (!$user) {
+
                 Auth::logout();
+
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
+
                 return redirect()->route('admin.login');
             }
 
-            // Обычный пользователь всегда идёт в "Моё меню"
+            // USER
             if (!$user->is_super_admin) {
                 return redirect()->route('admin.menu.profile');
             }
 
-            // Super admin:
-            // если ресторан уже выбран — в "Моё меню", если нет — на список ресторанов
+            // SUPER ADMIN
             if ($request->session()->has('admin.restaurant_id')) {
                 return redirect()->route('admin.menu.profile');
             }

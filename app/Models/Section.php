@@ -64,6 +64,12 @@ class Section extends Model
         static::deleting(function ($section) {
 
             $section->items()->each(function ($item) {
+
+                if ($item->image_path) {
+                    app(\App\Services\ImageService::class)
+                        ->delete($item->image_path);
+                }
+
                 $item->delete();
             });
 

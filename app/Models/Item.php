@@ -40,6 +40,11 @@ class Item extends Model
     {
         static::deleting(function ($item) {
 
+            if ($item->image_path) {
+                app(\App\Services\ImageService::class)
+                    ->delete($item->image_path);
+            }
+
             $item->translations()->delete();
         });
     }

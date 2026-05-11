@@ -148,13 +148,35 @@ class MenuImportController extends Controller
         Cache::forget("import:result:{$restaurant->id}");
 
         $request->validate([
-            'assets_zip' => ['required', 'file', 'mimes:zip', 'max:256000'],
+            'assets_zip' => [
+                'required',
+                'file',
+                'mimes:zip',
+            ],
         ]);
+
+        $file = $request->file('assets_zip');
+
+        $isSuper = (bool) $request->user()?->is_super_admin;
+
+        $maxMb = $isSuper
+            ? config('import.zip.max_mb.super_admin', 100)
+            : config('import.zip.max_mb.user', 50);
+
+        if ($file && $file->getSize() > ($maxMb * 1024 * 1024)) {
+
+            return back()->with(
+                'warning',
+                __('admin.import.errors.zip_too_large', [
+                    'size' => $maxMb,
+                ])
+            );
+        }
 
         try {
 
             $result = (new SafeZipExtractor())->extract(
-                $request->file('assets_zip'),
+                $file,
                 $restaurant->id
             );
 

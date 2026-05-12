@@ -24,7 +24,7 @@ class BillingController extends Controller
 
         $records = $restaurant
             ->billingRecords()
-            ->paginate(20);
+            ->paginate(10);
 
         return view(
             'admin.restaurants.billing',

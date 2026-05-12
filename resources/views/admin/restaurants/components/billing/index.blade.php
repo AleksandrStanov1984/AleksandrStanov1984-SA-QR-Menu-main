@@ -356,8 +356,94 @@
 
 
     {{-- ================= PAGINATION ================= --}}
-    <div class="billing-pagination">
-        {{ $records->links() }}
-    </div>
+    @if($records->lastPage() > 1)
+
+        <div class="pagination">
+
+            {{-- PREV --}}
+            @if($records->onFirstPage())
+
+                <span
+                    class="btn small"
+                    style="
+                        opacity:.4;
+                        pointer-events:none;
+                    "
+                >
+                    ←
+                </span>
+
+            @else
+
+                <a
+                    class="btn small"
+                    href="{{ $records->previousPageUrl() }}"
+                >
+                    ←
+                </a>
+
+            @endif
+
+
+            {{-- PAGES --}}
+            @for($i = 1; $i <= $records->lastPage(); $i++)
+
+                @if($i === $records->currentPage())
+
+                    <span
+                        class="btn small"
+                        style="
+                            background:#2563eb;
+                            border-color:#2563eb;
+                            color:#fff;
+                            font-weight:700;
+                            transform:scale(1.06);
+                            pointer-events:none;
+                        "
+                    >
+                        {{ $i }}
+                    </span>
+
+                @else
+
+                    <a
+                        class="btn small"
+                        href="{{ $records->url($i) }}"
+                    >
+                        {{ $i }}
+                    </a>
+
+                @endif
+
+            @endfor
+
+
+            {{-- NEXT --}}
+            @if($records->hasMorePages())
+
+                <a
+                    class="btn small"
+                    href="{{ $records->nextPageUrl() }}"
+                >
+                    →
+                </a>
+
+            @else
+
+                <span
+                    class="btn small"
+                    style="
+                        opacity:.4;
+                        pointer-events:none;
+                    "
+                >
+                    →
+                </span>
+
+            @endif
+
+        </div>
+
+    @endif
 
 </div>

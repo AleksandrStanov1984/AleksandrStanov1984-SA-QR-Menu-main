@@ -245,6 +245,54 @@ td.billing-danger {
     border-left: 4px solid #ef4444 !important;
 }
 
+.pagination{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.pagination .page-item{
+    list-style:none;
+}
+
+.pagination .page-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:36px;
+    height:36px;
+    padding:0 12px;
+
+    border-radius:10px;
+
+    border:1px solid var(--line);
+
+    background:rgba(255,255,255,.03);
+
+    color:var(--text);
+
+    text-decoration:none;
+
+    transition:.2s;
+}
+
+.pagination .page-link:hover{
+    background:rgba(255,255,255,.08);
+}
+
+.pagination .active .page-link{
+    background:#315efb;
+    border-color:#315efb;
+    color:#fff;
+}
+
+.pagination .disabled .page-link{
+    opacity:.4;
+    pointer-events:none;
+}
+
 @media (min-width: 641px) and (max-width: 1024px) {
 
     .table th,

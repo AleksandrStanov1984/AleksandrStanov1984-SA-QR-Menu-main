@@ -53,13 +53,25 @@ class RestaurantController extends Controller
     /**
      * @throws TenantAccessException
      */
+    // App\Http\Controllers\Admin\RestaurantController.php
+
     public function index(Request $request): View
     {
         $this->assertSuperAdmin($request);
 
-        $restaurants = Restaurant::orderBy('name')->paginate(25);
+        $restaurants = Restaurant::query()
+            ->orderBy('name')
+            ->paginate(20);
 
-        return view('admin.restaurants.index', compact('restaurants'));
+        $plans = MenuPlan::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('admin.restaurants.index', [
+            'restaurants' => $restaurants,
+            'plans' => $plans,
+        ]);
     }
 
     /**
@@ -391,7 +403,10 @@ class RestaurantController extends Controller
     /**
      * @throws TenantAccessException
      */
-    public function toggleActive(Request $request, Restaurant $restaurant): RedirectResponse
+    public function toggleActive(
+        Request $request,
+        Restaurant $restaurant
+    ): RedirectResponse
     {
         $this->assertSuperAdmin($request);
 
@@ -401,15 +416,39 @@ class RestaurantController extends Controller
             abort(404);
         }
 
+        // =========================
+        // ACTIVATING
+        // =========================
+        if (!$restaurant->is_active) {
+
+            if (!$restaurant->canBeActivated()) {
+
+                return back()->with(
+                    'error',
+                    __('billing.activation_not_allowed')
+                );
+            }
+
+            $restaurant->update([
+                'is_active' => true,
+            ]);
+
+            return back()->with(
+                'status',
+                __('billing.restaurant_activated')
+            );
+        }
+
+        // =========================
+        // DEACTIVATING
+        // =========================
         $restaurant->update([
-            'is_active' => !$restaurant->is_active,
+            'is_active' => false,
         ]);
 
         return back()->with(
             'status',
-            $restaurant->is_active
-                ? 'Restaurant activated.'
-                : 'Restaurant deactivated.'
+            __('billing.restaurant_deactivated')
         );
     }
 

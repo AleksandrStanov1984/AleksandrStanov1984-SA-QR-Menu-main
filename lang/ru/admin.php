@@ -131,8 +131,38 @@ return [
         'home' => 'Панель',
     ],
 
+    'billing' => [
+        'trial' => 'Testphase',
+        'paid' => 'Bezahlt',
+        'expired' => 'Abgelaufen',
+        'inactive' => 'Inaktiv',
+        'days_left' => ':days Tage übrig',
+    ],
 
     'restaurants' => [
+
+        'filters' => [
+
+                'search' => 'Nach Name, Slug oder ID suchen...',
+
+                'all_statuses' => 'Alle Status',
+                'active_only' => 'Nur aktiv',
+                'inactive_only' => 'Nur inaktiv',
+
+                'billing_warnings' => 'Billing Warnungen',
+                'warning_days' => 'Warnung (10–6 Tage)',
+                'danger_days' => 'Kritisch (5–0 Tage)',
+
+                'billing_type' => 'Billing Typ',
+
+                'trial' => 'Testphase',
+                'paid' => 'Bezahlt',
+                'expired' => 'Abgelaufen',
+                'inactive' => 'Inaktiv',
+
+                'all_plans' => 'Alle Tarife',
+            ],
+
         'index' => [
             'h1' => 'Объекты',
             'subtitle' => 'Управление всеми объектами (супер-админ)',

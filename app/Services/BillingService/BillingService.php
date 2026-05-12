@@ -93,8 +93,6 @@ class BillingService
         $to = $base->copy()->addMonth();
 
         $restaurant->update([
-            'is_active' => true,
-
             'paid_until' => $to,
         ]);
 

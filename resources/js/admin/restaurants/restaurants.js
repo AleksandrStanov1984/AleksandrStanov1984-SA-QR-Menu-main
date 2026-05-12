@@ -3,11 +3,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const searchInput = document.getElementById('restaurantSearch');
+
     const statusFilter = document.getElementById('restaurantStatusFilter');
+    const billingWarningFilter = document.getElementById('billingWarningFilter');
+    const billingTypeFilter = document.getElementById('billingTypeFilter');
+    const planFilter = document.getElementById('planFilter');
 
     const rows = document.querySelectorAll('#restaurantsTable tbody tr');
 
-    if (!searchInput || !statusFilter || !rows.length) {
+    if (!searchInput || !rows.length) {
         return;
     }
 
@@ -17,34 +21,86 @@ document.addEventListener('DOMContentLoaded', () => {
             .toLowerCase()
             .trim();
 
-        const status = statusFilter.value;
+        const statusValue = statusFilter?.value || '';
+        const warningValue = billingWarningFilter?.value || '';
+        const billingValue = billingTypeFilter?.value || '';
+        const planValue = planFilter?.value || '';
 
         rows.forEach((row) => {
 
             const name = row.dataset.name || '';
             const slug = row.dataset.slug || '';
             const id = row.dataset.id || '';
-            const active = row.dataset.active || '';
 
+            const active = row.dataset.active || '';
+            const plan = row.dataset.plan || '';
+            const billingWarning = row.dataset.billingWarning || '';
+            const billingStatus = row.dataset.billingStatus || '';
+
+            // =========================
+            // SEARCH
+            // =========================
             const matchesSearch =
                 !search ||
                 name.includes(search) ||
                 slug.includes(search) ||
                 id.includes(search);
 
+            // =========================
+            // ACTIVE FILTER
+            // =========================
             const matchesStatus =
-                !status ||
-                active === status;
+                !statusValue ||
+                active === statusValue;
 
-            row.style.display =
-                matchesSearch && matchesStatus
-                    ? ''
-                    : 'none';
+            // =========================
+            // WARNING FILTER
+            // =========================
+            const matchesWarning =
+                !warningValue ||
+                billingWarning === warningValue;
+
+            // =========================
+            // BILLING FILTER
+            // =========================
+            const matchesBilling =
+                !billingValue ||
+                billingStatus === billingValue;
+
+            // =========================
+            // PLAN FILTER
+            // =========================
+            const matchesPlan =
+                !planValue ||
+                plan === planValue;
+
+            // =========================
+            // FINAL
+            // =========================
+            const visible =
+                matchesSearch &&
+                matchesStatus &&
+                matchesWarning &&
+                matchesBilling &&
+                matchesPlan;
+
+            row.style.display = visible
+                ? ''
+                : 'none';
         });
     }
 
+    // =========================
+    // EVENTS
+    // =========================
     searchInput.addEventListener('input', applyFilters);
 
-    statusFilter.addEventListener('change', applyFilters);
+    statusFilter?.addEventListener('change', applyFilters);
+
+    billingWarningFilter?.addEventListener('change', applyFilters);
+
+    billingTypeFilter?.addEventListener('change', applyFilters);
+
+    planFilter?.addEventListener('change', applyFilters);
 
 });

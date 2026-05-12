@@ -335,4 +335,23 @@ class Restaurant extends Model
     {
         return $this->plan?->price;
     }
+
+    public function canBeActivated(): bool
+    {
+        if (
+            $this->trial_ends_at &&
+            $this->trial_ends_at->isFuture()
+        ) {
+            return true;
+        }
+
+        if (
+            $this->paid_until &&
+            $this->paid_until->isFuture()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 }

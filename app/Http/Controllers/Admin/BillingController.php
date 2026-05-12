@@ -177,9 +177,21 @@ class BillingController extends Controller
         $this->assertRestaurantAccess($request, $restaurant);
 
         if (!$request->user()?->is_super_admin) {
+
             return back()->with(
                 'error',
                 __('billing.errors.not_allowed')
+            );
+        }
+
+        // =========================
+        // BILLING CHECK
+        // =========================
+        if (!$restaurant->canBeActivated()) {
+
+            return back()->with(
+                'error',
+                __('billing.errors.activation_not_allowed')
             );
         }
 

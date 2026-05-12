@@ -8,6 +8,7 @@ use App\Models\Restaurant;
 use App\Models\User;
 use App\Services\BillingService\BillingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class BillingLifecycleTest extends TestCase
@@ -57,7 +58,8 @@ class BillingLifecycleTest extends TestCase
     // =========================
     // START TRIAL
     // =========================
-    public function test_trial_can_be_started(): void
+    #[Test]
+    public function trial_can_be_started(): void
     {
         $restaurant = $this->makeRestaurant();
 
@@ -84,7 +86,8 @@ class BillingLifecycleTest extends TestCase
     // =========================
     // CONFIRM PAYMENT
     // =========================
-    public function test_payment_extends_subscription(): void
+    #[Test]
+    public function payment_extends_subscription(): void
     {
         $restaurant = $this->makeRestaurant([
             'is_active' => true,
@@ -116,7 +119,8 @@ class BillingLifecycleTest extends TestCase
     // =========================
     // DEACTIVATE
     // =========================
-    public function test_restaurant_can_be_deactivated(): void
+    #[Test]
+    public function restaurant_can_be_deactivated(): void
     {
         $restaurant = $this->makeRestaurant([
             'is_active' => true,
@@ -147,7 +151,8 @@ class BillingLifecycleTest extends TestCase
     // =========================
     // RESUME
     // =========================
-    public function test_restaurant_can_be_resumed(): void
+    #[Test]
+    public function restaurant_can_be_resumed(): void
     {
         $restaurant = $this->makeRestaurant([
             'is_active' => false,
@@ -173,7 +178,8 @@ class BillingLifecycleTest extends TestCase
     // =========================
     // KEEP DATA
     // =========================
-    public function test_keep_data_can_be_enabled(): void
+    #[Test]
+    public function keep_data_can_be_enabled(): void
     {
         $restaurant = $this->makeRestaurant();
 
@@ -189,7 +195,8 @@ class BillingLifecycleTest extends TestCase
     // =========================
     // EXPIRE
     // =========================
-    public function test_expired_restaurant_becomes_inactive(): void
+    #[Test]
+    public function expired_restaurant_becomes_inactive(): void
     {
         $restaurant = $this->makeRestaurant([
             'is_active' => true,
@@ -202,5 +209,62 @@ class BillingLifecycleTest extends TestCase
         $restaurant->refresh();
 
         $this->assertFalse($restaurant->is_active);
+    }
+
+    #[Test]
+    public function second_trial_does_not_overwrite_trial_used_at(): void
+    {
+        $restaurant = $this->makeRestaurant();
+
+        $admin = $this->makeAdmin();
+
+        $this->billing->startTrial(
+            restaurant: $restaurant,
+            days: 14,
+            confirmedBy: $admin
+        );
+
+        $restaurant->refresh();
+
+        $firstTrialUsedAt = $restaurant->trial_used_at->copy();
+
+        sleep(1);
+
+        $this->billing->startTrial(
+            restaurant: $restaurant,
+            days: 14,
+            confirmedBy: $admin
+        );
+
+        $restaurant->refresh();
+
+        $this->assertTrue(
+            $restaurant->trial_used_at->equalTo($firstTrialUsedAt)
+        );
+    }
+
+    #[Test]
+    public function payment_extends_from_trial_end_date(): void
+    {
+        $restaurant = $this->makeRestaurant([
+            'is_active' => true,
+            'trial_ends_at' => now()->addDays(5),
+        ]);
+
+        $admin = $this->makeAdmin();
+
+        $trialEnd = $restaurant->trial_ends_at->copy();
+
+        $this->billing->confirmPayment(
+            restaurant: $restaurant,
+            confirmedBy: $admin,
+            amount: 29.99
+        );
+
+        $restaurant->refresh();
+
+        $this->assertTrue(
+            $restaurant->paid_until->greaterThan($trialEnd)
+        );
     }
 }

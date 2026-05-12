@@ -7,26 +7,47 @@ use App\Exceptions\TenantAccessException;
 
 class TenantAccessRenderer
 {
-    public function handle(TenantAccessException $e, Request $request)
-    {
+    public function handle(
+        TenantAccessException $e,
+        Request $request
+    ) {
+
         $user = $request->user();
 
-        $resolveFallback = function () use ($request, $user) {
-            if ($user && $user->restaurant_id) {
-                return route('admin.restaurants.edit', $user->restaurant_id);
-            }
-
-            return route('admin.restaurants.index');
-        };
-
         if ($request->expectsJson()) {
+
             return response()->json([
-                'message' => $e->getMessage() ?: __('permissions.no_access'),
+                'message' => $e->getMessage()
+                    ?: __('permissions.no_access'),
             ], 403);
         }
 
+        // =========================
+        // SAFE REDIRECT TARGET
+        // =========================
+        if ($user?->restaurant_id) {
+
+            return redirect()
+                ->route(
+                    'admin.restaurants.menu',
+                    $user->restaurant_id
+                )
+                ->with(
+                    'warning',
+                    $e->getMessage()
+                    ?: __('permissions.no_access')
+                );
+        }
+
+        // =========================
+        // FALLBACK
+        // =========================
         return redirect()
-            ->route('admin.restaurants.menu', $user->restaurant_id)
-            ->with('warning', $e->getMessage() ?: __('permissions.no_access'));
+            ->route('admin.home')
+            ->with(
+                'warning',
+                $e->getMessage()
+                ?: __('permissions.no_access')
+            );
     }
 }

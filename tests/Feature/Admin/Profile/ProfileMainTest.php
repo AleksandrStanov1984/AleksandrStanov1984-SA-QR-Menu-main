@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Restaurant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ProfileMainTest extends TestCase
 {
@@ -32,10 +33,9 @@ class ProfileMainTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    /** @test */
-    public function profile_can_be_updated()
+    #[Test]
+    public function profile_can_be_updated(): void
     {
-        // ❗ свой restaurant с начальными данными (не трогаем setUp)
         $restaurant = Restaurant::factory()->create([
             'name' => 'Old Name',
             'contact_name' => 'Old Contact',
@@ -50,16 +50,19 @@ class ProfileMainTest extends TestCase
             'restaurant_id' => $restaurant->id,
         ]);
 
-        $response = $this->post(route('admin.restaurants.profile.update', $restaurant), [
-            'restaurant_name' => 'New Restaurant',
-            'contact_name' => 'New Contact',
-            'phone' => '999999',
-            'contact_email' => 'test@example.com',
-            'city' => 'Berlin',
-            'postal_code' => '10115',
-            'street' => 'Alexanderplatz',
-            'house_number' => '10',
-        ]);
+        $response = $this->post(
+            route('admin.restaurants.profile.update', $restaurant),
+            [
+                'restaurant_name' => 'New Restaurant',
+                'contact_name' => 'New Contact',
+                'phone' => '999999',
+                'contact_email' => 'test@example.com',
+                'city' => 'Berlin',
+                'postal_code' => '10115',
+                'street' => 'Alexanderplatz',
+                'house_number' => '10',
+            ]
+        );
 
         $response->assertStatus(302);
 
@@ -75,11 +78,14 @@ class ProfileMainTest extends TestCase
         $this->assertEquals('10', $restaurant->house_number);
     }
 
-    /** @test */
-    public function profile_validation_fails_with_invalid_data()
+    #[Test]
+    public function profile_validation_fails_with_invalid_data(): void
     {
-        $response = $this->from(route('admin.restaurants.profile', $this->restaurant))
-            ->post(route('admin.restaurants.profile.update', $this->restaurant), [
+        $response = $this->from(
+            route('admin.restaurants.profile', $this->restaurant)
+        )->post(
+            route('admin.restaurants.profile.update', $this->restaurant),
+            [
                 'restaurant_name' => '',
                 'contact_name' => str_repeat('a', 300),
                 'phone' => '',
@@ -88,9 +94,11 @@ class ProfileMainTest extends TestCase
                 'street' => '',
                 'house_number' => '',
                 'postal_code' => '',
-            ]);
+            ]
+        );
 
         $response->assertStatus(302);
+
         $response->assertSessionHasErrors([
             'restaurant_name',
             'contact_name',
@@ -98,10 +106,9 @@ class ProfileMainTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function user_cannot_change_plan_or_template_from_profile()
+    #[Test]
+    public function user_cannot_change_plan_or_template_from_profile(): void
     {
-        // ❗ отдельный restaurant с планом
         $restaurant = Restaurant::factory()->create([
             'name' => 'Test Restaurant',
             'plan_key' => 'starter',
@@ -113,16 +120,19 @@ class ProfileMainTest extends TestCase
             'is_super_admin' => false,
         ]);
 
-        $response = $this->post(route('admin.restaurants.profile.update', $restaurant), [
-            'restaurant_name' => 'Updated Restaurant',
-            'contact_name' => 'User Contact',
-            'phone' => '123456',
-            'contact_email' => 'user@example.com',
-            'city' => 'Berlin',
-            'street' => 'Alexanderplatz',
-            'house_number' => '10',
-            'postal_code' => '10115',
-        ]);
+        $response = $this->post(
+            route('admin.restaurants.profile.update', $restaurant),
+            [
+                'restaurant_name' => 'Updated Restaurant',
+                'contact_name' => 'User Contact',
+                'phone' => '123456',
+                'contact_email' => 'user@example.com',
+                'city' => 'Berlin',
+                'street' => 'Alexanderplatz',
+                'house_number' => '10',
+                'postal_code' => '10115',
+            ]
+        );
 
         $response->assertStatus(302);
 

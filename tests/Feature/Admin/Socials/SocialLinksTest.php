@@ -8,6 +8,7 @@ use App\Models\Restaurant;
 use App\Models\RestaurantSocialLink;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SocialLinksTest extends TestCase
 {
@@ -40,8 +41,8 @@ class SocialLinksTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    /** @test */
-    public function social_link_can_be_created_with_valid_data()
+    #[Test]
+    public function social_link_can_be_created_with_valid_data(): void
     {
         $this->post(route('admin.restaurants.social_links.store', $this->restaurant), [
             'title' => 'Instagram',
@@ -54,8 +55,8 @@ class SocialLinksTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function url_must_be_valid_https()
+    #[Test]
+    public function url_must_be_valid_https(): void
     {
         $response = $this->post(route('admin.restaurants.social_links.store', $this->restaurant), [
             'title' => 'Instagram',
@@ -65,8 +66,8 @@ class SocialLinksTest extends TestCase
         $response->assertSessionHasErrors('url');
     }
 
-    /** @test */
-    public function uploaded_icon_is_saved_and_used()
+    #[Test]
+    public function uploaded_icon_is_saved_and_used(): void
     {
         $file = UploadedFile::fake()->createWithContent(
             'icon.svg',
@@ -87,30 +88,30 @@ class SocialLinksTest extends TestCase
         $this->assertNotNull($link->icon_path);
     }
 
-    /** @test */
-    public function social_link_can_be_disabled()
-{
-    $link = RestaurantSocialLink::create([
-        'restaurant_id' => $this->restaurant->id,
-        'title' => 'Instagram',
-        'url' => 'https://instagram.com/test',
-        'is_active' => true,
-    ]);
+    #[Test]
+    public function social_link_can_be_disabled(): void
+    {
+        $link = RestaurantSocialLink::create([
+            'restaurant_id' => $this->restaurant->id,
+            'title' => 'Instagram',
+            'url' => 'https://instagram.com/test',
+            'is_active' => true,
+        ]);
 
-    $response = $this->patch(route('admin.restaurants.social_links.toggle_active', [
-        $this->restaurant,
-        $link
-    ]));
+        $response = $this->patch(route('admin.restaurants.social_links.toggle_active', [
+            $this->restaurant,
+            $link
+        ]));
 
-    $response->assertStatus(302);
+        $response->assertStatus(302);
 
-    $link->refresh();
+        $link->refresh();
 
-    $this->assertFalse($link->is_active);
-}
+        $this->assertFalse($link->is_active);
+    }
 
-    /** @test */
-    public function social_link_can_be_updated()
+    #[Test]
+    public function social_link_can_be_updated(): void
     {
         $link = RestaurantSocialLink::create([
             'restaurant_id' => $this->restaurant->id,

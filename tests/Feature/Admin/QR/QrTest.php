@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Restaurant;
 use App\Models\RestaurantQr;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Traits\AdminHelpers;
 
 class QrTest extends TestCase
@@ -30,15 +31,16 @@ class QrTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    /** @test */
-    public function qr_page_loads()
+    #[Test]
+    public function qr_page_loads(): void
     {
         $response = $this->get(route('admin.restaurants.qr', $this->restaurant));
+
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function fallback_is_used_if_qr_not_exists()
+    #[Test]
+    public function fallback_is_used_if_qr_not_exists(): void
     {
         $response = $this->get(route('admin.restaurants.qr', $this->restaurant));
 
@@ -46,10 +48,9 @@ class QrTest extends TestCase
         $response->assertSee('fallback.webp');
     }
 
-    /** @test */
-    public function qr_can_be_generated()
+    #[Test]
+    public function qr_can_be_generated(): void
     {
-        // нужен user с permission → не трогаем setUp user
         $user = User::factory()->create([
             'restaurant_id' => $this->restaurant->id,
             'meta' => [
@@ -61,7 +62,7 @@ class QrTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->post(route('admin.restaurants.qr.generate', $this->restaurant));
+        $this->post(route('admin.restaurants.qr.generate', $this->restaurant));
 
         $this->restaurant->refresh();
 
@@ -69,8 +70,8 @@ class QrTest extends TestCase
         $this->assertNotNull($this->restaurant->qr->qr_path);
     }
 
-    /** @test */
-    public function qr_regenerate_creates_new_path()
+    #[Test]
+    public function qr_regenerate_creates_new_path(): void
     {
         $user = User::factory()->create([
             'restaurant_id' => $this->restaurant->id,
@@ -86,6 +87,7 @@ class QrTest extends TestCase
         $this->post(route('admin.restaurants.qr.generate', $this->restaurant));
 
         $qr = $this->restaurant->qr()->first();
+
         $oldPath = $qr->qr_path;
 
         $this->post(route('admin.restaurants.qr.generate', $this->restaurant));
@@ -95,14 +97,15 @@ class QrTest extends TestCase
         $this->assertNotEquals($oldPath, $qr->qr_path);
     }
 
-    /** @test */
-    public function qr_svg_can_be_downloaded()
+    #[Test]
+    public function qr_svg_can_be_downloaded(): void
     {
         $qrPath = "restaurants/{$this->restaurant->id}/qr/final/test.svg";
 
         $fullPath = public_path('assets/' . $qrPath);
 
         File::ensureDirectoryExists(dirname($fullPath));
+
         File::put($fullPath, '<svg></svg>');
 
         $this->restaurant->qr()->create([
@@ -121,20 +124,24 @@ class QrTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->get(
-            route('admin.restaurants.qr.download', [$this->restaurant, 'svg'])
+            route('admin.restaurants.qr.download', [
+                $this->restaurant,
+                'svg'
+            ])
         );
 
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function qr_pdf_can_be_downloaded()
+    #[Test]
+    public function qr_pdf_can_be_downloaded(): void
     {
         $qrPath = "restaurants/{$this->restaurant->id}/qr/final/test.svg";
 
         $fullPath = public_path('assets/' . $qrPath);
 
         File::ensureDirectoryExists(dirname($fullPath));
+
         File::put($fullPath, '<svg></svg>');
 
         $this->restaurant->qr()->create([
@@ -153,14 +160,17 @@ class QrTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->get(
-            route('admin.restaurants.qr.download', [$this->restaurant, 'pdf'])
+            route('admin.restaurants.qr.download', [
+                $this->restaurant,
+                'pdf'
+            ])
         );
 
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function qr_download_returns_404_if_missing()
+    #[Test]
+    public function qr_download_returns_404_if_missing(): void
     {
         $this->restaurant->qr()->create([
             'qr_path' => 'restaurants/999/qr/final/missing.svg',
@@ -178,13 +188,16 @@ class QrTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->get(
-            route('admin.restaurants.qr.download', [$this->restaurant, 'svg'])
+            route('admin.restaurants.qr.download', [
+                $this->restaurant,
+                'svg'
+            ])
         );
 
         $response->assertStatus(404);
     }
 
-    /** @test */
+    #[Test]
     public function qr_page_is_accessible_for_super_admin(): void
     {
         $user = $this->superAdmin();
@@ -194,7 +207,7 @@ class QrTest extends TestCase
             ->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function qr_download_without_qr_returns_404(): void
     {
         $user = $this->superAdmin();
@@ -204,7 +217,7 @@ class QrTest extends TestCase
             ->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function qr_download_invalid_format_returns_404(): void
     {
         RestaurantQr::factory()->create([

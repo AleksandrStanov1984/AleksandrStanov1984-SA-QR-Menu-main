@@ -8,5 +8,6 @@ import "./ui/select/select.js";
 
 // resources/js/app.js
 import './restaurants/search.js';
+import './restaurants/restaurants.js';
 
 import './restaurants/components/billing/billing.js';

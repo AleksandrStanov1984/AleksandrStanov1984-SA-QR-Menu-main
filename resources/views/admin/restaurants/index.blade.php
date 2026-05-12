@@ -24,8 +24,9 @@
         </a>
     </div>
 
-    {{-- 🔍 SEARCH PANEL --}}
-    <div style="margin-bottom: 12px;">
+    {{-- SEARCH + FILTER --}}
+    <div style="margin-bottom:12px; display:flex; gap:10px; flex-wrap:wrap;">
+
         <input
             type="text"
             id="restaurantSearch"
@@ -33,6 +34,25 @@
             placeholder="Search by name, slug or ID..."
             style="width:100%; max-width:360px;"
         >
+
+        <select
+            id="restaurantStatusFilter"
+            class="input"
+            style="max-width:220px;"
+        >
+            <option value="">
+                All restaurants
+            </option>
+
+            <option value="1">
+                Active only
+            </option>
+
+            <option value="0">
+                Inactive only
+            </option>
+        </select>
+
     </div>
 
     <div class="card" id="restaurantsTable">
@@ -52,16 +72,35 @@
 
                 <tbody>
                 @foreach($restaurants as $r)
+
+                    @php
+                        $billingLevel = null;
+
+                        if ($r->is_active) {
+                            $billingLevel = $r->billingWarningLevel();
+                        }
+                    @endphp
+
                     <tr
+                        data-billing-level="{{ $billingLevel }}"
+                        data-active="{{ $r->is_active ? '1' : '0' }}"
                         data-id="{{ $r->id }}"
                         data-name="{{ strtolower(e($r->name)) }}"
                         data-slug="{{ strtolower(e($r->slug)) }}"
                     >
 
                         {{-- NAME --}}
-                        <td data-label="{{ __('admin.fields.name') }}">
+                        <td
+                            data-label="{{ __('admin.fields.name') }}"
+                            class="
+                                @if($billingLevel === 'warning') billing-warning
+                                @elseif($billingLevel === 'danger') billing-danger
+                                @endif
+                            "
+                        >
                             <div class="restaurant-name js-name">
                                 {{ $r->name }}
+
                                 <div class="restaurant-sub js-slug">
                                     #{{ $r->id }} · {{ $r->slug }}
                                 </div>
@@ -78,6 +117,7 @@
                         {{-- LANGUAGES --}}
                         <td data-label="{{ __('admin.fields.languages') }}" class="mut">
                             {{ implode(', ', $r->enabled_locales ?: ['de']) }}
+
                             <span class="pill small">
                                 {{ $r->default_locale ?: 'de' }}
                             </span>
@@ -87,6 +127,7 @@
                         <td data-label="{{ __('admin.fields.status') }}">
                             <span class="status">
                                 <span class="status-dot {{ $r->is_active ? 'on' : 'off' }}"></span>
+
                                 {{ $r->is_active
                                     ? __('admin.status.active')
                                     : __('admin.status.inactive')
@@ -98,14 +139,18 @@
                         <td class="right actions-desktop" data-label="{{ __('admin.fields.actions') }}">
                             <div class="actions-inline">
 
-                                <a class="btn small"
-                                   href="{{ route('admin.restaurants.edit', $r) }}">
+                                <a
+                                    class="btn small"
+                                    href="{{ route('admin.restaurants.edit', $r) }}"
+                                >
                                     {{ __('admin.actions.edit') }}
                                 </a>
 
-                                <form method="POST"
-                                      action="{{ route('admin.restaurants.toggle', $r) }}"
-                                      class="toggle-form">
+                                <form
+                                    method="POST"
+                                    action="{{ route('admin.restaurants.toggle', $r) }}"
+                                    class="toggle-form"
+                                >
                                     @csrf
 
                                     <label class="switch">
@@ -114,6 +159,7 @@
                                             {{ $r->is_active ? 'checked' : '' }}
                                             onchange="this.form.submit()"
                                         >
+
                                         <span class="slider"></span>
                                     </label>
 

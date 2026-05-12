@@ -237,6 +237,14 @@ SCROLL
     transform: translateX(20px);
 }
 
+td.billing-warning {
+    border-left: 4px solid #facc15 !important;
+}
+
+td.billing-danger {
+    border-left: 4px solid #ef4444 !important;
+}
+
 @media (min-width: 641px) and (max-width: 1024px) {
 
     .table th,

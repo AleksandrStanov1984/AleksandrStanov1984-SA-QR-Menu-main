@@ -234,7 +234,9 @@ class Restaurant extends Model
             return null;
         }
 
-        return now()->diffInDays($until, false);
+        return (int) ceil(
+            now()->floatDiffInDays($until, false)
+        );
     }
 
     public function billingWarningLevel(): ?string

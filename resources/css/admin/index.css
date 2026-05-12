@@ -66,6 +66,8 @@
 
 @import "./restaurants/components/banners/banners.css";
 
+@import "./restaurants/components/billing/billing.css";
+
 @import "./restaurants/components/branding-backgrounds/branding-backgrounds.css";
 @import "./restaurants/components/branding-backgrounds/og/og.css";
 

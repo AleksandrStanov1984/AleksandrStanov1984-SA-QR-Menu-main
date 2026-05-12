@@ -349,6 +349,9 @@ return [
         'import_menu' => 'Импорт меню',
         'import_images' => 'Импорт изображений',
 
+        // ===== BILLING =====
+        'billing' => 'Биллинг',
+
         // ===== SECURITY =====
         'security_group' => 'Безопасность АДМИН',
         'security' => 'Безопасность',

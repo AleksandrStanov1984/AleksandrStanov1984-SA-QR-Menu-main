@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\MenuBuilderController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\MenuImportController;
 use App\Http\Controllers\Admin\RestaurantQrController;
+use App\Http\Controllers\Admin\BillingController;
+
 use App\Http\Controllers\PlatformLegalController;
 
 use App\Http\Controllers\Public\AuthorController;
@@ -129,6 +131,29 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('restaurants/{restaurant}/permissions', [RestaurantController::class, 'permissions'])
             ->name('restaurants.permissions');
+
+
+        // BILLING
+        Route::get('restaurants/{restaurant}/billing', [BillingController::class, 'index']
+            )->name('restaurants.billing');
+
+        Route::post('restaurants/{restaurant}/billing/trial', [BillingController::class, 'startTrial']
+            )->name('restaurants.billing.trial');
+
+        Route::post('restaurants/{restaurant}/billing/confirm', [BillingController::class, 'confirmPayment']
+            )->name('restaurants.billing.confirm');
+
+        Route::post('restaurants/{restaurant}/billing/deactivate', [BillingController::class, 'deactivate']
+            )->name('restaurants.billing.deactivate');
+
+        Route::post('restaurants/{restaurant}/billing/extend-trial',  [BillingController::class, 'extendTrial']
+            )->name('restaurants.billing.extend_trial');
+
+        Route::post('restaurants/{restaurant}/billing/keep-data', [BillingController::class, 'toggleKeepData']
+            )->name('restaurants.billing.keep_data');
+
+        Route::post( 'restaurants/{restaurant}/billing/resume', [BillingController::class, 'resume']
+            )->name('restaurants.billing.resume');
 
 
         // LANGUAGES

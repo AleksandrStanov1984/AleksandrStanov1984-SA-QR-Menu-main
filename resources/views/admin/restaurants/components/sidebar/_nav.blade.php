@@ -135,6 +135,20 @@
             @endif
         </li>
 
+    {{-- ================= BILLING ================= --}}
+                <li class="sb-group-title">💳 {{ __('admin.sidebar.billing_group') }}</li>
+
+                <div class="navbar-divider"></div>
+
+                @if($ctxRestaurant)
+                    <li>
+                        <a href="{{ route('admin.restaurants.billing', $ctxRestaurant) }}"
+                           class="{{ request()->routeIs('admin.restaurants.billing*') ? 'is-active' : '' }}">
+                            💳 {{ __('admin.sidebar.billing') }}
+                        </a>
+                    </li>
+                @endif
+
 
         {{-- ================= SECURITY ================= --}}
         <li class="sb-group-title">🔒 {{ __('admin.sidebar.security') }}</li>

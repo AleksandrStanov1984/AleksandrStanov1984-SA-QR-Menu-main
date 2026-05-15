@@ -200,30 +200,29 @@ class Restaurant extends Model
     // =========================
     public function activeUntil(): ?\Carbon\Carbon
     {
-        if ($this->paid_until) {
+        if (
+            $this->paid_until &&
+            $this->paid_until->isFuture()
+        ) {
             return $this->paid_until;
         }
 
-        if ($this->trial_ends_at) {
+        if (
+            $this->trial_ends_at &&
+            $this->trial_ends_at->isFuture()
+        ) {
             return $this->trial_ends_at;
         }
 
-        return null;
+        return $this->paid_until
+            ?: $this->trial_ends_at;
     }
 
     public function isBillingActive(): bool
     {
-        if (!$this->is_active) {
-            return false;
-        }
-
-        $until = $this->activeUntil();
-
-        if (!$until) {
-            return false;
-        }
-
-        return $until->isFuture();
+        return
+            $this->is_active &&
+            $this->activeUntil()?->isFuture();
     }
 
     public function billingDaysLeft(): ?int
@@ -328,7 +327,35 @@ class Restaurant extends Model
             'name' => $this->name,
             'address' => $address,
             'map_url' => 'https://maps.google.com/?q=' . urlencode($address),
+            'phone_raw' => $this->phone,
+            'phone_pretty' => $this->formatPhone($this->phone),
+            'contact_email' => $this->contact_email,
         ];
+    }
+
+    private function formatPhone(?string $phone): ?string
+    {
+        if (!$phone) {
+            return null;
+        }
+
+        $clean = preg_replace('/[^\d+]/', '', $phone);
+
+        if (!$clean) {
+            return null;
+        }
+
+        if (str_starts_with($clean, '+49')) {
+
+            $rest = substr($clean, 3);
+
+            return '+49 '
+                . substr($rest, 0, 3)
+                . ' '
+                . substr($rest, 3);
+        }
+
+        return $phone;
     }
 
     public function monthlyPrice(): ?float
@@ -353,5 +380,37 @@ class Restaurant extends Model
         }
 
         return false;
+    }
+
+    public function canBePurged(): bool
+    {
+        if ($this->is_active) {
+            return false;
+        }
+
+        if ($this->keep_data) {
+            return false;
+        }
+
+        if (
+            $this->paid_until &&
+            $this->paid_until->copy()->addDays(31)->isFuture()
+        ) {
+            return false;
+        }
+
+        if (
+            !$this->paid_until &&
+            $this->trial_ends_at &&
+            $this->trial_ends_at->copy()->addDays(31)->isFuture()
+        ) {
+            return false;
+        }
+
+        if (!$this->paid_until && !$this->trial_ends_at) {
+            return true;
+        }
+
+        return true;
     }
 }

@@ -15,19 +15,18 @@ class Breadcrumbs
         $isSuper = (bool)($user?->is_super_admin);
 
         // =============================
-        // SUPER ADMIN — БЕЗ РЕСТОРАНА
+        // SUPER ADMIN — БЕЗ ОБЪЕКТА
         // =============================
         if ($isSuper && !$restaurant) {
             return [
                 [
-                    'label' => __('admin.restaurants.index.h1'), // Объекты
-                    // БЕЗ url
+                    'label' => __('admin.restaurants.index.h1'),
                 ],
             ];
         }
 
         // =============================
-        // НЕТ ресторана — обычный пользователь
+        // НЕТ объекта — обычный пользователь
         // =============================
         if (!$restaurant instanceof Restaurant) {
             return [];

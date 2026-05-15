@@ -16,3 +16,7 @@ Schedule::command('images:cron --retina --delete-sources')
 Schedule::command('billing:check-expired')
     ->dailyAt('00:00')
     ->withoutOverlapping();
+
+Schedule::command('restaurants:purge-expired')
+    ->daily()
+    ->withoutOverlapping();

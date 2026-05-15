@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const billingTypeFilter = document.getElementById('billingTypeFilter');
     const planFilter = document.getElementById('planFilter');
 
+    // =========================
+    // TABLE FILTERS
+    // =========================
+    const templateFilter = document.getElementById('templateFilter');
+
     const rows = document.querySelectorAll('#restaurantsTable tbody tr');
 
     if (!searchInput || !rows.length) {
@@ -26,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const billingValue = billingTypeFilter?.value || '';
         const planValue = planFilter?.value || '';
 
+        // =========================
+        // TABLE FILTERS
+        // =========================
+        const templateValue = templateFilter?.value || '';
+
         rows.forEach((row) => {
 
             const name = row.dataset.name || '';
@@ -34,8 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const active = row.dataset.active || '';
             const plan = row.dataset.plan || '';
+
             const billingWarning = row.dataset.billingWarning || '';
             const billingStatus = row.dataset.billingStatus || '';
+
+            // =========================
+            // TABLE DATASETS
+            // =========================
+            const template = row.dataset.template || '';
 
             // =========================
             // SEARCH
@@ -47,25 +63,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 id.includes(search);
 
             // =========================
-            // ACTIVE FILTER
+            // STATUS FILTER
             // =========================
             const matchesStatus =
                 !statusValue ||
                 active === statusValue;
 
             // =========================
-            // WARNING FILTER
+            // BILLING WARNING FILTER
             // =========================
             const matchesWarning =
                 !warningValue ||
                 billingWarning === warningValue;
 
             // =========================
-            // BILLING FILTER
+            // BILLING TYPE FILTER
             // =========================
             const matchesBilling =
                 !billingValue ||
-                billingStatus === billingValue;
+                billingStatus.includes(billingValue);
 
             // =========================
             // PLAN FILTER
@@ -75,6 +91,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 plan === planValue;
 
             // =========================
+            // TEMPLATE FILTER
+            // =========================
+            const matchesTemplate =
+                !templateValue ||
+                template === templateValue;
+
+            // =========================
             // FINAL
             // =========================
             const visible =
@@ -82,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 matchesStatus &&
                 matchesWarning &&
                 matchesBilling &&
-                matchesPlan;
+                matchesPlan &&
+                matchesTemplate;
 
             row.style.display = visible
                 ? ''
@@ -102,5 +126,37 @@ document.addEventListener('DOMContentLoaded', () => {
     billingTypeFilter?.addEventListener('change', applyFilters);
 
     planFilter?.addEventListener('change', applyFilters);
+
+    templateFilter?.addEventListener('change', applyFilters);
+
+    // =========================
+    // DELETE CONFIRM
+    // =========================
+    document.querySelectorAll('.js-restaurant-delete')
+        .forEach((btn) => {
+
+            btn.addEventListener('click', () => {
+
+                const formId = btn.dataset.formId;
+                const message = btn.dataset.confirm;
+
+                showConfirm(message, () => {
+
+                    const form = document.getElementById(formId);
+
+                    if (form) {
+                        form.submit();
+                    }
+
+                });
+
+            });
+
+        });
+
+    // =========================
+    // INITIAL APPLY
+    // =========================
+    applyFilters();
 
 });

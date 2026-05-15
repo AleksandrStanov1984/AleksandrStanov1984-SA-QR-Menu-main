@@ -45,6 +45,32 @@
         </div>
     @endif
 
+    <div class="restaurant-contacts">
+
+        @if(!empty($vm->merchant->phone_raw))
+            <a
+                href="tel:{{ $vm->merchant->phone_raw }}"
+                class="restaurant-contact"
+            >
+                <span>
+                    {{ $vm->merchant->phone_pretty }}
+                </span>
+            </a>
+        @endif
+
+        @if($vm->merchant->contact_email)
+            <a
+                href="mailto:{{ $vm->merchant->contact_email }}"
+                class="restaurant-contact"
+            >
+                <span>
+                    {{ $vm->merchant->contact_email }}
+                </span>
+            </a>
+        @endif
+
+    </div>
+
     @php
         $today = $vm->todayHours ?? ($vm->hours[0] ?? null);
     @endphp

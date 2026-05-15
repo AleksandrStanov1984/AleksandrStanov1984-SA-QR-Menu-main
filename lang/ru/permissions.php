@@ -7,7 +7,7 @@ return [
         'menu' => 'Меню',
         'branding' => 'Брендинг',
         'content' => 'Контент',
-        'restaurant' => 'Ресторан',
+        'restaurant' => 'Объект',
         'socials' => 'Социальные сети',
         'import' => 'Импорт',
         'admin' => 'Администрирование',
@@ -53,8 +53,8 @@ return [
     'theme_manage'     => 'Управление темой',
     'import_manage'    => 'Импорт',
 
-    'restaurant.profile.edit' => 'Редактировать профиль ресторана',
-    'restaurants.edit' => 'Редактировать ресторан (настройки)',
+    'restaurant.profile.edit' => 'Редактировать профиль объекта',
+    'restaurants.edit' => 'Редактировать объект (настройки)',
 
     // socials
     'socials.edit'          => 'Соц. ссылки: изменить',

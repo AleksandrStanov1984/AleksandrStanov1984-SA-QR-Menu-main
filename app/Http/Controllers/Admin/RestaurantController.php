@@ -53,26 +53,26 @@ class RestaurantController extends Controller
     /**
      * @throws TenantAccessException
      */
-    // App\Http\Controllers\Admin\RestaurantController.php
+   public function index()
+   {
+       $restaurants = Restaurant::query()
+           ->latest()
+           ->paginate(20);
 
-    public function index(Request $request): View
-    {
-        $this->assertSuperAdmin($request);
+       $plans = MenuPlan::query()
+           ->orderBy('sort_order')
+           ->get();
 
-        $restaurants = Restaurant::query()
-            ->orderBy('name')
-            ->paginate(20);
+       $templates = MenuTemplate::query()
+           ->orderBy('name')
+           ->get();
 
-        $plans = MenuPlan::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        return view('admin.restaurants.index', [
-            'restaurants' => $restaurants,
-            'plans' => $plans,
-        ]);
-    }
+       return view('admin.restaurants.index', [
+           'restaurants' => $restaurants,
+           'plans' => $plans,
+           'templates' => $templates,
+       ]);
+   }
 
     /**
      * @throws TenantAccessException
@@ -98,19 +98,16 @@ class RestaurantController extends Controller
             'name' => ['required', 'string', 'max:20', 'regex:/^[^\d<>]+$/u'],
             'template_key' => ['required', 'exists:menu_templates,key'],
             'plan_key' => ['required', 'exists:menu_plans,key'],
-
             'phone' => ['nullable', 'string', 'regex:/^\+\d{1,15}$/'],
             'city' => ['nullable', 'string', 'max:50', 'regex:/^[^<>]*$/u'],
             'street' => ['nullable', 'string', 'max:50', 'regex:/^[^<>]*$/u'],
             'house_number' => ['nullable', 'string', 'regex:/^\d{1,3}[A-Za-z]?$/'],
             'postal_code' => ['nullable', 'string', 'regex:/^\d{5}$/'],
-
             'user_name' => ['required', 'string', 'max:255', 'regex:/^[^<>]*$/u'],
             'user_email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6', 'max:255'],
         ]);
 
-        // normalize
         $data['name'] = $this->capFirst($this->cleanText($data['name']));
         $data['city'] = $this->capFirst($this->cleanText($data['city'] ?? null));
         $data['street'] = $this->capFirst($this->cleanText($data['street'] ?? null));
@@ -137,7 +134,6 @@ class RestaurantController extends Controller
             'default_locale' => 'de',
             'enabled_locales' => ['de'],
             'is_active' => true,
-
             'phone' => $data['phone'],
             'city' => $data['city'],
             'street' => $data['street'],
@@ -217,7 +213,6 @@ class RestaurantController extends Controller
             'templates' => MenuTemplate::where('is_active', true)
                 ->orderBy('sort_order')
                 ->get(),
-
             'plans' => MenuPlan::where('is_active', true)
                 ->orderBy('sort_order')
                 ->get(),
@@ -289,15 +284,11 @@ class RestaurantController extends Controller
         $categories = $catQuery
             ->with([
                 'translations:id,section_id,locale,title',
-
                 'children' => function ($q) {
-
                     $q->orderBy('sort_order')
                         ->with([
                             'translations:id,section_id,locale,title',
-
                             'items' => function ($qi) {
-
                                 $qi->orderBy('sort_order')
                                     ->with([
                                         'translations:id,item_id,locale,title,description,details'
@@ -307,7 +298,6 @@ class RestaurantController extends Controller
                 },
 
                 'items' => function ($qi) {
-
                     $qi->orderBy('sort_order')
                         ->with([
                             'translations:id,item_id,locale,title,description,details'
@@ -385,12 +375,6 @@ class RestaurantController extends Controller
     {
         $this->assertSuperAdmin($request);
 
-        $ctx = \App\Support\AdminContext::actingRestaurant();
-
-        if (!$ctx || $ctx->id !== $restaurant->id) {
-            abort(404);
-        }
-
         $restaurant->update([
             'is_active' => false,
         ]);
@@ -410,15 +394,6 @@ class RestaurantController extends Controller
     {
         $this->assertSuperAdmin($request);
 
-        $ctx = \App\Support\AdminContext::actingRestaurant();
-
-        if (!$ctx || $ctx->id !== $restaurant->id) {
-            abort(404);
-        }
-
-        // =========================
-        // ACTIVATING
-        // =========================
         if (!$restaurant->is_active) {
 
             if (!$restaurant->canBeActivated()) {
@@ -439,9 +414,6 @@ class RestaurantController extends Controller
             );
         }
 
-        // =========================
-        // DEACTIVATING
-        // =========================
         $restaurant->update([
             'is_active' => false,
         ]);

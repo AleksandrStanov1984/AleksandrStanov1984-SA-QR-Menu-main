@@ -15,15 +15,11 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->string('qr_path')->nullable();         // финальный QR
-            $table->string('logo_path')->nullable();       // логотип внутри QR
-            $table->string('background_path')->nullable(); // фон QR
-
-            $table->json('settings')->nullable();          // цвет, padding и т.д.
-
+            $table->string('qr_path')->nullable();
+            $table->string('logo_path')->nullable();
+            $table->string('background_path')->nullable();
+            $table->json('settings')->nullable();
             $table->timestamps();
-
-            // 🔥 1 QR на ресторан
             $table->unique('restaurant_id');
         });
     }

@@ -117,10 +117,18 @@ PILLS
 ACTIONS
 ================================= */
 
-.actions-inline {
+.restaurant-actions-row {
     display: flex;
-    gap: 6px;
+    align-items: center;
     justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.toggle-form {
+    margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 
@@ -130,7 +138,8 @@ BUTTONS
 
 .btn.small {
     padding: 6px 10px;
-    font-size: 15px;
+    font-size: 13px;
+    white-space: nowrap;
 }
 
 .btn.ok {
@@ -148,6 +157,27 @@ BUTTONS
 .btn.ghost {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.08);
+}
+
+
+/* ===============================
+DELETE BUTTON
+================================= */
+
+.restaurant-delete-btn {
+    background: #dc2626;
+    border: 1px solid #ef4444;
+    color: #fff;
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.restaurant-delete-btn:hover {
+    background: #b91c1c;
+    border-color: #dc2626;
+    transform: translateY(-1px);
 }
 
 
@@ -191,8 +221,50 @@ SCROLL
     display: none;
 }
 
+
 /* ===============================
-   TOGGLE SWITCH
+TABLE FILTERS
+================================= */
+
+.table-filter-inline {
+    display: inline-flex;
+    position: relative;
+}
+
+.table-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 4px 10px;
+
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.08);
+
+    background: rgba(255,255,255,.03);
+
+    color: rgba(255,255,255,.75);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: .2s;
+}
+
+.table-filter-btn:hover {
+    background: rgba(255,255,255,.06);
+    color: #fff;
+}
+
+.table-filter-btn span {
+    font-size: 10px;
+    opacity: .7;
+}
+
+
+/* ===============================
+TOGGLE SWITCH
 ================================= */
 
 .switch {
@@ -237,61 +309,87 @@ SCROLL
     transform: translateX(20px);
 }
 
+
+/* ===============================
+BILLING STATES
+================================= */
+
+/* 10 → 5 DAYS */
 td.billing-warning {
     border-left: 4px solid #facc15 !important;
 }
 
+/* 5 → 0 DAYS */
 td.billing-danger {
+    border-left: 4px solid #f97316 !important;
+}
+
+/* EXPIRED */
+tr.billing-expired {
+    background: rgba(239,68,68,.06);
+    box-shadow:
+        inset 0 0 0 1px rgba(239,68,68,.22),
+        inset 0 0 18px rgba(239,68,68,.08);
+}
+
+tr.billing-expired:hover {
+    background: rgba(239,68,68,.09) !important;
+}
+
+tr.billing-expired td:first-child {
     border-left: 4px solid #ef4444 !important;
 }
 
-.pagination{
+
+/* ===============================
+PAGINATION
+================================= */
+
+.pagination {
     display:flex;
     align-items:center;
     gap:8px;
     flex-wrap:wrap;
 }
 
-.pagination .page-item{
+.pagination .page-item {
     list-style:none;
 }
 
-.pagination .page-link{
+.pagination .page-link {
     display:flex;
     align-items:center;
     justify-content:center;
-
     min-width:36px;
     height:36px;
     padding:0 12px;
-
     border-radius:10px;
-
     border:1px solid var(--line);
-
     background:rgba(255,255,255,.03);
-
     color:var(--text);
-
     text-decoration:none;
-
     transition:.2s;
 }
 
-.pagination .page-link:hover{
+.pagination .page-link:hover {
     background:rgba(255,255,255,.08);
 }
 
-.pagination .active .page-link{
+.pagination .active .page-link {
     background:#315efb;
     border-color:#315efb;
     color:#fff;
 }
 
-.pagination .disabled .page-link{
+.pagination .disabled .page-link {
     opacity:.4;
     pointer-events:none;
 }
+
+
+/* ===============================
+TABLET
+================================= */
 
 @media (min-width: 641px) and (max-width: 1024px) {
 
@@ -305,11 +403,11 @@ td.billing-danger {
         display: none;
     }
 
-    .actions-inline {
+    .restaurant-actions-row {
         display: flex;
         flex-wrap: nowrap;
         justify-content: flex-end;
-        gap: 4px;
+        gap: 6px;
     }
 
     .btn.small {
@@ -320,7 +418,7 @@ td.billing-danger {
 
     .table th:last-child,
     .table td:last-child {
-        width: 140px;
+        width: 220px;
     }
 }
 
@@ -375,9 +473,15 @@ MOBILE → CARDS
         opacity: 0.6;
     }
 
-    .actions-inline {
+    .restaurant-actions-row {
         justify-content: flex-start;
+        align-items: center;
         margin-top: 8px;
         flex-wrap: wrap;
+    }
+
+    .table-filter-btn {
+        padding: 2px 8px;
+        font-size: 10px;
     }
 }

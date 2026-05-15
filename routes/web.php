@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\MenuImportController;
 use App\Http\Controllers\Admin\RestaurantQrController;
 use App\Http\Controllers\Admin\BillingController;
+use App\Http\Controllers\Admin\RestaurantDeletionController;
 
 use App\Http\Controllers\PlatformLegalController;
 
@@ -123,6 +124,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('restaurants/{restaurant}/toggle', [RestaurantController::class, 'toggleActive'])
             ->name('restaurants.toggle');
+
+        // DELETE OBJECT
+        Route::delete('restaurants/{restaurant}/purge', [RestaurantDeletionController::class, 'destroy'])
+            ->name('restaurants.purge');
 
 
         // PERMISSIONS

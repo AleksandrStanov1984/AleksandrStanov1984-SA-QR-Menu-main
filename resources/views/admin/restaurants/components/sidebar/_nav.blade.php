@@ -15,7 +15,7 @@
         {{-- ================= PROFILE ================= --}}
         <li class="sb-group-title">👤 {{ __('admin.sidebar.profile_group') }}</li>
 
-        <div class="navbar-divider"></div>
+        <div class="sidebar-divider"></div>
         @if($ctxRestaurant)
             <li>
                 <a href="{{ route('admin.restaurants.profile', $ctxRestaurant) }}"
@@ -101,7 +101,6 @@
             </li>
         @endif
 
-
         {{-- ================= MARKETING ================= --}}
         <li class="sb-group-title">📢 {{ __('admin.sidebar.banners_group') }}</li>
 
@@ -137,6 +136,8 @@
 
     {{-- ================= BILLING ================= --}}
                 <li class="sb-group-title">💳 {{ __('admin.sidebar.billing_group') }}</li>
+
+                <div class="sidebar-divider"></div>
 
                 <div class="navbar-divider"></div>
 

@@ -55,55 +55,6 @@
             "
         >
 
-            {{-- ACTIVE --}}
-            <div
-                class="ui-select ui-select--button"
-                style="min-width:200px;"
-            >
-
-                <button
-                    type="button"
-                    class="ui-select-btn"
-                >
-                    {{ __('admin.restaurants.filters.all_statuses') }}
-                </button>
-
-                <div class="ui-select-menu">
-
-                    <div
-                        class="ui-select-option active"
-                        data-target="restaurantStatusFilter"
-                        data-value=""
-                    >
-                        {{ __('admin.restaurants.filters.all_statuses') }}
-                    </div>
-
-                    <div
-                        class="ui-select-option"
-                        data-target="restaurantStatusFilter"
-                        data-value="1"
-                    >
-                        {{ __('admin.restaurants.filters.active_only') }}
-                    </div>
-
-                    <div
-                        class="ui-select-option"
-                        data-target="restaurantStatusFilter"
-                        data-value="0"
-                    >
-                        {{ __('admin.restaurants.filters.inactive_only') }}
-                    </div>
-
-                </div>
-
-                <input
-                    type="hidden"
-                    id="restaurantStatusFilter"
-                    value=""
-                >
-
-            </div>
-
             {{-- BILLING WARNING --}}
             <div
                 class="ui-select ui-select--button"
@@ -274,11 +225,119 @@
 
                 <thead>
                 <tr>
-                    <th>{{ __('admin.fields.name') }}</th>
-                    <th>{{ __('admin.fields.template') }}</th>
-                    <th>{{ __('admin.fields.languages') }}</th>
-                    <th>{{ __('admin.fields.status') }}</th>
-                    <th class="right">{{ __('admin.fields.actions') }}</th>
+
+                    <th>
+                        {{ __('admin.fields.name') }}
+                    </th>
+
+                    {{-- TEMPLATE FILTER --}}
+                    <th>
+
+                        <div class="table-filter-select">
+
+                            <div class="ui-select ui-select--button table-head-select">
+
+                                <button
+                                    type="button"
+                                    class="ui-select-btn"
+                                >
+                                    {{ __('admin.fields.template') }}
+                                </button>
+
+                                <div class="ui-select-menu">
+
+                                    <div
+                                        class="ui-select-option active"
+                                        data-target="templateFilter"
+                                        data-value=""
+                                    >
+                                        {{ __('admin.filters.all') }}
+                                    </div>
+
+                                    @foreach($templates as $template)
+
+                                        <div
+                                            class="ui-select-option"
+                                            data-target="templateFilter"
+                                            data-value="{{ $template->key }}"
+                                        >
+                                            {{ ucfirst($template->name) }}
+                                        </div>
+
+                                    @endforeach
+
+                                </div>
+
+                                <input
+                                    type="hidden"
+                                    id="templateFilter"
+                                    value=""
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </th>
+
+                    {{-- STATUS FILTER --}}
+                    <th>
+
+                        <div class="table-filter-select">
+
+                            <div class="ui-select ui-select--button table-head-select">
+
+                                <button
+                                    type="button"
+                                    class="ui-select-btn"
+                                >
+                                    {{ __('admin.fields.status') }}
+                                </button>
+
+                                <div class="ui-select-menu">
+
+                                    <div
+                                        class="ui-select-option active"
+                                        data-target="restaurantStatusFilter"
+                                        data-value=""
+                                    >
+                                        {{ __('admin.restaurants.filters.all_statuses') }}
+                                    </div>
+
+                                    <div
+                                        class="ui-select-option"
+                                        data-target="restaurantStatusFilter"
+                                        data-value="1"
+                                    >
+                                        {{ __('admin.restaurants.filters.active_only') }}
+                                    </div>
+
+                                    <div
+                                        class="ui-select-option"
+                                        data-target="restaurantStatusFilter"
+                                        data-value="0"
+                                    >
+                                        {{ __('admin.restaurants.filters.inactive_only') }}
+                                    </div>
+
+                                </div>
+
+                                <input
+                                    type="hidden"
+                                    id="restaurantStatusFilter"
+                                    value=""
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </th>
+
+                    <th class="right">
+                        {{ __('admin.fields.actions') }}
+                    </th>
+
                 </tr>
                 </thead>
 
@@ -286,20 +345,40 @@
                 @foreach($restaurants as $r)
 
                     @php
-                        $billingLevel = null;
 
-                        if ($r->is_active) {
-                            $billingLevel = $r->billingWarningLevel();
+                        $billingLevel = $r->billingWarningLevel();
+
+                        $billingStatuses = [];
+
+                        if (!$r->is_active) {
+                            $billingStatuses[] = 'inactive';
                         }
 
-                        $billingStatus = $r->billingStatus();
+                        if ($r->isExpired()) {
+                            $billingStatuses[] = 'expired';
+                        } else {
+                            $billingStatuses[] = $r->billingStatus();
+                        }
+
+                        // =========================
+                        // PRIMARY STATUS
+                        // =========================
+                        $billingStatus = $billingStatuses[0] ?? null;
+
                     @endphp
 
                     <tr
-                        data-billing-warning="{{ $billingLevel }}"
-                        data-billing-status="{{ $billingStatus }}"
+                        class="
+                                @if(in_array('expired', $billingStatuses))
+                                    billing-expired
+                                @endif
+                            "
+
+                            data-billing-warning="{{ $billingLevel }}"
+                        data-billing-status="{{ implode(',', $billingStatuses) }}"
                         data-plan="{{ $r->plan_key }}"
                         data-active="{{ $r->is_active ? '1' : '0' }}"
+                        data-template="{{ $r->template_key }}"
                         data-id="{{ $r->id }}"
                         data-name="{{ strtolower(e($r->name)) }}"
                         data-slug="{{ strtolower(e($r->slug)) }}"
@@ -309,8 +388,10 @@
                         <td
                             data-label="{{ __('admin.fields.name') }}"
                             class="
-                                @if($billingLevel === 'warning') billing-warning
-                                @elseif($billingLevel === 'danger') billing-danger
+                                @if($billingLevel === 'warning')
+                                    billing-warning
+                                @elseif($billingLevel === 'danger')
+                                    billing-danger
                                 @endif
                             "
                         >
@@ -387,17 +468,6 @@
                             </span>
                         </td>
 
-                        {{-- LANGUAGES --}}
-                        <td data-label="{{ __('admin.fields.languages') }}" class="mut">
-
-                            {{ implode(', ', $r->enabled_locales ?: ['de']) }}
-
-                            <span class="pill small">
-                                {{ $r->default_locale ?: 'de' }}
-                            </span>
-
-                        </td>
-
                         {{-- STATUS --}}
                         <td data-label="{{ __('admin.fields.status') }}">
 
@@ -420,15 +490,9 @@
                             data-label="{{ __('admin.fields.actions') }}"
                         >
 
-                            <div class="actions-inline">
+                            <div class="actions-inline restaurant-actions-row">
 
-                                <a
-                                    class="btn small"
-                                    href="{{ route('admin.restaurants.edit', $r) }}"
-                                >
-                                    {{ __('admin.actions.edit') }}
-                                </a>
-
+                                {{-- TOGGLE --}}
                                 <form
                                     method="POST"
                                     action="{{ route('admin.restaurants.toggle', $r) }}"
@@ -450,6 +514,38 @@
 
                                 </form>
 
+                                {{-- EDIT --}}
+                                <a
+                                    class="btn small"
+                                    href="{{ route('admin.restaurants.edit', $r) }}"
+                                >
+                                    {{ __('admin.actions.edit') }}
+                                </a>
+
+                                {{-- DELETE --}}
+                                @if($r->canBePurged())
+
+                                    <form
+                                        id="purge-form-{{ $r->id }}"
+                                        method="POST"
+                                        action="{{ route('admin.restaurants.purge', $r) }}"
+                                    >
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                            type="button"
+                                            class="btn small restaurant-delete-btn js-restaurant-delete"
+                                            data-form-id="purge-form-{{ $r->id }}"
+                                            data-confirm="{{ __('billing.delete.confirm_text') }}"
+                                        >
+                                            {{ __('billing.delete.button') }}
+                                        </button>
+
+                                    </form>
+
+                                @endif
+
                             </div>
 
                         </td>
@@ -461,102 +557,102 @@
             </table>
         </div>
 
-         @if($restaurants->lastPage() > 1)
+        @if($restaurants->hasPages())
 
-             <div
-                 style="
-                     margin-top:20px;
-                     display:flex;
-                     gap:8px;
-                     justify-content:center;
-                     align-items:center;
-                     flex-wrap:wrap;
-                 "
-             >
+            <div
+                style="
+                    margin-top:20px;
+                    display:flex;
+                    gap:8px;
+                    justify-content:center;
+                    align-items:center;
+                    flex-wrap:wrap;
+                "
+            >
 
-                 {{-- PREV --}}
-                 @if($restaurants->onFirstPage())
+                {{-- PREV --}}
+                @if($restaurants->onFirstPage())
 
-                     <span
-                         class="btn small"
-                         style="
-                             opacity:.4;
-                             pointer-events:none;
-                         "
-                     >
-                         ←
-                     </span>
+                    <span
+                        class="btn small"
+                        style="
+                            opacity:.4;
+                            pointer-events:none;
+                        "
+                    >
+                        ←
+                    </span>
 
-                 @else
+                @else
 
-                     <a
-                         class="btn small"
-                         href="{{ $restaurants->previousPageUrl() }}"
-                     >
-                         ←
-                     </a>
+                    <a
+                        class="btn small"
+                        href="{{ $restaurants->previousPageUrl() }}"
+                    >
+                        ←
+                    </a>
 
-                 @endif
+                @endif
 
-                 {{-- PAGES --}}
-                 @for($i = 1; $i <= $restaurants->lastPage(); $i++)
+                {{-- PAGES --}}
+                @for($i = 1; $i <= $restaurants->lastPage(); $i++)
 
-                     @if($i === $restaurants->currentPage())
+                    @if($i === $restaurants->currentPage())
 
-                         <span
-                             class="btn small"
-                             style="
-                                 background:#2563eb;
-                                 border-color:#2563eb;
-                                 color:#fff;
-                                 font-weight:700;
-                                 transform:scale(1.06);
-                                 pointer-events:none;
-                             "
-                         >
-                             {{ $i }}
-                         </span>
+                        <span
+                            class="btn small"
+                            style="
+                                background:#2563eb;
+                                border-color:#2563eb;
+                                color:#fff;
+                                font-weight:700;
+                                transform:scale(1.06);
+                                pointer-events:none;
+                            "
+                        >
+                            {{ $i }}
+                        </span>
 
-                     @else
+                    @else
 
-                         <a
-                             class="btn small"
-                             href="{{ $restaurants->url($i) }}"
-                         >
-                             {{ $i }}
-                         </a>
+                        <a
+                            class="btn small"
+                            href="{{ $restaurants->url($i) }}"
+                        >
+                            {{ $i }}
+                        </a>
 
-                     @endif
+                    @endif
 
-                 @endfor
+                @endfor
 
-                 {{-- NEXT --}}
-                 @if($restaurants->hasMorePages())
+                {{-- NEXT --}}
+                @if($restaurants->hasMorePages())
 
-                     <a
-                         class="btn small"
-                         href="{{ $restaurants->nextPageUrl() }}"
-                     >
-                         →
-                     </a>
+                    <a
+                        class="btn small"
+                        href="{{ $restaurants->nextPageUrl() }}"
+                    >
+                        →
+                    </a>
 
-                 @else
+                @else
 
-                     <span
-                         class="btn small"
-                         style="
-                             opacity:.4;
-                             pointer-events:none;
-                         "
-                     >
-                         →
-                     </span>
+                    <span
+                        class="btn small"
+                        style="
+                            opacity:.4;
+                            pointer-events:none;
+                        "
+                    >
+                        →
+                    </span>
 
-                 @endif
+                @endif
 
-             </div>
+            </div>
 
-         @endif
+        @endif
 
     </div>
 

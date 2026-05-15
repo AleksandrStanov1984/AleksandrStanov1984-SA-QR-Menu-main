@@ -132,36 +132,36 @@ return [
     ],
 
     'billing' => [
-        'trial' => 'Testphase',
-        'paid' => 'Bezahlt',
-        'expired' => 'Abgelaufen',
-        'inactive' => 'Inaktiv',
-        'days_left' => ':days Tage übrig',
+        'trial' => 'Тестовый период',
+        'paid' => 'Оплачено',
+        'expired' => 'Истёк',
+        'inactive' => 'Неактивен',
+        'days_left' => 'Осталось :days дн.',
     ],
 
     'restaurants' => [
 
         'filters' => [
 
-                'search' => 'Nach Name, Slug oder ID suchen...',
+            'search' => 'Поиск по имени, slug или ID...',
 
-                'all_statuses' => 'Alle Status',
-                'active_only' => 'Nur aktiv',
-                'inactive_only' => 'Nur inaktiv',
+            'all_statuses' => 'Cтатусы',
+            'active_only' => 'Активные',
+            'inactive_only' => 'Неактивные',
 
-                'billing_warnings' => 'Billing Warnungen',
-                'warning_days' => 'Warnung (10–6 Tage)',
-                'danger_days' => 'Kritisch (5–0 Tage)',
+            'billing_warnings' => 'Warning',
+            'warning_days' => '(10–6 дней)',
+            'danger_days' => '(5–0 дней)',
 
-                'billing_type' => 'Billing Typ',
+            'billing_type' => 'Тип',
 
-                'trial' => 'Testphase',
-                'paid' => 'Bezahlt',
-                'expired' => 'Abgelaufen',
-                'inactive' => 'Inaktiv',
+            'trial' => 'Тестовый период',
+            'paid' => 'Оплачено',
+            'expired' => 'Истёк',
+            'inactive' => 'Неактивен',
 
-                'all_plans' => 'Alle Tarife',
-            ],
+            'all_plans' => 'Тарифы',
+        ],
 
         'index' => [
             'h1' => 'Объекты',
@@ -225,7 +225,7 @@ return [
                 'menu' => 'Меню',
                 'branding' => 'Брендинг',
                 'import' => 'Импорт',
-                'restaurant' => 'Ресторан',
+                'restaurant' => 'Объект',
                 'admin' => 'Админка',
                 'content' => 'Контент',
                 'other' => 'Другое',
@@ -349,13 +349,15 @@ return [
     ],
 
     'sidebar' => [
+        'billing_group' => 'Подписка',
+
         // ===== PROFILE =====
         'profile_group' => 'Профиль',
         'profile' => 'Профиль',
         'languages' => 'Языки',
 
         // ===== RESTAURANT =====
-        'restaurant_group' => 'Ресторан',
+        'restaurant_group' => 'Объект',
         'settings' => 'Настройки',
         'hours' => 'График работы',
 
@@ -671,7 +673,7 @@ return [
 
             'note_atomic' => 'Если JSON содержит ошибки — импорт полностью отменяется.',
 
-            'note_permissions' => 'Некоторые функции и поля зависят от тарифного плана ресторана.',
+            'note_permissions' => 'Некоторые функции и поля зависят от тарифного плана объекта.',
 
             'note_paths' => 'ZIP не должен содержать вложенные небезопасные пути, .php/.js файлы или исполняемые файлы.',
 

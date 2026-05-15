@@ -63,7 +63,6 @@ trait AccessGuardTrait
     }
 
     /**
-     * Проверка: модель принадлежит ресторану
      * @throws TenantAccessException
      */
     protected function assertBelongs(

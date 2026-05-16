@@ -1,10 +1,4 @@
 /* resources/css/public/templates/united/menu/item-card.css */
-/*
-|--------------------------------------------------------------------------
-| GRID
-|--------------------------------------------------------------------------
-*/
-
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +24,7 @@
         border-color .18s ease;
     width:100%;
     min-width:0;
+    height: 140px;
 }
 
 .menu-item:hover {
@@ -91,9 +86,14 @@
 .menu-item-content {
     flex: 1;
     min-width: 0;
+
+    height: 100%;
+
     display: flex;
     flex-direction: column;
-    justify-content: center;
+
+    justify-content: flex-start;
+
     gap: 4px;
 }
 
@@ -153,9 +153,18 @@
 */
 .menu-item-title {
     margin: 0;
+
     font-size: 15px;
     font-weight: 600;
     line-height: 1.2;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    min-height: 1.2em;
+    max-height: 1.2em;
 }
 
 .menu-item-description {
@@ -168,6 +177,8 @@
 }
 
 .menu-item-price {
+    margin-top: auto;
+
     font-size: 13px;
     font-weight: 700;
 }
@@ -291,7 +302,6 @@
         align-items: center;
         padding: 10px;
         min-height: auto;
-        height: auto;
     }
 
     .menu-item-title{
@@ -323,25 +333,20 @@
         padding: 10px;
         gap: 10px;
         min-height: auto;
-        height: auto;
-    }
-
-    /* CONTENT */
-    .menu-item-content{
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
     }
 
     /* TITLE */
     .menu-item-title{
         font-size: 14px;
         font-weight: 600;
-        white-space: nowrap;
+        line-height: 1.2;
+
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
+
+        min-height: 1.2em;
+        max-height: 1.2em;
     }
 
     /* DESCRIPTION */

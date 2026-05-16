@@ -39,21 +39,6 @@
 
     </div>
 
-    {{-- IMAGE VIEWER --}}
-    <div class="modal-image-viewer" aria-hidden="true">
 
-        <div class="modal-image-backdrop"></div>
-
-        <div class="modal-image-stage">
-
-            <img
-                class="modal-image-full"
-                src=""
-                alt=""
-            >
-
-        </div>
-
-    </div>
 
 </div>

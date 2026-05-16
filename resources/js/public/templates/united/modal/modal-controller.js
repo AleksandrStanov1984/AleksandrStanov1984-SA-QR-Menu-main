@@ -93,14 +93,18 @@ document.addEventListener("DOMContentLoaded", () => {
         resetViewer();
     }
 
-    // OPEN IMAGE VIEWER
+    // OPEN GLOBAL BANNER MODAL
     if (imgEl) {
 
         imgEl.addEventListener('click', () => {
 
             if (!imgEl.src) return;
 
-            openViewer(imgEl.src);
+            window.dispatchEvent(new CustomEvent('banner-modal:open', {
+                detail: {
+                    src: imgEl.src
+                }
+            }));
 
         });
 

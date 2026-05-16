@@ -1,5 +1,5 @@
 {{-- resources/views/admin/restaurants/components/banners/_scripts.blade.php --}}
-{{-- admin/restaurants/components/banners/_scripts --}}
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 

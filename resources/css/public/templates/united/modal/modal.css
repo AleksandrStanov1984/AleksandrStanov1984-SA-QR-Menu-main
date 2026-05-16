@@ -253,7 +253,7 @@ html[data-theme="light"]{
     align-items:center;
     justify-content:center;
     background:rgba(0,0,0,.92);
-    touch-action:none;
+    touch-action:manipulation;
 }
 
 .modal-image-viewer.is-visible{
@@ -285,7 +285,7 @@ html[data-theme="light"]{
     will-change:transform;
     user-select:none;
     -webkit-user-drag:none;
-    touch-action:none;
+    touch-action:manipulation;
     cursor:grab;
 }
 

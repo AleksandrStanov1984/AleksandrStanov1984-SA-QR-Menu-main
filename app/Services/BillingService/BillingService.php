@@ -13,7 +13,7 @@ class BillingService
     // =========================
     public function startTrial(
         Restaurant $restaurant,
-        int $days = 14,
+        int $days = 30,
         ?User $confirmedBy = null
     ): void {
 
@@ -25,32 +25,23 @@ class BillingService
 
         $restaurant->update([
             'is_active' => true,
-
             'trial_ends_at' => $to,
 
             // IMPORTANT:
-            // first trial activation only
             'trial_used_at' => $restaurant->trial_used_at ?: now(),
         ]);
 
         BillingRecord::create([
             'restaurant_id' => $restaurant->id,
-
             'confirmed_by' => $confirmedBy?->id,
-
             'type' => BillingRecord::TYPE_TRIAL,
             'status' => BillingRecord::STATUS_CONFIRMED,
-
             'plan_key' => $restaurant->plan_key,
-
             'amount' => 0,
             'currency' => 'EUR',
-
             'period_from' => $from,
             'period_to' => $to,
-
             'confirmed_at' => now(),
-
             'notes' => 'Trial started',
         ]);
     }
@@ -98,22 +89,15 @@ class BillingService
 
         BillingRecord::create([
             'restaurant_id' => $restaurant->id,
-
             'confirmed_by' => $confirmedBy->id,
-
             'type' => BillingRecord::TYPE_PAYMENT,
             'status' => BillingRecord::STATUS_CONFIRMED,
-
             'plan_key' => $restaurant->plan_key,
-
             'amount' => $amount,
             'currency' => 'EUR',
-
             'period_from' => $from,
             'period_to' => $to,
-
             'confirmed_at' => now(),
-
             'notes' => 'Manual payment confirmed',
         ]);
     }
@@ -129,11 +113,8 @@ class BillingService
         // =========================
         // BURN TRIAL
         // =========================
-        if (
-            $restaurant->trial_ends_at &&
-            !$restaurant->paid_until
-        ) {
-
+        if ( $restaurant->trial_ends_at && !$restaurant->paid_until)
+        {
             $restaurant->trial_ends_at = now();
         }
 
@@ -143,19 +124,13 @@ class BillingService
 
         BillingRecord::create([
             'restaurant_id' => $restaurant->id,
-
             'confirmed_by' => $confirmedBy?->id,
-
             'type' => BillingRecord::TYPE_DEACTIVATION,
             'status' => BillingRecord::STATUS_CONFIRMED,
-
             'plan_key' => $restaurant->plan_key,
-
             'period_from' => now(),
             'period_to' => now(),
-
             'confirmed_at' => now(),
-
             'notes' => 'Restaurant manually deactivated',
         ]);
     }
@@ -174,19 +149,13 @@ class BillingService
 
         BillingRecord::create([
             'restaurant_id' => $restaurant->id,
-
             'confirmed_by' => $confirmedBy?->id,
-
             'type' => BillingRecord::TYPE_RESUME,
             'status' => BillingRecord::STATUS_CONFIRMED,
-
             'plan_key' => $restaurant->plan_key,
-
             'period_from' => now(),
             'period_to' => now(),
-
             'confirmed_at' => now(),
-
             'notes' => 'Restaurant manually resumed',
         ]);
     }
@@ -202,20 +171,14 @@ class BillingService
 
         BillingRecord::create([
             'restaurant_id' => $restaurant->id,
-
             'type' => BillingRecord::TYPE_EXPIRATION,
             'status' => BillingRecord::STATUS_SYSTEM,
-
             'plan_key' => $restaurant->plan_key,
-
             'period_from' => $restaurant->paid_until
                 ?: $restaurant->trial_ends_at,
-
             'period_to' => $restaurant->paid_until
                 ?: $restaurant->trial_ends_at,
-
             'confirmed_at' => now(),
-
             'notes' => 'Subscription expired automatically',
         ]);
     }
@@ -232,37 +195,27 @@ class BillingService
 
         $base = $restaurant->trial_ends_at &&
                 $restaurant->trial_ends_at->isFuture()
-
             ? $restaurant->trial_ends_at->copy()
-
             : now();
 
         $to = $base->copy()->addDays($days);
 
         $restaurant->update([
             'is_active' => true,
-
             'trial_ends_at' => $to,
         ]);
 
         BillingRecord::create([
             'restaurant_id' => $restaurant->id,
-
             'confirmed_by' => $confirmedBy->id,
-
             'type' => BillingRecord::TYPE_MANUAL_EXTENSION,
             'status' => BillingRecord::STATUS_CONFIRMED,
-
             'plan_key' => $restaurant->plan_key,
-
             'amount' => 0,
             'currency' => 'EUR',
-
             'period_from' => $base,
             'period_to' => $to,
-
             'confirmed_at' => now(),
-
             'notes' => $note ?: 'Trial manually extended',
         ]);
     }

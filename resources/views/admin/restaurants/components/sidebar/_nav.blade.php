@@ -137,8 +137,6 @@
     {{-- ================= BILLING ================= --}}
                 <li class="sb-group-title">💳 {{ __('admin.sidebar.billing_group') }}</li>
 
-                <div class="sidebar-divider"></div>
-
                 <div class="navbar-divider"></div>
 
                 @if($ctxRestaurant)

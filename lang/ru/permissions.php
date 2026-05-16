@@ -60,7 +60,7 @@ return [
     'socials.edit'          => 'Соц. ссылки: изменить',
     'socials.delete'        => 'Соц. ссылки: удалить',
     'socials.icon.upload'   => 'Соц. ссылки: загрузка SVG иконки',
-    'socials.toggle.active' => 'Соц. ссылки: активировать/деактивировать',
+    'socials.toggle.active' => 'Соц. ссылки: актив/деактив',
 
     'socials.add.3' => 'Соц. ссылки: можно 3 ссылки',
     'socials.add.4' => 'Соц. ссылки: можно 4 ссылки',

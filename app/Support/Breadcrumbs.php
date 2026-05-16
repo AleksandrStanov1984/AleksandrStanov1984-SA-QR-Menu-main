@@ -110,6 +110,42 @@ class Breadcrumbs
                 ['label' => __('admin.sidebar.permissions')],
             ],
 
+            // BILLING
+            str_starts_with($route, 'admin.restaurants.billing') => [
+                ...$base,
+                ['label' => __('admin.sidebar.billing')],
+            ],
+
+            // LANGUAGES
+            str_starts_with($route, 'admin.restaurants.languages') => [
+                ...$base,
+                ['label' => __('admin.sidebar.languages')],
+            ],
+
+            // IMPORT
+            str_starts_with($route, 'admin.restaurants.import') => [
+                ...$base,
+                ['label' => __('admin.sidebar.import')],
+            ],
+
+            str_starts_with($route, 'admin.restaurants.menu.import_') => [
+                ...$base,
+                ['label' => __('admin.sidebar.import')],
+            ],
+
+            // SECURITY (USER)
+            str_starts_with($route, 'admin.restaurants.credentials') => [
+                ...$base,
+                ['label' => __('admin.sidebar.password')],
+            ],
+
+            // SECURITY (ADMIN)
+            str_starts_with($route, 'admin.security.') => [
+                [
+                    'label' => __('admin.sidebar.security'),
+                ],
+            ],
+
             default => $base,
         };
     }

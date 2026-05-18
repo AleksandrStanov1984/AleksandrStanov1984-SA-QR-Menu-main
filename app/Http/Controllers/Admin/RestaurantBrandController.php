@@ -149,14 +149,8 @@ class RestaurantBrandController extends Controller
 
         $locale = $request->input('locale');
 
-        $limit = $restaurant->feature('og_limit');
-
         $meta = is_array($restaurant->meta) ? $restaurant->meta : [];
         $meta['og'] = $meta['og'] ?? [];
-
-        if ($limit !== null && count($meta['og']) >= $limit && empty($meta['og'][$locale])) {
-            return back()->with('error', 'OG limit reached for your plan');
-        }
 
         try {
             $pipeline = app(\App\Services\ImagePipelineService::class);

@@ -2,12 +2,9 @@
 
 @php
     $locales = config('locales.all', ['de']);
-    $limit = $restaurant->feature('og_limit');
 
     $meta = is_array($restaurant->meta ?? null) ? $restaurant->meta : [];
     $og = $meta['og'] ?? [];
-
-    $filledCount = count(array_filter($og));
 
 @endphp
 
@@ -38,7 +35,7 @@
                     <img src="{{ $url }}" class="og-preview">
 
                     {{-- UPLOAD --}}
-                    @if(!$hasImage && ($limit === null || $filledCount < $limit))
+                    @if(!$hasImage)
 
                         <form method="POST"
                               enctype="multipart/form-data"

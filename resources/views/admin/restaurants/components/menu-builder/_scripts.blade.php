@@ -5,6 +5,69 @@
 <script>
 (function(){
 
+// ----------------------------
+// TERMINAL PRICE INPUT
+// ----------------------------
+document.addEventListener('input', function (e) {
+
+    const input = e.target;
+
+    if (
+        !input.matches('#mbItemForm input[name="price"]')
+    ) {
+        return;
+    }
+
+    let raw = input.value || '';
+
+    // only digits
+    raw = raw.replace(/\D/g, '');
+
+    if (!raw.length) {
+        input.value = '';
+        return;
+    }
+
+    // minimum 3 digits
+    raw = raw.padStart(3, '0');
+
+    const euros = raw.slice(0, -2);
+    const cents = raw.slice(-2);
+
+    // remove leading zeros
+    const normalizedEuros = String(Number(euros));
+
+    input.value = `${normalizedEuros},${cents}`;
+});
+
+     // ----------------------------
+     // ITEM FORM SUBMIT
+     // ----------------------------
+     document.addEventListener('submit', function (e) {
+
+         const form = e.target;
+
+         if (form.id !== 'mbItemForm') return;
+
+         // SHOW LOADER
+         if (window.showLoader) {
+             window.showLoader();
+         }
+
+         // PRICE NORMALIZE
+         const price = form.querySelector('[name="price"]');
+
+         if (price && price.value) {
+
+             let val = price.value
+                 .replace(/\s+/g, '')
+                 .replace(',', '.');
+
+             price.value = val;
+         }
+
+     });
+
     // ----------------------------
     // AJAX DELETE
     // ----------------------------
@@ -479,7 +542,14 @@
       if(sec && item.section_id) sec.value = item.section_id;
 
       const price = form.querySelector('[name="price"]');
-      if(price) price.value = (item.price ?? '').toString();
+      if (price) {
+
+          let val = (item.price ?? '').toString();
+
+          val = val.replace('.', ',');
+
+          price.value = val;
+      }
 
       (item.translations || []).forEach(t => {
         const loc = t.locale;

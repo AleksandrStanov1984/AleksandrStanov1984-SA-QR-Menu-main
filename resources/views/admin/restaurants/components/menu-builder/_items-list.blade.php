@@ -80,7 +80,17 @@
             $carouselSource  = $m['carousel_source'] ?? 'bestseller';
 
             $priceVal = $it->price ?? ($m['price'] ?? null);
-            $priceTxt = ($priceVal !== null && $priceVal !== '') ? (string)$priceVal : '';
+            $priceTxt = '';
+
+            if ($priceVal !== null && $priceVal !== '') {
+
+                $priceTxt = number_format(
+                    (float)$priceVal,
+                    2,
+                    ',',
+                    ''
+                );
+            }
 
             $trs = $it->translations ?? collect();
             $tr  = $trs->firstWhere('locale', $defaultLocale) ?? $trs->first();

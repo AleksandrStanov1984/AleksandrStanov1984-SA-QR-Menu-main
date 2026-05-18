@@ -35,9 +35,9 @@
                     <input
                         name="price"
                         maxlength="20"
-                        inputmode="decimal"
+                        inputmode="numeric"
                         pattern="^\d+(?:[.,]\d{1,2})?$"
-                        placeholder="0.00"
+                        placeholder="0,00"
                         required
                     >
                     <div class="mb-muted" style="margin-top:6px;">

@@ -192,6 +192,9 @@
     @endif
 
 
+<label>
+            {{ __('billing.filters.sort') }}
+        </label>
     {{-- ================= FILTERS ================= --}}
     <form method="GET" class="billing-filters">
 
@@ -220,10 +223,6 @@
         </div>
 
         <div class="billing-filter-group">
-
-            <label>
-                {{ __('billing.filters.sort') }}
-            </label>
 
             <select name="sort">
 

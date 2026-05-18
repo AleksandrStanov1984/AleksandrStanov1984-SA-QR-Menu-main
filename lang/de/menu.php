@@ -1,16 +1,12 @@
 <?php
 
 return [
-
-    'dish_of_day' => 'Tagesgericht',
+    'search' => 'Im Menü suchen',
     'opening_hours' => 'Öffnungszeiten',
-
     'open' => 'Geöffnet',
     'closed' => 'Geschlossen',
     'closing_soon' => 'Schließt bald',
-
     'today' => 'heute',
-
     'monday' => 'Montag',
     'tuesday' => 'Dienstag',
     'wednesday' => 'Mittwoch',
@@ -18,5 +14,17 @@ return [
     'friday' => 'Freitag',
     'saturday' => 'Samstag',
     'sunday' => 'Sonntag',
-
+    'bestseller' => 'Bestseller',
+    'carousel' => 'Karussell',
+    'carousel_source' => 'Karussellquelle',
+    'new' => 'Neu',
+    'dish_of_day' => 'Gericht des Tages',
+    'badge_new' => 'NEW',
+    'badge_day' => 'Gericht des Tages',
+    'badge_bestseller' => 'Bestseller',
+    'image' => 'Bild',
+    'image_select' => 'Datei auswählen',
+    'image_delete' => 'Löschen',
+    'image_hint' => 'JPG / PNG / WEBP',
+    'default_og_description' => ':name - Dienstleistungen, Preise und Informationen — bequem online an einem Ort.',
 ];

@@ -1,22 +1,18 @@
 <?php
 
 return [
-
     'user' => [
         'restaurant' => 'Данные пользователя',
         'admin' => 'Данные администратора',
         'default' => 'Данные пользователя',
     ],
-
     'fields' => [
         'name' => 'Имя',
         'email' => 'Email',
     ],
-
     'actions' => [
         'save' => 'Сохранить',
     ],
-
     'restaurant' => [
         'title' => 'Данные объекта',
         'name' => 'Название объекта',
@@ -31,7 +27,6 @@ return [
         'street' => 'Улица',
         'house_number' => 'Дом',
     ],
-
     'languages' => [
         'title' => 'Языки',
         'default' => 'Язык по умолчанию',
@@ -39,5 +34,4 @@ return [
         'updated' => 'Языки успешно обновлены',
         'setup_after_create' => 'объект создан. Настройте языки.',
     ],
-
 ];

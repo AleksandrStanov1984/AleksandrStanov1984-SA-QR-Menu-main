@@ -1,36 +1,28 @@
 <?php
 
 return [
-
     'impressum' => 'Импрессум',
     'datenschutz' => 'Конфиденциальность',
-
     'choose_file' => 'Выбрать файл',
     'carousel_settings' => 'Настройки карусели',
     'carousel_saved' => 'Настройки карусели сохранены',
-    'carousel_no_items_for_source' => 'К сожалению, нет блюд в категории ":source". Добавьте хотя бы 3 наименования.',
-
+    'carousel_no_items_for_source' => 'Недостаточно элементов для источника ":source". Добавьте минимум 3 позиции.',
     'search' => [
         'placeholder' => 'Поиск...',
     ],
-
     'brand' => 'SA QR Menu — Admin',
-
     'ui' => [
         'admin' => 'Админка',
         'language' => 'Язык',
     ],
-
     'plans' => [
         'starter' => 'Starter',
         'basic' => 'Basic',
         'pro' => 'Pro',
     ],
-
     'og' => [
         'title' => 'OG изображения',
     ],
-
     'common' => [
         'save' => 'Сохранить',
         'cancel' => 'Отмена',
@@ -46,10 +38,9 @@ return [
         'disable' => 'Отключить',
         'enable' => 'Включить',
         'close' => 'Закрыть',
-        'saving' => 'Сохранино!',
+        'saving' => 'Сохранено!',
         'choose_file' => 'Выбрать файл',
     ],
-
     'fields' => [
         'id' => 'ID',
         'name' => 'Название',
@@ -69,9 +60,7 @@ return [
         'password' => 'Пароль',
         'plan' => 'Тарифный план',
         'password_confirm' => 'Повторите новый пароль.',
-
     ],
-
     'templates' => [
         'classic' => 'Classic',
         'fastfood' => 'Fastfood',
@@ -79,12 +68,10 @@ return [
         'services' => 'Services',
         'united' => 'United',
     ],
-
     'status' => [
         'active' => 'АКТИВЕН',
         'inactive' => 'НЕАКТИВЕН',
     ],
-
     'actions' => [
         'add' => 'Добавить',
         'edit' => 'Изминить',
@@ -99,38 +86,33 @@ return [
         'delete' => 'Удалить',
         'close'  => 'Закрыть',
     ],
-
     'auth' => [
         'login_title' => 'Вход',
         'subtitle' => 'Войти, чтобы управлять объектами',
         'signin' => 'Войти',
-
         'login' => [
             'h2' => 'Вход',
             'subtitle' => 'Войти, чтобы управлять объектами',
             'submit' => 'Войти',
         ],
     ],
-
     'dashboard' => [
         'super_admin' => 'Супер-админ',
         'restaurant_admin' => 'Админ объекта',
         'current_context' => 'Текущий контекст',
         'no_selected' => 'Объект не выбран.',
-        'open_editor' => 'Открыть редактор объекта',
-        'pick_restaurant' => 'Выбрать объекта',
+        'open_editor' => 'Открыть управление объектом',
+        'pick_restaurant' => 'Выбрать объект',
         'select_placeholder' => 'Выбрать…',
         'all_restaurants' => 'Все объекты',
         'next_steps' => 'Следующие шаги',
         'dashboard' => 'Панель',
         'home' => 'Панель',
     ],
-
     'breadcrumbs' => [
         'dashboard' => 'Панель',
         'home' => 'Панель',
     ],
-
     'billing' => [
         'trial' => 'Тестовый период',
         'paid' => 'Оплачено',
@@ -138,31 +120,22 @@ return [
         'inactive' => 'Неактивен',
         'days_left' => 'Осталось :days дн.',
     ],
-
     'restaurants' => [
-
         'filters' => [
-
             'search' => 'Поиск по имени, slug или ID...',
-
             'all_statuses' => 'Cтатусы',
             'active_only' => 'Активные',
             'inactive_only' => 'Неактивные',
-
             'billing_warnings' => 'Warning',
             'warning_days' => '(10–6 дней)',
             'danger_days' => '(5–0 дней)',
-
             'billing_type' => 'Тип',
-
             'trial' => 'Тестовый период',
             'paid' => 'Оплачено',
             'expired' => 'Истёк',
             'inactive' => 'Неактивен',
-
             'all_plans' => 'Тарифы',
         ],
-
         'index' => [
             'h1' => 'Объекты',
             'subtitle' => 'Управление всеми объектами (супер-админ)',
@@ -170,7 +143,6 @@ return [
         ],
         'create' => [
             'title' => 'Создать объект',
-
             'h2' => 'Создать объект',
             'subtitle' => 'Создание объекта',
             'sections' => [
@@ -187,12 +159,10 @@ return [
             'logo_label' => 'Загрузить логотип (PNG/JPG/WEBP, до 2 MB)',
             'logo_saved' => 'Логотип сохранён',
             'logo_upload_failed' => 'Ошибка загрузки логотипа',
-
             'background_updated' => 'Фон и тема обновлены',
             'background_upload_failed' => 'Ошибка загрузки фона',
         ],
     ],
-
     'languages' => [
         'h2' => 'Языки',
         'add_h3' => 'Добавить',
@@ -206,7 +176,6 @@ return [
         'save_default' => 'Сохранить',
         'note_de_default' => 'Примечание: если нигде не выбран язык по умолчанию, используется DE.',
     ],
-
     'permissions' => [
         'h2' => 'Права пользователя',
         'saved' => 'Права доступа сохранены',
@@ -232,13 +201,11 @@ return [
                 'socials' => 'Соц. сети',
             ],
     ],
-
     'uploads' => [
         'block_title' => 'Хранилище загрузок',
         'path_hint' => 'Для этого объекта файлы лежат в:',
         'folders_hint' => 'Папки создаются автоматически:',
     ],
-
     'sections' => [
         'block_title' => 'Категории и подкатегории',
         'block_hint' => 'Управление категориями и подкатегориями.',
@@ -259,7 +226,6 @@ return [
                      'created' => 'Подкатегория создана.',
                  ],
     ],
-
     'profile' => [
         'title' => 'Профиль',
         'subtitle' => 'Профиль',
@@ -267,7 +233,6 @@ return [
         'saved' => 'Профиль сохранён.',
         'change_email_btn' => 'Изменить e-mail',
         'change_password_btn' => 'Изменить пароль',
-
         'restaurant' => [
             'h2' => 'Данные заведения',
             'restaurant_name' => 'Название заведения',
@@ -277,36 +242,29 @@ return [
             'saved' => 'Данные заведения сохранены.',
             'no_restaurant_context' => 'В текущем админ-контексте объект не выбран.',
         ],
-
         'permissions' => [
             'h2' => 'Ваши права',
             'super_admin' => 'Супер-админ: полный доступ',
             'no_permissions' => 'Права не назначены.',
         ],
-
-
             'change_email' => [
                 'h2' => 'Смена логина',
                 'current_email' => 'Текущий логин',
                 'new_email' => 'Новый логин',
                 'current_password' => 'Текущий пароль',
             ],
-
             'change_password' => [
                 'h2' => 'Смена пароля',
                 'current_password' => 'Текущий пароль',
                 'new_password' => 'Новый пароль',
                 'confirm_new_password' => 'Подтвердите пароль',
             ],
-
     ],
-
     'items' => [
         'created' => 'Элемент создан.',
         'updated' => 'Элемент сохранен.',
         'deleted' => 'Элемент удален.',
     ],
-
     'menu_builder' => [
         'auto_translate_hint' => 'Пожалуйста, заполните обязательное поле',
         'h2' => 'Конструктор меню',
@@ -319,24 +277,19 @@ return [
             'image' => 'Изображение',
             'styles_hint' => 'Выберите шрифт/цвет/размер.',
             'empty' => 'Категорий пока нет.',
-
             'show_image_modal' => 'Img и modal',
             'flag_new' => 'Новинка',
             'flag_dish_of_day' => 'Элемент дня',
             'image_hint' => 'JPG/PNG/WEBP (SVG запрещён)',
-
             'field_title' => 'Заголовок',
             'field_desc' => 'Описание',
             'field_details' => 'Детали',
-
             'style_font' => 'Шрифт: :field',
             'style_color' => 'Цвет: :field',
             'style_size' => 'Размер: :field',
-
             'title_locale' => 'Заголовок (:locale)',
             'description_locale' => 'Описание (:locale)',
             'details_locale' => 'Детали (:locale)',
-
             'pill_new' => 'Новинка',
             'pill_day' => 'Элемент дня',
             'confirm_delete_item' => 'Удалить Элемент?',
@@ -347,63 +300,51 @@ return [
             'details' => 'Делали',
             'description' => 'Описание',
     ],
-
     'sidebar' => [
         'billing_group' => 'Подписка',
-
         // ===== PROFILE =====
         'profile_group' => 'Профиль',
         'profile' => 'Профиль',
         'languages' => 'Языки',
-
         // ===== RESTAURANT =====
         'restaurant_group' => 'Объект',
         'settings' => 'Настройки',
         'hours' => 'График работы',
-
         // ===== MENU =====
         'menu_group' => 'Меню',
         'my_menu' => 'Моё меню',
         'menu_builder' => 'Конструктор меню',
-
+        // ===== BANNER =====
         'banners_group' => 'Маркетинг',
         'banners' => 'Баннеры',
         'carousel' => 'Карусель',
-
         // ===== CONTENT =====
         'content_group' => 'Контент',
         'branding' => 'Брендинг',
         'socials' => 'Социальные сети',
-
         // ===== IMPORT =====
         'import' => 'Импорт',
         'import_group' => 'Импорт',
         'import_menu' => 'Импорт меню',
         'import_images' => 'Импорт изображений',
-
         // ===== BILLING =====
         'billing' => 'Биллинг',
-
         // ===== SECURITY =====
         'security_group' => 'Безопасность АДМИН',
         'security' => 'Безопасность',
         'permissions' => 'Права доступа',
-
-        // ===== SYSTEM =====
-        'restaurants_select' => 'Выбор объекта',
-        'menu' => 'Меню',
-
-        'qr' => "QR Code",
-
-        'system_group' => 'Системные настройки',
-
         'login' => 'Логин',
         'password' => 'Пароль',
-
+        // ===== SYSTEM =====
+        'restaurants_select' => 'Выбор объекта',
+        'system_group' => 'Системные настройки',
+        'menu' => 'Меню',
+        // ===== QR =====
+        'qr' => "QR Code",
+        // ===== PLAN =====
         'pro' => 'PRO',
         'basic_pro' => 'BASIC / PRO',
     ],
-
     'branding' => [
       'title' => 'Брендинг',
       'mode_title' => 'Режим темы',
@@ -414,14 +355,12 @@ return [
       'bg_dark' => 'Фон (тёмная тема)',
       'save_bg' => 'Сохранить фон',
     ],
-
     'validation' => [
         'first_letter_uppercase' => 'Первая буква должна быть заглавной.',
         'title_required' => 'Введите название',
         'title_invalid'  => 'Название должно начинаться с буквы или цифры',
         'parent_must_be_category' => 'Родитель должен быть категорией',
     ],
-
     'confirm' => [
       'title' => 'Подтверждение',
       'delete_generic' => 'Вы уверены, что хотите удалить?',
@@ -429,9 +368,7 @@ return [
       'delete_subcategory' => 'Вы уверены, что хотите удалить подкатегорию?',
       'delete_item' => 'Вы уверены, что хотите удалить элемент?',
     ],
-
     'security' => [
-
         'subtitle' => 'Безопасность',
         // ================= VALIDATION =================
         'validation' => [
@@ -457,39 +394,32 @@ return [
                 'same' => 'Подтверждение пароля не совпадает.',
             ],
         ],
-
         // ================= HINTS =================
         'hints' => [
             'email_ok' => 'Логин можно использовать.',
             'password_ok' => 'Пароль корректный.',
         ],
-
         // ================= ERRORS =================
         'errors' => [
             'current_email_wrong' => 'Текущий логин указан неверно.',
             'current_password_wrong' => 'Текущий пароль указан неверно.',
-
             'email_same' => 'Новый логин совпадает с текущим.',
             'password_mismatch' => 'Пароли не совпадают.',
             'password_same' => 'Нельзя использовать старый пароль.',
             'password_weak' => 'Пароль слишком простой.',
         ],
-
         // ================= STATUS =================
         'status' => [
             'email_changed' => 'Логин изменён.',
             'password_changed' => 'Пароль изменён.',
         ],
-
         // ================= UI =================
         'password_hint' => 'Оставьте пароль пустым, если не хотите менять.',
         'h2' => 'Логин, Пароль',
-
         'user_object' => 'Пользователь / Объект',
     ],
-
     'socials' => [
-        'limit_info' => 'Активными будут только первые :limit ссылок (в зависимости от тарифа).',
+      'limit_info' => 'Активными будут только первые :limit ссылок (в зависимости от тарифа).',
       'title' => 'Соц. Ссылки',
       'hint' => 'Максимум 5 ссылок. Ссылки доступны по тарифному плану.',
       'add' => 'Добавить ссылку',
@@ -498,46 +428,37 @@ return [
       'save' => 'Сохранить',
       'cancel' => 'Отмена',
       'url_example' => 'Пример: https://instagram.com/yourpage',
-
       'fields' => [
         'title' => 'Название',
         'url' => 'Ссылка',
         'icon' => 'SVG иконка',
       ],
-
       'placeholders' => [
         'title' => 'Например: Instagram',
         'url' => 'https://instagram.com/yourpage',
       ],
-
       'active' => 'Активно',
       'inactive' => 'Неактивно',
       'deleted' => 'Удалено',
-
       'confirm_delete' => 'Удалить ссылку?',
       'saved' => 'Ссылка сохранена.',
       'updated_ok' => 'Ссылка обновлена.',
       'deleted_ok' => 'Ссылка удалена.',
     ],
-
     'about' => [
             'title' => 'Обо мне',
             'subtitle' => 'Full Stack .NET, WEB разработчик, Ротвайль (Баден-Вюртемберг).',
-
             'p1' => 'Уже несколько лет я разрабатываю веб-системы, интернет-магазины и промышленные приложения — от онлайн-витрин и личных кабинетов до тестовых стендов для силовой электроники и умных контроллеров.',
             'p2' => 'Я структурированно разбираю сложные требования и превращаю их в стабильные и поддерживаемые решения. Люблю работать с заказчиками и предметными экспертами и беру ответственность за качество, безопасность и архитектуру.',
             'p3' => 'Если вам нужна новая веб-система, интернет-магазин, веб сайтов, визиток и тд — напишите мне.',
-
             'send' => 'Отправить сообщение',
             'location' => 'Местоположение',
             'email' => 'E-mail',
             'phone' => 'Телефон / мессенджеры',
-
             'location_value' => '78628 Rottweil, Baden-Württemberg',
             'email_value' => 'aleksstanov84@gmail.com',
             'phone_value' => '+49 173 5141827',
     ],
-
     'import' => [
         'status' => [
             'processing' => 'Обработка изображений...',
@@ -550,48 +471,36 @@ return [
         'processed' => 'Обработано',
         'unmatched' => 'Не найдено',
         'download_unmatched' => 'Скачать список',
-
         'title' => 'Импорт меню',
         'json_label' => 'Загрузить JSON меню',
         'zip_label' => 'Загрузить ZIP ассетов (картинки/фоны/иконки)',
         'import_btn' => 'Импортировать',
-
         'rules' => 'Правила',
         'rules_title' => 'Правила импорта',
-
         'success' => [
             'json_uploaded' => 'JSON загружен.',
             'zip_imported' => 'ZIP ассеты импортированы.',
             'import_done' => 'Импорт выполнен успешно. Меню обновлено.',
             'dry_run_done' => 'Проверка без применения: создать: :create, обновить: :update, удалить: :delete.',
         ],
-
         'json' => [
             'title' => 'Импорт меню (JSON)',
             'upload' => 'Загрузить JSON',
-
             'create' => 'Создать',
             'add' => 'Добавить',
             'update' => 'Обновить',
             'delete' => 'Удалить',
-
             'delete_disabled' => 'Режим удаления пока недоступен',
-
             'current_mode_create' => 'Текущий режим: создание нового меню',
             'current_mode_add' => 'Текущий режим: добавление новых элементов',
             'current_mode_update' => 'Текущий режим: обновление существующих элементов',
-
             'hint' => 'JSON должен соответствовать структуре импорта меню.',
-
-
         ],
-
         'zip' => [
             'title' => 'Импорт ассетов (ZIP)',
             'upload' => 'Загрузить ZIP',
             'hint' => 'Загрузите ZIP-архив с изображениями блюда, размер архива не более 50 МБ.',
         ],
-
         'log' => [
             'btn' => 'Лог',
             'title' => 'Лог импорта',
@@ -599,39 +508,27 @@ return [
             'ok' => 'Ошибок нет.',
             'has_errors' => 'Обнаружены ошибки',
         ],
-
         'errors' => [
             'zip_too_large' =>
-                'ZIP-архив превышает допустимый размер (:size MB).',
+            'ZIP-архив превышает допустимый размер (:size MB).',
             'zip_open_failed' => 'Не удалось открыть ZIP архив.',
             'zip_too_many_files' => 'Слишком много файлов в ZIP архиве.',
             'zip_unsafe_path' => 'Найден небезопасный путь файла в ZIP (zip-slip).',
             'zip_type_not_allowed' => 'Запрещённый тип файла в ZIP',
             'zip_extract_failed' => 'Ошибка извлечения файла из ZIP',
-
-            // base schema
             'mode_invalid' => 'Поле "mode" должно иметь значение "patch" или "replace".',
             'operations_required' => 'Поле "operations" обязательно и должно быть непустым массивом.',
             'operation_object' => 'Операция должна быть объектом.',
-
             'required' => 'Обязательное поле ":field" отсутствует или пустое.',
-
             'type_not_supported' => 'Тип операции ":type" не поддерживается.',
             'op_invalid' => 'Недопустимое значение операции (op). Допустимо: update, delete, upsert.',
-
-            // item lookup
             'item_key_ambiguous' => 'Ключ блюда ":key" найден несколько раз. Ключи должны быть уникальны.',
             'item_not_found' => 'Блюдо с ключом ":key" не найдено или уже удалено.',
-
-            // set / parent
             'set_object_required' => 'Поле "set" обязательно и должно быть объектом.',
             'set_empty' => 'Поле "set" не может быть пустым.',
-
             'parent_required' => 'Для создания нового блюда необходимо указать parent (category_key / subcategory_key).',
             'parent_not_found' => 'Родительская категория не найдена (category: ":category_key", subcategory: ":subcategory_key").',
             'subcategory_key_invalid' => 'Поле subcategory_key должно быть строкой.',
-
-            // values
             'price_invalid' => 'Цена указана некорректно. Пример допустимого значения: 9.50',
             'currency_invalid' => 'Недопустимая валюта. Сейчас поддерживается только EUR.',
             'boolean_required' => 'Значение должно быть true или false.',
@@ -647,40 +544,24 @@ return [
             'unknown' => 'Неизвестная ошибка.',
             'import_failed_open_log' => 'Импорт не выполнен. Откройте «Лог» для деталей.',
         ],
-
         'rules_modal' => [
             'title' => 'Правила импорта',
-
             'intro' => 'Импорт поддерживает JSON snapshot/replace для структуры меню и ZIP для изображений. Импорт выполняется только при успешной валидации.',
-
             'patch_title' => 'Формат JSON',
-
             'patch_desc' => 'Текущая система использует mode=replace со структурой categories/items/subcategories. Все данные валидируются и санитизируются перед сохранением.',
-
             'patch_example' => "{\n  \"mode\": \"replace\",\n  \"categories\": [\n    {\n      \"key\": \"burgers\",\n      \"type\": \"food\",\n      \"is_active\": true,\n      \"translations\": {\n        \"de\": {\n          \"title\": \"Burger\",\n          \"description\": \"Unsere Burger\"\n        }\n      },\n      \"items\": [\n        {\n          \"key\": \"cheeseburger\",\n          \"price\": \"9.50\",\n          \"currency\": \"EUR\",\n          \"is_active\": true,\n          \"meta\": {\n            \"is_new\": true,\n            \"dish_of_day\": false,\n            \"bestseller\": true,\n            \"spicy\": 0,\n            \"show_image\": true\n          },\n          \"translations\": {\n            \"de\": {\n              \"title\": \"Cheeseburger\",\n              \"description\": \"Mit Käse\",\n              \"details\": \"200g Beef\"\n            }\n          }\n        }\n      ],\n      \"subcategories\": []\n    }\n  ]\n}\n",
-
             'assets_title' => 'ZIP изображения',
-
             'assets_desc' => 'ZIP должен содержать только изображения блюд. Разрешены: jpg/jpeg/png/webp/svg. SVG автоматически очищается от небезопасного содержимого.',
-
             'assets_example' => "cheeseburger.jpg\nbig_tasty.webp\ncola.png\ninstagram.svg\n",
-
             'export_title' => 'Экспорт меню',
-
             'export_desc' => 'Вы можете скачать текущую структуру меню в JSON и использовать её как основу для повторного импорта.',
-
             'notes_title' => 'Важно',
-
             'note_atomic' => 'Если JSON содержит ошибки — импорт полностью отменяется.',
-
             'note_permissions' => 'Некоторые функции и поля зависят от тарифного плана объекта.',
-
             'note_paths' => 'ZIP не должен содержать вложенные небезопасные пути, .php/.js файлы или исполняемые файлы.',
-
             'copy' => 'Скопировать',
         ],
     ],
-
     'position' => [
         'label' => 'Позиция',
         'start' => 'В начало',
@@ -691,16 +572,13 @@ return [
         'target_subcategory' => 'Выберите подкатегорию',
         'target_required' => 'Выберите элемент для позиционирования',
     ],
-
         'zip_too_large'       => 'ZIP архив слишком большой.',
         'zip_open_failed'     => 'Не удалось открыть ZIP архив.',
         'zip_too_many_files'  => 'В архиве слишком много файлов.',
         'zip_unsafe_path'     => 'Обнаружен небезопасный путь в архиве.',
         'zip_blocked_ext'     => 'В архиве найден запрещённый тип файла.',
         'zip_ext_not_allowed' => 'Тип файла в архиве не разрешён.',
-
         'keys_required'   => 'Поле keys обязательно и должно быть массивом.',
         'keys_duplicate'  => 'Список keys содержит дубликаты.',
         'keys_mismatch'   => 'Список keys не совпадает с текущим набором элементов.',
-
 ];

@@ -115,8 +115,14 @@
 
                     <label class="mb-switch" onclick="event.stopPropagation();">
                         <input type="checkbox"
-                               onchange="this.form.submit()"
-                            @checked(!$inactive)>
+                               @checked(!$inactive)
+                               onchange="
+                                   const form = this.form;
+
+                                   requestAnimationFrame(() => {
+                                       form.submit();
+                                   });
+                               ">
 
                         <span class="mb-switch__ui"></span>
                     </label>

@@ -1,28 +1,23 @@
 <?php
+
 return [
     'back_to_menu' => 'Назад к меню',
-    'bestsellers' => 'Рекомендуемые блюда',
+    'bestsellers' => 'Bestsellers',
     'new' => 'Новинка',
     'spicy' => 'Острое',
     'dish_of_day' => 'Блюдо дня',
-
     'menu' => [
         'categories' => 'Категории',
-        'bestsellers' => 'Рекомендуемые блюда',
+        'bestsellers' => 'Bestsellers',
     ],
-
     'footer' => [
         'powered' => 'Создано с помощью SA Digital Menus',
     ],
-
     'open' => 'Открыто',
     'closing_soon' => 'Скоро закрывается',
     'closed' => 'Закрыто',
-
     'opening_hours' => 'Часы работы',
-
     'today' => 'Сегодня',
-
     'monday' => 'Понедельник',
     'tuesday' => 'Вторник',
     'wednesday' => 'Среда',

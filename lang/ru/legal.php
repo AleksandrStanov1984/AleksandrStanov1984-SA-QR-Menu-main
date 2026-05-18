@@ -1,18 +1,15 @@
 <?php
 
 return [
-
     'nav' => [
         'impressum' => 'Импрессум',
         'datenschutz' => 'Политика конфиденциальности',
     ],
-
     'impressum' => [
         'kicker' => 'Юридическая информация',
         'title' => 'Импрессум',
         'updated' => '',
         'toc_title' => 'Содержание',
-
         'toc' => [
             ['id' => 'angaben', 'label' => 'Сведения согласно § 5 TMG'],
             ['id' => 'kontakt', 'label' => 'Контакты'],
@@ -23,9 +20,7 @@ return [
             ['id' => 'plattform', 'label' => 'Платформа'],
             ['id' => 'sprachversionen', 'label' => 'Языковые версии'],
         ],
-
         'sections' => [
-
             [
                 'id' => 'angaben',
                 'title' => 'Сведения согласно § 5 TMG',
@@ -38,7 +33,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'kontakt',
                 'title' => 'Контакты',
@@ -49,7 +43,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'verantwortlich',
                 'title' => 'Ответственный за содержание согласно § 55 Abs. 2 RStV',
@@ -62,7 +55,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'haftung-inhalte',
                 'title' => 'Ответственность за содержание',
@@ -73,7 +65,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'haftung-links',
                 'title' => 'Ответственность за ссылки',
@@ -83,7 +74,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'urheberrecht',
                 'title' => 'Авторское право',
@@ -93,7 +83,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'plattform',
                 'title' => 'Платформа',
@@ -110,7 +99,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'sprachversionen',
                 'title' => 'Языковые версии',
@@ -122,16 +110,13 @@ return [
                 </p>
             ',
             ],
-
         ],
     ],
-
     'datenschutz' => [
         'kicker' => 'Юридическая информация',
         'title' => 'Политика конфиденциальности',
         'updated' => '',
         'toc_title' => 'Содержание',
-
         'toc' => [
             ['id' => 'allgemeine-hinweise', 'label' => 'Общая информация'],
             ['id' => 'verantwortlicher', 'label' => 'Ответственное лицо'],
@@ -146,9 +131,7 @@ return [
             ['id' => 'aenderungen', 'label' => 'Изменения'],
             ['id' => 'sprachversionen', 'label' => 'Языковые версии'],
         ],
-
         'sections' => [
-
             [
                 'id' => 'allgemeine-hinweise',
                 'title' => '1. Общая информация',
@@ -158,7 +141,6 @@ return [
                     </p>
                 ',
             ],
-
             [
                 'id' => 'verantwortlicher',
                 'title' => '2. Ответственное лицо',
@@ -172,7 +154,6 @@ return [
                     </p>
                 ',
             ],
-
             [
                 'id' => 'erhobene-daten',
                 'title' => '3. Собираемые данные',
@@ -180,7 +161,6 @@ return [
                     <p>Мы собираем только технически необходимые данные.</p>
                 ',
             ],
-
             [
                 'id' => 'zweck',
                 'title' => '4. Цель обработки',
@@ -188,7 +168,6 @@ return [
                     <p>Обеспечение работы сервиса.</p>
                 ',
             ],
-
             [
                 'id' => 'hosting',
                 'title' => '5. Хостинг',
@@ -196,7 +175,6 @@ return [
                     <p>Данные размещаются на серверах в ЕС.</p>
                 ',
             ],
-
             [
                 'id' => 'cookies',
                 'title' => '6. Cookies',
@@ -204,7 +182,6 @@ return [
                     <p>Используются только необходимые cookies.</p>
                 ',
             ],
-
             [
                 'id' => 'email',
                 'title' => '7. E-Mail',
@@ -212,13 +189,11 @@ return [
                     <p>Отправляются только технические письма.</p>
                 ',
             ],
-
             [
                 'id' => 'analyse',
                 'title' => '8. Аналитика',
                 'body' => '<p>Аналитика не используется.</p>',
             ],
-
             [
                 'id' => 'plattform',
                 'title' => '9. Платформа',
@@ -236,7 +211,6 @@ return [
                     </p>
                 ',
             ],
-
             [
                 'id' => 'rechte',
                 'title' => '10. Права пользователей',
@@ -244,13 +218,11 @@ return [
                     <p>Пользователь имеет право на доступ, исправление и удаление данных.</p>
                 ',
             ],
-
             [
                 'id' => 'aenderungen',
                 'title' => '11. Изменения',
                 'body' => '<p>Документ может обновляться.</p>',
             ],
-
             [
                 'id' => 'sprachversionen',
                 'title' => '12. Языковые версии',
@@ -261,9 +233,7 @@ return [
                     </p>
                 ',
             ],
-
         ],
-
         'source_note' => '',
     ],
 ];

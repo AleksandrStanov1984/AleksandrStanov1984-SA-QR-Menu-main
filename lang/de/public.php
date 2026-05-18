@@ -1,33 +1,28 @@
 <?php
+
 return [
-    'back_to_menu' => 'Zurück zur Speisekarte',
-    'bestsellers' => 'Empfohlene Artikel',
+    'back_to_menu' => 'Zurück zum Menü',
+    'bestsellers' => 'Bestsellers',
     'new' => 'Neu',
     'spicy' => 'Scharf',
-    'dish_of_day' => 'Tagesgericht',
-
+    'dish_of_day' => 'Gericht des Tages',
     'menu' => [
         'categories' => 'Kategorien',
-        'bestsellers' => 'Empfohlene Artikel',
+        'bestsellers' => 'Bestsellers',
     ],
-
     'footer' => [
         'powered' => 'Erstellt mit SA Digital Menus',
     ],
-
-    'open' => 'Open',
+    'open' => 'Geöffnet',
     'closing_soon' => 'Schließt bald',
     'closed' => 'Geschlossen',
-
-    'opening_hours' => 'Opening hours',
-
-    'today' => 'today',
-
-    'monday' => 'Monday',
-    'tuesday' => 'Tuesday',
-    'wednesday' => 'Wednesday',
-    'thursday' => 'Thursday',
-    'friday' => 'Friday',
-    'saturday' => 'Saturday',
-    'sunday' => 'Sunday',
+    'opening_hours' => 'Öffnungszeiten',
+    'today' => 'Heute',
+    'monday' => 'Montag',
+    'tuesday' => 'Dienstag',
+    'wednesday' => 'Mittwoch',
+    'thursday' => 'Donnerstag',
+    'friday' => 'Freitag',
+    'saturday' => 'Samstag',
+    'sunday' => 'Sonntag',
 ];

@@ -1,18 +1,15 @@
 <?php
 
 return [
-
     'nav' => [
         'impressum' => 'Impressum',
         'datenschutz' => 'Datenschutzerklärung',
     ],
-
     'impressum' => [
-        'kicker' => 'Rechtliche Hinweise',
+        'kicker' => 'Rechtliche Informationen',
         'title' => 'Impressum',
         'updated' => '',
         'toc_title' => 'Inhaltsverzeichnis',
-
         'toc' => [
             ['id' => 'angaben', 'label' => 'Angaben gemäß § 5 TMG'],
             ['id' => 'kontakt', 'label' => 'Kontakt'],
@@ -23,9 +20,7 @@ return [
             ['id' => 'plattform', 'label' => 'Plattform'],
             ['id' => 'sprachversionen', 'label' => 'Sprachversionen'],
         ],
-
         'sections' => [
-
             [
                 'id' => 'angaben',
                 'title' => 'Angaben gemäß § 5 TMG',
@@ -38,7 +33,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'kontakt',
                 'title' => 'Kontakt',
@@ -49,7 +43,6 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'verantwortlich',
                 'title' => 'Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV',
@@ -62,40 +55,34 @@ return [
                 </p>
             ',
             ],
-
             [
                 'id' => 'haftung-inhalte',
                 'title' => 'Haftung für Inhalte',
                 'body' => '
                 <p>
                     Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt.
-                    Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte
-                    können wir jedoch keine Gewähr übernehmen.
+                    Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
                 </p>
             ',
             ],
-
             [
                 'id' => 'haftung-links',
                 'title' => 'Haftung für Links',
                 'body' => '
                 <p>
-                    Unser Angebot enthält Links zu externen Websites Dritter,
-                    auf deren Inhalte wir keinen Einfluss haben.
+                    Unsere Website enthält Links zu externen Webseiten, auf deren Inhalte wir keinen Einfluss haben.
                 </p>
             ',
             ],
-
             [
                 'id' => 'urheberrecht',
                 'title' => 'Urheberrecht',
                 'body' => '
                 <p>
-                    Die Inhalte dieser Seiten unterliegen dem deutschen Urheberrecht.
+                    Die Inhalte dieser Website unterliegen dem Urheberrecht.
                 </p>
             ',
             ],
-
             [
                 'id' => 'plattform',
                 'title' => 'Plattform',
@@ -105,38 +92,34 @@ return [
                 </p>
 
                 <p>
-                    Informationen zur Plattform:
+                    Informationen über die Plattform:
                     <a href="/legal/impressum" target="_blank" rel="noopener">
-                        Plattform-Impressum
+                        Impressum der Plattform
                     </a>
                 </p>
             ',
             ],
-
             [
                 'id' => 'sprachversionen',
                 'title' => 'Sprachversionen',
                 'body' => '
                 <p>
                     Dieses Impressum ist in mehreren Sprachen verfügbar.
-                    Maßgeblich und rechtlich verbindlich ist die deutsche Fassung.
-                    Übersetzungen dienen lediglich der besseren Verständlichkeit.
+                    Rechtsverbindlich ist ausschließlich die deutsche Version.
+                    Übersetzungen dienen nur der besseren Verständlichkeit.
                 </p>
             ',
             ],
-
         ],
     ],
-
     'datenschutz' => [
-        'kicker' => 'Rechtliche Hinweise',
+        'kicker' => 'Rechtliche Informationen',
         'title' => 'Datenschutzerklärung',
         'updated' => '',
         'toc_title' => 'Inhaltsverzeichnis',
-
         'toc' => [
             ['id' => 'allgemeine-hinweise', 'label' => 'Allgemeine Hinweise'],
-            ['id' => 'verantwortlicher', 'label' => 'Verantwortlicher'],
+            ['id' => 'verantwortlicher', 'label' => 'Verantwortliche Stelle'],
             ['id' => 'erhobene-daten', 'label' => 'Erhobene Daten'],
             ['id' => 'zweck', 'label' => 'Zweck der Verarbeitung'],
             ['id' => 'hosting', 'label' => 'Hosting'],
@@ -148,23 +131,19 @@ return [
             ['id' => 'aenderungen', 'label' => 'Änderungen'],
             ['id' => 'sprachversionen', 'label' => 'Sprachversionen'],
         ],
-
         'sections' => [
-
             [
                 'id' => 'allgemeine-hinweise',
                 'title' => '1. Allgemeine Hinweise',
                 'body' => '
                     <p>
-                        Wir behandeln Ihre personenbezogenen Daten vertraulich
-                        und entsprechend den gesetzlichen Datenschutzvorschriften (DSGVO).
+                        Wir behandeln personenbezogene Daten vertraulich und entsprechend der DSGVO.
                     </p>
                 ',
             ],
-
             [
                 'id' => 'verantwortlicher',
-                'title' => '2. Verantwortlicher',
+                'title' => '2. Verantwortliche Stelle',
                 'body' => '
                     <p>
                         :owner_name<br>
@@ -175,110 +154,86 @@ return [
                     </p>
                 ',
             ],
-
             [
                 'id' => 'erhobene-daten',
                 'title' => '3. Erhobene Daten',
                 'body' => '
-                    <p>
-                        Es werden nur technisch notwendige Daten erhoben.
-                    </p>
+                    <p>Wir erfassen nur technisch notwendige Daten.</p>
                 ',
             ],
-
             [
                 'id' => 'zweck',
                 'title' => '4. Zweck der Verarbeitung',
                 'body' => '
-                    <p>
-                        Die Verarbeitung erfolgt ausschließlich zur Bereitstellung
-                        des Dienstes.
-                    </p>
+                    <p>Sicherstellung des Betriebs des Dienstes.</p>
                 ',
             ],
-
             [
                 'id' => 'hosting',
                 'title' => '5. Hosting',
                 'body' => '
-                    <p>
-                        Die Daten werden auf Servern innerhalb der EU gespeichert.
-                    </p>
+                    <p>Die Daten werden auf Servern innerhalb der EU gespeichert.</p>
                 ',
             ],
-
             [
                 'id' => 'cookies',
                 'title' => '6. Cookies',
                 'body' => '
-                    <p>
-                        Es werden nur notwendige Cookies verwendet.
-                    </p>
+                    <p>Es werden nur technisch notwendige Cookies verwendet.</p>
                 ',
             ],
-
             [
                 'id' => 'email',
-                'title' => '7. E-Mail-Kommunikation',
+                'title' => '7. E-Mail',
                 'body' => '
-                    <p>
-                        Es werden ausschließlich systemrelevante E-Mails versendet.
-                    </p>
+                    <p>Es werden ausschließlich technische E-Mails versendet.</p>
                 ',
             ],
-
             [
                 'id' => 'analyse',
                 'title' => '8. Analyse',
-                'body' => '<p>Es werden keine Analyse-Tools verwendet.</p>',
+                'body' => '<p>Es wird keine Analyse verwendet.</p>',
             ],
-
             [
                 'id' => 'plattform',
                 'title' => '9. Plattform',
                 'body' => '
                     <p>
-                        Diese Website nutzt die Plattform <strong>SA QR Menu</strong>,
-                        die für Hosting, Sicherheit und technische Funktion verantwortlich ist.
+                        Diese Website läuft auf der Plattform <strong>SA QR Menu</strong>,
+                        welche den technischen Betrieb des Dienstes sicherstellt (Hosting, Sicherheit, Datenverarbeitung).
                     </p>
 
                     <p>
-                        Weitere Informationen:
+                        Weitere Informationen zum Datenschutz der Plattform:
                         <a href="/legal/datenschutz" target="_blank" rel="noopener">
                             Datenschutzerklärung der Plattform
                         </a>
                     </p>
                 ',
             ],
-
             [
                 'id' => 'rechte',
                 'title' => '10. Rechte der Nutzer',
                 'body' => '
-                    <p>
-                        Sie haben das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten.
-                    </p>
+                    <p>Nutzer haben das Recht auf Auskunft, Berichtigung und Löschung ihrer Daten.</p>
                 ',
             ],
-
             [
                 'id' => 'aenderungen',
                 'title' => '11. Änderungen',
-                'body' => '<p>Diese Erklärung kann aktualisiert werden.</p>',
+                'body' => '<p>Dieses Dokument kann aktualisiert werden.</p>',
             ],
-
             [
                 'id' => 'sprachversionen',
                 'title' => '12. Sprachversionen',
                 'body' => '
                     <p>
-                        Diese Erklärung ist in mehreren Sprachen verfügbar.
-                        Maßgeblich ist die deutsche Version.
+                        Dieses Dokument ist in mehreren Sprachen verfügbar.
+                        Rechtsverbindlich ist ausschließlich die deutsche Version.
                     </p>
                 ',
             ],
-
         ],
+        'source_note' => '',
     ],
-
 ];

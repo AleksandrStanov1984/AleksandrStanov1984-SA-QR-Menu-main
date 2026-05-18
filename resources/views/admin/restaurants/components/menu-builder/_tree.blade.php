@@ -60,7 +60,13 @@
                                 <label class="mb-switch">
                                     <input type="checkbox"
                                            @checked($cat->is_active)
-                                           onchange="this.form.submit()">
+                                           onchange="
+                                               const form = this.form;
+
+                                               requestAnimationFrame(() => {
+                                                   form.submit();
+                                               });
+                                           ">
                                     <span class="mb-switch__ui"></span>
                                 </label>
                             </div>
@@ -153,7 +159,13 @@
                                             <input type="checkbox"
                                                    @checked($sub->is_active)
                                                    {{ $subLocked ? 'disabled' : '' }}
-                                                   onchange="this.form.submit()">
+                                                   onchange="
+                                                       const form = this.form;
+
+                                                       requestAnimationFrame(() => {
+                                                           form.submit();
+                                                       });
+                                                   ">
                                             <span class="mb-switch__ui"></span>
                                         </label>
                                     </div>

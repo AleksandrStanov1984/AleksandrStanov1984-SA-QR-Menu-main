@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'crafted_by' => 'Erstellt mit Leidenschaft von',
+    'crafted_by' => 'Crafted with love by',
     'author' => 'Stanov Oleksandr',
 ];

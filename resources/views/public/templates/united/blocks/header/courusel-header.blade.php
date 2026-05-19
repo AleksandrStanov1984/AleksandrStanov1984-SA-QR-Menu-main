@@ -42,10 +42,12 @@
                                 {{ $it['title'] ?? '' }}
                             </div>
 
-                            @if($sourceConfig)
+                            @if($sourceConfig && $carouselSource !== 'category')
+
                                 <div class="header-carousel__badge {{ $sourceConfig['badge_class'] ?? '' }}">
                                     {{ __($sourceConfig['label']) }}
                                 </div>
+
                             @endif
                         </div>
 

@@ -108,6 +108,10 @@
     width: auto !important;
 }
 
+#carouselCategoryBlock {
+    display:none;
+}
+
 @media (max-width: 768px){
     #carouselSourceBlock select {
         appearance: auto;

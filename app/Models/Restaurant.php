@@ -394,7 +394,10 @@ class Restaurant extends Model
 
         if (
             $this->paid_until &&
-            $this->paid_until->copy()->addDays(31)->isFuture()
+            $this->paid_until
+                ->copy()
+                ->addDays(31)
+                ->isFuture()
         ) {
             return false;
         }
@@ -402,15 +405,19 @@ class Restaurant extends Model
         if (
             !$this->paid_until &&
             $this->trial_ends_at &&
-            $this->trial_ends_at->copy()->addDays(31)->isFuture()
+            $this->trial_ends_at
+                ->copy()
+                ->addDays(31)
+                ->isFuture()
         ) {
             return false;
         }
 
-        if (!$this->paid_until && !$this->trial_ends_at) {
-            return true;
-        }
-
         return true;
+    }
+
+    public function carouselConfig(): array
+    {
+        return data_get($this->meta, 'carousel', []);
     }
 }

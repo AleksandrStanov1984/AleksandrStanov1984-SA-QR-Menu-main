@@ -52,6 +52,7 @@ class MenuViewModel
 
     protected ImageService $images;
     public array $carouselItems = [];
+    public ?string $carouselSource = null;
     public string $ogImage;
     public string $ogTitle;
     public string $ogDescription;
@@ -389,11 +390,9 @@ class MenuViewModel
 
     private function buildCarousel(): array
     {
-        $meta = is_array($this->restaurant->meta ?? null)
-            ? $this->restaurant->meta
-            : [];
+        $carousel = $this->restaurant->carouselConfig();
 
-        if (!($meta['carousel_enabled'] ?? false)) {
+        if (!(bool) data_get($carousel, 'enabled', false)) {
             return [];
         }
 
@@ -401,27 +400,89 @@ class MenuViewModel
             return [];
         }
 
-        $source = $meta['carousel_source'] ?? 'bestseller';
+        $source = data_get(
+            $carousel,
+            'source',
+            'bestseller'
+        );
+
+        $this->carouselSource = $source;
+
+        $categoryId = data_get(
+            $carousel,
+            'category_id'
+        );
+
+        $subcategoryId = data_get(
+            $carousel,
+            'subcategory_id'
+        );
 
         $items = $this->restaurant->sections
+            ->loadMissing('items.section')
             ->flatMap(fn ($s) => $s->items ?? collect())
             ->where('is_active', true)
             ->map(function ($item) {
-                $item->meta_dto = $item->meta_dto ?? ItemMetaDTO::fromModel($item);
+
+                $item->meta_dto =
+                    $item->meta_dto
+                    ?? ItemMetaDTO::fromModel($item);
+
                 return $item;
             });
 
-        // source selection
+        // =====================
+        // SOURCE SELECTION
+        // =====================
         $filtered = match ($source) {
-            'is_new' => $items->filter(fn ($i) => $i->meta_dto->isNew === true),
-            'dish_of_day' => $items->filter(fn ($i) => $i->meta_dto->dishOfDay === true),
-            default => $items->filter(fn ($i) => $i->meta_dto->bestseller === true),
+
+            'is_new' => $items->filter(
+                fn ($i) => $i->meta_dto->isNew === true
+            ),
+
+            'dish_of_day' => $items->filter(
+                fn ($i) => $i->meta_dto->dishOfDay === true
+            ),
+
+            'category' => $items->filter(function ($i) use (
+                $categoryId,
+                $subcategoryId
+            ) {
+
+                $section = $i->section;
+
+                if (!$section) {
+                    return false;
+                }
+
+                if ($subcategoryId) {
+
+                    return
+                        (int) $section->id ===
+                        (int) $subcategoryId;
+                }
+
+                return
+                    (int) $section->id ===
+                    (int) $categoryId
+                    || (int) $section->parent_id ===
+                    (int) $categoryId;
+            }),
+
+            default => $items->filter(
+                fn ($i) => $i->meta_dto->bestseller === true
+            ),
         };
 
-        // limit by feature
+        // =====================
+        // LIMIT BY FEATURE
+        // =====================
         $limit = match (true) {
+
             $this->restaurant->feature('carousel_advanced') => 30,
+
             $this->restaurant->feature('carousel') => 15,
+
             default => 0,
         };
 
@@ -439,11 +500,17 @@ class MenuViewModel
             return [];
         }
 
+        // =====================
+        // MINIMUM SLIDES
+        // =====================
         if ($result->count() < 5) {
+
             $original = $result->values();
 
             while ($result->count() < 5) {
+
                 foreach ($original as $item) {
+
                     $result->push($item);
 
                     if ($result->count() >= 5) {

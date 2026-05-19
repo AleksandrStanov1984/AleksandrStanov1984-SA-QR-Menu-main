@@ -27,4 +27,10 @@ return [
     'image_delete' => 'Удалить',
     'image_hint' => 'JPG / PNG / WEBP',
     'default_og_description' => ':name - услуги, цены и информация — удобно в одном месте онлайн.',
+    'category' => 'Категория',
+    'select_category' => 'Выберите категорию',
+    'carousel_mode' => 'Режим карусели',
+    'carousel_category_only' => 'Только эта категория',
+    'carousel_include_subcategories' => 'Включая подкатегории',
+    'all' => 'Все',
 ];

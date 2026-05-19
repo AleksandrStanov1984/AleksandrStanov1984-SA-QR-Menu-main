@@ -27,4 +27,10 @@ return [
     'image_delete' => 'Löschen',
     'image_hint' => 'JPG / PNG / WEBP',
     'default_og_description' => ':name - Dienstleistungen, Preise und Informationen — bequem online an einem Ort.',
+    'category' => 'Kategorie',
+    'select_category' => 'Kategorie auswählen',
+    'carousel_mode' => 'Karussellmodus',
+    'carousel_category_only' => 'Nur diese Kategorie',
+    'carousel_include_subcategories' => 'Unterkategorien einschließen',
+    'all' => 'Alle',
 ];

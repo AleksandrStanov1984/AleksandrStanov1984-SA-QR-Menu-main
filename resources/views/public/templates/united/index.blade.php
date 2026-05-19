@@ -64,7 +64,7 @@
     @if(!empty($items))
         @include('public.templates.united.blocks.header.courusel-header', [
             'items' => collect($items),
-            'carouselSource' => $vm->restaurant->meta['carousel_source'] ?? null
+            'carouselSource' => $vm->carouselSource
         ])
     @endif
 

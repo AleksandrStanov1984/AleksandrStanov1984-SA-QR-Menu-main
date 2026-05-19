@@ -27,4 +27,10 @@ return [
     'image_delete' => 'Delete',
     'image_hint' => 'JPG / PNG / WEBP',
     'default_og_description' => ':name - services, prices and information — conveniently available online in one place.',
+    'category' => 'Category',
+    'select_category' => 'Select category',
+    'carousel_mode' => 'Carousel mode',
+    'carousel_category_only' => 'Only this category',
+    'carousel_include_subcategories' => 'Include subcategories',
+    'all' => 'All',
 ];

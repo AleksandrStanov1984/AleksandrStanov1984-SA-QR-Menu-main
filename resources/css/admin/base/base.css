@@ -684,20 +684,40 @@ label{
 
 .app-loader {
     position: fixed;
-    inset: 0;
-    background: var(--loader-overlay);
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 999999;
-    opacity: 1;
-    transition: opacity 0.2s ease;
-    pointer-events: all;
     flex-direction: column;
+
+    background: rgba(0,0,0,.60);
+
+    z-index: 2147483647;
+
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        opacity .2s ease,
+        visibility .2s ease;
+
+    pointer-events: all;
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    transform: translateZ(0);
 }
 
 .app-loader.hidden {
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
 }
 
